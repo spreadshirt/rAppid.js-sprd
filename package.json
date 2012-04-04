@@ -1,0 +1,43 @@
+{
+    "name": "rAppid.js-sprd",
+    "preferGlobal": "false",
+    "version": "0.1.0",
+    "author": "rAppid <support@rappidjs.com> (http://rappidjs.com)",
+    "contributors": [
+        "Tony Findeisen <tony@rappidjs.com>",
+        "Marcus Krejpowicz <marcus@rappidjs.com>"
+    ],
+    "description": "Spreadshirt library for rAppid.js.",
+    "bin": {
+        "rappidjs": "./bin/rappidjs"
+    },
+    "lib": "sprd",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/it-ony/rAppid.js-sprd.git"
+    },
+    "keywords": [
+        "rAppid",
+        "sprd",
+        "Spreadshirt"
+    ],
+    "dependencies": {
+        "rAppid.js": "latest"
+    },
+    "devDependencies": {
+        "chai": "*",
+        "mocha": "*"
+    },
+    "license": "CC BY-NC-SA 3.0",
+    "engine": {
+        "node": ">=0.4"
+    },
+    "engines": {
+        "node": "*"
+    },
+    "homepage": "http://rappidjs.com",
+    "optionalDependencies": {},
+    "rAppidDependencies": {
+        "rAppid.js": "latest"
+    }
+}
