@@ -35,9 +35,12 @@
     "engines": {
         "node": "*"
     },
-    "homepage": "http://rappidjs.com",
+    "homepage": "http://rappidjs.com/modules/sprd",
     "optionalDependencies": {},
-    "rAppidDependencies": {
-        "rAppid.js": "latest"
+    "rAppid": {
+        "type": "lib",
+        "dependencies": {
+            "rAppid.js": "latest"
+        }
     }
 }
