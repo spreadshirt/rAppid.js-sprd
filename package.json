@@ -8,9 +8,6 @@
         "Marcus Krejpowicz <marcus@rappidjs.com>"
     ],
     "description": "Spreadshirt library for rAppid.js.",
-    "bin": {
-        "rappidjs": "./bin/rappidjs"
-    },
     "lib": "sprd",
     "repository": {
         "type": "git",
