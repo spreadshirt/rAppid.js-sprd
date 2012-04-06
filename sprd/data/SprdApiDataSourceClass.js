@@ -1,7 +1,7 @@
 var requirejs = (typeof requirejs === "undefined" ? require("requirejs") : requirejs);
 
 requirejs(["rAppid"], function (rAppid) {
-    rAppid.defineClass("sprd.data.SprdApiDataSource", ["js.data.RestDataSource"], function (RestDataSource) {
+    rAppid.defineClass("sprd.data.SprdApiDataSourceClass", ["js.data.RestDataSource"], function (RestDataSource) {
 
         var SprdApiContext = RestDataSource.RestContext.inherit({
             getQueryParameter: function () {
