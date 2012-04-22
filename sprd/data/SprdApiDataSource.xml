@@ -3,25 +3,25 @@
     <!-- optional alias, if no alias is defined alias will be determinated automatically -->
 
     <!-- Model can be specified via className, if className is obmitted js.data.Model is used -->
-    <conf:Type path="baskets" modelClassName="sprd.model.Basket" alias="Basket"/>
+    <conf:Configuration path="baskets" modelClassName="sprd.model.Basket" alias="Basket"/>
 
     <!-- use className if you need some logic inside your models, if not use an alias and obmit the className-->
-    <conf:Type path="address" alias="Address"/>
-    <conf:Type path="articles" alias="Article"/>
-    <conf:Type path="articleCategories" alias="ArticleCategory"/>
-    <conf:Type path="applications" alias="Application"/>
-    <conf:Type path="currencies" alias="Currency"/>
-    <conf:Type path="countries" alias="Country"/>
-    <conf:Type path="designs" alias="Design"/>
-    <conf:Type path="designCategories" alias="DesignCategory"/>
-    <conf:Type path="fontFamilies" alias="FontFamiliy"/>
-    <conf:Type path="languages" alias="Language"/>
-    <conf:Type path="printTypes" alias="PrintType"/>
-    <conf:Type path="products" alias="Product"/>
-    <conf:Type path="productTypes" alias="ProductType"/>
-    <conf:Type path="productTypeDepartments" alias="ProductTypeDepartment"/>
-    <conf:Type path="shippingTypes" alias="ShippingType"/>
-    <conf:Type path="shops" alias="Shop"/>
-    <conf:Type path="users" alias="User"/>
+    <conf:Configuration path="address" alias="Address"/>
+    <conf:Configuration path="articles" alias="Article"/>
+    <conf:Configuration path="articleCategories" alias="ArticleCategory"/>
+    <conf:Configuration path="applications" alias="Application"/>
+    <conf:Configuration path="currencies" alias="Currency"/>
+    <conf:Configuration path="countries" alias="Country"/>
+    <conf:Configuration path="designs" alias="Design"/>
+    <conf:Configuration path="designCategories" alias="DesignCategory"/>
+    <conf:Configuration path="fontFamilies" alias="FontFamiliy"/>
+    <conf:Configuration path="languages" alias="Language"/>
+    <conf:Configuration path="printTypes" alias="PrintType"/>
+    <conf:Configuration path="products" alias="Product"/>
+    <conf:Configuration path="productTypes" alias="ProductType"/>
+    <conf:Configuration path="productTypeDepartments" alias="ProductTypeDepartment"/>
+    <conf:Configuration path="shippingTypes" alias="ShippingType"/>
+    <conf:Configuration path="shops" alias="Shop"/>
+    <conf:Configuration path="users" alias="User"/>
 
 </data:SprdApiDataSourceClass>
