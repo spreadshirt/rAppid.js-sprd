@@ -1,4 +1,4 @@
-define(["js/data/RestDataSource"], function (RestDataSource) {
+define(["js/data/RestDataSource", "underscore"], function (RestDataSource,_) {
 
     var SprdApiContext = RestDataSource.RestContext.inherit({
         getQueryParameter: function () {
@@ -11,7 +11,7 @@ define(["js/data/RestDataSource"], function (RestDataSource) {
                 parameter.locale = this.$properties.locale;
             }
 
-            return rAppid._.defaults(parameter, this.callBase());
+            return _.defaults(parameter, this.callBase());
         }
     });
 
@@ -99,7 +99,7 @@ define(["js/data/RestDataSource"], function (RestDataSource) {
         },
 
         getQueryParams: function () {
-            return rAppid._.defaults({
+            return _.defaults({
                 mediaType: "json"
             }, this.callBase());
         },
@@ -112,7 +112,7 @@ define(["js/data/RestDataSource"], function (RestDataSource) {
         extractListData: function (list, payload, options) {
             for (var key in payload) {
                 if (payload.hasOwnProperty(key)) {
-                    if (rAppid._.isArray(payload[key])) {
+                    if (_.isArray(payload[key])) {
                         return payload[key];
                     }
                 }
