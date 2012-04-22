@@ -1,4 +1,4 @@
-define(["sprd.data.SprdModel"], function (SprdModel) {
+define(["sprd/data/SprdModel"], function (SprdModel) {
     return SprdModel.inherit({
     });
 });
