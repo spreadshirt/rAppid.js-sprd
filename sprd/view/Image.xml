@@ -1,0 +1,26 @@
+<ui:View xmlns="http://www.w3.org/1999/xhtml"
+         xmlns:ui="js.ui" xmlns:js="js.core"
+         tagName="img" src="{imageUrl()}" alt="{alt()}">
+
+    <js:Script>
+
+        <![CDATA[
+        (function () {
+            return {
+                normalizeSize: function(size) {
+                    return Math.ceil(size / 50) * 50;
+                },
+                imageUrl: function() {
+                    return "";
+                },
+
+                alt: function() {
+                    return "";
+                }
+
+            }
+        })
+        ]]>
+
+    </js:Script>
+</ui:View>

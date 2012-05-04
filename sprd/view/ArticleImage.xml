@@ -1,0 +1,38 @@
+<ui:View xmlns="http://www.w3.org/1999/xhtml"
+         xmlns:ui="js.ui" xmlns:js="js.core"
+         tagName="img" src="{productImageUrl()}" alt="{article.name}">
+
+    <js:Script>
+
+        <![CDATA[
+        (function () {
+            return {
+
+                defaults: {
+                    // if null use default view
+                    view: null
+                },
+
+                imageUrl: function() {
+                    // TODO: calc nearest height
+                    if (this.$.article) {
+                        var article = this.$.article;
+
+
+                    }
+                }.onChange('article', 'width', 'height'),
+
+                alt: function() {
+                    if (this.$.article) {
+                        return this.$.article.$.name;
+                    }
+
+                    return "";
+                }
+
+            }
+        })
+        ]]>
+
+    </js:Script>
+</ui:View>
