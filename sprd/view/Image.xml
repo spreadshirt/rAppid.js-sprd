@@ -1,15 +1,35 @@
 <ui:View xmlns="http://www.w3.org/1999/xhtml"
          xmlns:ui="js.ui" xmlns:js="js.core"
-         tagName="img" src="{imageUrl()}" alt="{alt()}">
+         src="{imageUrl()}" alt="{alt()}">
+
+    <js:Imports>
+        underscore
+    </js:Imports>
 
     <js:Script>
 
         <![CDATA[
-        (function () {
+        (function (_) {
+
+            var exceptionSizes = [120, 178];
+
             return {
-                normalizeSize: function(size) {
-                    return Math.ceil(size / 50) * 50;
+
+                defaults: {
+                    tagName: "img"
                 },
+
+                normalizeSize: function(size) {
+
+                    if (_.indexOf(exceptionSizes, size) !== -1) {
+                        // normalize size
+                        size = Math.ceil(size / 50) * 50;
+                    }
+
+                    // keep range
+                    return Math.max(50, Math.min(1200, size));
+                },
+
                 imageUrl: function() {
                     return "";
                 },

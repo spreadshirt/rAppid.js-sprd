@@ -1,28 +1,74 @@
-<ui:View xmlns="http://www.w3.org/1999/xhtml"
-         xmlns:ui="js.ui" xmlns:js="js.core"
-         tagName="img" src="{productImageUrl()}" alt="{article.name}">
+<view:ProductImage xmlns:js="js.core" xmlns:view="sprd.view">
+
+    <js:Imports>
+        sprd.model.Product
+    </js:Imports>
 
     <js:Script>
 
         <![CDATA[
-        (function () {
+        (function (Product) {
+
+            var rProductIdExtractor = /^http.*products\/(\d+).*$/;
+
             return {
 
-                defaults: {
-                    // if null use default view
-                    view: null
+                $classAttributes: ["article"],
+
+                _commitArticle: function (article) {
+                    var self = this;
+
+                    if (article && !(article.$.resources || article.$.product)) {
+
+                        console.log("will fetch article to get image");
+
+                        // we got an article, without resources or product
+                        // fetch article to get product id
+                        article.fetch(null, function (err) {
+                            if (!err) {
+                                self.imageUrl.trigger();
+                            }
+                        });
+                    }
                 },
 
-                imageUrl: function() {
+                imageUrl: function () {
                     // TODO: calc nearest height
                     if (this.$.article) {
                         var article = this.$.article;
 
+                        var product;
 
+                        if (article.$.product) {
+                            // product for article available -> set product for ProductImage
+                            product = article.$.product;
+                        } else if (article.$.resources) {
+                            var productId;
+
+                            for (var i = 0; i < article.$.resources.length; i++) {
+                                var resource = article.$.resources[i];
+
+                                var match = rProductIdExtractor.exec(resource.href);
+                                if (match) {
+                                    productId = match[1];
+                                    break;
+                                }
+                            }
+
+                            if (productId) {
+                                // create a product in correct context
+                                product = this.$.article.context.createModel(Product, productId);
+                            }
+                        }
+
+                        if (product) {
+                            // set it for ProductImage
+                            this.set('product', product);
+                        }
                     }
                 }.onChange('article', 'width', 'height'),
 
-                alt: function() {
+                alt: function () {
                     if (this.$.article) {
                         return this.$.article.$.name;
                     }
@@ -35,4 +81,4 @@
         ]]>
 
     </js:Script>
-</ui:View>
+</view:ProductImage>

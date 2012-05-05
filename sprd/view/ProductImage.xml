@@ -1,15 +1,14 @@
-<view:Image xmlns="http://www.w3.org/1999/xhtml"
-            xmlns:ui="js.ui" xmlns:js="js.core" xmlns:view="">
+<view:Image xmlns:js="js.core" xmlns:view="sprd.view">
 
-    <js:Script>
-
-        <![CDATA[
+    <js:Script><![CDATA[
         (function () {
 
             var PRODUCT = "product",
-                    COMPOSITION = "composition";
+                COMPOSITION = "composition";
 
             return {
+
+                $classAttributes: ["view", "type", "product"],
 
                 defaults: {
                     // if null use default view
@@ -45,7 +44,5 @@
 
             }
         })
-        ]]>
-
-    </js:Script>
+        ]]></js:Script>
 </view:Image>
