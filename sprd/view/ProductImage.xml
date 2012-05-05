@@ -4,7 +4,7 @@
         (function () {
 
             var PRODUCT = "product",
-                COMPOSITION = "composition";
+                    COMPOSITION = "composition";
 
             return {
 
@@ -17,19 +17,23 @@
                 },
 
                 imageUrl: function () {
+
                     var url = "";
 
                     if (this.$.product) {
                         var product = this.$.product;
 
-                        if (type != COMPOSITION) {
+                        if (this.$.type != COMPOSITION) {
                             // use product
-                            url = "http://image.spreadshirt.net/image-server/image/product/" + product.$.id;
+                            url = "http://image.spreadshirt.net/image-server/v1/products/" + product.$.id;
                         } else {
-                            url = "http://image.spreadshirt.net/image-server/image/composition/" + product.$.id;
+                            url = "http://image.spreadshirt.net/image-server/v1/composition/" + product.$.id;
                         }
 
-                        if (this.$.width) {
+                        url += '/views/' + (this.$.view || "1");
+
+                        if(this.$.width)
+                        {
                             url += "/width/" + this.normalizeSize(this.$.width);
                         }
 
