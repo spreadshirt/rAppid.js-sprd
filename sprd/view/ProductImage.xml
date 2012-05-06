@@ -27,7 +27,7 @@
                             // use product
                             url = "http://image.spreadshirt.net/image-server/v1/products/" + product.$.id;
                         } else {
-                            url = "http://image.spreadshirt.net/image-server/v1/composition/" + product.$.id;
+                            url = "http://image.spreadshirt.net/image-server/v1/compositions/" + product.$.id;
                         }
 
                         url += '/views/' + (this.$.view || "1");
