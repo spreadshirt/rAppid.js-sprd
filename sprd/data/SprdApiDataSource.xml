@@ -10,7 +10,7 @@
     <conf:Configuration path="articles" modelClassName="sprd.model.Article" alias="Article"/>
     <conf:Configuration path="articleCategories" alias="ArticleCategory"/>
     <conf:Configuration path="applications" alias="Application"/>
-    <conf:Configuration path="currencies" alias="Currency"/>
+    <conf:Configuration path="currencies" modelClassName="sprd.model.Currency" alias="Currency"/>
     <conf:Configuration path="countries" alias="Country"/>
     <conf:Configuration path="designs" alias="Design"/>
     <conf:Configuration path="designCategories" alias="DesignCategory"/>
