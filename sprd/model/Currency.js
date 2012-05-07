@@ -6,7 +6,12 @@ define(["sprd/data/SprdModel"], function (Model) {
                 val += "0";
             }
 
-            return this.$.pattern.replace('%',val).replace('$', this.$.symbol);
+            if (this.$.pattern) {
+                return this.$.pattern.replace('%', val).replace('$', this.$.symbol);
+            } else {
+                return val;
+            }
+
         }
     });
 
