@@ -4,7 +4,7 @@ define(["sprd/data/SprdModel", "sprd/model/Product", "sprd/model/Currency"], fun
 
     return SprdModel.inherit("sprd.data.Article",{
         price: function() {
-            var currency = this.$context.$parent.createModel(Currency, this.$.price.currency.$.id, "Currency");
+            var currency = this.$context.$parent.createModel(Currency, this.$.price.currency.$.id);
             return currency.formatPrice(this.$.price.vatIncluded);
         },
 
