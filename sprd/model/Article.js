@@ -21,6 +21,7 @@ define(["sprd/data/SprdModel", "sprd/model/Product", "sprd/model/Currency"], fun
 
             if (this.$.product) {
                 cb(null, this.$.product);
+                return;
             } else if (this.$.resources) {
 
                 for (var i = 0; i < this.$.resources.length; i++) {

@@ -10,6 +10,7 @@
                 $classAttributes: ["article"],
 
                 _commitChangedAttributes: function($) {
+
                     if ($ && $.article) {
                         var self = this;
                         $.article.product(function(err, product) {
