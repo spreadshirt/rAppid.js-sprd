@@ -2,7 +2,8 @@ define(["sprd/data/SprdModel", "sprd/model/Product", "sprd/model/Currency"], fun
 
     var rProductIdExtractor = /^http.*products\/(\d+).*$/;
 
-    return SprdModel.inherit("sprd.data.Article",{
+    return SprdModel.inherit("sprd.model.Article",{
+
         price: function() {
             var currency = this.$context.$parent.createModel(Currency, this.$.price.currency.$.id);
             return currency.formatPrice(this.$.price.vatIncluded);
