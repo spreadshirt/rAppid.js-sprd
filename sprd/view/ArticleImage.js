@@ -5,7 +5,6 @@ define(["sprd/view/ProductImage"], function (ProductImage) {
         $classAttributes: ["article"],
 
         _commitChangedAttributes: function (attributes) {
-
             if (attributes && attributes.article) {
                 var self = this;
                 attributes.article.product(function (err, product) {
