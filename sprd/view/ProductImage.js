@@ -22,9 +22,9 @@ define(["xaml!sprd/view/Image"], function (Image) {
 
                 if (this.$.type != COMPOSITION) {
                     // use product
-                    url = "http://origin.spreadshirt.net/image-server/v1/products/" + product.$.id;
+                    url = "http://image.spreadshirt.net/image-server/v1/products/" + product.$.id;
                 } else {
-                    url = "http://origin.spreadshirt.net/image-server/v1/compositions/" + product.$.id;
+                    url = "http://image.spreadshirt.net/image-server/v1/compositions/" + product.$.id;
                 }
                 url += '/views/' +  (this.$.view ? this.$.view.id : "1");
 
