@@ -1,0 +1,44 @@
+<ui:SelectionView xmlns:js="js.core" xmlns:ui="js.ui" xmlns:view="sprd.view" xmlns="http://www.w3.org/1999/xhtml">
+
+    <js:Script><![CDATA[
+        (function () {
+
+            return {
+                $classAttributes: ['article'],
+
+                defaults: {
+                    componentClass: 'product-views',
+                    tagName: 'ul',
+                    itemKey: 'view',
+                    // if null use default view
+                    article: null,
+                    $article: null,
+                    needsSelection: true,
+                    multiSelect: false
+                },
+                _commitChangedAttributes: function (attributes) {
+                    if (attributes.article) {
+                        // if the article has the same
+                        if (attributes.article.$.product.$.productType.$.views.$items === this.$items) {
+                            this.set('$article', attributes.article);
+                        } else {
+                            this.set('$article', attributes.article, {silent: true});
+                            this.set('selectedItem', attributes.article.$.product.$.productType.getDefaultView());
+                            this.set('items', attributes.article.$.product.$.productType.$.views.$items);
+                        }
+                    } else if(attributes.article === null){
+                        // set items to null
+                        this.set('items', []);
+                    }
+
+                    this.callBase();
+                }
+            }
+        })
+        ]]></js:Script>
+    <js:Template name="item">
+        <li>
+            <view:ArticleImage article="{$article}" view="${$view}" width="50" height="50"/>
+        </li>
+    </js:Template>
+</ui:SelectionView>
