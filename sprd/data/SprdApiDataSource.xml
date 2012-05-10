@@ -18,7 +18,7 @@
     <conf:Configuration path="languages" alias="Language"/>
     <conf:Configuration path="printTypes" alias="PrintType"/>
     <conf:Configuration path="products" modelClassName="sprd.model.Product"/>
-    <conf:Configuration path="productTypes" alias="ProductType"/>
+    <conf:Configuration path="productTypes" modelClassName="sprd.model.ProductType"/>
     <conf:Configuration path="productTypeDepartments" alias="ProductTypeDepartment"/>
     <conf:Configuration path="shippingTypes" alias="ShippingType"/>
     <conf:Configuration path="shops" alias="Shop"/>
