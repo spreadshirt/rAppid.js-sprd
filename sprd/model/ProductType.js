@@ -5,7 +5,7 @@ define(["sprd/data/SprdModel"], function (SprdModel) {
             var view;
             for (var i = 0; i < this.$.views.$items.length; i++) {
                 view = this.$.views.$items[i];
-                if (defaultViewId == view.$.id) {
+                if (defaultViewId == view.id) {
                     return view;
                 }
             }
