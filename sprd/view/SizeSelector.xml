@@ -1,0 +1,40 @@
+<ui:SelectionView xmlns:js="js.core" xmlns:ui="js.ui" xmlns:view="sprd.view" xmlns="http://www.w3.org/1999/xhtml" needsSelection="{hasSelection()}">
+
+    <js:Script><![CDATA[
+        (function () {
+
+            return {
+                $classAttributes: ['article'],
+
+                defaults: {
+                    componentClass: 'product-sizes',
+                    tagName: 'ul',
+                    itemKey: 'size',
+                    // if null use default view
+                    article: null,
+                    $article: null,
+                    multiSelect: false
+                },
+                _commitChangedAttributes: function (attributes) {
+                    if (attributes.article) {
+                        // if the article has the same
+                        if (attributes.article.$.product.$.productType.$.views.$items !== this.$items) {
+                            this.set('items', attributes.article.$.product.$.productType.$.sizes.$items);
+                            if (this.$.items.length === 1) {
+                                this.set('selectedIndex', 0);
+                            }
+                        }
+                    } else if (attributes.article === null) {
+                        // set items to null
+                        this.set('items', []);
+                    }
+
+                    this.callBase();
+                }
+            }
+        })
+        ]]></js:Script>
+    <js:Template name="item">
+        <li>${$size.name}</li>
+    </js:Template>
+</ui:SelectionView>
