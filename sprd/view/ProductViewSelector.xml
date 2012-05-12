@@ -38,7 +38,7 @@
         ]]></js:Script>
     <js:Template name="item">
         <li>
-            <view:ArticleImage article="{$article}" view="${$view}" width="50" height="50"/>
+            <view:ArticleImage article="{$article}" view="${$view}" width="50" height="50" appearance="{appearance}"/>
         </li>
     </js:Template>
 </ui:SelectionView>
