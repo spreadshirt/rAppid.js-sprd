@@ -4,7 +4,7 @@
         (function () {
 
             return {
-                $classAttributes: ['article'],
+                $classAttributes: ['article', 'appearance'],
 
                 defaults: {
                     componentClass: 'product-views',
@@ -13,6 +13,7 @@
                     // if null use default view
                     article: null,
                     $article: null,
+                    $appearance: null,
                     needsSelection: true,
                     multiSelect: false
                 },
@@ -20,15 +21,22 @@
                     if (attributes.article) {
                         // if the article has the same
                         if (attributes.article.$.product.$.productType.$.views.$items === this.$items) {
-                            this.set('$article', attributes.article);
+                            this.set({
+                                $article: attributes.article,
+                                $appearance: attributes.appearance || null
+                            });
                         } else {
-                            this.set('$article', attributes.article, {silent: true});
+                            this.set({$article:  attributes.article, $appearance: attributes.appearance || null}, {silent: true});
                             this.set('selectedItem', attributes.article.$.product.$.productType.getDefaultView());
                             this.set('items', attributes.article.$.product.$.productType.$.views.$items);
                         }
-                    } else if(attributes.article === null){
+                    } else if (attributes.article === null) {
                         // set items to null
                         this.set('items', []);
+                    } else if (attributes.appearance) {
+                        this.set({
+                            $appearance: attributes.appearance
+                        });
                     }
 
                     this.callBase();
@@ -38,7 +46,7 @@
         ]]></js:Script>
     <js:Template name="item">
         <li>
-            <view:ArticleImage article="{$article}" view="${$view}" width="50" height="50" appearance="{appearance}"/>
+            <view:ArticleImage article="{$article}" view="${$view}" width="50" height="50" appearance="{$appearance}"/>
         </li>
     </js:Template>
 </ui:SelectionView>
