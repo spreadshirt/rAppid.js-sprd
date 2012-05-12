@@ -1,0 +1,45 @@
+<ui:SelectionView xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml"
+                  needsSelection="{hasSelection()}">
+
+    <js:Script><![CDATA[
+        (function () {
+
+            return {
+                $classAttributes: ['article'],
+
+                defaults: {
+                    componentClass: 'product-appearances',
+                    itemKey: 'appearance',
+                    colorWidth: 19,
+                    // if null use default view
+                    article: null,
+                    $article: null,
+                    multiSelect: false
+                },
+                _commitChangedAttributes: function (attributes) {
+                    if (attributes.article) {
+                        // if the article has the same
+                        if (attributes.article.$.product.$.productType.$.views.$items !== this.$items) {
+                            var productType = attributes.article.$.product.$.productType;
+                            this.set('items', attributes.article.$.product.$.productType.$.appearances.$items);
+                            this.set('selectedItem', productType.getAppearanceById(attributes.article.$.product.$.appearance.id));
+                        }
+                    } else if (attributes.article === null) {
+                        // set items to null
+                        this.set('items', []);
+                    }
+
+                    this.callBase();
+                },
+                getImageUrl: function (appearance) {
+                    if (appearance.resources && appearance.resources.$items.length > 0) {
+                        return appearance.resources.$items[0].href + ",width=" + this.$.colorWidth;
+                    }
+                }
+            }
+        })
+        ]]></js:Script>
+    <js:Template name="item">
+        <img src="{getImageUrl(${$appearance})}" width="{colorWidth}"/>
+    </js:Template>
+</ui:SelectionView>
