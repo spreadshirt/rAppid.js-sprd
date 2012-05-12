@@ -5,7 +5,7 @@ define(["xaml!sprd/view/Image"], function (Image) {
 
     return Image.inherit({
 
-        $classAttributes: ["view", "type", "product"],
+        $classAttributes: ["view", "type", "product", "appearance"],
 
         defaults: {
             // if null use default view
@@ -35,11 +35,15 @@ define(["xaml!sprd/view/Image"], function (Image) {
                 if (this.$.height) {
                     url += ",height=" + this.normalizeSize(this.$.height);
                 }
+
+                if(this.$.appearance) {
+                    url += ",appearanceId=" + this.$.appearance.id;
+                }
             }
 
             return url;
 
-        }.onChange('product', 'width', 'height', 'type', 'view')
+        }.onChange('product', 'width', 'height', 'type', 'view', 'appearance')
 
     });
 });
