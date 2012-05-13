@@ -14,6 +14,7 @@
                     article: null,
                     $article: null,
                     $appearance: null,
+                    appearance: null,
                     needsSelection: true,
                     multiSelect: false
                 },
@@ -23,11 +24,10 @@
                         if (attributes.article.$.product.$.productType.$.views.$items === this.$items) {
                             this.set({
                                 $article: attributes.article,
-                                $appearance: attributes.appearance || null
+                                $appearance: attributes.appearance || this.$.$appearance
                             });
                         } else {
-                            this.set({$article:  attributes.article, $appearance: attributes.appearance || null}, {silent: true});
-                            this.set('selectedItem', attributes.article.$.product.$.productType.getDefaultView());
+                            this.set({$article:  attributes.article, $appearance: attributes.appearance || this.$.$appearance}, {silent: true});
                             this.set('items', attributes.article.$.product.$.productType.$.views.$items);
                         }
                     } else if (attributes.article === null) {
@@ -37,6 +37,8 @@
                         this.set({
                             $appearance: attributes.appearance
                         });
+                    } else if(attributes.selectedItem){
+
                     }
 
                     this.callBase();
