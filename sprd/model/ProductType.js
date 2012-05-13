@@ -1,17 +1,21 @@
 define(["sprd/data/SprdModel"], function (SprdModel) {
     return SprdModel.inherit("sprd.model.ProductType", {
-        getDefaultView: function () {
-            if (this.$.defaultValues) {
-                var defaultViewId = this.$.defaultValues.defaultView.id;
-                var view;
+        getViewById: function(id){
+            if(this.$.views){
                 for (var i = 0; i < this.$.views.$items.length; i++) {
-                    view = this.$.views.$items[i];
-                    if (defaultViewId === view.id) {
+                    var view = this.$.views.$items[i];
+                    if(view.id === id){
                         return view;
                     }
                 }
             }
-            return this.$.views.$items[0];
+            return null;
+        },
+        getDefaultView: function () {
+            if (this.$.defaultValues) {
+                return this.getViewById(this.$.defaultValues.defaultView.id);
+            }
+            return null;
         },
         getDefaultAppearance: function () {
             if (this.$.defaultValues) {
