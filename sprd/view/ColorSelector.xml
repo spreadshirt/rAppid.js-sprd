@@ -40,6 +40,9 @@
         })
         ]]></js:Script>
     <js:Template name="item">
-        <img src="{getImageUrl(${$appearance})}" width="{colorWidth}"/>
+        <button>
+            <img src="{getImageUrl(${$appearance})}" width="{colorWidth}" alt="test"/>
+        </button>
+
     </js:Template>
 </ui:SelectionView>
