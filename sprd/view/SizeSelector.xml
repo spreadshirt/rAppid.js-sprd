@@ -8,7 +8,6 @@
 
                 defaults: {
                     componentClass: 'product-sizes',
-                    tagName: 'ul',
                     itemKey: 'size',
                     // if null use default view
                     article: null,
@@ -26,15 +25,20 @@
                         }
                     } else if (attributes.article === null) {
                         // set items to null
+                        // this.set({needsSelection: false, selectedItem: null});
                         this.set('items', []);
+
                     }
 
                     this.callBase();
+                },
+                selectSize: function (e, element) {
+                    this.set('selectedItem', element.find('$size'));
                 }
             }
         })
         ]]></js:Script>
     <js:Template name="item">
-        <li>${$size.name}</li>
+        <button>${$size.name}</button>
     </js:Template>
 </ui:SelectionView>
