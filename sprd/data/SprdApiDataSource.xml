@@ -3,7 +3,7 @@
     <!-- optional alias, if no alias is defined alias will be determinated automatically -->
 
     <!-- Model can be specified via className, if className is obmitted js.data.Model is used -->
-    <conf:Configuration path="baskets" modelClassName="sprd.model.Basket" alias="Basket"/>
+    <conf:Configuration path="baskets" modelClassName="sprd.model.Basket"/>
 
     <!-- use className if you need some logic inside your models, if not use an alias and obmit the className-->
     <conf:Configuration path="address" alias="Address"/>
