@@ -17,7 +17,7 @@
                     multiSelect: false
                 },
                 _commitChangedAttributes: function (attributes) {
-                    if (attributes.productType) {
+                    if (attributes.productType && attributes.productType.$.views) {
                         // if the article has the same
                         if (attributes.productType.$.views.$items !== this.$items) {
                             var productType = attributes.productType;
