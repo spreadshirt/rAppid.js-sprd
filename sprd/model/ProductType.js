@@ -1,5 +1,10 @@
-define(["sprd/data/SprdModel"], function (SprdModel) {
+define(["sprd/data/SprdModel", 'js/core/List', 'sprd/model/ProductTypeView'], function (SprdModel, List, ProductTypeView) {
     return SprdModel.inherit("sprd.model.ProductType", {
+
+	    $mapAttributes: {
+		    views: ProductTypeView
+	    },
+
         getViewById: function(id){
             if(this.$.views){
                 for (var i = 0; i < this.$.views.$items.length; i++) {
