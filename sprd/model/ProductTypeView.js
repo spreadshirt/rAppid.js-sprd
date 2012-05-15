@@ -10,7 +10,7 @@ define([
 		getDefaultPrintArea : function() {
 
 			var defaultView = this.$.id
-				, defaultPrintArea;
+				, defaultPrintArea = false;
 
 			this.$.productType.printAreas.each(function(value, key) {
 				if (value.id === defaultView) {
@@ -19,8 +19,7 @@ define([
 				}
 			});
 
-			if (defaultPrintArea) return defaultPrintArea;
-			return false;
+			return defaultPrintArea;
 
 		}
 
