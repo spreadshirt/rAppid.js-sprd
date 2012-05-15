@@ -28,13 +28,7 @@ define(["xaml!sprd/view/Image"], function (Image) {
                 }
                 url += '/views/' +  (this.$.view ? this.$.view.id : "1");
 
-                if (this.$.width) {
-                    url += ",width=" + this.normalizeSize(this.$.width);
-                }
-
-                if (this.$.height) {
-                    url += ",height=" + this.normalizeSize(this.$.height);
-                }
+                url = this.extendUrlWithSizes(url);
 
                 if(this.$.appearance) {
                     url += ",appearanceId=" + this.$.appearance.id;

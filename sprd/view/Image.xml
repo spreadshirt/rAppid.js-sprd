@@ -29,7 +29,17 @@
                     // keep range
                     return Math.max(50, Math.min(1200, size));
                 },
+                extendUrlWithSizes: function(url){
+                    if(this.$.width){
+                        url += ",width=" + this.$.width;
+                    }
 
+                    if(this.$.height){
+                        url += ",height=" + this.$.height;
+                    }
+
+                    return url;
+                },
                 imageUrl: function() {
                     return "";
                 },
