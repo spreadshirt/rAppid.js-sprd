@@ -4,31 +4,31 @@
         (function () {
 
             return {
-                $classAttributes: ['article', 'appearance'],
+                $classAttributes: ['product', 'appearance'],
 
                 defaults: {
                     componentClass: 'product-views',
                     tagName: 'ul',
                     itemKey: 'view',
                     // if null use default view
-                    article: null,
-                    $article: null,
+                    product: null,
+                    $product: null,
                     $appearance: null,
                     appearance: null,
                     needsSelection: true,
                     multiSelect: false
                 },
                 _commitChangedAttributes: function (attributes) {
-                    if (attributes.article) {
+                    if (attributes.product) {
                         // if the article has the same
-                        if (attributes.article.$.product.$.productType.$.views.$items === this.$items) {
+                        if (attributes.product.$.productType.$.views.$items === this.$items) {
                             this.set({
-                                $article: attributes.article,
+                                $product: attributes.product,
                                 $appearance: attributes.appearance || this.$.$appearance
                             });
                         } else {
-                            this.set({$article:  attributes.article, $appearance: attributes.appearance || this.$.$appearance}, {silent: true});
-                            this.set('items', attributes.article.$.product.$.productType.$.views.$items);
+                            this.set({$product:  attributes.product, $appearance: attributes.appearance || this.$.$appearance}, {silent: true});
+                            this.set('items', attributes.product.$.productType.$.views.$items);
                         }
                     } else if (attributes.article === null) {
                         // set items to null
@@ -48,7 +48,7 @@
         ]]></js:Script>
     <js:Template name="item">
         <li>
-            <view:ArticleImage article="{$article}" view="${$view}" width="50" height="50" appearance="{$appearance}"/>
+            <view:ProductImage product="{$product}" view="${$view}" width="50" height="50" appearance="{$appearance}"/>
         </li>
     </js:Template>
 </ui:SelectionView>

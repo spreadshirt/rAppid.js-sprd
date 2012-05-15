@@ -4,21 +4,20 @@
         (function () {
 
             return {
-                $classAttributes: ['article'],
+                $classAttributes: ['productType'],
 
                 defaults: {
                     componentClass: 'product-sizes',
                     itemKey: 'size',
                     // if null use default view
-                    article: null,
-                    $article: null,
+                    productType: null,
                     multiSelect: false
                 },
                 _commitChangedAttributes: function (attributes) {
-                    if (attributes.article) {
+                    if (attributes.productType) {
                         // if the article has the same
-                        if (attributes.article.$.product.$.productType.$.views.$items !== this.$items) {
-                            this.set('items', attributes.article.$.product.$.productType.$.sizes.$items);
+                        if (attributes.productType.$.views.$items !== this.$items) {
+                            this.set('items', attributes.productType.$.sizes.$items);
                             if (this.$.items.length === 1) {
                                 this.set('selectedItem', this.$.items[0]);
                             }
