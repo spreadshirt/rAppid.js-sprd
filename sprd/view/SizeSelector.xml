@@ -20,7 +20,7 @@
                         if (attributes.article.$.product.$.productType.$.views.$items !== this.$items) {
                             this.set('items', attributes.article.$.product.$.productType.$.sizes.$items);
                             if (this.$.items.length === 1) {
-                                this.set('selectedIndex', 0);
+                                this.set('selectedItem', this.$.items[0]);
                             }
                         }
                     } else if (attributes.article === null) {
