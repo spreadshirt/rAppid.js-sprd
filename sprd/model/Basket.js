@@ -1,5 +1,10 @@
-define(["sprd/data/SprdCollection", "sprd/data/SprdModel", "sprd/model/BasketItem"], function (SprdCollection, SprdModel, BasketItem) {
-    return SprdCollection.inherit("sprd.model.Basket",{
+define(["sprd/data/SprdModel", "js/core/List", "sprd/model/BasketItem"], function (SprdModel, List, BasketItem) {
+    return SprdModel.inherit("sprd.model.Basket",{
+        ctor: function(attributes){
+            this.callBase();
+            this.set('basketItems',this.$.basketItems || new List());
+        },
+
         addConcreteArticle: function(concreteArticle, quantity){
             var basketItem = this.getBasketItemForConcreteArticle(concreteArticle);
             if(basketItem){
@@ -8,61 +13,84 @@ define(["sprd/data/SprdCollection", "sprd/data/SprdModel", "sprd/model/BasketIte
                 basketItem = new BasketItem({concreteArticle: concreteArticle});
                 basketItem.bind('change:quantity', this._onItemQuantityChange, this);
                 concreteArticle.bind('change:size', this._onArticleSizeChange, this);
-                this.add(basketItem);
+                this.$.basketItems.add(basketItem);
             }
         },
         _onItemQuantityChange: function(e,model){
-            if(model.$.quantity === 0){
-                this.remove(model);
+            if(model.$.quantity < 1){
+                this.$.basketItems.remove(model);
             }
         },
         _onArticleSizeChange: function(e,model){
             var old, nItem;
-            this.each(function(item){
+            this.$.basketItems.each(function(item){
                if(!nItem && item.$.concreteArticle !== model && item.$.concreteArticle.isEqual(model)){
                    nItem = item;
                }
             });
             if(nItem){
-                this.each(function (item) {
-                    if (item.$.concreteArticle === model) {
+                this.$.basketItems.each(function (item) {
+                    if (!old && item.$.concreteArticle === model) {
                         old = item;
                     }
                 });
                 nItem.increaseQuantity(old.$.quantity);
-                this.remove(old);
+                this.$.basketItems.remove(old);
             }
 
         },
         getBasketItemForConcreteArticle : function(concreteAricle){
-            for (var i = 0; i < this.$items.length; i++) {
-                var basketItem = this.$items[i];
+            for (var i = 0; i < this.$.basketItems.$items.length; i++) {
+                var basketItem = this.$.basketItems.$items[i];
                 if(basketItem.$.concreteArticle.isEqual(concreteAricle)){
                     return basketItem;
                 }
             }
             return null;
         },
+        _bindList: function(newList, oldList){
+            if(oldList){
+               oldList.unbind('change', this._triggerFunctions, this);
+               oldList.unbind('add', this._triggerFunctions, this);
+               oldList.unbind('remove', this._triggerFunctions, this);
+            }
+
+            if(newList){
+                newList.bind('change', this._triggerFunctions, this);
+                newList.bind('add', this._triggerFunctions, this);
+                newList.bind('remove', this._triggerFunctions, this);
+            }
+        },
+        _triggerFunctions: function() {
+            this.trigger('change',{});
+        },
+        _commitChangedAttributes: function(attributes){
+            this.callBase();
+
+            if(attributes.basketItems){
+                this._bindList(attributes.basketItems,this.$previousAttributes['basketItems']);
+            }
+        },
         totalItemsCount: function () {
             var total = 0;
-            this.each(function(item){
+            this.$.basketItems.each(function(item){
                 total += item.$.quantity;
             });
             return total;
-        }.on('change', 'add', 'remove'),
+        }.on('change'),
         vatIncluded: function(){
             var total = 0;
-            this.each(function(item){
+            this.$.basketItems.each(function(item){
                 total += item.vatIncluded();
             });
             return total;
-        }.on('change', 'add', 'remove'),
+        }.on('change'),
         vatExcluded: function () {
             var total = 0;
-            this.each(function (item) {
+            this.$.basketItems.each(function (item) {
                 total += item.vatExcluded();
             });
             return total;
-        }.on('change', 'add', 'remove')
+        }.on('change')
     });
 });
