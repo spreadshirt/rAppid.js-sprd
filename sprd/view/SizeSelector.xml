@@ -14,7 +14,7 @@
                     multiSelect: false
                 },
                 _commitChangedAttributes: function (attributes) {
-                    if (attributes.productType) {
+                    if (attributes.productType && attributes.productType.$.views) {
                         // if the article has the same
                         if (attributes.productType.$.views.$items !== this.$items) {
                             this.set('items', attributes.productType.$.sizes.$items);
@@ -22,7 +22,7 @@
                                 this.set('selectedItem', this.$.items[0]);
                             }
                         }
-                    } else if (attributes.article === null) {
+                    } else if (attributes.productType === null) {
                         // set items to null
                         // this.set({needsSelection: false, selectedItem: null});
                         this.set('items', []);
