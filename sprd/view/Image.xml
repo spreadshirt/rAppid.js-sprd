@@ -31,11 +31,11 @@
                 },
                 extendUrlWithSizes: function(url){
                     if(this.$.width){
-                        url += ",width=" + this.$.width;
+                        url += ",width=" + this.normalizeSize(this.$.width);
                     }
 
                     if(this.$.height){
-                        url += ",height=" + this.$.height;
+                        url += ",height=" + this.normalizeSize(this.$.height);
                     }
 
                     return url;
