@@ -5,27 +5,33 @@
         (function () {
 
             return {
-                $classAttributes: ['product'],
+                $classAttributes: ['productType','product'],
 
                 defaults: {
                     componentClass: 'product-appearances',
                     itemKey: 'appearance',
                     colorWidth: 19,
                     // if null use default view
+                    productType: null,
                     product: null,
                     multiSelect: false
                 },
                 _commitChangedAttributes: function (attributes) {
-                    if (attributes.product) {
+                    if (attributes.productType) {
                         // if the article has the same
-                        if (attributes.product.$.productType.$.views.$items !== this.$items) {
-                            var productType = attributes.product.$.productType;
-                            this.set('items', attributes.product.$.productType.$.appearances.$items);
-                            this.set('selectedItem', productType.getAppearanceById(attributes.product.$.appearance.id));
+                        if (attributes.productType.$.views.$items !== this.$items) {
+                            var productType = attributes.productType;
+                            this.set('items', productType.$.appearances.$items);
+                            this.set('selectedItem', productType.getDefaultAppearance());
                         }
-                    } else if (attributes.product === null) {
+                    } else if (attributes.productType === null) {
                         // set items to null
                         this.set('items', []);
+                    }
+
+                    if (attributes.product) {
+                        this.set('productType', attributes.product.$.productType);
+                        this.set('selectedItem', this.$.productType.getAppearanceById(attributes.product.$.appearance.id));
                     }
 
                     this.callBase();
