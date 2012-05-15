@@ -1,6 +1,6 @@
 <ui:View xmlns="http://www.w3.org/1999/xhtml"
          xmlns:ui="js.ui" xmlns:js="js.core"
-         src="{imageUrl()}" alt="{alt()}">
+         src="{imageUrl()}" alt="{alt()}" onload="onLoad">
 
     <js:Imports>
         underscore
@@ -10,18 +10,18 @@
 
         <![CDATA[
         (function (_) {
-
-            var exceptionSizes = [120, 178];
-
             return {
-
+                $exceptionSizes: [120, 178],
                 defaults: {
-                    tagName: "img"
+                    tagName: "img",
+                    loaded: false
                 },
-
+                onLoad: function(){
+                    this.set('loaded', true);
+                },
                 normalizeSize: function(size) {
 
-                    if (_.indexOf(exceptionSizes, size) !== -1) {
+                    if (_.indexOf(this.$exceptionSizes, size) !== -1) {
                         // normalize size
                         size = Math.ceil(size / 50) * 50;
                     }
@@ -33,7 +33,13 @@
                 imageUrl: function() {
                     return "";
                 },
-
+                _renderLoaded: function(loaded){
+                    if(loaded) {
+                       this.removeClass('loading');
+                    } else {
+                        this.addClass('loading');
+                    }
+                },
                 alt: function() {
                     return "";
                 }
