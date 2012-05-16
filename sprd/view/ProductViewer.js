@@ -1,6 +1,6 @@
 define(['js/ui/View','sprd/model/Product', 'Raphael'], function(View, Product, Raphael){
 
-    return View.inherit('sprd.view.Designer',{
+    return View.inherit('sprd.view.ProductViewer',{
         $classAttributes: ['productType','product','appearance'],
         defaults: {
             height: 300,
