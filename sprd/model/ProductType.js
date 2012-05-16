@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", 'js/core/List', 'sprd/model/ProductTypeView'], function (SprdModel, List, ProductTypeView) {
+define(["sprd/data/SprdModel", "sprd/model/ProductTypeView"], function (SprdModel, ProductTypeView) {
     return SprdModel.inherit("sprd.model.ProductType", {
 
 	    $mapAttributes: {
@@ -22,6 +22,16 @@ define(["sprd/data/SprdModel", 'js/core/List', 'sprd/model/ProductTypeView'], fu
             }
             return null;
         },
+
+        getPrintAreaById: function(printAreaId) {
+            for (var i = 0; i < this.$.printAreas.length; i++) {
+                var printArea = this.$.printAreas.at(i);
+                if (printArea.id === printAreaId) {
+                    return printArea;
+                }
+            }
+        },
+
         getDefaultAppearance: function () {
             if (this.$.defaultValues) {
                 return this.getAppearanceById(this.$.defaultValues.defaultAppearance.id);
