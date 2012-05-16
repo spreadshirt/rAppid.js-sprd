@@ -5,14 +5,14 @@ define(["sprd/data/SprdModel", "js/core/List", "sprd/model/BasketItem"], functio
             this.set('basketItems',this.$.basketItems || new List());
         },
 
-        addConcreteArticle: function(concreteArticle, quantity){
-            var basketItem = this.getBasketItemForConcreteArticle(concreteArticle);
+        addConcreteProduct: function(concreteProduct, quantity){
+            var basketItem = this.getBasketItemForConcreteProduct(concreteProduct);
             if(basketItem){
                 basketItem.increaseQuantity(quantity);
             }else{
-                basketItem = new BasketItem({concreteArticle: concreteArticle});
+                basketItem = new BasketItem({concreteProduct: concreteProduct});
                 basketItem.bind('change:quantity', this._onItemQuantityChange, this);
-                concreteArticle.bind('change:size', this._onArticleSizeChange, this);
+                concreteProduct.bind('change:size', this._onArticleSizeChange, this);
                 this.$.basketItems.add(basketItem);
             }
         },
@@ -24,13 +24,13 @@ define(["sprd/data/SprdModel", "js/core/List", "sprd/model/BasketItem"], functio
         _onArticleSizeChange: function(e,model){
             var old, nItem;
             this.$.basketItems.each(function(item){
-               if(!nItem && item.$.concreteArticle !== model && item.$.concreteArticle.isEqual(model)){
+               if(!nItem && item.$.concreteProduct !== model && item.$.concreteProduct.isEqual(model)){
                    nItem = item;
                }
             });
             if(nItem){
                 this.$.basketItems.each(function (item) {
-                    if (!old && item.$.concreteArticle === model) {
+                    if (!old && item.$.concreteProduct === model) {
                         old = item;
                     }
                 });
@@ -39,10 +39,10 @@ define(["sprd/data/SprdModel", "js/core/List", "sprd/model/BasketItem"], functio
             }
 
         },
-        getBasketItemForConcreteArticle : function(concreteAricle){
+        getBasketItemForConcreteProduct : function(concreteProduct){
             for (var i = 0; i < this.$.basketItems.$items.length; i++) {
                 var basketItem = this.$.basketItems.$items[i];
-                if(basketItem.$.concreteArticle.isEqual(concreteAricle)){
+                if(basketItem.$.concreteProduct.isEqual(concreteProduct)){
                     return basketItem;
                 }
             }
