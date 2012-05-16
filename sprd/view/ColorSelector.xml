@@ -5,7 +5,7 @@
         (function () {
 
             return {
-                $classAttributes: ['productType','product'],
+                $classAttributes: ['productType','product', 'colorWidth'],
 
                 defaults: {
                     componentClass: 'product-appearances',
