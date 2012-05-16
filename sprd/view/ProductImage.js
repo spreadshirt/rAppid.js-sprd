@@ -26,7 +26,7 @@ define(["xaml!sprd/view/Image"], function (Image) {
                 } else {
                     url = "http://image.spreadshirt.net/image-server/v1/compositions/" + product.$.id;
                 }
-                url += '/views/' +  (this.$.view ? this.$.view.id : "1");
+                url += '/views/' +  (this.$.view ? this.$.view.$.id : "1");
 
                 url = this.extendUrlWithSizes(url);
 
