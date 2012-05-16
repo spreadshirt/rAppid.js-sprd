@@ -4,14 +4,14 @@
 
     <js:Imports>
         underscore;
+        sprd.data.ImageService
     </js:Imports>
 
     <js:Script>
 
         <![CDATA[
-        (function (_) {
+        (function (_, ImageService) {
             return {
-                $exceptionSizes: [120, 178],
                 defaults: {
                     tagName: "img",
                     loaded: false
@@ -19,23 +19,14 @@
                 onLoad: function () {
                     this.set('loaded', true);
                 },
-                normalizeSize: function (size) {
 
-                    if (_.indexOf(this.$exceptionSizes, size) === -1) {
-                        // normalize size
-                        size = Math.ceil(size / 50) * 50;
-                    }
-
-                    // keep range
-                    return Math.max(50, Math.min(1200, size));
-                },
                 extendUrlWithSizes: function (url) {
                     if (this.$.width) {
-                        url += ",width=" + this.normalizeSize(this.$.width);
+                        url += ",width=" + ImageService.normalizeImageSize(this.$.width);
                     }
 
                     if (this.$.height) {
-                        url += ",height=" + this.normalizeSize(this.$.height);
+                        url += ",height=" + ImageService.normalizeImageSize(this.$.height);
                     }
 
                     return url;
