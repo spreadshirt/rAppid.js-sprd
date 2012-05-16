@@ -7,6 +7,8 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             width: 300,
             view: null,
 
+            product: null,
+
             // private defaults
             _productType: null,
             _appearance: null
@@ -44,7 +46,6 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             if (oldProduct) {
                 // TODO: unbind old product events
             }
-
 
             this.set("_productType", product ? product.$.productType : null);
 
