@@ -67,7 +67,7 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             this._removeViewsFromPaper();
             this.$views = {};
 
-            this._renderView();
+            this._renderView(this.$.view);
 
         },
 

@@ -24,12 +24,16 @@ define(["sprd/data/SprdModel", "sprd/model/ProductTypeView"], function (SprdMode
         },
 
         getPrintAreaById: function(printAreaId) {
-            for (var i = 0; i < this.$.printAreas.length; i++) {
-                var printArea = this.$.printAreas.at(i);
-                if (printArea.id === printAreaId) {
-                    return printArea;
+            if(this.$.printAreas){
+                for (var i = 0; i < this.$.printAreas.length; i++) {
+                    var printArea = this.$.printAreas.at(i);
+                    if (printArea.id === printAreaId) {
+                        return printArea;
+                    }
                 }
             }
+            return null;
+
         },
 
         getDefaultAppearance: function () {
