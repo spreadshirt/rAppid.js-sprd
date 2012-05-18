@@ -47,10 +47,6 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             this.$paper = Raphael(el, 10, 10);
         },
 
-        _productTypeChanged: function(productType) {
-
-        },
-
         _renderProduct: function(product, oldProduct) {
             // product changed
             if (this.$paper) {
@@ -127,10 +123,6 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
                 this.$currentProductTypeView.toBack();
             }
 
-        },
-
-        _renderAppearance: function(appearance){
-            // TODO: implement
         },
 
         _renderWidth: function(width) {
