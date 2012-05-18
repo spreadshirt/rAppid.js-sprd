@@ -31,7 +31,7 @@ define(["sprd/data/SprdModel", 'js/data/Collection', 'sprd/model/Basket', 'sprd/
         getContextForChildren: function(childFactory) {
 
             if (!childFactory.prototype.$cacheInRootContext) {
-                this.$context.$datasource.getContext({
+                return this.$context.$datasource.getContext({
                     shopId: this.$.id
                 });
             }
