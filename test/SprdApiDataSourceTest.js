@@ -1,26 +1,25 @@
 var should = require('chai').should();
 var rAppid = require('rAppid.js');
 
-var SprdApiDataSource,
-    Model = rAppid.require('js/data/Model'),
-    Basket = rAppid.require('sprd/model/Basket');
+var C = {};
 
 describe('SprdApiDataSource', function () {
 
-    var api;
+    var api,
+        shop;
 
     before(function (done) {
-        rAppid.require(['xaml!sprd/data/SprdApiDataSource'], function (ds) {
-            SprdApiDataSource = ds;
-            done();
-        });
+
+        rAppid.requireClasses({
+            SprdApiDataSource: 'xaml!sprd/data/SprdApiDataSource',
+            Shop: 'sprd/model/Shop'
+        }, C, done);
     });
 
     beforeEach(function () {
-        api = new SprdApiDataSource({
+        api = new C.SprdApiDataSource({
             endPoint: 'http://api.spreadshirt.net/api/v1',
-            gateway: 'http://api.spreadshirt.net/api/v1',
-            apiKey: 'foo'
+            gateway: 'http://api.spreadshirt.net/api/v1'
         }, null, rAppid.TestRunner.createSystemManager());
     });
 
@@ -28,7 +27,7 @@ describe('SprdApiDataSource', function () {
 
         it('#load shop', function (done) {
 
-            var shop = api.createModel(Model, 205909, "Shop");
+            shop = api.createEntity(C.Shop, 205909);
             shop.fetch(null, function (err, s) {
 
                 should.not.exist(err);
@@ -38,27 +37,20 @@ describe('SprdApiDataSource', function () {
             })
 
         });
-    });
 
-    describe('basket', function() {
+        it('#load articles', function (done) {
 
-        it('#create basket', function(done) {
-
-            var basket = api.createModel(Basket);
-
-            basket.save(function(err, b) {
+            shop.$.productTypes.fetch(null, function(err, productTypes) {
                 should.not.exist(err);
-                basket.should.eql(b);
+                shop.$.productTypes.should.eql(productTypes);
 
-
-            })
+                done();
+            });
 
         });
 
-    })
+    });
 
 
 });
 
-
-//var api = rAppid.require('xaml!sprd/data/SprdApiDataSource');

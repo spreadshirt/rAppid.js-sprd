@@ -91,7 +91,7 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             if (view && this.$._productType) {
                 // create print areas
                 for (var i = 0; i < view.$.viewMaps.length; i++) {
-                    var viewMap = view.$.viewMaps.at(i);
+                    var viewMap = view.$.viewMaps[i];
                     var printArea = this.$._productType.getPrintAreaById(viewMap.printArea.id);
 
                     if (printArea) {

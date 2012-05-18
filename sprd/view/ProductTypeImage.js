@@ -7,10 +7,10 @@ define([
 		$classAttributes : ['productType'],
 
 		imageUrl : function () {
-			if (this.$.productType) {
+			if (this.$.productType && this.$.productType.$.resources) {
 				return this.extendUrlWithSizes(this.$.productType.$.resources[0].href);
 			}
-			return null;
+			return "";
 		}.onChange('width', 'height', 'productType'),
 
 		alt : function () {

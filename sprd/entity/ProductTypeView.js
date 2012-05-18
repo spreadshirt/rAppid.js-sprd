@@ -1,7 +1,5 @@
-define([
-	'sprd/data/SprdModel'
-], function (SprdModel) {
-	return SprdModel.inherit('sprd.model.ProductTypeView', {
+define(['js/data/Entity'], function (Entity) {
+	return Entity.inherit('sprd.entity.ProductTypeView', {
 
 		defaults : {
 			productType : null

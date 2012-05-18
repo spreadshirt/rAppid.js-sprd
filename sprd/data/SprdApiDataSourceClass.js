@@ -1,109 +1,15 @@
-define(["js/data/RestDataSource", "underscore"], function (RestDataSource,_) {
+define(["js/data/RestDataSource", "underscore", "sprd/data/SprdModel"], function (RestDataSource, _, SprdModel) {
 
-    var SprdApiContext = RestDataSource.RestContext.inherit({
-        getQueryParameter: function () {
+    var SprdApiDataSource = RestDataSource.inherit('sprd.data.SprdApiDataSource', {
 
-            var parameter = {
-                mediaType: "json"
-            };
+        $modelFactory: SprdModel,
 
-            if (this.$properties && this.$properties.locale) {
-                parameter.locale = this.$properties.locale;
-            }
-
-            return _.defaults(parameter, this.callBase());
-        }
-    });
-
-    var ShopContext = SprdApiContext.inherit({
-        // some sugar for the developer here
-        getPathComponents: function () {
-            return ['shops', this.$properties.shopId];
-        }
-    });
-
-    var UserContext = SprdApiContext.inherit({
-        // some sugar for the developer here
-        getPathComponents: function () {
-            return ['users', this.$properties.userId];
-        }
-    });
-
-    var contextParameterExtractor = /.*(shops|users)\/(\d+)\/.+$/i;
-
-    return RestDataSource.inherit({
-
-        ctor: function () {
-            this.callBase();
-        },
-
-        defaults: {
-            endPoint: "http://api.spreadshirt.net/api/v1",
-            gateway: "api",
-            apiKey: null,
-            secret: null,
-            collectionPageSize: 100
-        },
-
-        initialize: function () {
-            this.callBase();
-
-            if (!this.$.apiKey) {
-                console.log("No apiKey for SprdApiDataSource definied");
-            }
-        },
-
-        createContext: function (properties, parentContext) {
-
-            if (properties) {
-                if (properties.shopId) {
-                    return new ShopContext(this, properties, parentContext);
-                }
-
-                if (properties.userId) {
-                    return new UserContext(this, properties, parentContext);
-                }
-            }
-
-            return new SprdApiContext(this, properties, parentContext);
-        },
-
-        createContextCacheId: function (properties, parentProperties) {
-            // only use locale from parentProperties
-            var parent = {};
-            if (parentProperties && parentProperties.locale) {
-                parent.locale = parentProperties.locale;
-            }
-
-            return this.callBase(properties, parent);
-        },
-
-        getContextPropertiesFromReference: function (reference) {
-
-            var match = contextParameterExtractor.exec(reference);
-            if (match) {
-                if (match[1] == "shops") {
-                    return {
-                        shopId: match[2]
-                    };
-                }
-
-                if (match[1] == "users") {
-                    return {
-                        userId: match[2]
-                    }
-                }
-            }
-
-            return null;
-        },
-
-        getQueryParams: function () {
+        getQueryParameter: function (action) {
+            var params = this.callBase(action);
             return _.defaults({
                 mediaType: "json"
-            }, this.callBase());
+            }, params)
         },
-
 
         extractListMetaData: function (list, payload, options) {
             return payload;
@@ -119,6 +25,28 @@ define(["js/data/RestDataSource", "underscore"], function (RestDataSource,_) {
             }
         },
 
+        createContext: function (properties, parentContext) {
+
+            if (properties) {
+                if (properties.shopId) {
+                    return new SprdApiDataSource.ShopContext(this, properties, parentContext);
+                }
+
+                if (properties.userId) {
+                    return new SprdApiDataSource.UserContext(this, properties, parentContext);
+                }
+            }
+
+            return new SprdApiDataSource.SprdApiContext(this, properties, parentContext);
+        },
+
+        /***
+         * returns the context for the shop
+         *
+         * @param {String} [shopId]
+         * @param [locale]
+         * @return {RestDataSource.Context}
+         */
         shop: function (shopId, locale) {
 
             shopId = shopId || this.$.shopId;
@@ -134,6 +62,15 @@ define(["js/data/RestDataSource", "underscore"], function (RestDataSource,_) {
 
             return this.getContext(properties);
         },
+
+        /***
+         *
+         * returns the context for the user
+         *
+         * @param [userId]
+         * @param [locale]
+         * @return {RestDataSource.Context}
+         */
         user: function (userId, locale) {
             userId = userId || this.$.shopId;
             locale = locale || this.$.locale;
@@ -148,9 +85,36 @@ define(["js/data/RestDataSource", "underscore"], function (RestDataSource,_) {
             }
 
             return this.getContext(properties);
-        },
-        root: function () {
-            return this.getContext();
+        }
+
+    });
+
+    SprdApiDataSource.SprdApiContext = RestDataSource.RestContext.inherit({
+        getQueryParameter: function () {
+
+            var parameter = {
+                mediaType: "json"
+            };
+
+            if (this.$properties && this.$properties.locale) {
+                parameter.locale = this.$properties.locale;
+            }
+
+            return _.defaults(parameter, this.callBase());
         }
     });
+
+    SprdApiDataSource.ShopContext = SprdApiDataSource.SprdApiContext.inherit({
+        getPathComponents: function () {
+            return ['shops', this.$properties.shopId];
+        }
+    });
+
+    SprdApiDataSource.UserContext = SprdApiDataSource.SprdApiContext.inherit({
+        getPathComponents: function () {
+            return ['users', this.$properties.userId];
+        }
+    });
+
+    return SprdApiDataSource;
 });

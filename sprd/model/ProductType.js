@@ -1,9 +1,9 @@
-define(["sprd/data/SprdModel", "sprd/model/ProductTypeView"], function (SprdModel, ProductTypeView) {
+define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView"], function (SprdModel, ProductTypeView) {
     return SprdModel.inherit("sprd.model.ProductType", {
 
-	    $mapAttributes: {
-		    views: ProductTypeView
-	    },
+        $schema: {
+            views: [ProductTypeView]
+        },
 
         getViewById: function(id){
             if(this.$.views){
@@ -33,7 +33,6 @@ define(["sprd/data/SprdModel", "sprd/model/ProductTypeView"], function (SprdMode
                 }
             }
             return null;
-
         },
 
         getDefaultAppearance: function () {
