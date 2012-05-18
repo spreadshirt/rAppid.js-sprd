@@ -8,14 +8,16 @@
                 $classAttributes: ['product'],
 
                 defaults: {
-                    product: null
+                    product: null,
+                    viewWidth: 50,
+                    viewHeight: 50
                 }
             }
         })
         ]]></js:Script>
     <js:Template name="item">
         <li>
-            <view:ProductViewer view="{$view}" product="{product}" appearance="{product.appearance}" width="50" height="50"/>
+            <view:ProductViewer view="{$view}" product="{product}" appearance="{product.appearance}" width="{viewWidth}" height="{viewHeight}"/>
         </li>
     </js:Template>
 </ui:SelectionView>

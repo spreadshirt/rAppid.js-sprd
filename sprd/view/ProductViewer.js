@@ -11,7 +11,9 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
 
             // private defaults
             _productType: null,
-            _appearance: null
+            _appearance: null,
+
+            componentClass: 'product-viewer'
         },
 
         inject: {

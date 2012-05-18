@@ -1,5 +1,5 @@
 <ui:SelectionView xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml"
-                  needsSelection="{hasSelection()}">
+                  needsSelection="{hasSelection()}" tagName="ul">
 
     <js:Script><![CDATA[
         (function () {
@@ -10,7 +10,7 @@
                 defaults: {
                     componentClass: 'product-appearances',
                     itemKey: 'appearance',
-                    colorWidth: 19,
+                    colorWidth: 25,
                     // if null use default view
                     productType: null,
                     product: null,
@@ -45,9 +45,8 @@
         })
         ]]></js:Script>
     <js:Template name="item">
-        <button>
-            <img src="{getImageUrl(${$appearance})}" width="{colorWidth}" alt="test"/>
-        </button>
-
+        <li>
+            <img src="{getImageUrl(${$appearance})}" width="{colorWidth}"/>
+        </li>
     </js:Template>
 </ui:SelectionView>
