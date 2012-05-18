@@ -1,43 +1,5 @@
-<ui:SelectionView xmlns:js="js.core" xmlns:ui="js.ui" xmlns:view="sprd.view" xmlns="http://www.w3.org/1999/xhtml" needsSelection="{hasSelection()}">
-
-    <js:Script><![CDATA[
-        (function () {
-
-            return {
-                $classAttributes: ['productType'],
-
-                defaults: {
-                    componentClass: 'product-sizes',
-                    itemKey: 'size',
-                    // if null use default view
-                    productType: null,
-                    multiSelect: false
-                },
-                _commitChangedAttributes: function (attributes) {
-                    if (attributes.productType && attributes.productType.$.views) {
-                        // if the article has the same
-                        if (attributes.productType.$.views.$items !== this.$items) {
-                            this.set('items', attributes.productType.$.sizes.$items);
-                            if (this.$.items.length === 1) {
-                                this.set('selectedItem', this.$.items[0]);
-                            }
-                        }
-                    } else if (attributes.productType === null) {
-                        // set items to null
-                        // this.set({needsSelection: false, selectedItem: null});
-                        this.set('items', []);
-
-                    }
-
-                    this.callBase();
-                },
-                selectSize: function (e, element) {
-                    this.set('selectedItem', element.find('$size'));
-                }
-            }
-        })
-        ]]></js:Script>
+<view:SizeSelectorClass xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml" needsSelection="{hasSelection()}" xmlns:view="sprd.view">
     <js:Template name="item">
         <button>${$size.name}</button>
     </js:Template>
-</ui:SelectionView>
+</view:SizeSelectorClass>
