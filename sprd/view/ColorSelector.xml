@@ -17,11 +17,11 @@
                     multiSelect: false
                 },
                 _commitChangedAttributes: function (attributes) {
-                    if (attributes.productType && attributes.productType.$.views) {
+                    if (attributes.productType && attributes.productType.$.appearances) {
                         // if the article has the same
-                        if (attributes.productType.$.views.$items !== this.$items) {
+                        if (attributes.productType.$.appearances !== this.$items) {
                             var productType = attributes.productType;
-                            this.set('items', productType.$.appearances.$items);
+                            this.set('items', productType.$.appearances);
                             this.set('selectedItem', productType.getDefaultAppearance());
                         }
                     } else if (attributes.productType === null) {
@@ -37,8 +37,8 @@
                     this.callBase();
                 },
                 getImageUrl: function (appearance) {
-                    if (appearance.resources && appearance.resources.$items.length > 0) {
-                        return appearance.resources.$items[0].href + ",width=" + this.$.colorWidth;
+                    if (appearance.resources && appearance.resources.length > 0) {
+                        return appearance.resources[0].href + ",width=" + this.$.colorWidth;
                     }
                 }
             }
