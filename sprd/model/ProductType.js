@@ -26,7 +26,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView"], function (SprdMod
         getPrintAreaById: function(printAreaId) {
             if(this.$.printAreas){
                 for (var i = 0; i < this.$.printAreas.length; i++) {
-                    var printArea = this.$.printAreas.at(i);
+                    var printArea = this.$.printAreas[i];
                     if (printArea.id === printAreaId) {
                         return printArea;
                     }
@@ -44,8 +44,8 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView"], function (SprdMod
         getAppearanceById: function(id){
             if(this.$.appearances){
                 var app;
-                for (var i = 0; i < this.$.appearances.$items.length; i++) {
-                    app = this.$.appearances.$items[i];
+                for (var i = 0; i < this.$.appearances.length; i++) {
+                    app = this.$.appearances[i];
                     if (id === app.id) {
                         return app;
                     }
