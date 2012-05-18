@@ -25,6 +25,22 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             this.callBase();
         },
 
+        initialize: function(){
+            var self = this;
+            this.bind('product','change:productType', function (e) {
+                self.set('_appearance', null, {
+                    silent: true
+                });
+                self.set('_productType', e.$);
+            });
+
+            this.bind('product','change:appearance', function (e) {
+                self.set('_appearance', e.$);
+            });
+
+            this.callBase();
+        },
+
 
         _initializeRenderer: function(el) {
             this.callBase();
@@ -48,20 +64,6 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             }
 
             this.set("_productType", product ? product.$.productType : null);
-
-            if (product) {
-                product.bind('change:productType', function(e) {
-                    self.set('_appearance', null, {
-                        silent: true
-                    });
-                    self.set('_productType', e.$);
-                });
-
-                product.bind('change:appearance', function (e) {
-                    self.set('_appearance', e.$);
-                });
-            }
-
         },
 
         _render_productType: function(productType) {
