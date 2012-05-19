@@ -21,7 +21,7 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
         },
 
         ctor: function () {
-            this.$printAreas = [];
+            this.$printAreas = {};
             this.$views = {};
 
             this.callBase();
@@ -38,6 +38,10 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
 
             this.bind('product','change:appearance', function (e) {
                 self.set('_appearance', e.$);
+            });
+
+            this.bind('product.configurations', 'add', function (e) {
+                self._renderConfigurations();
             });
 
             this.callBase();
@@ -72,6 +76,12 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
 
         },
 
+        _renderConfigurations: function() {
+            if (this.$.view && this.$._productType) {
+
+            }
+        },
+
         _removeViewsFromPaper: function() {
             if (this.$currentProductTypeView) {
                 this.$currentProductTypeView.remove();
@@ -82,8 +92,10 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             this._renderProductTypeViewAppearance();
 
             // clear print areas
-            for (var p = 0; p < this.$printAreas.length; p++) {
-                this.$printAreas[p].remove();
+            for (var printAreaId in this.$printAreas) {
+                if (this.$printAreas.hasOwnProperty(printAreaId)) {
+                    this.$printAreas[printAreaId].remove();
+                }
             }
 
             if (view && this.$._productType) {
@@ -93,12 +105,13 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
                     var printArea = this.$._productType.getPrintAreaById(viewMap.printArea.id);
 
                     if (printArea) {
-                        var printAreaRect = this.$paper.rect(viewMap.offset.x, viewMap.offset.y, printArea.boundary.size.width, printArea.boundary.size.height);
-                        this.$printAreas.push(printAreaRect);
+                        // create print area and save
+                        this.$printAreas[viewMap.printArea.id] = this.$paper.rect(viewMap.offset.x, viewMap.offset.y, printArea.boundary.size.width, printArea.boundary.size.height);
                     }
                 }
-            }
 
+                this._renderConfigurations();
+            }
 
         },
 

@@ -19,7 +19,22 @@ define(['js/data/Entity'], function (Entity) {
 
 			return defaultPrintArea;
 
-		}
+		},
+
+        printAreas: function() {
+            var ret = [];
+
+            if (this.$.productType) {
+                for (var i = 0; i < this.$.viewMaps.length; i++) {
+                    var printArea = this.$.productType.getPrintAreaById(this.$.viewMaps[i].printArea.id);
+                    if (printArea) {
+                        ret.push(printArea);
+                    }
+                }
+            }
+
+            return ret;
+        }
 
 	});
 });
