@@ -21,32 +21,36 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
         },
 
         ctor: function () {
-            this.$printAreas = {};
+            this.$printAreas = [];
             this.$views = {};
 
             this.callBase();
         },
 
         initialize: function(){
-            var self = this;
-            this.bind('product','change:productType', function (e) {
-                self.set('_appearance', null, {
-                    silent: true
-                });
-                self.set('_productType', e.$);
-            });
+            this.bind('product','change:productType', this._onProductTypeChange,this);
+            this.bind('product','change:appearance', this._onAppearanceChange, this);
 
-            this.bind('product','change:appearance', function (e) {
-                self.set('_appearance', e.$);
-            });
-
-            this.bind('product.configurations', 'add', function (e) {
-                self._renderConfigurations();
-            });
+            this.bind('product.configurations', 'add', this._onConfigurationAdd, this);
 
             this.callBase();
         },
-
+        _onConfigurationAdd: function (e) {
+            this._renderConfigurations(e.$);
+        },
+        _onProductTypeChange: function(e){
+            // check if new productType has same appearance as set
+            var appearance = null;
+            if(e.$ && this.$.product.$.appearance){
+                appearance = e.$.getAppearanceById(this.$.product.$.appearance.id);
+            }
+            // if so, set this as appearance, else use null
+            this.set('_appearance', appearance, {silent: true});
+            this.set('_productType', e.$);
+        },
+        _onAppearanceChange: function(e){
+            this.set('_appearance', e.$);
+        },
 
         _initializeRenderer: function(el) {
             this.callBase();
@@ -72,11 +76,23 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             this._removeViewsFromPaper();
             this.$views = {};
 
-            this._renderView(this.$.view);
+            var view = this.$.view;
+            if(view){
+                view = productType.getViewByPerspective(view.$.perspective);
+                if(!view){
+                    view = productType.getDefaultView();
+                }
+
+                if(this.$.view === view){
+                    this._renderView(view);
+                }else{
+                    this.set('view', view);
+                }
+            }
+
 
         },
-
-        _renderConfigurations: function() {
+        _renderConfigurations: function(config) {
             if (this.$.view && this.$._productType) {
 
             }
@@ -92,21 +108,31 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             this._renderProductTypeViewAppearance();
 
             // clear print areas
-            for (var printAreaId in this.$printAreas) {
-                if (this.$printAreas.hasOwnProperty(printAreaId)) {
-                    this.$printAreas[printAreaId].remove();
-                }
+            for (var j = 0; j < this.$printAreas.length; j++) {
+                this.$printAreas[j].remove();
             }
+            this.$printAreas = [];
 
             if (view && this.$._productType) {
                 // create print areas
+                var rect;
                 for (var i = 0; i < view.$.viewMaps.length; i++) {
                     var viewMap = view.$.viewMaps[i];
                     var printArea = this.$._productType.getPrintAreaById(viewMap.printArea.id);
 
                     if (printArea) {
+                        rect = this.$paper.rect(viewMap.offset.x, viewMap.offset.y, printArea.boundary.size.width, printArea.boundary.size.height);
                         // create print area and save
-                        this.$printAreas[viewMap.printArea.id] = this.$paper.rect(viewMap.offset.x, viewMap.offset.y, printArea.boundary.size.width, printArea.boundary.size.height);
+                        this.$printAreas.push(rect);
+                    }
+
+                    if( viewMap.transformations){
+
+                        var matches = viewMap.transformations.operations.match(/^rotate\(((?:[\-0-9]*\s?)*)\)$/);
+                        if(matches && matches.length > 0){
+                            var par = matches[1].split(" ");
+                            rect.transform("r"+ par.join(","));
+                        }
                     }
                 }
 
@@ -114,7 +140,9 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             }
 
         },
+        _getTransformString: function(){
 
+        },
         _render_appearance: function() {
            this._renderProductTypeViewAppearance();
         },
@@ -150,6 +178,13 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
 
         setSize: function() {
             this.$paper.setSize(this.$.width, this.$.height);
+        },
+        destroy: function(){
+            this.unbind('product', 'change:productType', this._onProductTypeChange, this);
+            this.unbind('product', 'change:appearance', this._onAppearanceChange, this);
+            this.unbind('product.configurations', 'add', this._onConfigurationAdd, this);
+
+            this.callBase();
         }
 
     });
