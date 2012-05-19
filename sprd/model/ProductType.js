@@ -5,6 +5,19 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView"], function (SprdMod
             views: [ProductTypeView]
         },
 
+        parse: function(data) {
+            data = this.callBase(data);
+
+            var self = this;
+            if (data.views) {
+                data.views.each(function (value) {
+                    value.set('productType', self);
+                });
+            }
+
+            return data;
+        },
+
         getViewById: function(id){
             if(this.$.views){
                 for (var i = 0; i < this.$.views.$items.length; i++) {
