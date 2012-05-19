@@ -7,19 +7,33 @@ define(['js/data/Entity'], function (Entity) {
 
 		getDefaultPrintArea : function() {
 
-			var defaultView = this.$.id,
-				defaultPrintArea = null;
+			var defaultViewId = this.$.id,
+				printArea, i;
 
-			this.$.productType.printAreas.each(function(value, key) {
-				if (value.id === defaultView) {
-					defaultPrintArea = value.id;
-					return false;
-				}
-			});
+            var printAreas = this.printAreas();
 
-			return defaultPrintArea;
+            for (i = 0; i < printAreas.length; i++) {
+                printArea = printAreas[i];
+                if (printArea.id === defaultViewId) {
+                    return printArea;
+                }
+            }
+
+            return printAreas[0];
 
 		},
+
+        getPrintAreaById: function(printAreaId) {
+            if (this.$.productType) {
+                for (var i = 0; i < this.$.viewMaps.length; i++) {
+                    if (this.$.viewMaps[i].printArea.id === printAreaId) {
+                        return this.$.productType.getPrintAreaById(this.$.viewMaps[i].printArea.id);
+                    }
+                }
+            }
+
+            return null;
+        },
 
         printAreas: function() {
             var ret = [];
