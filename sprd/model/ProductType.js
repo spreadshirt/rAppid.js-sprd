@@ -52,6 +52,17 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView"], function (SprdMod
                 }
             }
             return null;
+        },
+        getViewByPerspective: function(perspective){
+            if (this.$.views) {
+                for (var i = 0; i < this.$.views.$items.length; i++) {
+                    var view = this.$.views.$items[i];
+                    if (view.$.perspective === perspective) {
+                        return view;
+                    }
+                }
+            }
+            return null;
         }
     })
 });
