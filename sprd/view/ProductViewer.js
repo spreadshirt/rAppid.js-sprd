@@ -2,6 +2,7 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
 
     return View.inherit('sprd.view.ProductViewer',{
         $classAttributes: ['productType','product','appearance'],
+
         defaults: {
             height: 300,
             width: 300,
@@ -21,7 +22,8 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
         },
 
         ctor: function () {
-            this.$printAreas = [];
+            this.$printAreas = {};
+            this.$configurations = [];
             this.$views = {};
 
             this.callBase();
@@ -89,12 +91,44 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
                     this.set('view', view);
                 }
             }
-
-
         },
-        _renderConfigurations: function(config) {
-            if (this.$.view && this.$._productType) {
 
+        _renderConfigurations: function() {
+
+             var i;
+
+            for (i = 0; i < this.$configurations.length; i++) {
+                this.$configurations[i].remove();
+            }
+
+            this.$configurations = [];
+
+            if (this.$.product) {
+                for (i = 0; i < this.$.product.$.configurations.size(); i++) {
+                    this._renderConfiguration(this.$.product.$.configurations.at(i));
+                }
+            }
+        },
+
+        _renderConfiguration: function(config) {
+            if (config && this.$.view && this.$._productType) {
+                if (config.printArea && this.$printAreas.hasOwnProperty(config.printArea.id)) {
+
+                    var svg = config.render(this.$paper);
+
+                    if (svg) {
+                        // add it to print area
+                        var printArea = this.$printAreas[config.printArea.id];
+                        var matrix = printArea.matrix.clone();
+                        matrix.translate(config.get('offset.x'), config.get('offset.y'));
+                        matrix.rotate(config.get('rotation'), 0, 0);
+
+                        svg.transform(matrix.toTransformString());
+
+                        this.$configurations.push(svg);
+                    }
+
+                }
             }
         },
 
@@ -108,30 +142,35 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             this._renderProductTypeViewAppearance();
 
             // clear print areas
-            for (var j = 0; j < this.$printAreas.length; j++) {
-                this.$printAreas[j].remove();
+            for (var key in this.$printAreas) {
+                if (this.$printAreas.hasOwnProperty(key)) {
+                    this.$printAreas[key].remove();
+                }
             }
-            this.$printAreas = [];
+
+            this.$printAreas = {};
 
             if (view && this.$._productType) {
                 // create print areas
-                var rect;
                 for (var i = 0; i < view.$.viewMaps.length; i++) {
                     var viewMap = view.$.viewMaps[i];
                     var printArea = this.$._productType.getPrintAreaById(viewMap.printArea.id);
 
                     if (printArea) {
-                        rect = this.$paper.rect(viewMap.offset.x, viewMap.offset.y, printArea.boundary.size.width, printArea.boundary.size.height);
+
+                        var rect = this.$paper.rect(0, 0, printArea.boundary.size.width, printArea.boundary.size.height);
+                        rect.translate(viewMap.offset.x, viewMap.offset.y);
+
                         // create print area and save
-                        this.$printAreas.push(rect);
-                    }
+                        this.$printAreas[printArea.id] = rect;
 
-                    if( viewMap.transformations){
+                        if (viewMap.transformations) {
 
-                        var matches = viewMap.transformations.operations.match(/^rotate\(((?:[\-0-9]*\s?)*)\)$/);
-                        if(matches && matches.length > 0){
-                            var par = matches[1].split(" ");
-                            rect.transform("r"+ par.join(","));
+                            var matches = viewMap.transformations.operations.match(/^rotate\(((?:[\-0-9]*\s?)*)\)$/);
+                            if (matches && matches.length > 0) {
+                                var par = matches[1].split(" ");
+                                rect.transform("r" + par.join(","));
+                            }
                         }
                     }
                 }
