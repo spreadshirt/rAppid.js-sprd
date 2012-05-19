@@ -1,6 +1,6 @@
 <ui:View xmlns="http://www.w3.org/1999/xhtml"
          xmlns:ui="js.ui" xmlns:js="js.core"
-         src="{imageUrl()}" alt="{alt()}" onload="onLoad">
+         src="{imageUrl()}" alt="{alt()}" onload="onLoad" tagName="img">
 
     <js:Imports>
         underscore;
@@ -13,9 +13,9 @@
         (function (_, ImageService) {
             return {
                 defaults: {
-                    tagName: "img",
                     loaded: false
                 },
+
                 onLoad: function () {
                     this.set('loaded', true);
                 },
@@ -44,7 +44,6 @@
                 alt: function () {
                     return "";
                 }
-
             }
         })
         ]]>
