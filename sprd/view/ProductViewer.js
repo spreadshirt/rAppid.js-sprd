@@ -156,7 +156,7 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
                     var viewMap = view.$.viewMaps[i];
                     var printArea = this.$._productType.getPrintAreaById(viewMap.printArea.id);
 
-                    if (printArea) {
+                    if (printArea && !this.$printAreas[printArea.id]) {
 
                         var rect = this.$paper.rect(0, 0, printArea.boundary.size.width, printArea.boundary.size.height);
                         rect.translate(viewMap.offset.x, viewMap.offset.y);
@@ -169,7 +169,7 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
                             var matches = viewMap.transformations.operations.match(/^rotate\(((?:[\-0-9]*\s?)*)\)$/);
                             if (matches && matches.length > 0) {
                                 var par = matches[1].split(" ");
-                                rect.transform("r" + par.join(","));
+                                rect.transform("r" + [par[0],viewMap.offset.x, viewMap.offset.y].join(","));
                             }
                         }
                     }
