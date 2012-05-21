@@ -5,6 +5,8 @@ define(["sprd/data/SprdModel", "js/core/List", "sprd/model/BasketItem"], functio
             basketItems: List
         },
 
+        $cacheInRootContext: true,
+
         addConcreteProduct: function (concreteProduct, quantity) {
             var basketItem = this.getBasketItemForConcreteProduct(concreteProduct);
             if (basketItem) {
