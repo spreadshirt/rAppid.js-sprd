@@ -5,10 +5,17 @@ define(["js/data/RestDataSource", "underscore", "sprd/data/SprdModel"], function
         $modelFactory: SprdModel,
 
         getQueryParameter: function (action) {
-            var params = this.callBase(action);
-            return _.defaults({
+            var params = _.defaults({
                 mediaType: "json"
-            }, params)
+            }, this.callBase(action));
+
+            if (action === RestDataSource.ACTIONS.POST && this.$.apiKey) {
+                params = _.defaults(params, {
+                    apiKey: this.$.apiKey
+                });
+            }
+
+            return params;
         },
 
         extractListMetaData: function (list, payload, options) {
