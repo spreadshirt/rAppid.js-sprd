@@ -1,5 +1,6 @@
-var should = require('chai').should();
-var rAppid = require('rAppid.js');
+var chai = require('chai'),
+    expect = chai.expect,
+    rAppid = require('rAppid.js');
 
 var C = {};
 
@@ -12,7 +13,9 @@ describe('SprdApiDataSource', function () {
 
         rAppid.requireClasses({
             SprdApiDataSource: 'xaml!sprd/data/SprdApiDataSource',
-            Shop: 'sprd/model/Shop'
+            Shop: 'sprd/model/Shop',
+            Basket: 'sprd/model/Basket',
+            Model: 'js/data/Model'
         }, C, done);
     });
 
@@ -30,8 +33,8 @@ describe('SprdApiDataSource', function () {
             shop = api.createEntity(C.Shop, 205909);
             shop.fetch(null, function (err, s) {
 
-                should.not.exist(err);
-                shop.should.eql(s);
+                expect(err).to.not.exist;
+                expect(shop).to.exist.and.to.be.eql(s);
 
                 done();
             })
@@ -41,12 +44,35 @@ describe('SprdApiDataSource', function () {
         it('#load articles', function (done) {
 
             shop.$.productTypes.fetch(null, function(err, productTypes) {
-                should.not.exist(err);
-                shop.$.productTypes.should.eql(productTypes);
+                expect(err).to.not.exits;
+                expect(shop).to.exits;
+                expect(shop.$.productTypes === productTypes).to.be.ok;
 
                 done();
             });
 
+        });
+
+    });
+
+    describe('#save', function() {
+
+        beforeEach(function(done) {
+            shop = api.createEntity(C.Shop, 205909);
+            shop.fetch(null, done);
+        });
+
+        it ('create model from collection', function() {
+            var basket = shop.$.baskets.createItem();
+            expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
+        });
+
+        it('save basket to api', function (done) {
+            var basket = shop.$.baskets.createItem();
+            expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
+            expect(basket.status() === C.Model.STATE.NEW).to.be.ok;
+
+            done();
         });
 
     });
