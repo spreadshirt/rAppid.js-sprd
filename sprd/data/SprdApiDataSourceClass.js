@@ -1,8 +1,15 @@
-define(["js/data/RestDataSource", "underscore", "sprd/data/SprdModel"], function (RestDataSource, _, SprdModel) {
+define(["js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/data/processor/BasketProcessor"],
+    function (RestDataSource, _, SprdModel, BasketProcessor) {
 
     var SprdApiDataSource = RestDataSource.inherit('sprd.data.SprdApiDataSource', {
 
         $modelFactory: SprdModel,
+
+        initializeProcessors: function() {
+            this.callBase();
+
+            this.$processors['BasketProcessor'] = new BasketProcessor(this);
+        },
 
         getQueryParameter: function (action) {
             var params = _.defaults({
