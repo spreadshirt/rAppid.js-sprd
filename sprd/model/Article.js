@@ -1,11 +1,16 @@
-define(["sprd/data/SprdModel", "sprd/model/Product", "sprd/model/Currency"], function (SprdModel, Product, Currency) {
+define(["sprd/data/SprdModel", "sprd/model/Product", "sprd/model/Currency"],
+    function (SprdModel, Product, Currency) {
 
     var rProductIdExtractor = /^http.*products\/(\d+).*$/;
 
     return SprdModel.inherit("sprd.model.Article",{
 
+        $schema: {
+            product: Product
+        },
+
         price: function() {
-            var currency = this.$context.$parent.createModel(Currency, this.$.price.currency.$.id);
+            var currency = this.$context.$parent.createEntity(Currency, this.$.price.currency.$.id);
             return currency.formatPrice(this.$.price.vatIncluded);
         },
 
@@ -37,7 +42,7 @@ define(["sprd/data/SprdModel", "sprd/model/Product", "sprd/model/Currency"], fun
 
             if (productId) {
                 // create a product in correct context
-                cb(null, this.$context.createModel(Product, productId));
+                cb(null, this.$context.createEntity(Product, productId));
             } else {
                 this.fetch(null, function(err, article) {
                     cb(err, article ? article.$.product : null);
