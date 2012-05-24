@@ -1,0 +1,23 @@
+<ui:SelectionView xmlns:js="js.core" xmlns:ui="js.ui" xmlns:view="sprd.view" xmlns="http://www.w3.org/1999/xhtml"
+                  items="{product.productType.views}" needsSelection="true" multiSelect="false" itemKey="view" tagName="ul" componentClass="product-view-selector">
+
+    <js:Script><![CDATA[
+        (function () {
+
+            return {
+                $classAttributes: ['product', 'viewWidth', 'viewHeight'],
+
+                defaults: {
+                    product: null,
+                    viewWidth: 50,
+                    viewHeight: 50
+                }
+            }
+        })
+        ]]></js:Script>
+    <js:Template name="item">
+        <li>
+            <view:ProductImage view="{$view}" product="{product}" appearance="{appearance}" width="{viewWidth}" height="{viewHeight}"/>
+        </li>
+    </js:Template>
+</ui:SelectionView>
