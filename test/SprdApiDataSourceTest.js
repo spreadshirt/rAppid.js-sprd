@@ -1,6 +1,7 @@
 var chai = require('chai'),
     expect = chai.expect,
-    rAppid = require('rAppid.js');
+    rAppid = require('rAppid.js'),
+    flow = rAppid.require('flow');
 
 var C = {};
 
@@ -15,7 +16,9 @@ describe('SprdApiDataSource', function () {
             SprdApiDataSource: 'xaml!sprd/data/SprdApiDataSource',
             Shop: 'sprd/model/Shop',
             Basket: 'sprd/model/Basket',
-            Model: 'js/data/Model'
+            Model: 'js/data/Model',
+            Product: 'sprd/model/Product',
+            ConcreteElement: 'sprd/entity/ConcreteElement'
         }, C, done);
     });
 
@@ -46,7 +49,7 @@ describe('SprdApiDataSource', function () {
 //
 //            shop.$.productTypes.fetch(null, function(err, productTypes) {
 //                expect(err).to.not.exits;
-//                expect(shop).to.exits;
+//           S     expect(shop).to.exits;
 //                expect(shop.$.productTypes === productTypes).to.be.ok;
 //
 //                done();
@@ -58,6 +61,8 @@ describe('SprdApiDataSource', function () {
 
     describe('#save', function() {
 
+        var basketId = '2d8bebe4-6428-4605-aed3-7a3abf9c0763';
+
         beforeEach(function(done) {
             shop = api.createEntity(C.Shop, 205909);
             shop.fetch(null, done);
@@ -68,20 +73,82 @@ describe('SprdApiDataSource', function () {
             expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
         });
 
-        it('save basket to api', function (done) {
-            var basket = shop.$.baskets.createItem();
-            expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
-            expect(basket.status() === C.Model.STATE.NEW).to.be.ok;
+//        it('save basket to api', function (done) {
+//            var basket = shop.$.baskets.createItem();
+//            expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
+//            expect(basket.status() === C.Model.STATE.NEW).to.be.ok;
+//
+//            basket.save(null, function(err, basket) {
+//                expect(err).to.not.exist;
+//                expect(basket).to.exist;
+//                expect(basket.status() === C.Model.STATE.CREATED).to.be.ok;
+//
+//                basketId = basket.$.id;
+//
+//                done();
+//            });
+//
+//        });
 
-            basket.save(null, function(err, basket) {
+
+        it ('load basket from api', function(done) {
+
+            var basket = api.createEntity(C.Basket, basketId);
+            expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
+            expect(basket.status() === C.Model.STATE.CREATED).to.be.ok;
+
+            basket.fetch(null, function(err, b) {
                 expect(err).to.not.exist;
-                expect(basket).to.exist;
-                expect(basket.status() === C.Model.STATE.CREATED).to.be.ok;
+                expect(b === basket).to.be.ok;
 
                 done();
-            });
+            })
 
         });
+
+        it('add item to basket and save to api', function (done) {
+
+            var basket = api.createEntity(C.Basket, basketId);
+            expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
+            expect(basket.status() === C.Model.STATE.CREATED).to.be.ok;
+
+            var basketItem,
+                product;
+
+            flow()
+                .seq(function(cb) {
+                    basket.fetch(null, cb);
+                })
+                .seq(function(cb) {
+                    product = api.shop(205909).createEntity(C.Product, 103737096);
+                    product.fetch({
+                        fetchSubModels: ["ProductType"]
+                    }, cb);
+                })
+                .seq(function() {
+                    basketItem = basket.$.basketItems.createItem();
+                    basketItem.set({
+                        element: new C.ConcreteElement({
+                            item: product,
+                            appearance: product.$.appearance,
+                            size: product.$.productType.$.sizes[0]
+                        })
+                    });
+                    basket.$.basketItems.add(basketItem);
+
+                })
+                // save basket
+                .seq(function(cb) {
+                    basketItem.save(null, cb);
+//                    basket.save(null, cb);
+                }).
+                exec(function(err) {
+                    expect(err).to.not.exist;
+                    done();
+                });
+
+        });
+
 
     });
 

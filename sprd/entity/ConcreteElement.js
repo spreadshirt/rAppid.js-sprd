@@ -1,17 +1,17 @@
-define(["sprd/data/SprdModel", "sprd/model/Product", "sprd/model/Article"], function (SprdModel, Product, Article) {
-    var TYPE_PRODUCT = "product";
-    var TYPE_ARTICLE = "article";
+define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article"], function (Entity, Product, Article) {
+    var TYPE_PRODUCT = "sprd:product";
+    var TYPE_ARTICLE = "sprd:article";
 
-    return SprdModel.inherit("sprd.model.ConcreteProduct",{
+    return Entity.inherit("sprd.entity.ConcreteElement",{
         defaults: {
             appearance: null,
             size: null,
             item: null
         },
-        isEqual: function(concreteProduct){
-            return this.$.appearance === concreteProduct.$.appearance &&
-                this.$.size === concreteProduct.$.size &&
-                this.$.product === concreteProduct.$.product;
+        isEqual: function(concreteElement){
+            return this.$.appearance === concreteElement.$.appearance &&
+                this.$.size === concreteElement.$.size &&
+                this.$.item === concreteElement.$.item;
         },
         getProduct: function(){
             if(this.$.item instanceof Product){

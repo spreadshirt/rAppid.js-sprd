@@ -5,6 +5,7 @@
     <conf:Configuration path="articleCategories" alias="ArticleCategory"/>
     <conf:Configuration path="applications" alias="Application"/>
     <conf:Configuration path="baskets" modelClassName="sprd.model.Basket" collectionClassName="js.data.Collection[sprd.model.Basket]" processor="BasketProcessor"/>
+    <conf:Configuration path="items" modelClassName="sprd.model.BasketItem" collectionClassName="js.data.Collection[sprd.model.BasketItem]" processor="BasketItemProcessor"/>
     <conf:Configuration path="currencies" modelClassName="sprd.model.Currency" collectionClassName="js.data.Collection[sprd.model.Currency]"/>
     <conf:Configuration path="countries" alias="Country"/>
     <conf:Configuration path="designs" modelClassName="sprd.model.Design" collectionClassName="js.data.Collection[sprd.model.Design]"/>
