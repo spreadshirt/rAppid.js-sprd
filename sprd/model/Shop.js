@@ -1,5 +1,5 @@
-define(["sprd/data/SprdModel", 'js/data/Collection', 'sprd/model/Basket', 'sprd/model/Currency', 'sprd/model/Design', 'sprd/model/ProductType'],
-    function (SprdModel, Collection, Basket, Currency, Design, ProductType) {
+define(["sprd/data/SprdModel", 'js/data/Collection', 'sprd/model/Basket', 'sprd/model/Currency', 'sprd/model/Design', 'sprd/model/ProductType', 'sprd/model/Article'],
+    function (SprdModel, Collection, Basket, Currency, Design, ProductType, Article) {
 
     return SprdModel.inherit("sprd.model.Shop", {
         $schema: {
@@ -18,7 +18,7 @@ define(["sprd/data/SprdModel", 'js/data/Collection', 'sprd/model/Basket', 'sprd/
             designCategories: Collection,
             designs: Collection.of(Design),
             articleCategories: Collection,
-            articles: Collection,
+            articles: Collection.of(Article),
             products: Collection,
             applications: Collection,
             currencies: Collection.of(Currency),
