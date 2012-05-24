@@ -1,5 +1,9 @@
-define(["sprd/data/SprdModel", 'js/core/List'], function (SprdModel, List) {
+define(["sprd/data/SprdModel", 'js/core/List', 'sprd/model/ProductType'], function (SprdModel, List, ProductType) {
     return SprdModel.inherit("sprd.model.Product", {
+
+        $schema: {
+            productType: ProductType
+        },
 
         defaults: {
             productType: null,
