@@ -1,5 +1,10 @@
-define(["sprd/data/SprdModel"], function (SprdModel) {
+define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement"], function (SprdModel, ConcreteElement) {
     return SprdModel.inherit("sprd.model.BasketItem",{
+
+        $schema: {
+            element: ConcreteElement
+        },
+
         defaults: {
             quantity: 1,
             element: null
