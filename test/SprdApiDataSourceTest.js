@@ -140,7 +140,6 @@ describe('SprdApiDataSource', function () {
                 // save basket
                 .seq(function(cb) {
                     basketItem.save(null, cb);
-//                    basket.save(null, cb);
                 }).
                 exec(function(err) {
                     expect(err).to.not.exist;
@@ -149,6 +148,32 @@ describe('SprdApiDataSource', function () {
 
         });
 
+        it('update basket item', function (done) {
+
+            var basket = api.createEntity(C.Basket, basketId);
+            expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
+            expect(basket.status() === C.Model.STATE.CREATED).to.be.ok;
+
+            var basketItem;
+
+            flow()
+                .seq(function (cb) {
+                    basket.fetch(null, cb);
+                })
+                .seq(function () {
+                    basketItem = basket.$.basketItems.at(0);
+                    basketItem.set('quantity', basketItem.get('quantity') + 1);
+                })
+                // save basket item
+                .seq(function (cb) {
+                    basketItem.save(null, cb);
+                }).
+                exec(function (err) {
+                    expect(err).to.not.exist;
+                    done();
+                });
+
+        });
 
     });
 
