@@ -11,6 +11,14 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
 
         $cacheInRootContext: true,
 
+        ctor: function(){
+            this.callBase();
+
+            this.bind('basketItems','change', this._triggerFunctions, this);
+            this.bind('basketItems','add', this._triggerFunctions, this);
+            this.bind('basketItems','remove', this._triggerFunctions, this);
+        },
+
         getContextForChildren: function (childFactory) {
             return this.$context.$datasource.getContext({
                 basketId: this.$.id
@@ -67,33 +75,9 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
             }
             return null;
         },
-
-        _bindList: function (newList, oldList) {
-            if (oldList) {
-                oldList.unbind('change', this._triggerFunctions, this);
-                oldList.unbind('add', this._triggerFunctions, this);
-                oldList.unbind('remove', this._triggerFunctions, this);
-            }
-
-            if (newList) {
-                newList.bind('change', this._triggerFunctions, this);
-                newList.bind('add', this._triggerFunctions, this);
-                newList.bind('remove', this._triggerFunctions, this);
-            }
-        },
-
         _triggerFunctions: function () {
             this.trigger('change', {});
         },
-
-        _commitChangedAttributes: function (attributes) {
-            this.callBase();
-
-            if (attributes.basketItems) {
-                this._bindList(attributes.basketItems, this.$previousAttributes['basketItems']);
-            }
-        },
-
         totalItemsCount: function () {
             var total = 0;
             this.$.basketItems.each(function (item) {
