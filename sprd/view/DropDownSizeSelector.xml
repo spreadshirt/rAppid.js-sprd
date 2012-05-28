@@ -1,0 +1,39 @@
+<ui:MenuButton xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml" type="{btnType()}">
+
+    <js:Script><![CDATA[
+        (function () {
+            return {
+                $classAttributes: ['productType','selectedSize'],
+                initialize: function(){
+                    this.bind('change:productType', this._onProductTypeChange, this);
+                },
+                _onProductTypeChange: function(){
+                    var sizes = this.get('productType.sizes');
+                    if(sizes && sizes.length === 1){
+                        this.set('selectedSize',sizes[0]);
+                    }
+                },
+                closeMenu: function(){
+                    this.set('menuVisible', false);
+                },
+                btnType: function(){
+                    if(this.$.selectedSize){
+                        return 'info';
+                    }
+                    return null;
+                }.onChange('selectedSize')
+            }
+        })
+        ]]></js:Script>
+    <js:Content ref="menu">
+        <ui:SelectionView items="{productType.sizes}" tagName="ul"
+                          selectedItem="{{selectedSize}}"
+                          needsSelection="{hasSelection()}" onclick="closeMenu">
+            <js:Template name="item">
+                <li>
+                    <a>${$item.name}</a>
+                </li>
+            </js:Template>
+        </ui:SelectionView>
+    </js:Content>
+</ui:MenuButton>

@@ -1,5 +1,7 @@
-<view:SizeSelectorClass xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml" needsSelection="{hasSelection()}" xmlns:view="sprd.view">
+<view:SizeSelectorClass xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml" needsSelection="{hasSelection()}" xmlns:view="sprd.view" tagName="ul">
     <js:Template name="item">
-        <button>${$size.name}</button>
+        <li>
+            <a>${$size.name}</a>
+        </li>
     </js:Template>
 </view:SizeSelectorClass>

@@ -5,7 +5,7 @@
         (function () {
 
             return {
-                $classAttributes: ['product', 'viewWidth', 'viewHeight'],
+                $classAttributes: ['product', 'viewWidth', 'viewHeight','appearance'],
 
                 defaults: {
                     product: null,

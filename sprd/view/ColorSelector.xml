@@ -16,25 +16,26 @@
                     product: null,
                     multiSelect: false
                 },
-                _commitChangedAttributes: function (attributes) {
-                    if (attributes.productType && attributes.productType.$.appearances) {
-                        // if the article has the same
-                        if (attributes.productType.$.appearances !== this.$items) {
-                            var productType = attributes.productType;
-                            this.set('items', productType.$.appearances);
-                            this.set('selectedItem', productType.getDefaultAppearance());
-                        }
-                    } else if (attributes.productType === null) {
-                        // set items to null
-                        this.set('items', []);
-                    }
-
-                    if (attributes.product) {
-                        this.set('productType', attributes.product.$.productType);
-                        this.set('selectedItem', this.$.productType.getAppearanceById(attributes.product.$.appearance.id));
-                    }
-
+                initialize: function(){
                     this.callBase();
+                    this.bind('change:product',this._onProductChange,this);
+                    this.bind('change:productType',this._onProductTypeChange,this);
+                },
+                _onProductChange: function(e){
+                    this.set('productType', this.get('product.productType'));
+                    if(this.$.productType){
+                        this.set('selectedItem', this.$.productType.getAppearanceById(this.get('product.appearance.id')));
+                    }
+                },
+                _onProductTypeChange: function(){
+                    var appearances = this.get('productType.appearances');
+                    if(appearances === null){
+                        this.set('items',[]);
+                    } else if(appearances !== this.$items){
+                        var productType = this.$.productType;
+                        this.set('items', productType.$.appearances);
+                        this.set('selectedItem', productType.getDefaultAppearance());
+                    }
                 },
                 getImageUrl: function (appearance) {
                     if (appearance.resources && appearance.resources.length > 0) {
