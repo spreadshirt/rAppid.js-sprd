@@ -73,22 +73,22 @@ describe('SprdApiDataSource', function () {
             expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
         });
 
-//        it('save basket to api', function (done) {
-//            var basket = shop.$.baskets.createItem();
-//            expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
-//            expect(basket.status() === C.Model.STATE.NEW).to.be.ok;
-//
-//            basket.save(null, function(err, basket) {
-//                expect(err).to.not.exist;
-//                expect(basket).to.exist;
-//                expect(basket.status() === C.Model.STATE.CREATED).to.be.ok;
-//
-//                basketId = basket.$.id;
-//
-//                done();
-//            });
-//
-//        });
+        it('save basket to api', function (done) {
+            var basket = shop.$.baskets.createItem();
+            expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
+            expect(basket.status() === C.Model.STATE.NEW).to.be.ok;
+
+            basket.save(null, function(err, basket) {
+                expect(err).to.not.exist;
+                expect(basket).to.exist;
+                expect(basket.status() === C.Model.STATE.CREATED).to.be.ok;
+
+                basketId = basket.$.id;
+
+                done();
+            });
+
+        });
 
 
         it ('load basket from api', function(done) {
