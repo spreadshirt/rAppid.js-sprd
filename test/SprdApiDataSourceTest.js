@@ -1,7 +1,6 @@
 var chai = require('chai'),
     expect = chai.expect,
-    rAppid = require('rAppid.js'),
-    flow = rAppid.require('flow');
+    testRunner = require('rAppid.js').TestRunner.setup();
 
 var C = {};
 
@@ -12,7 +11,7 @@ describe('SprdApiDataSource', function () {
 
     before(function (done) {
 
-        rAppid.requireClasses({
+        testRunner.requireClasses({
             SprdApiDataSource: 'xaml!sprd/data/SprdApiDataSource',
             Shop: 'sprd/model/Shop',
             Basket: 'sprd/model/Basket',
@@ -27,7 +26,7 @@ describe('SprdApiDataSource', function () {
             endPoint: 'http://api.spreadshirt.net/api/v1',
             gateway: 'http://api.spreadshirt.net/api/v1',
             apiKey: '2b065dd3-88b7-44a8-87fe-e564ed27f904'
-        }, null, rAppid.TestRunner.createSystemManager());
+        }, null, testRunner.createSystemManager());
     });
 
 //    describe('load', function(){
