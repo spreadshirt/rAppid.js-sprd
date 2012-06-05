@@ -3,7 +3,7 @@ define(['sprd/entity/Configuration'], function (Configuration) {
 		defaults : {
             text: "",
             font: null,
-            fontSize: 36,
+            fontSize: 48,
             typeFace: "regular"
         }
 	});
