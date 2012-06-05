@@ -1,4 +1,5 @@
-define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/ImageService'], function(View, Product, Raphael, _, ImageService){
+define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/ImageService', 'sprd/view/svg/ConfigurationViewer', 'sprd/view/svg/PrintAreaViewer'],
+    function(View, Product, Raphael, _, ImageService, ConfigurationViewer, PrintAreaViewer){
 
     return View.inherit('sprd.view.ProductViewer',{
         $classAttributes: ['productType','product','appearance'],
@@ -23,23 +24,58 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
 
         ctor: function () {
             this.$printAreas = {};
-            this.$configurations = [];
-            this.$views = {};
+            this.$renderedConfigurations = {};
+            this.$configurationViewer = {};
 
             this.callBase();
         },
 
         initialize: function(){
-            this.bind('product','change:productType', this._onProductTypeChange,this);
+
+            this.bind('product','change:productType', this._onProductTypeChange, this);
             this.bind('product','change:appearance', this._onAppearanceChange, this);
 
-            this.bind('product.configurations', 'add', this._onConfigurationAdd, this);
+            this.bind('product.configurations', 'add', this._onConfigurationAdded, this);
+            this.bind('product.configurations', 'remove', this._onConfigurationRemoved, this);
+//            this.bind('product.configurations', 'change:printArea', this._onConfigurationChange, this);
 
             this.callBase();
         },
-        _onConfigurationAdd: function (e) {
-            this._renderConfigurations(e.$);
+
+        _removeConfiguration: function(configuration) {
+
+            if (configuration) {
+                var configurationViewer = this.$configurationViewer[configuration.$cid];
+
+                if (configurationViewer) {
+                    configurationViewer.dispose();
+                }
+
+                delete this.$configurationViewer[configuration.$cid];
+            }
+
         },
+
+        _onConfigurationAdded: function (e) {
+
+            // create a new configuration viewer for the configuration
+            var configuration = e.$.item;
+            // add configuration viewer
+            this.$configurationViewer[configuration.$cid] = new ConfigurationViewer(configuration);
+
+            this._renderConfiguration(configuration);
+
+        },
+
+        _onConfigurationRemoved: function (e) {
+            this._removeConfiguration(e.$);
+        },
+
+
+        _onConfigurationChange: function(e) {
+            this._renderConfiguration(e.$.item);
+        },
+
         _onProductTypeChange: function(e){
             // check if new productType has same appearance as set
             var appearance = null;
@@ -65,18 +101,18 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
                 this.$paper.clear();
             }
 
-            var self = this;
-
-            if (oldProduct) {
-                // TODO: unbind old product events
+            if (oldProduct instanceof Object) {
+                // TODO: mkre, this is the first time string -> {product} -> should be null, because there isn't a previous attribute
+                for (var i = 0; i < oldProduct.get('configurations').length; i++) {
+                    this._removeConfiguration(oldProduct.get('configurations[' + i + ']'));
+                }
             }
 
-            this.set("_productType", product ? product.$.productType : null);
+            this.set("_productType", this.get(product, "productType"));
         },
 
         _render_productType: function(productType) {
             this._removeViewsFromPaper();
-            this.$views = {};
 
             var view = this.$.view;
             if(view){
@@ -95,13 +131,20 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
 
         _renderConfigurations: function() {
 
-             var i;
 
-            for (i = 0; i < this.$configurations.length; i++) {
-                this.$configurations[i].remove();
+            for (var key in this.$configurationViewer) {
+                if (this.$configurationViewer.hasOwnProperty(key)) {
+                    this.$configurationViewer.render(this.$paper);
+                }
             }
 
-            this.$configurations = [];
+             var i;
+
+            for (i = 0; i < this.$renderedConfigurations.length; i++) {
+                this.$renderedConfigurations[i].remove();
+            }
+
+            this.$renderedConfigurations = [];
 
             if (this.$.product) {
                 for (i = 0; i < this.$.product.$.configurations.size(); i++) {
@@ -111,23 +154,24 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
         },
 
         _renderConfiguration: function(config) {
-            if (config && this.$.view && this.$._productType) {
-                if (config.printArea && this.$printAreas.hasOwnProperty(config.printArea.id)) {
+            if (config) {
+                var configurationViewer = this.$configurationViewer[config.$cid],
+                    showViewer = false;
 
-                    var svg = config.render(this.$paper);
+                if (this.$.view && this.$._productType) {
 
-                    if (svg) {
-                        // add it to print area
-                        var printArea = this.$printAreas[config.printArea.id];
-                        var matrix = printArea.matrix.clone();
-                        matrix.translate(config.get('offset.x'), config.get('offset.y'));
-                        matrix.rotate(config.get('rotation'), 0, 0);
+                    var printAreaId = config.get('printArea.id'),
+                        printAreaViewer = this.$printAreas[printAreaId];
 
-                        svg.transform(matrix.toTransformString());
+                    if (printAreaViewer) {
+                        // print area rendered
 
-                        this.$configurations.push(svg);
+                        configurationViewer.$printAreaViewer = printAreaViewer;
+
+                        // activate the configuration viewer
+                        configurationViewer.render(this.$paper);
+
                     }
-
                 }
             }
         },
@@ -144,34 +188,28 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             // clear print areas
             for (var key in this.$printAreas) {
                 if (this.$printAreas.hasOwnProperty(key)) {
-                    this.$printAreas[key].remove();
+                    this.$printAreas[key].destroy();
                 }
             }
 
             this.$printAreas = {};
 
-            if (view && this.$._productType) {
+            var _productType = this.get('_productType');
+            if (view && _productType) {
                 // create print areas
                 for (var i = 0; i < view.$.viewMaps.length; i++) {
                     var viewMap = view.$.viewMaps[i];
-                    var printArea = this.$._productType.getPrintAreaById(viewMap.printArea.id);
+                    var printArea = _productType.getPrintAreaById(viewMap.printArea.id);
 
                     if (printArea && !this.$printAreas[printArea.id]) {
 
-                        var rect = this.$paper.rect(0, 0, printArea.boundary.size.width, printArea.boundary.size.height);
-                        rect.translate(viewMap.offset.x, viewMap.offset.y);
+                        // create a print area viewer
+                        var printAreaViewer = new PrintAreaViewer(printArea, viewMap);
+                        printAreaViewer.render(this.$paper);
 
-                        // create print area and save
-                        this.$printAreas[printArea.id] = rect;
+                        // and save
+                        this.$printAreas[printArea.id] = printAreaViewer;
 
-                        if (viewMap.transformations) {
-
-                            var matches = viewMap.transformations.operations.match(/^rotate\(((?:[\-0-9]*\s?)*)\)$/);
-                            if (matches && matches.length > 0) {
-                                var par = matches[1].split(" ");
-                                rect.transform("r" + [par[0],viewMap.offset.x, viewMap.offset.y].join(","));
-                            }
-                        }
                     }
                 }
 
@@ -221,7 +259,7 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
         destroy: function(){
             this.unbind('product', 'change:productType', this._onProductTypeChange, this);
             this.unbind('product', 'change:appearance', this._onAppearanceChange, this);
-            this.unbind('product.configurations', 'add', this._onConfigurationAdd, this);
+            this.unbind('product.configurations', 'add', this._onConfigurationAdded, this);
 
             this.callBase();
         }
