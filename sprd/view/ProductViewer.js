@@ -253,9 +253,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 });
 
                 this.addChild(this.$currentProductTypeView);
-
-                // TODO: move child to background
-
+                this.$currentProductTypeView.sendToBack();
             }
 
         },
