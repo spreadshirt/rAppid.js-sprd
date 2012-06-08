@@ -1,11 +1,6 @@
-define(['sprd/view/svg/SvgBase'], function(SvgBase) {
+define(['js/svg/SvgElement'], function(SvgElement) {
 
-    return SvgBase.inherit("sprd/view/svg/ConfigurationRenderer", {
-
-        defaults: {
-            configuration: null
-        }
-
+    return SvgElement.inherit("sprd/view/svg/ConfigurationRenderer", {
 
     })
 });

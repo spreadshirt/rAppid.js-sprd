@@ -1,21 +1,22 @@
-define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/ImageService', 'sprd/view/svg/ConfigurationViewer', 'sprd/view/svg/PrintAreaViewer'],
-    function(View, Product, Raphael, _, ImageService, ConfigurationViewer, PrintAreaViewer){
+define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', 'sprd/data/ImageService', 'sprd/view/svg/ConfigurationViewer', 'sprd/view/svg/PrintAreaViewer'],
+    function(Svg, SvgElement, Product, _, ImageService, ConfigurationViewer, PrintAreaViewer){
 
-    return View.inherit('sprd.view.ProductViewer',{
+    return Svg.inherit('sprd.view.ProductViewer',{
         $classAttributes: ['productType','product','appearance'],
 
         defaults: {
+
             height: 300,
             width: 300,
+
+
             view: null,
 
             product: null,
 
             // private defaults
             _productType: null,
-            _appearance: null,
-
-            componentClass: 'product-viewer'
+            _appearance: null
         },
 
         inject: {
@@ -48,7 +49,7 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
                 var configurationViewer = this.$configurationViewer[configuration.$cid];
 
                 if (configurationViewer) {
-                    configurationViewer.dispose();
+                    configurationViewer.remove();
                 }
 
                 delete this.$configurationViewer[configuration.$cid];
@@ -61,7 +62,9 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             // create a new configuration viewer for the configuration
             var configuration = e.$.item;
             // add configuration viewer
-            this.$configurationViewer[configuration.$cid] = new ConfigurationViewer(configuration);
+            this.$configurationViewer[configuration.$cid] = this.createComponent(ConfigurationViewer, {
+                configuration: configuration
+            });
 
             this._renderConfiguration(configuration);
 
@@ -90,11 +93,6 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             this.set('_appearance', e.$);
         },
 
-        _initializeRenderer: function(el) {
-            this.callBase();
-            this.$paper = Raphael(el, 10, 10);
-        },
-
         _renderProduct: function(product, oldProduct) {
             // product changed
             if (this.$paper) {
@@ -112,7 +110,7 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
         },
 
         _render_productType: function(productType) {
-            this._removeViewsFromPaper();
+            this._removeViews();
 
             var view = this.$.view;
             if(view){
@@ -155,8 +153,8 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
 
         _renderConfiguration: function(config) {
             if (config) {
-                var configurationViewer = this.$configurationViewer[config.$cid],
-                    showViewer = false;
+                var configurationViewer = this.$configurationViewer[config.$cid];
+
 
                 if (this.$.view && this.$._productType) {
 
@@ -166,17 +164,16 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
                     if (printAreaViewer) {
                         // print area rendered
 
-                        configurationViewer.$printAreaViewer = printAreaViewer;
-
-                        // activate the configuration viewer
-                        configurationViewer.render(this.$paper);
+                        printAreaViewer.addChild(configurationViewer);
 
                     }
+                } else {
+                    configurationViewer.remove();
                 }
             }
         },
 
-        _removeViewsFromPaper: function() {
+        _removeViews: function() {
             if (this.$currentProductTypeView) {
                 this.$currentProductTypeView.remove();
             }
@@ -188,7 +185,7 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
             // clear print areas
             for (var key in this.$printAreas) {
                 if (this.$printAreas.hasOwnProperty(key)) {
-                    this.$printAreas[key].destroy();
+                    this.$printAreas[key].remove();
                 }
             }
 
@@ -204,8 +201,15 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
                     if (printArea && !this.$printAreas[printArea.id]) {
 
                         // create a print area viewer
-                        var printAreaViewer = new PrintAreaViewer(printArea, viewMap);
-                        printAreaViewer.render(this.$paper);
+                        var printAreaViewer = this.createComponent(PrintAreaViewer, {
+                            printArea: printArea,
+                            width: printArea.boundary.size.width,
+                            height: printArea.boundary.size.height
+                        }).translate(this.get(viewMap, 'offset.x'), this.get(viewMap, 'offset.y'));
+
+                        printAreaViewer.addTransform(this.get(viewMap, 'transformations.operations'));
+
+                        this.addChild(printAreaViewer);
 
                         // and save
                         this.$printAreas[printArea.id] = printAreaViewer;
@@ -225,37 +229,38 @@ define(['js/ui/View','sprd/model/Product', 'Raphael', 'underscore', 'sprd/data/I
         },
 
         _renderProductTypeViewAppearance: function() {
-            this._removeViewsFromPaper();
+            this._removeViews();
 
             var view = this.$.view,
                 appearance = this.$._appearance,
                 productType = this.$._productType;
 
             if (view && appearance && productType) {
-                this.$paper.setViewBox(0, 0, view.get('size.width'), view.get('size.height'));
+                this.setViewBox(0, 0, view.get('size.width'), view.get('size.height'));
 
                 var url = this.$.imageService.productTypeImage(productType.$.id, view.$.id, appearance.id, {
                     width: this.$.width,
                     height: this.$.height
                 });
 
-                this.$currentProductTypeView = this.$paper.image(url, 0, 0, view.get('size.width'), view.get('size.height'));
-                this.$currentProductTypeView.toBack();
+                this.$currentProductTypeView = this.createComponent(SvgElement, {
+                    tagName: "image",
+                    href: url,
+                    x: 0,
+                    y: 0,
+                    width: view.get('size.width'),
+                    height: view.get('size.height')
+                });
+
+                this.addChild(this.$currentProductTypeView);
+
+                // TODO: move child to background
+
             }
 
         },
 
-        _renderWidth: function(width) {
-            this.setSize();
-        },
 
-        _renderHeight: function(height) {
-            this.setSize();
-        },
-
-        setSize: function() {
-            this.$paper.setSize(this.$.width, this.$.height);
-        },
         destroy: function(){
             this.unbind('product', 'change:productType', this._onProductTypeChange, this);
             this.unbind('product', 'change:appearance', this._onAppearanceChange, this);

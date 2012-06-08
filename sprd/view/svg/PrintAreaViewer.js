@@ -1,33 +1,55 @@
-define(['sprd/view/svg/SvgBase'], function(SvgBase) {
+define(['js/svg/SvgElement'], function(SvgElement) {
 
     var rRotationExtractor = /^rotate\(((?:[\-0-9]*\s?)*)\)$/;
 
-    return SvgBase.inherit('sprd/view/svg/PrintAreaViewer', {
+    return SvgElement.inherit('sprd/view/svg/PrintAreaViewer', {
 
-        ctor: function(printArea, viewMap) {
-            if (!printArea) {
-                throw "PrintArea for PrintAreaViewer not defined";
-            }
-
-            if (!viewMap) {
-                throw "ViewMap for PrintAreaViewer not defined";
-            }
-
-            this.$printArea = printArea;
-            this.$viewMap = viewMap;
+        defaults: {
+            tagName: "g",
+            "class": "print-area"
         },
 
-        _render: function(paper) {
-            var printArea = this.$printArea;
+        $classAttributes: ["printArea"],
 
-            var rect = paper.rect(0, 0, printArea.boundary.size.width, printArea.boundary.size.height);
-            var matrix = rect.matrix.clone();
+        _initializeRenderer: function (el) {
 
-            this.transform(matrix);
-            rect.transform(matrix.toTransformString());
+            var border = this.createComponent(SvgElement, {
+                tagName: "rect",
+                class: "print-area-border",
+                width: this.get('printArea.boundary.size.width'),
+                height: this.get('printArea.boundary.size.height')
+            });
 
-            return rect;
+            this.addChild(border);
+
         },
+
+//
+//        ctor: function(printArea, viewMap) {
+//
+//            if (!printArea) {
+//                throw "PrintArea for PrintAreaViewer not defined";
+//            }
+//
+//            if (!viewMap) {
+//                throw "ViewMap for PrintAreaViewer not defined";
+//            }
+//
+//            this.$printArea = printArea;
+//            this.$viewMap = viewMap;
+//        },
+
+//        _render: function(paper) {
+//            var printArea = this.$printArea;
+//
+//            var rect = paper.rect(0, 0, printArea.boundary.size.width, printArea.boundary.size.height);
+//            var matrix = rect.matrix.clone();
+//
+//            this.transform(matrix);
+//            rect.transform(matrix.toTransformString());
+//
+//            return rect;
+//        },
 
         transform: function(matrix) {
 
