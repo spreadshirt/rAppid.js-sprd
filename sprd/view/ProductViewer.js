@@ -81,9 +81,9 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
 
         _onProductTypeChange: function(e){
             // check if new productType has same appearance as set
-            var appearance = null;
-            if(e.$ && this.$.product.$.appearance){
-                appearance = e.$.getAppearanceById(this.$.product.$.appearance.id);
+            var appearance = this.get('product.appearance');
+            if(e.$ && appearance){
+                appearance = e.$.getAppearanceById(appearance.id);
             }
             // if so, set this as appearance, else use null
             this.set('_appearance', appearance, {silent: true});

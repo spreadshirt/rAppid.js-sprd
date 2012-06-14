@@ -89,7 +89,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
         vatIncluded: function () {
             var total = 0;
             this.$.basketItems.each(function (item) {
-                total += item.vatIncluded();
+                total += item.totalVatIncluded();
             });
             return total;
         }.on('change'),
@@ -97,7 +97,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
         vatExcluded: function () {
             var total = 0;
             this.$.basketItems.each(function (item) {
-                total += item.vatExcluded();
+                total += item.totalVatExcluded();
             });
             return total;
         }.on('change')

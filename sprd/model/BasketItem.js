@@ -12,11 +12,17 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement"], function (SprdMod
         increaseQuantity: function(quantity) {
             this.set('quantity', quantity + this.$.quantity);
         },
-        vatIncluded: function(){
-            return this.$.element.$.item.$.price.vatIncluded * this.$.quantity;
-        }.onChange('element','quantity'),
+        vatIncluded: function () {
+            return this.get('element.item.price.vatIncluded');
+        }.onChange('element'),
         vatExcluded: function () {
-            return this.$.element.$.item.$.price.vatExcluded * this.$.quantity;
+            return this.get('element.item.price.vatExcluded');
+        }.onChange('element'),
+        totalVatIncluded: function(){
+            return this.vatIncluded() * this.$.quantity;
+        }.onChange('element','quantity'),
+        totalVatExcluded: function () {
+            return this.vatExcluded() * this.$.quantity;
         }.onChange('element', 'quantity')
     });
 });
