@@ -1,5 +1,5 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', 'sprd/view/svg/TextConfigurationRenderer', 'sprd/view/svg/DesignConfigurationRenderer', 'Raphael'],
-    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, Raphael) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', 'sprd/view/svg/TextConfigurationRenderer', 'sprd/view/svg/DesignConfigurationRenderer'],
+    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer) {
 
         return SvgElement.inherit({
 
