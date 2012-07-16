@@ -21,6 +21,12 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article"], function 
             }
             return null;
         },
+        getArticle: function() {
+            if (this.$.item instanceof Article) {
+                return this.$.item;
+            }
+            return null;
+        },
         getType: function(){
             if (this.$.item instanceof Product) {
                 return TYPE_PRODUCT;

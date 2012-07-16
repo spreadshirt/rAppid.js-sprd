@@ -12,6 +12,10 @@ define(["sprd/view/ProductImage"], function (ProductImage) {
                 });
             }
 
+            if (attributes.article === null) {
+                this.set('product', null);
+            }
+
             this.callBase();
         },
 

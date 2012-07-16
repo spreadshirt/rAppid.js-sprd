@@ -15,7 +15,7 @@ define(["xaml!sprd/view/Image"], function (Image) {
 
         imageUrl: function () {
 
-            var url = "";
+            var url = null;
 
             if (this.$.product) {
                 var product = this.$.product;
