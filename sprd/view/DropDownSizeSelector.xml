@@ -4,6 +4,7 @@
         (function () {
             return {
                 $classAttributes: ['productType','selectedSize'],
+                $defaultContentName: null,
                 initialize: function(){
                     this.bind('change:productType', this._onProductTypeChange, this);
                 },
@@ -24,8 +25,9 @@
                 }.onChange('selectedSize')
             }
         })
-        ]]></js:Script>
-    <js:Content ref="menu">
+        ]]>
+    </js:Script>
+    <js:Content name="menu">
         <ui:SelectionView items="{productType.sizes}" tagName="ul"
                           selectedItem="{{selectedSize}}"
                           needsSelection="{hasSelection()}" onclick="closeMenu">
