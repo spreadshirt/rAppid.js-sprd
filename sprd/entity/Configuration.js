@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/offset'], function (Entity, Offset) {
+define(['js/data/Entity', 'sprd/entity/Offset'], function (Entity, Offset) {
 	return Entity.inherit('sprd.entity.Configuration', {
 
         ctor: function() {
