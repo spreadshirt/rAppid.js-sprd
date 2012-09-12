@@ -9,20 +9,12 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
             basketItems: Collection.of(BasketItem)
         },
 
-        $cacheInRootContext: true,
-
         ctor: function(){
             this.callBase();
 
             this.bind('basketItems','change', this._triggerFunctions, this);
             this.bind('basketItems','add', this._triggerFunctions, this);
             this.bind('basketItems','remove', this._triggerFunctions, this);
-        },
-
-        getContextForChildren: function (childFactory) {
-            return this.$context.$datasource.getContext({
-                basketId: this.$.id
-            });
         },
 
         addElement: function (element, quantity) {
@@ -32,7 +24,8 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
             if (basketItem) {
                 basketItem.increaseQuantity(quantity);
             } else {
-                basketItem =  new BasketItem({element: element});
+                basketItem =  this.$.basketItems.createItem();
+                basketItem.set('element', element);
                 basketItem.bind('change:quantity', this._onItemQuantityChange, this);
                 element.bind('change:size', this._onArticleSizeChange, this);
                 this.$.basketItems.add(basketItem);
