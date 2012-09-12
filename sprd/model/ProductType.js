@@ -1,8 +1,9 @@
-define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView"], function (SprdModel, ProductTypeView) {
+define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity"], function (SprdModel, ProductTypeView, Entity) {
     return SprdModel.inherit("sprd.model.ProductType", {
 
         $schema: {
-            views: [ProductTypeView]
+            views: [ProductTypeView],
+            appearances: [Entity]
         },
 
         parse: function(data) {
@@ -57,9 +58,9 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView"], function (SprdMod
         getAppearanceById: function(id){
             if(this.$.appearances){
                 var app;
-                for (var i = 0; i < this.$.appearances.length; i++) {
-                    app = this.$.appearances[i];
-                    if (id === app.id) {
+                for (var i = 0; i < this.$.appearances.$items.length; i++) {
+                    app = this.$.appearances.$items[i];
+                    if (id === app.$.id) {
                         return app;
                     }
                 }
