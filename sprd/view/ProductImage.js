@@ -31,7 +31,7 @@ define(["xaml!sprd/view/Image"], function (Image) {
                 url = this.extendUrlWithSizes(url);
 
                 if(this.$.appearance) {
-                    url += ",appearanceId=" + this.$.appearance.id;
+                    url += ",appearanceId=" + this.$.appearance.$.id;
                 }
             }
 
