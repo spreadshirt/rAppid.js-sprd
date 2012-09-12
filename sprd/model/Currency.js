@@ -1,8 +1,6 @@
 define(["sprd/data/SprdModel"], function (Model) {
     return Model.inherit('sprd.model.Currency', {
 
-        $cacheInRootContext: true,
-
         formatPrice: function (price, type) {
             if(!price) {
                 return null;
