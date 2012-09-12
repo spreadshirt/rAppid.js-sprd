@@ -23,6 +23,12 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement"], function (SprdMod
         }.onChange('element','quantity'),
         totalVatExcluded: function () {
             return this.vatExcluded() * this.$.quantity;
-        }.onChange('element', 'quantity')
+        }.onChange('element', 'quantity'),
+        prepare: function(){
+            return {
+                quantity: this.$.quantity,
+                element: this.$.element.$
+            }
+        }
     });
 });
