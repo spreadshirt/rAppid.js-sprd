@@ -3,6 +3,10 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article"], function 
     var TYPE_ARTICLE = "sprd:article";
 
     return Entity.inherit("sprd.entity.ConcreteElement",{
+        $schema: {
+            appearance: Entity,
+            size: Entity
+        },
         defaults: {
             appearance: null,
             size: null,
@@ -20,7 +24,7 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article"], function 
                 return this.$.item.$.product;
             }
             return null;
-        },
+        }.on(['item','change:product']),
         getArticle: function() {
             if (this.$.item instanceof Article) {
                 return this.$.item;
@@ -34,30 +38,6 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article"], function 
                 return TYPE_ARTICLE;
             }
             return null;
-        },
-
-
-        parse: function (data, action, options) {
-
-
-            if (data.type === TYPE_ARTICLE) {
-                // TODO: determinate correct context
-                data.item = this.$context.createEntity(Article, data.id);
-            } else if (data.type === TYPE_PRODUCT) {
-                // TODO: determinate correct context
-                data.item = this.$context.createEntity(Product, data.id);
-            } else {
-                throw "Element type '" + data.type + "' not supported";
-            }
-
-            data.item.href = data.href;
-            data.appearance = this.getPropertyByKey(data.properties, 'appearance').id;
-            data.size = this.getPropertyByKey(data.properties, 'size').id;
-
-            delete data.href;
-            delete data.properties;
-
-            return data;
         },
 
         prepare: function (action, options) {
