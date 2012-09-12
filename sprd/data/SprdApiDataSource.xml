@@ -1,23 +1,31 @@
 <data:SprdApiDataSourceClass xmlns:data="sprd.data" xmlns:conf="js.conf">
-    <!-- use className if you need some logic inside your models, if not use an alias and obmit the className-->
-    <conf:Configuration path="address" alias="Address"/>
-    <conf:Configuration path="articles" modelClassName="sprd.model.Article" collectionClassName="js.data.Collection[sprd.model.Article]"/>
-    <conf:Configuration path="articleCategories" alias="ArticleCategory"/>
-    <conf:Configuration path="applications" alias="Application"/>
-    <conf:Configuration path="baskets" modelClassName="sprd.model.Basket" collectionClassName="js.data.Collection[sprd.model.Basket]" processor="BasketProcessor"/>
-    <conf:Configuration path="items" modelClassName="sprd.model.BasketItem" collectionClassName="js.data.Collection[sprd.model.BasketItem]" processor="BasketItemProcessor"/>
-    <conf:Configuration path="currencies" modelClassName="sprd.model.Currency" collectionClassName="js.data.Collection[sprd.model.Currency]"/>
-    <conf:Configuration path="countries" alias="Country"/>
-    <conf:Configuration path="designs" modelClassName="sprd.model.Design" collectionClassName="js.data.Collection[sprd.model.Design]"/>
-    <conf:Configuration path="designCategories" alias="DesignCategory"/>
-    <conf:Configuration path="fontFamilies" alias="FontFamiliy"/>
-    <conf:Configuration path="languages" alias="Language"/>
-    <conf:Configuration path="printTypes" alias="PrintType"/>
-    <conf:Configuration path="products" modelClassName="sprd.model.Product"/>
-    <conf:Configuration path="productTypes" modelClassName="sprd.model.ProductType" collectionClassName="js.data.Collection[sprd.model.ProductType]"/>
-    <conf:Configuration path="productTypeDepartments" alias="ProductTypeDepartment"/>
-    <conf:Configuration path="shippingTypes" alias="ShippingType"/>
-    <conf:Configuration path="shops" modelClassName="sprd.model.Shop"/>
-    <conf:Configuration path="users" alias="User"/>
+    <conf:DataSource>
+        <!-- use className if you need some logic inside your models, if not use an alias and obmit the className-->
+        <conf:Resource path="languages" modelClassName="sprd.model.Language"/>
+        <conf:Resource path="countries" modelClassName="sprd.model.Country" />
+        <conf:Resource path="shops" modelClassName="sprd.model.Shop">
+            <conf:Resource path="address" modelClassName="sprd.model.Address"/>
+            <conf:Resource path="articles" modelClassName="sprd.model.Article" />
+            <conf:Resource path="articleCategories" modelClassName="sprd.model.ArticleCategory"/>
+            <conf:Resource path="printTypes" modelClassName="sprd.model.PrintType" />
+            <conf:Resource path="designs" modelClassName="sprd.model.Design" />
+            <conf:Resource path="designCategories" modelClassName="sprd.model.DesignCategory"/>
+            <conf:Resource path="productTypes" modelClassName="sprd.model.ProductType" />
+            <conf:Resource path="fontFamilies" modelClassName="sprd.model.FontFamily" />
+            <conf:Resource path="products" modelClassName="sprd.model.Product"/>
+            <conf:Resource path="productTypeDepartments" modelClassName="sprd.model.ProductTypeDepartment"/>
+            <conf:Resource path="shippingTypes" modelClassName="sprd.model.ShippingType"/>
+            <conf:Resource path="applications" modelClassName="sprd.model.Application"/>
+        </conf:Resource>
+        <conf:Resource path="currencies" modelClassName="sprd.model.Currency">
 
+        </conf:Resource>
+        <conf:Resource path="baskets" modelClassName="sprd.model.Basket">
+            <conf:Resource path="basketItems" modelClassName="sprd.model.BasketItem" processor="BasketItemProcessor"/>
+            <conf:Resource path="checkout" modelClassName="sprd.model.Checkout"/>
+        </conf:Resource>
+        <conf:Resource path="users" modelClassName="sprd.model.User">
+
+        </conf:Resource>
+    </conf:DataSource>
 </data:SprdApiDataSourceClass>

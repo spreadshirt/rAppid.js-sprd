@@ -3,7 +3,6 @@ define(["js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/mod
 
         var SprdApiDataSource = RestDataSource.inherit('sprd.data.SprdApiDataSource', {
 
-            $modelFactory: SprdModel,
             $defaultProcessorFactory: DefaultProcessor,
 
             $processors: {
@@ -13,7 +12,8 @@ define(["js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/mod
 
             getQueryParameter: function (action) {
                 var params = _.defaults({
-                    mediaType: "json"
+                    mediaType: "json",
+                    locale: "de_DE" // TODO: configurable
                 }, this.callBase(action));
 
                 if (this.$.apiKey) {
