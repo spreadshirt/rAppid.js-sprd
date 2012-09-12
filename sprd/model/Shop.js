@@ -1,42 +1,31 @@
-define(["sprd/data/SprdModel", 'js/data/Collection', 'sprd/model/Basket', 'sprd/model/Currency', 'sprd/model/Design', 'sprd/model/ProductType', 'sprd/model/Article'],
-    function (SprdModel, Collection, Basket, Currency, Design, ProductType, Article) {
+define(["sprd/data/SprdModel", 'js/data/Collection', 'sprd/model/Basket', 'sprd/model/Currency', 'sprd/model/Design', 'sprd/model/ProductType', 'sprd/model/Article', 'sprd/model/User', 'sprd/model/Country', 'sprd/model/PrintType', 'sprd/model/FontFamily'],
+    function (SprdModel, Collection, Basket, Currency, Design, ProductType, Article, User, Country, PrintType, FontFamily) {
 
     return SprdModel.inherit("sprd.model.Shop", {
         $schema: {
 
-            user: SprdModel,
-            country: SprdModel,
-            language: SprdModel,
+            user: User,
+            country: Country,
+//            language: SprdModel,
             currency: Currency,
-            address: SprdModel,
+//            address: SprdModel,
 
             productTypes: Collection.of(ProductType),
-            printTypes: Collection,
-            fontFamilies: Collection,
-            productTypeDepartments: Collection,
-            shippingTypes: Collection,
-            designCategories: Collection,
+            printTypes: Collection.of(PrintType),
+            fontFamilies: Collection.of(FontFamily),
+//            productTypeDepartments: List,
+//            shippingTypes: Collection,
+//            designCategories: Collection,
             designs: Collection.of(Design),
-            articleCategories: Collection,
+//            articleCategories: Collection,
             articles: Collection.of(Article),
-            products: Collection,
-            applications: Collection,
+//            products: Collection,
+//            applications: Collection,
             currencies: Collection.of(Currency),
-            languages: Collection,
-            countries: Collection,
+//            languages: Collection,
+            countries: Collection.of(Country),
             baskets: Collection.of(Basket)
 
-        },
-
-        getContextForChildren: function(childFactory) {
-
-            if (!childFactory.prototype.$cacheInRootContext) {
-                return this.$context.$datasource.getContext({
-                    shopId: this.$.id
-                });
-            }
-
-            return this.callBase();
         }
     });
 });
