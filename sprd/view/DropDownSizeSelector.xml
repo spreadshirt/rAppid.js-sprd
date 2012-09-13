@@ -11,7 +11,7 @@
                 _onProductTypeChange: function(){
                     var sizes = this.get('productType.sizes');
                     if(sizes && sizes.length === 1){
-                        this.set('selectedSize',sizes[0]);
+                        this.set('selectedSize',sizes.at(0));
                     }
                 },
                 closeMenu: function(){

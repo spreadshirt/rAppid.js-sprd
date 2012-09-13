@@ -21,8 +21,7 @@
 
         </conf:Resource>
         <conf:Resource path="baskets" modelClassName="sprd.model.Basket">
-            <conf:Resource path="basketItems" modelClassName="sprd.model.BasketItem" processor="BasketItemProcessor"/>
-            <conf:Resource path="checkout" modelClassName="sprd.model.Checkout"/>
+            <conf:Resource path="items" modelClassName="sprd.model.BasketItem" processor="BasketItemProcessor"/>
         </conf:Resource>
         <conf:Resource path="users" modelClassName="sprd.model.User">
 

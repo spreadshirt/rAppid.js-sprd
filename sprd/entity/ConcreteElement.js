@@ -38,39 +38,6 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article"], function 
                 return TYPE_ARTICLE;
             }
             return null;
-        },
-
-        prepare: function (action, options) {
-
-            var data = this.$;
-
-            return {
-                    id: data.item.$.id,
-                    type: this.getType(),
-                    // TODO: build url like the datasource it does
-                    href: data.item.$.href,
-                    properties: [
-                        {
-                            key: "appearance",
-                            value: data.appearance.id
-                        },
-                        {
-                            key: "size",
-                            value: data.size.id
-                        }
-                    ]
-                }
-        },
-
-        getPropertyByKey: function(properties, key) {
-            for (var i = 0; i < properties.length; i++) {
-                var property = properties[i];
-                if (property.key === key) {
-                    return property;
-                }
-            }
-
-            return null;
         }
 
     });

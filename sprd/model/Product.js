@@ -1,11 +1,11 @@
 define(["sprd/data/SprdModel", 'js/core/List', 'sprd/model/ProductType',
-    'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'js/data/TypeResolver'],
-    function (SprdModel, List, ProductType, AttributeTypeResolver, DesignConfiguration, TextConfiguration, TypeResolver) {
+    'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'js/data/TypeResolver', 'js/data/Entity'],
+    function (SprdModel, List, ProductType, AttributeTypeResolver, DesignConfiguration, TextConfiguration, TypeResolver, Entity) {
         return SprdModel.inherit("sprd.model.Product", {
 
             $schema: {
                 productType: ProductType,
-
+                appearance: Entity,
                 configurations: [new AttributeTypeResolver({
                     attribute: "type",
                     mapping: {

@@ -16,7 +16,6 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
             this.bind('basketItems','add', this._triggerFunctions, this);
             this.bind('basketItems','remove', this._triggerFunctions, this);
         },
-
         addElement: function (element, quantity) {
             quantity = quantity || 1;
 
@@ -27,7 +26,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
                 basketItem =  this.$.basketItems.createItem();
                 basketItem.set('element', element);
                 basketItem.bind('change:quantity', this._onItemQuantityChange, this);
-                element.bind('change:size', this._onArticleSizeChange, this);
+                // element.bind('change:size', this._onArticleSizeChange, this);
                 this.$.basketItems.add(basketItem);
             }
 
@@ -93,6 +92,12 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
                 total += item.totalVatExcluded();
             });
             return total;
-        }.on('change')
+        }.on('change'),
+        platformCheckoutLink: function(){
+            if(this.$.links){
+                return this.$.links[2].href;
+            }
+            return null;
+        }.onChange('links')
     });
 });

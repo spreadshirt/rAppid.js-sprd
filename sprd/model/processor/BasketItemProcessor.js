@@ -4,6 +4,7 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
 
     return DefaultProcessor.inherit("sprd.model.processor.BasketItemProcessor", {
         parse: function(payload){
+            console.log(arguments);
             var element = payload.element;
 
             var properties = element.properties, prop, elementPayload = {};
@@ -19,20 +20,38 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
             var shop = this.$datasource.createEntity(Shop, payload.shop.id);
 
             if (element.type === TYPE_ARTICLE) {
-                // TODO: determinate correct context
                 elementPayload.item = this.$datasource.getContextForChild(Article,shop).createEntity(Article, element.id);
-                elementPayload.item.fetch();
             } else if (element.type === TYPE_PRODUCT) {
-                // TODO: determinate correct context
                 elementPayload.item = this.$datasource.getContextForChild(Product, shop).createEntity(Product, element.id);
-                elementPayload.item.fetch();
             } else {
                 throw "Element type '" + data.type + "' not supported";
             }
+            elementPayload.item.set('price',payload.price);
+            elementPayload.item.fetch({
+                fetchSubModels: ['product/productType']
+            });
 
             payload['element'] = elementPayload;
 
             return this.callBase();
+        },
+        compose: function(){
+            var payload = this.callBase();
+
+            var element = payload.element;
+            var elementPayload = {};
+            elementPayload['properties'] = [
+                {key: "appearance", value: element.appearance.id},
+                {key: "size", value: element.size.id}
+            ];
+            elementPayload["type"] = TYPE_ARTICLE;
+            elementPayload["href"] = element.item.href;
+            elementPayload["id"] = element.item.id;
+
+            return {
+                element: elementPayload,
+                quantity: payload.quantity
+            };
         }
     });
 });

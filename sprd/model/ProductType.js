@@ -3,7 +3,8 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity"],
 
         $schema: {
             views: [ProductTypeView],
-            appearances: [Entity]
+            appearances: [Entity],
+            sizes: [Entity]
         },
 
         parse: function(data) {
@@ -27,6 +28,16 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity"],
                         return view;
                     }
                 }
+            }
+            return null;
+        },
+        getSizeById: function(id){
+            if(this.$.sizes){
+                return this.$.sizes.each(function(size){
+                    if(size.$.id === id){
+                        this.return(size);
+                    }
+                });
             }
             return null;
         },
