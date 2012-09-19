@@ -24,7 +24,7 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
             } else if (element.type === TYPE_PRODUCT) {
                 elementPayload.item = this.$datasource.getContextForChild(Product, shop).createEntity(Product, element.id);
             } else {
-                throw "Element type '" + data.type + "' not supported";
+                throw "Element type '" + element.type + "' not supported";
             }
             elementPayload.item.set('price',payload.price);
             elementPayload.item.fetch({

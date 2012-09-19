@@ -1,24 +1,22 @@
 define(["sprd/view/ProductImage"], function (ProductImage) {
 
     return ProductImage.inherit("sprd.view.ProductImage", {
-
         $classAttributes: ["article"],
+        imageUrl: function(){
+            var url;
+            if(this.$.article){
+                url = this.$.article.$.resources[0].href;
 
-        _commitChangedAttributes: function (attributes) {
-            if (attributes && attributes.article) {
-                var self = this;
-                attributes.article.product(function (err, product) {
-                    self.set('product', product);
-                });
+                if(this.$.type === ProductImage.TYPE_COMPOSITION){
+                    url = url.replace("products","compositions");
+                }
+
+                url = this.extendUrlWithSizes(url);
+
+                return url;
             }
-
-            if (attributes.article === null) {
-                this.set('product', null);
-            }
-
-            this.callBase();
-        },
-
+            return this.callBase();
+        }.onChange('article'),
         alt: function () {
             if (this.$.article) {
                 return this.$.article.$.name;

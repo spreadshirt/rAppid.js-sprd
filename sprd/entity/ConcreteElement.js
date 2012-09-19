@@ -13,9 +13,9 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article"], function 
             item: null
         },
         isEqual: function(concreteElement){
-            return this.$.appearance === concreteElement.$.appearance &&
-                this.$.size === concreteElement.$.size &&
-                this.$.item === concreteElement.$.item;
+            return this.get('appearance.id') === concreteElement.get('appearance.id') &&
+                this.get('size.id')  === concreteElement.get('size.id') &&
+                this.get('item.id') === concreteElement.get('item.id');
         },
         getProduct: function(){
             if(this.$.item instanceof Product){

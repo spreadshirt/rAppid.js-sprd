@@ -3,7 +3,7 @@ define(["xaml!sprd/view/Image"], function (Image) {
     var PRODUCT = "product",
         COMPOSITION = "composition";
 
-    return Image.inherit({
+    var ProductImage = Image.inherit({
 
         $classAttributes: ["view", "type", "product", "appearance"],
 
@@ -40,4 +40,9 @@ define(["xaml!sprd/view/Image"], function (Image) {
         }.onChange('product', 'width', 'height', 'type', 'view', 'appearance')
 
     });
+
+    ProductImage.TYPE_COMPOSITION = COMPOSITION;
+    ProductImage.TYPE_PRODUCT = PRODUCT;
+
+    return ProductImage;
 });
