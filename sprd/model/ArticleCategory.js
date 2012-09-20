@@ -6,6 +6,13 @@ define(["sprd/data/SprdModel", "sprd/entity/ArticleCategoryEntity"], function (M
         },
         getSubCategories: function () {
             return this.articleCategories;
+        },
+        getSubCategoryById: function(id){
+            return this.$.articleCategories.each(function(val){
+                if(val.$.id === id){
+                    this.return(val);
+                }
+            });
         }
     });
 });
