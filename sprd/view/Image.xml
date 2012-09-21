@@ -41,6 +41,10 @@
                         this.addClass('loading');
                     }
                 },
+                _renderSrc: function(src){
+                    this.set('loaded',false);
+                    this._setAttribute('src',src);
+                },
                 alt: function () {
                     return "";
                 }
