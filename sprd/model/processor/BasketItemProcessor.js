@@ -3,8 +3,7 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
     var TYPE_ARTICLE = "sprd:article";
 
     return DefaultProcessor.inherit("sprd.model.processor.BasketItemProcessor", {
-        parse: function(payload){
-            console.log(arguments);
+        parse: function(model, payload, action, options){
             var element = payload.element;
 
             var properties = element.properties, prop, elementPayload = {};
@@ -17,12 +16,12 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
                 }
             }
 
-            var shop = this.$datasource.createEntity(Shop, payload.shop.id);
+            var shop = this.$dataSource.createEntity(Shop, payload.shop.id);
 
             if (element.type === TYPE_ARTICLE) {
-                elementPayload.item = this.$datasource.getContextForChild(Article,shop).createEntity(Article, element.id);
+                elementPayload.item = this.$dataSource.getContextForChild(Article,shop).createEntity(Article, element.id);
             } else if (element.type === TYPE_PRODUCT) {
-                elementPayload.item = this.$datasource.getContextForChild(Product, shop).createEntity(Product, element.id);
+                elementPayload.item = this.$dataSource.getContextForChild(Product, shop).createEntity(Product, element.id);
             } else {
                 throw "Element type '" + element.type + "' not supported";
             }
@@ -33,7 +32,7 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
 
             payload['element'] = elementPayload;
 
-            return this.callBase();
+            return this.callBase(model, payload, action, options);
         },
         compose: function(){
             var payload = this.callBase();
