@@ -7,8 +7,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity"],
             sizes: [Entity]
         },
 
-        parse: function(dataSource, data) {
-            data = this.callBase(dataSource, data);
+        parse: function(data) {
 
             var self = this;
             if (data.views) {
