@@ -25,20 +25,6 @@ define(["js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/mod
                 return params;
             },
 
-            extractListMetaData: function (list, payload, options) {
-                return payload;
-            },
-
-            extractListData: function (list, payload, options) {
-                for (var key in payload) {
-                    if (payload.hasOwnProperty(key)) {
-                        if (_.isArray(payload[key])) {
-                            return payload[key];
-                        }
-                    }
-                }
-            },
-
             createContext: function (properties, parentContext) {
 
                 if (properties) {
