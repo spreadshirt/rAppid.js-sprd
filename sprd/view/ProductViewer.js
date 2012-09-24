@@ -83,7 +83,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             // check if new productType has same appearance as set
             var appearance = this.get('product.appearance');
             if(e.$ && appearance){
-                appearance = e.$.getAppearanceById(appearance.id);
+                appearance = e.$.getAppearanceById(appearance.$.id);
             }
             // if so, set this as appearance, else use null
             this.set('_appearance', appearance, {silent: true});
@@ -238,7 +238,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             if (view && appearance && productType) {
                 this.setViewBox(0, 0, view.get('size.width'), view.get('size.height'));
 
-                var url = this.$.imageService.productTypeImage(productType.$.id, view.$.id, appearance.id, {
+                var url = this.$.imageService.productTypeImage(productType.$.id, view.$.id, appearance.$.id, {
                     width: this.$.width,
                     height: this.$.height
                 });
