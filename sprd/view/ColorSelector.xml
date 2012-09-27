@@ -33,7 +33,7 @@
                         this.set('items',[]);
                     } else if(appearances !== this.$items){
                         var productType = this.$.productType;
-                        this.set('items', productType.$.appearances);
+                        this.set('items', appearances);
                         if(this.$.selectedItem && !productType.getAppearanceById(this.$.selectedItem.$.id)){
                             this.set('selectedItem', productType.getDefaultAppearance());
                         }
@@ -49,7 +49,7 @@
         ]]></js:Script>
     <js:Template name="item">
         <li>
-            <img src="{getImageUrl(${$appearance})}" width="{colorWidth}" title="${$appearance.name}"/>
+            <img src="{getImageUrl(${$appearance})}" width="{colorWidth}" title="{$appearance.name}"/>
         </li>
     </js:Template>
 </ui:SelectionView>
