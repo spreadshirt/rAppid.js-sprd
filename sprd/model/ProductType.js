@@ -1,9 +1,9 @@
-define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity"], function (SprdModel, ProductTypeView, Entity) {
+define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance"], function (SprdModel, ProductTypeView, Entity, Appearance) {
     return SprdModel.inherit("sprd.model.ProductType", {
 
         $schema: {
             views: [ProductTypeView],
-            appearances: [Entity],
+            appearances: [Appearance],
             sizes: [Entity]
         },
 
