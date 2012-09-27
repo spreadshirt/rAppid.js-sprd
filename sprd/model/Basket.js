@@ -5,10 +5,6 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
             basketItems: Collection.of(BasketItem)
         },
 
-        defaults: {
-            basketItems: Collection.of(BasketItem)
-        },
-
         ctor: function(){
             this.callBase();
 
@@ -72,25 +68,31 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
         },
         totalItemsCount: function () {
             var total = 0;
-            this.$.basketItems.each(function (item) {
-                total += item.$.quantity;
-            });
+            if(this.$.basketItems){
+                this.$.basketItems.each(function (item) {
+                    total += item.$.quantity;
+                });
+            }
             return total;
         }.on('change'),
 
         vatIncluded: function () {
             var total = 0;
-            this.$.basketItems.each(function (item) {
-                total += item.totalVatIncluded();
-            });
+            if(this.$.basketItems){
+                this.$.basketItems.each(function (item) {
+                    total += item.totalVatIncluded();
+                });
+            }
             return total;
         }.on('change'),
 
         vatExcluded: function () {
             var total = 0;
-            this.$.basketItems.each(function (item) {
-                total += item.totalVatExcluded();
-            });
+            if(this.$.basketItems){
+                this.$.basketItems.each(function (item) {
+                    total += item.totalVatExcluded();
+                });
+            }
             return total;
         }.on('change'),
         platformCheckoutLink: function(){
