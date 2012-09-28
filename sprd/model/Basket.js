@@ -21,18 +21,10 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
             } else {
                 basketItem =  this.$.basketItems.createItem();
                 basketItem.set('element', element);
-                basketItem.bind('change:quantity', this._onItemQuantityChange, this);
-                // element.bind('change:size', this._onArticleSizeChange, this);
                 this.$.basketItems.add(basketItem);
             }
 
             return basketItem;
-        },
-
-        _onItemQuantityChange: function (e, model) {
-            if (model.$.quantity < 1) {
-                this.$.basketItems.remove(model);
-            }
         },
 
         _onArticleSizeChange: function (e, model) {
