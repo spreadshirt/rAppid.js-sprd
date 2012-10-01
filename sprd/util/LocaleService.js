@@ -50,7 +50,7 @@ define(['js/core/Component'], function (Component) {
         },
 
         getLanguage: function () {
-            var browserLanguage = navigator.language || navigator.browserLanguage || navigator.systemLanguage || navigator.userLanguage;
+            var browserLanguage = (navigator.language || navigator.browserLanguage || navigator.systemLanguage || navigator.userLanguage).split("-")[0];
             return this.determinateLanguage(this.getHost(), browserLanguage, this.$.supportedLanguages, this.$.fallbackLanguage);
         },
 
