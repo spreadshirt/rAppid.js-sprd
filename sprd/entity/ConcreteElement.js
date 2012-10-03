@@ -45,8 +45,12 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
             return null;
         },
 
+        uniqueId: function() {
+            return (this.getType() === TYPE_PRODUCT ? 'P' : 'A') + this.get('item.id');
+        },
+
         sku: function() {
-            return [ (this.getType() === TYPE_PRODUCT ? 'P' : 'A') + this.get('item.id'),
+            return [ this.get('getProduct().productType.id'),
                 this.get('appearance.id'),
                 this.get('size.id')].join(' - ');
         }
