@@ -3,16 +3,18 @@
     <js:Script><![CDATA[
         (function () {
             return {
-                $classAttributes: ['productType','selectedSize'],
-                $defaultContentName: null,
-                initialize: function(){
-                    this.bind('change:productType', this._onProductTypeChange, this);
+                defaults: {
+                    sizes: null
                 },
-                _onProductTypeChange: function(){
-                    var sizes = this.get('productType.sizes');
+                $classAttributes: ['sizes','selectedSize'],
+
+                $defaultContentName: null,
+                _commitChangedAttributes: function(attributes){
+                    var sizes = attributes.sizes;
                     if(sizes && sizes.length === 1){
                         this.set('selectedSize',sizes.at(0));
                     }
+                    this.callBase();
                 },
                 closeMenu: function(){
                     this.set('menuVisible', false);
@@ -28,7 +30,7 @@
         ]]>
     </js:Script>
     <js:Content name="menu">
-        <ui:SelectionView items="{productType.sizes}" tagName="ul"
+        <ui:SelectionView items="{sizes}" tagName="ul"
                           selectedItem="{{selectedSize}}"
                           needsSelection="{hasSelection()}" onclick="closeMenu">
             <js:Template name="item">

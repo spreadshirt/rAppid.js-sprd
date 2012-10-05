@@ -1,5 +1,5 @@
 <ui:SelectionView xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml"
-                  needsSelection="{hasSelection()}" tagName="ul">
+                  needsSelection="{hasSelection()}" tagName="ul" items="{productType.appearances}">
 
     <js:Script><![CDATA[
         (function () {
