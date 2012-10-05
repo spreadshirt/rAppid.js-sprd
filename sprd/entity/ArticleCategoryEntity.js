@@ -15,7 +15,7 @@ define(["js/data/Entity"], function (Entity) {
         }
     });
 
-    ArticleCategoryEntity.prototype.$schema = {
+    ArticleCategoryEntity.prototype.schema = {
         articleCategories: [ArticleCategoryEntity]
     };
     return ArticleCategoryEntity;

@@ -3,7 +3,7 @@ define(["sprd/data/SprdModel", 'js/core/List', 'sprd/model/ProductType',
     function (SprdModel, List, ProductType, AttributeTypeResolver, DesignConfiguration, TextConfiguration, TypeResolver, Entity) {
         return SprdModel.inherit("sprd.model.Product", {
 
-            $schema: {
+            schema: {
                 productType: ProductType,
                 appearance: Entity,
                 configurations: [new AttributeTypeResolver({

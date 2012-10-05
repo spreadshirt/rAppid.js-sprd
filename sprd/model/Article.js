@@ -5,7 +5,7 @@ define(["sprd/data/SprdModel", "sprd/model/Product", "sprd/model/Currency"],
 
     return SprdModel.inherit("sprd.model.Article",{
 
-        $schema: {
+        schema: {
             product: Product
         },
 

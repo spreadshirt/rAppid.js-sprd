@@ -3,7 +3,7 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
     var TYPE_ARTICLE = "sprd:article";
 
     return Entity.inherit("sprd.entity.ConcreteElement",{
-        $schema: {
+        schema: {
             appearance: Appearance,
             size: Entity
         },
@@ -45,12 +45,8 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
             return null;
         },
 
-        uniqueId: function() {
-            return (this.getType() === TYPE_PRODUCT ? 'P' : 'A') + this.get('item.id');
-        },
-
         sku: function() {
-            return [ this.get('getProduct().productType.id'),
+            return [ (this.getType() === TYPE_PRODUCT ? 'P' : 'A') + this.get('item.id'),
                 this.get('appearance.id'),
                 this.get('size.id')].join(' - ');
         }

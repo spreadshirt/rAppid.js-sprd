@@ -1,7 +1,7 @@
 define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement"], function (SprdModel, ConcreteElement) {
     return SprdModel.inherit("sprd.model.BasketItem",{
 
-        $schema: {
+        schema: {
             element: ConcreteElement
         },
 

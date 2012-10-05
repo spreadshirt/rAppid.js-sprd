@@ -11,7 +11,7 @@ define([
     function (SprdModel, Collection, Basket, Currency, Design, ProductType, ProductTypeDepartment, ArticleCategory, Article, User, Country, PrintType, FontFamily) {
 
         return SprdModel.inherit("sprd.model.Shop", {
-            $schema: {
+            schema: {
 
                 user: User,
                 country: Country,

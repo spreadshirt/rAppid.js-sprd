@@ -1,7 +1,7 @@
 define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], function (SprdModel, BasketItem, Collection) {
     return SprdModel.inherit("sprd.model.Basket", {
 
-        $schema: {
+        schema: {
             basketItems: Collection.of(BasketItem)
         },
 
