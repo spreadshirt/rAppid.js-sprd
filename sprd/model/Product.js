@@ -1,11 +1,18 @@
-define(["sprd/data/SprdModel", 'js/core/List', 'sprd/model/ProductType',
-    'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'js/data/TypeResolver', 'js/data/Entity'],
-    function (SprdModel, List, ProductType, AttributeTypeResolver, DesignConfiguration, TextConfiguration, TypeResolver, Entity) {
+define([
+    "sprd/data/SprdModel",
+    'js/core/List',
+    'sprd/model/ProductType',
+    'js/data/AttributeTypeResolver',
+    'sprd/entity/DesignConfiguration',
+    'sprd/entity/TextConfiguration',
+    'sprd/entity/Appearance',
+    'js/data/TypeResolver', 'js/data/Entity'],
+    function (SprdModel, List, ProductType, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Appearance, TypeResolver, Entity) {
         return SprdModel.inherit("sprd.model.Product", {
 
             schema: {
                 productType: ProductType,
-                appearance: Entity,
+                appearance: Appearance,
                 configurations: [new AttributeTypeResolver({
                     attribute: "type",
                     mapping: {
@@ -29,6 +36,11 @@ define(["sprd/data/SprdModel", 'js/core/List', 'sprd/model/ProductType',
                     return this.$.productType.getViewById(this.$.defaultValues.defaultView.id);
                 }
                 return null;
+            },
+            getDefaultAppearance: function() {
+                if(this.$.appearance && this.$.productType){
+                    return this.$.productType.getAppearanceById(this.$.appearance.$.id);
+                }
             }
         });
     });
