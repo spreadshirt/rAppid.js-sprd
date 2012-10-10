@@ -47,8 +47,9 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
         },
 
         getBasketItemForElement: function (element) {
-            for (var i = 0; i < this.$.basketItems.$items.length; i++) {
-                var basketItem = this.$.basketItems.$items[i];
+            var basketItems = this.getCollection('basketItems');
+            for (var i = 0; i < basketItems.$items.length; i++) {
+                var basketItem = basketItems.$items[i];
                 if (basketItem.$.element.isEqual(element)) {
                     return basketItem;
                 }
