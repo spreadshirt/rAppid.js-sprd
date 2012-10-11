@@ -77,8 +77,13 @@ define(['js/core/Component'], function (Component) {
 
             if (host) {
                 // determinate by domain
-                var domain = /\.([a-z]{2,4})$/.exec(host)[1];
-                language = this.$languageMap[domain] || browserLanguage;
+                var domain = /\.([a-z]{2,4})$/.exec(host);
+                if (domain) {
+                    language = this.$languageMap[domain[1]];
+                }
+
+                language = language || browserLanguage;
+
             }
 
             language = language ||browserLanguage;
@@ -105,8 +110,10 @@ define(['js/core/Component'], function (Component) {
 
             if (host) {
                 // determinate by domain
-                var domain = /\.([a-z]{2,4})$/.exec(host)[1];
-                country = this.$countryMap[domain];
+                var domain = /\.([a-z]{2,4})$/.exec(host);
+                if (domain) {
+                    country = this.$countryMap[domain[1]];
+                }
             }
 
             for (var key in this.$countryMap) {
