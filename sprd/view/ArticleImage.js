@@ -7,6 +7,10 @@ define(["sprd/view/ProductImage"], function (ProductImage) {
             if(this.$.article){
                 url = this.$.article.$.resources[0].href;
 
+                var id = this.$.article.$.id;
+                id = Math.floor(parseInt(id.substr(id.length - 2)) / 5);
+                url = url.replace(/:\/\/image/,'://image'+id);
+
                 if(this.$.type === ProductImage.TYPE_COMPOSITION){
                     url = url.replace("products","compositions");
                 }
