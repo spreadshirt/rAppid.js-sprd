@@ -42,14 +42,6 @@
                     }
                 },
 
-                _renderWidth: function (width) {
-                    this._setAttribute('width', width);
-                },
-
-                _renderHeight: function (height) {
-                    this._setAttribute('height', height);
-                },
-
                 _renderSrc: function (src) {
                     this.set('loaded', false);
                     this._setAttribute('src', src);
