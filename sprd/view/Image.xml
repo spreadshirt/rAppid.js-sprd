@@ -1,6 +1,5 @@
 <ui:View xmlns="http://www.w3.org/1999/xhtml"
-         xmlns:ui="js.ui" xmlns:js="js.core"
-         src="{imageUrl()}" alt="{alt()}" onload="onLoad" tagName="img">
+         xmlns:ui="js.ui" xmlns:js="js.core" style="display: inline-block;">
 
     <js:Imports>
         underscore;
@@ -13,10 +12,11 @@
         (function (_, ImageService) {
             return {
                 defaults: {
+                    componentClass: 'sprd-image',
                     loaded: false
                 },
 
-                onLoad: function () {
+                onLoad: function (e) {
                     this.set('loaded', true);
                 },
 
@@ -41,11 +41,6 @@
                         this.addClass('loading');
                     }
                 },
-
-                _renderSrc: function (src) {
-                    this.set('loaded', false);
-                    this._setAttribute('src', src);
-                },
                 alt: function () {
                     return "";
                 }
@@ -54,4 +49,5 @@
         ]]>
 
     </js:Script>
+    <img  cid="$img" src="{imageUrl()}" width="{width}" height="{height}" alt="{alt()}" onload="onLoad"/>
 </ui:View>

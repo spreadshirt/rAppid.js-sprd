@@ -13,10 +13,15 @@ define(["xaml!sprd/view/Image"], function (Image) {
             type: PRODUCT
         },
 
+        _commitChangedAttributes: function(attributes){
+            this.callBase();
+            if(attributes.hasOwnProperty('product') || attributes.hasOwnProperty('type') || attributes.hasOwnProperty('appearance') || attributes.hasOwnProperty('view')){
+                this.set('loaded', false);
+            }
+        },
+
         imageUrl: function () {
-
             var url = null;
-
             if (this.$.product) {
                 var product = this.$.product;
 
@@ -33,8 +38,9 @@ define(["xaml!sprd/view/Image"], function (Image) {
                 if(this.$.appearance) {
                     url += ",appearanceId=" + this.$.appearance.$.id;
                 }
-            }
 
+                return url;
+            }
             return url;
 
         }.onChange('product', 'width', 'height', 'type', 'view', 'appearance')

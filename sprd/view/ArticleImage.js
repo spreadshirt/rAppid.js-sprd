@@ -4,6 +4,13 @@ define(["sprd/view/ProductImage"], function (ProductImage) {
 
         $classAttributes: ["article"],
 
+        _commitChangedAttributes: function(attributes){
+            this.callBase();
+            if (attributes.hasOwnProperty('article')) {
+                this.set('loaded', false);
+            }
+        },
+
         imageUrl: function () {
             var url;
             if (this.$.article && this.$.article.$.resources && this.$.article.$.resources.length) {
@@ -21,6 +28,7 @@ define(["sprd/view/ProductImage"], function (ProductImage) {
 
                 return url;
             }
+
             return this.callBase();
         }.onChange("article")
             .on(["article", "change:resources"]),
