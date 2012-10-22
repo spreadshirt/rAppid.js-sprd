@@ -49,7 +49,7 @@
         ]]></js:Script>
     <js:Template name="item">
         <li>
-            <img src="{getImageUrl($appearance)}" width="{colorWidth}" title="{$appearance.name}"/>
+            <img src="{getImageUrl($appearance)}" alt="{$appearance.name}" width="{colorWidth}" title="{$appearance.name}"/>
         </li>
     </js:Template>
 </ui:SelectionView>
