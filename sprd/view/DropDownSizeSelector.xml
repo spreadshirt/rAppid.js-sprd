@@ -32,7 +32,7 @@
                           needsSelection="{hasSelection()}" onclick="closeMenu">
             <js:Template name="item">
                 <li>
-                    <a>${$item.name}</a>
+                    <a>${item.name}</a>
                 </li>
             </js:Template>
         </ui:SelectionView>

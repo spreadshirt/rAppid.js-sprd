@@ -46,7 +46,7 @@
         ]]></js:Script>
     <js:Template name="item">
         <li>
-            <view:ProductImage product="{$product}" view="${$view}" width="50" height="50" appearance="{$appearance}"/>
+            <view:ProductImage product="{$product}" view="${view}" width="50" height="50" appearance="{$appearance}"/>
         </li>
     </js:Template>
 </ui:SelectionView>

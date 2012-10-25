@@ -10,7 +10,7 @@
                     componentClass="product-view-selector">
     <js:Template name="item">
         <li>
-            <view:ProductImage view="{$view}" product="{product}" appearance="{appearance}" width="{viewWidth}" height="{viewHeight}"/>
+            <view:ProductImage view="{view}" product="{product}" appearance="{appearance}" width="{viewWidth}" height="{viewHeight}"/>
         </li>
     </js:Template>
 </ui:SelectionView>
