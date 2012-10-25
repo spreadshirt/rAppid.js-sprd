@@ -3,7 +3,6 @@
     <js:Script><![CDATA[
         (function () {
             return {
-                $classAttributes: ['productType','selectedSize'],
                 $defaultContentName: null,
                 initialize: function(){
                     this.bind('change:productType', this._onProductTypeChange, this);

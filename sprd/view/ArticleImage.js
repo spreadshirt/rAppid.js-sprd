@@ -2,8 +2,6 @@ define(["sprd/view/ProductImage"], function (ProductImage) {
 
     return ProductImage.inherit("sprd.view.ProductImage", {
 
-        $classAttributes: ["article"],
-
         _commitChangedAttributes: function(attributes){
             this.callBase();
             if (attributes.hasOwnProperty('article')) {

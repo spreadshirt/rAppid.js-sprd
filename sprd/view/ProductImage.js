@@ -5,8 +5,6 @@ define(["xaml!sprd/view/Image"], function (Image) {
 
     var ProductImage = Image.inherit({
 
-        $classAttributes: ["view", "type", "product", "appearance"],
-
         defaults: {
             // if null use default view
             view: null,

@@ -1,7 +1,5 @@
 define(['js/ui/SelectionView'], function(SelectionView) {
     return SelectionView.inherit({
-        $classAttributes: ['sizes'],
-
         defaults: {
             componentClass: 'product-sizes',
             itemKey: 'size',

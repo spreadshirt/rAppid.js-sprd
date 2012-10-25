@@ -4,8 +4,6 @@
         (function () {
 
             return {
-                $classAttributes: ['product', 'appearance'],
-
                 defaults: {
                     componentClass: 'product-views',
                     tagName: 'ul',

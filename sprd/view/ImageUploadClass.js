@@ -3,10 +3,6 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage'],
 
     return View.inherit('sprd.view.ImageUploadClass', {
 
-        $classAttributes: [
-            'imageWidth', 'imageHeight'
-        ],
-
         defaults: {
             items: List,
             imageWidth: 100,

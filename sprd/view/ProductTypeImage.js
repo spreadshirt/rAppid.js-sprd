@@ -4,8 +4,6 @@ define([
 
 	return Image.inherit('app.view.ProductTypeImage', {
 
-		$classAttributes : ['productType'],
-
 		imageUrl : function () {
 			if (this.$.productType && this.$.productType.$.resources) {
 				return this.extendUrlWithSizes(this.$.productType.$.resources[0].href);

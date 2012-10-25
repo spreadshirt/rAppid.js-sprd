@@ -2,8 +2,6 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
     function(Svg, SvgElement, Product, _, ImageService, ConfigurationViewer, PrintAreaViewer){
 
     return Svg.inherit('sprd.view.ProductViewer',{
-        $classAttributes: ['productType','product','appearance'],
-
         defaults: {
 
             height: 300,
