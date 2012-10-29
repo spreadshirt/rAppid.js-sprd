@@ -22,32 +22,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 this.$configuration = configuration;
 
-
-            },
-
-            render: function() {
-
             }
-
-
-//            _transform: function (svg) {
-//
-//                svg = svg || this.$svg;
-//
-//                if (!this.$configuration) {
-//                    return;
-//                }
-//
-//                var matrix = Raphael.matrix();
-//                matrix.translate(this.$configuration.get('offset.x'), this.$configuration.get('offset.y'));
-//                matrix.rotate(this.$configuration.get('rotation'), 0, 0);
-//
-//                if (this.$printAreaViewer) {
-//                    this.$printAreaViewer.transform(matrix);
-//                }
-//
-//                svg.transform(matrix.toTransformString());
-//
-//            }
         });
     });
