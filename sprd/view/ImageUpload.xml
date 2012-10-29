@@ -12,7 +12,7 @@
     <ui:ItemsView tagName="ul" items="{items}">
         <js:Template name="item">
             <li>
-                <img src="${$item.url}" alt="${$item.name}"/>
+                <img src="${item.url}" alt="${item.name}"/>
             </li>
         </js:Template>
     </ui:ItemsView>
