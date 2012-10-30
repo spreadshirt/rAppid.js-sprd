@@ -7,7 +7,7 @@ define(["sprd/data/SprdModel","sprd/entity/DepartmentCategory"], function (Model
             if(this.$.categories){
                 return this.$.categories.each(function(category){
                     if(category.$.id == id){
-                        this.return(category);
+                        this['return'](category);
                     }
                 });
             }

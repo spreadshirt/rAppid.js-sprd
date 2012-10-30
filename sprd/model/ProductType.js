@@ -34,7 +34,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             if(this.$.sizes){
                 return this.$.sizes.each(function(size){
                     if(size.$.id === id){
-                        this.return(size);
+                        this['return'](size);
                     }
                 });
             }

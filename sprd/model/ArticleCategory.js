@@ -10,7 +10,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ArticleCategoryEntity"], function (M
         getSubCategoryById: function(id){
             return this.$.articleCategories.each(function(val){
                 if(val.$.id == id){
-                    this.return(val);
+                    this['return'](val);
                 }
             });
         }

@@ -2,11 +2,7 @@ define(['js/core/List'], function(List){
 
     return List.inherit('sprd.entity.CategoryGroup', {
         includesDepartment: function(department){
-            return !department || this.each(function(category){
-                if(category.$parent === department){
-                    this.return(true);
-                }
-            }) || false;
+            return !department || false;
         },
         getCategoryByDepartment: function(department){
             var ret = new List();
