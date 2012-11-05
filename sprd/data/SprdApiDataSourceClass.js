@@ -4,7 +4,9 @@ define(["js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/mod
         var SprdApiDataSource = RestDataSource.inherit('sprd.data.SprdApiDataSource', {
 
             defaults: {
-                locale: "en_EU"
+                locale: "en_EU",
+                parsePayloadOnCreate: false,
+                parsePayloadOnUpdate: false
             },
 
             $defaultProcessorFactory: DefaultProcessor,
