@@ -1,4 +1,4 @@
-define(["xaml!sprd/view/Image"], function (Image) {
+define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, ImageService) {
 
     var PRODUCT = "product",
         COMPOSITION = "composition";
@@ -11,6 +11,10 @@ define(["xaml!sprd/view/Image"], function (Image) {
             type: PRODUCT
         },
 
+        inject: {
+            imageService: ImageService
+        },
+
         _commitChangedAttributes: function(attributes){
             this.callBase();
             if(attributes.hasOwnProperty('product') || attributes.hasOwnProperty('type') || attributes.hasOwnProperty('appearance') || attributes.hasOwnProperty('view')){
@@ -20,14 +24,16 @@ define(["xaml!sprd/view/Image"], function (Image) {
 
         imageUrl: function () {
             var url = null;
+            var imageService = this.$.imageService;
+
             if (this.$.product) {
                 var product = this.$.product;
 
                 if (this.$.type != COMPOSITION) {
                     // use product
-                    url = "http://image.spreadshirt.net/image-server/v1/products/" + product.$.id;
+                    url = imageService.$.endPoint + "/products/" + product.$.id;
                 } else {
-                    url = "http://image.spreadshirt.net/image-server/v1/compositions/" + product.$.id;
+                    url = imageService.$.endPoint + "/compositions/" + product.$.id;
                 }
                 url += '/views/' +  (this.$.view ? this.$.view.$.id : "1");
 
