@@ -5,7 +5,7 @@ define(['js/core/Component','underscore'], function(Component, _) {
     var ImageService = Component.inherit('sprd.data.ImageService', {
 
         defaults: {
-            endPoint: 'http://image.spreadshirt.net/image-server/v1'
+            endPoint: '//image.spreadshirt.net/image-server/v1'
         },
 
         productTypeImage: function (productTypeId, viewId, appearanceId, options) {
