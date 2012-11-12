@@ -38,7 +38,7 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
 
             return this.callBase(model, payload, action, options);
         },
-        compose: function(){
+        compose: function(model){
             var payload = this.callBase();
 
             var element = payload.element;
@@ -47,7 +47,10 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
                 {key: "appearance", value: element.appearance.id},
                 {key: "size", value: element.size.id}
             ];
-            elementPayload["type"] = TYPE_ARTICLE;
+
+
+
+            elementPayload["type"] = model.$.element.getType();
             elementPayload["href"] = element.item.href;
             elementPayload["id"] = element.item.id;
 
