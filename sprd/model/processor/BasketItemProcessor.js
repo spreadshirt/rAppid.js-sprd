@@ -20,15 +20,19 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
 
             if (element.type === TYPE_ARTICLE) {
                 elementPayload.item = this.$dataSource.getContextForChild(Article,shop).createEntity(Article, element.id);
+                elementPayload.item.fetch({
+                    fetchSubModels: ['product/productType']
+                });
             } else if (element.type === TYPE_PRODUCT) {
                 elementPayload.item = this.$dataSource.getContextForChild(Product, shop).createEntity(Product, element.id);
+                elementPayload.item.fetch({
+                    fetchSubModels: ['productType']
+                });
             } else {
                 throw "Element type '" + element.type + "' not supported";
             }
             elementPayload.item.set('price',payload.price);
-            elementPayload.item.fetch({
-                fetchSubModels: ['product/productType']
-            });
+
 
             payload['element'] = elementPayload;
 
