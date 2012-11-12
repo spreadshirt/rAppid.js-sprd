@@ -1,4 +1,7 @@
-define(["sprd/data/SprdModel"], function (Model) {
+define(["sprd/data/SprdModel", "underscore"], function (Model, _) {
+
+    var dotCurrencyCodes = ['USD'];
+
     return Model.inherit('sprd.model.Currency', {
 
         formatPrice: function (price, type) {
@@ -9,6 +12,10 @@ define(["sprd/data/SprdModel"], function (Model) {
             return this.formatValue(price[type]);
         },
         formatValue: function(val){
+
+            var pow= Math.pow(10, this.$.decimalCount);
+            val = Math.round(val * pow) / pow;
+
             val = new String(val).split(".");
             var len = val.length;
             if (len === 1) {
@@ -18,8 +25,12 @@ define(["sprd/data/SprdModel"], function (Model) {
             } else if(val[1].length > this.$.decimalCount) {
                 val[1] = val[1].substr(0,2);
             }
+
             if (this.$.pattern) {
-                return this.$.pattern.replace('%', val.join(",")).replace('$', this.$.symbol).replace('.', ',');
+
+                var currencySeparator = _.include(dotCurrencyCodes, this.$.isoCode) ? "." : ",";
+
+                return this.$.pattern.replace('%', val.join(currencySeparator)).replace('$', this.$.symbol);
             } else {
                 return val;
             }
