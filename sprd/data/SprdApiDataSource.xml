@@ -10,7 +10,9 @@
             <conf:ResourceConfiguration path="printTypes" modelClassName="sprd.model.PrintType" />
             <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" />
             <conf:ResourceConfiguration path="designCategories" modelClassName="sprd.model.DesignCategory"/>
-            <conf:ResourceConfiguration path="productTypes" modelClassName="sprd.model.ProductType" />
+            <conf:ResourceConfiguration path="productTypes" modelClassName="sprd.model.ProductType" >
+                <conf:ResourceConfiguration path="stockStates" modelClassName="sprd.model.StockState" collectionClassName="sprd.collection.StockStates" />
+            </conf:ResourceConfiguration>
             <conf:ResourceConfiguration path="fontFamilies" modelClassName="sprd.model.FontFamily" />
             <conf:ResourceConfiguration path="products" modelClassName="sprd.model.Product"/>
             <conf:ResourceConfiguration path="productTypeDepartments" modelClassName="sprd.model.ProductTypeDepartment"/>
