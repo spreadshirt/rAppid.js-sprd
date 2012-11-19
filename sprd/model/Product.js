@@ -37,6 +37,12 @@ define([
                 }
                 return null;
             },
+            getDefaultViewId: function(){
+                if (this.$.defaultValues) {
+                    return this.$.defaultValues.defaultView.id;
+                }
+                return null;
+            },
             getDefaultAppearance: function() {
                 if(this.$.appearance && this.$.productType){
                     return this.$.productType.getAppearanceById(this.$.appearance.$.id);

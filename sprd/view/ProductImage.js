@@ -35,7 +35,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
                 } else {
                     url = imageService.$.endPoint + "/compositions/" + product.$.id;
                 }
-                url += '/views/' +  (this.$.view ? this.$.view.$.id : "1");
+                url += '/views/' +  (this.$.view ? this.$.view.$.id : product.getDefaultViewId());
 
                 url = this.extendUrlWithSizes(url);
 
