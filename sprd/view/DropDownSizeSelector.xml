@@ -27,7 +27,7 @@
         ]]>
     </js:Script>
     <js:Content name="menu">
-        <ui:SelectionView items="{productType.sizes}" tagName="ul"
+        <ui:SelectionView items="{productType.getAvailableSizesForAppearance(appearance)}" tagName="ul"
                           selectedItem="{{selectedSize}}"
                           needsSelection="{hasSelection()}" onclick="closeMenu">
             <js:Template name="item">
