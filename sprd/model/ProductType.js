@@ -1,10 +1,11 @@
-define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance"], function (SprdModel, ProductTypeView, Entity, Appearance) {
+define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance","sprd/collection/StockStates", 'js/core/List'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List) {
     return SprdModel.inherit("sprd.model.ProductType", {
 
         schema: {
             views: [ProductTypeView],
             appearances: [Appearance],
-            sizes: [Entity]
+            sizes: [Entity],
+            stockStates: StockStates
         },
 
         parse: function(data) {
@@ -87,6 +88,24 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
                 }
             }
             return null;
-        }
+        },
+        getAvailableSizesForAppearance: function(appearance){
+            if(!appearance){
+                return null;
+            }
+            var sizes = new List();
+            if (this.$.sizes && this.$.stockStates) {
+                var size;
+                for(var i = 0; i < this.$.sizes.length; i++){
+                    size = this.$.sizes.at(i);
+                    if(this.$.stockStates.isSizeAndAppearanceAvailable(size, appearance)){
+                        sizes.add(size);
+                    }
+                }
+            }else{
+                return this.$.sizes;
+            }
+            return sizes;
+        }.on(['stockStates','add'])
     })
 });
