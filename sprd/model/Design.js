@@ -1,6 +1,4 @@
-define([
-	'sprd/data/SprdModel'
-], function (SprdModel) {
+define(['sprd/data/SprdModel'], function (SprdModel) {
 	return SprdModel.inherit('sprd.model.Design', {
 		defaults : {
 			name         : '',
