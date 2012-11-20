@@ -1,10 +1,10 @@
-define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance","sprd/collection/StockStates", 'js/core/List'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List) {
+define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance","sprd/collection/StockStates", 'js/core/List', 'sprd/entity/Size'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List, Size) {
     return SprdModel.inherit("sprd.model.ProductType", {
 
         schema: {
             views: [ProductTypeView],
             appearances: [Appearance],
-            sizes: [Entity],
+            sizes: [Size],
             stockStates: StockStates
         },
 
@@ -106,6 +106,12 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
                 return this.$.sizes;
             }
             return sizes;
-        }.on(['stockStates','add'])
+        }.on(['stockStates','add']),
+        getMeasures: function(){
+            if(this.$.sizes && this.$.sizes.size() > 0){
+                return this.$.sizes.at(0).$.measures;
+            }
+            return [];
+        }.onChange('sizes')
     })
 });
