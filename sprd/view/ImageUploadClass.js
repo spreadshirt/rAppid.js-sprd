@@ -61,7 +61,6 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage'],
                         addFile(e.dataTransfer.files[i]);
                     }
 
-
                 }
 
                 e.preventDefault();

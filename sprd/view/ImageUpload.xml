@@ -9,14 +9,11 @@
 
     <div class="upload-notice" visible="{displayNotice}">{notice}</div>
 
-    <ui:ItemsView tagName="ul" items="{items}">
+    <ui:ListView tagName="ul" items="{items}">
         <js:Template name="item">
-            <li>
+            <div class="image-container">
                 <img src="${item.url}" alt="${item.name}"/>
-            </li>
+            </div>
         </js:Template>
-    </ui:ItemsView>
-
-
-
+    </ui:ListView>
 </view:ImageUploadClass>
