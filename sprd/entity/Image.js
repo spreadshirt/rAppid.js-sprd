@@ -1,11 +1,42 @@
-define(['js/data/Entity'], function(Entity) {
+define(['js/data/Entity'], function (Entity) {
 
-    return Entity.inherit('sprd/data/Image', {
+    var Image = Entity.inherit('app.entity.Image', {
         defaults: {
-            url: null,
             name: null,
-            width: 0,
-            height: 0
+            size: null,
+            type: null,
+            lastModifiedDate: null,
+            src: null,
+
+            width: null,
+            height: null
+        },
+
+        getDimension: function(callback) {
+            Image.getDimension(this.src, function (err, dimension) {
+                if (!err && dimension) {
+                    // set width and height
+                    self.set(dimension);
+                }
+
+                callback(err, dimension);
+            });
         }
-    })
+    }, {
+        getDimension: function (src, callback) {
+            if (typeof window !== "undefined") {
+                var img = new window.Image();
+                img.onload = function (e) {
+                    callback(null, {
+                        width: img.width,
+                        height: img.height
+                    });
+                };
+                img.src = src;
+            } else {
+                callback("Cannot determinate dimension, window not defined");
+            }
+        }
+    });
+    return Image;
 });
