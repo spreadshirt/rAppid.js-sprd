@@ -93,6 +93,12 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection"], f
                 return this.$.links[2].href;
             }
             return null;
+        }.onChange('links'),
+        shopCheckoutLink: function(){
+            if (this.$.links) {
+                return this.$.links[1].href;
+            }
+            return null;
         }.onChange('links')
     });
 });
