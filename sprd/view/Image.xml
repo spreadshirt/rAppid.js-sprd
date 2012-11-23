@@ -1,5 +1,5 @@
 <ui:View xmlns="http://www.w3.org/1999/xhtml"
-         xmlns:ui="js.ui" xmlns:js="js.core" style="display: inline-block;">
+         xmlns:ui="js.ui" xmlns:js="js.core" display="inline-block">
 
     <js:Imports>
         underscore;
