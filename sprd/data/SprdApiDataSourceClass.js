@@ -6,7 +6,7 @@ define(["js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/mod
             defaults: {
                 locale: "en_EU",
                 parsePayloadOnCreate: false,
-                parsePayloadOnUpdate: false
+                parsePayloadOnUpdate: false,
             },
 
             $defaultProcessorFactory: DefaultProcessor,
@@ -32,20 +32,6 @@ define(["js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/mod
             },
 
             createContext: function (properties, parentContext) {
-
-                if (properties) {
-                    if (properties.shopId) {
-                        return new SprdApiDataSource.ShopContext(this, properties, parentContext);
-                    }
-
-                    if (properties.userId) {
-                        return new SprdApiDataSource.UserContext(this, properties, parentContext);
-                    }
-
-                    if (properties.basketId) {
-                        return new SprdApiDataSource.BasketContext(this, properties, parentContext);
-                    }
-                }
                 return new SprdApiDataSource.SprdApiContext(this, properties, parentContext);
             },
 
@@ -113,23 +99,6 @@ define(["js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/mod
             }
         });
 
-        SprdApiDataSource.ShopContext = SprdApiDataSource.SprdApiContext.inherit("sprd.data.SprdApiDataSource.ShopContext", {
-            getPathComponents: function () {
-                return ['shops', this.$properties.shopId];
-            }
-        });
-
-        SprdApiDataSource.UserContext = SprdApiDataSource.SprdApiContext.inherit("sprd.data.SprdApiDataSource.UserContext", {
-            getPathComponents: function () {
-                return ['users', this.$properties.userId];
-            }
-        });
-
-        SprdApiDataSource.BasketContext = SprdApiDataSource.SprdApiContext.inherit("sprd.data.SprdApiDataSource.BasketContext", {
-            getPathComponents: function () {
-                return ['baskets', this.$properties.basketId];
-            }
-        });
 
         return SprdApiDataSource;
     });
