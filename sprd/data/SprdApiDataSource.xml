@@ -27,6 +27,7 @@
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="users" modelClassName="sprd.model.User">
             <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.UserShop"/>
+            <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.UserDesign" sessionRequired="true"/>
         </conf:ResourceConfiguration>
 
         <conf:ResourceConfiguration path="sessions" modelClassName="sprd.model.Session" />
