@@ -3,9 +3,14 @@ define(['sprd/data/SprdModel'], function (SprdModel) {
 		defaults : {
 			name         : '',
 			description  : '',
-			restrictions : null,
-			user         : null
-		}
-	});
+			restrictions : null
+		},
+
+        schema: {
+            name: String,
+            description: String,
+            type: String
+        }
+    });
 
 });
