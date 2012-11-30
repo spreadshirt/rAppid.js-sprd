@@ -1,5 +1,5 @@
-define(["sprd/data/SprdDataSource", "js/data/Model", "js/data/RestDataSource", "js/data/DataSource"],
-    function (SprdDataSource, Model, RestDataSource, DataSource) {
+define(["sprd/data/SprdDataSource", "js/data/Model", "js/data/RestDataSource", "js/data/DataSource", "sprd/model/processor/UploadDesignProcessor"],
+    function (SprdDataSource, Model, RestDataSource, DataSource, UploadDesignProcessor) {
 
         var _formatProcessorCache = {};
 
@@ -7,6 +7,10 @@ define(["sprd/data/SprdDataSource", "js/data/Model", "js/data/RestDataSource", "
 
             defaults: {
                 parsePayloadOnUpdate: false
+            },
+
+            $processors: {
+                UploadDesignProcessor: UploadDesignProcessor
             },
 
             _saveModel: function (model, options, callback) {
