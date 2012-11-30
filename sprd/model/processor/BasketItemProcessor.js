@@ -54,10 +54,16 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
             elementPayload["href"] = element.item.href;
             elementPayload["id"] = element.item.id;
 
-            return {
+            var ret = {
                 element: elementPayload,
                 quantity: payload.quantity
             };
+
+            if(payload.origin){
+                ret['origin'] = payload.origin;
+            }
+
+            return ret;
         }
     });
 });

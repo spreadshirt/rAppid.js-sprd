@@ -40,11 +40,12 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement"], function (SprdMod
             return this.vatExcluded() * this.$.quantity;
         }.on('change:quantity'),
 
-        prepare: function(){
+        compose: function(){
             return {
                 quantity: this.$.quantity,
                 element: this.$.element,
-                price: this.$.price
+                price: this.$.price,
+                origin: this.$.origin
             }
         }
     });
