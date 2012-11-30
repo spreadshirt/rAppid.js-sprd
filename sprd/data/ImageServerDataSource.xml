@@ -1,0 +1,5 @@
+<data:ImageServerDataSourceClass xmlns:data="sprd.data" xmlns:conf="js.conf">
+    <conf:DataSourceConfiguration>
+        <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.UploadImage" />
+    </conf:DataSourceConfiguration>
+</data:ImageServerDataSourceClass>
