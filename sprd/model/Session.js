@@ -1,17 +1,45 @@
 define(['sprd/data/SprdModel', 'sprd/model/User'], function (SprdModel, User) {
 	return SprdModel.inherit('sprd.model.Session', {
 
-        schema: {
-            user: User
+        defaults: {
+            username: null,
+            password: null
         },
 
-        login: function(username, password, callback) {
-            this.set({
-                username: username,
-                password: password
-            });
+        schema: {
+            user: {
+                type: User,
+                required: false
+            },
+            // FIXME remove all data which isn't part of the schema
+            href: {
+                type: String,
+                required: false
+            },
+            username: String,
+            password: String
+        },
 
-            this.save(null, function(err, session) {
+        /***
+         *
+         * @param [username]
+         * @param [password]
+         * @param callback
+         */
+        login: function(username, password, callback) {
+
+            var args = Array.prototype.slice.call(arguments);
+
+            if (args.length === 1) {
+                callback = arguments[0];
+            } else {
+                this.set({
+                    username: username,
+                    password: password
+                });
+            }
+
+            this.validateAndSave(null, function(err, session) {
                 if (!err && session) {
                     session.fetch({
                         fetchSubModels: ["user"]
@@ -22,6 +50,10 @@ define(['sprd/data/SprdModel', 'sprd/model/User'], function (SprdModel, User) {
             });
         },
 
+        /***
+         *
+         * @param callback
+         */
         logout: function(callback) {
             this.remove(null, callback);
         }
