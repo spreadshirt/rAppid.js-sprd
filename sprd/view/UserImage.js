@@ -13,7 +13,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
 
         _commitChangedAttributes: function (attributes) {
             this.callBase();
-            if (attributes.hasOwnProperty('design')) {
+            if (attributes.hasOwnProperty('user')) {
                 this.set('loaded', false);
             }
         },
