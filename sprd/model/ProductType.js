@@ -31,6 +31,24 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             }
             return null;
         },
+
+        containsView: function(view) {
+
+            if (this.$.views) {
+                return this.$.views.includes(view);
+            }
+
+            return false;
+        },
+
+        containsAppearance: function(appearance) {
+
+            if (this.$.appearances) {
+                return this.$.appearances.includes(appearance);
+            }
+            return false;
+        },
+
         getSizeById: function(id){
             if(this.$.sizes){
                 return this.$.sizes.each(function(size){
@@ -41,6 +59,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             }
             return null;
         },
+
         getDefaultView: function () {
             if (this.$.defaultValues) {
                 return this.getViewById(this.$.defaultValues.defaultView.id);
@@ -66,6 +85,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             }
             return null;
         },
+
         getAppearanceById: function(id){
             if(this.$.appearances){
                 var app;
@@ -78,6 +98,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             }
             return null;
         },
+
         getViewByPerspective: function(perspective){
             if (this.$.views) {
                 for (var i = 0; i < this.$.views.$items.length; i++) {
@@ -89,6 +110,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             }
             return null;
         },
+
         getAvailableSizesForAppearance: function(appearance){
             if(!appearance){
                 return null;
@@ -107,6 +129,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             }
             return sizes;
         }.on(['stockStates','add']),
+
         getMeasures: function(){
             if(this.$.sizes && this.$.sizes.size() > 0){
                 return this.$.sizes.at(0).$.measures;
