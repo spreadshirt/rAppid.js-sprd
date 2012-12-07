@@ -2,7 +2,10 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement"], function (SprdMod
     return SprdModel.inherit("sprd.model.BasketItem",{
 
         schema: {
-            element: ConcreteElement
+            element: ConcreteElement,
+            quantity: Number,
+            price: Object,
+            origin: String
         },
 
         defaults: {
@@ -38,15 +41,6 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement"], function (SprdMod
 
         totalVatExcluded: function () {
             return this.vatExcluded() * this.$.quantity;
-        }.on('change:quantity'),
-
-        compose: function(){
-            return {
-                quantity: this.$.quantity,
-                element: this.$.element,
-                price: this.$.price,
-                origin: this.$.origin
-            }
-        }
+        }.on('change:quantity')
     });
 });

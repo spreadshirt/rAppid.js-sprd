@@ -26,7 +26,9 @@
             <conf:ResourceConfiguration path="items" modelClassName="sprd.model.BasketItem" processor="BasketItemProcessor"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="users" modelClassName="sprd.model.User">
-            <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.UserShop"/>
+            <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.UserShop">
+                <conf:ResourceConfiguration path="articles" modelClassName="sprd.model.Article"/>
+            </conf:ResourceConfiguration>
             <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.UserDesign" sessionRequired="true"/>
             <conf:ResourceConfiguration path="products" modelClassName="sprd.model.UserProduct" sessionRequired="true"/>
             <conf:ResourceConfiguration path="productTypes" modelClassName="sprd.model.UserProductType" sessionRequired="true">
