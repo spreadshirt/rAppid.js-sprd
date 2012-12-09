@@ -5,8 +5,10 @@ define([
     return Image.inherit('app.view.ProductTypeImage', {
 
         defaults: {
-            type: "preview"
+            type: "preview",
+            productType: null
         },
+
         imageUrl: function () {
             if (this.$.productType && this.$.productType.$.resources) {
                 var url;
