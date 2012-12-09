@@ -16,10 +16,12 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             // private defaults
             _productType: null,
             _appearance: null,
-            _view: null
+            _view: null,
+
+            componentClass: "product-viewer"
         },
 
-        $classAttributes: ["product"],
+        $classAttributes: ["product", "view"],
 
         inject: {
             imageService: ImageService
