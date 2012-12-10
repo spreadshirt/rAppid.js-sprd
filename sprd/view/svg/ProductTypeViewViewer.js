@@ -1,4 +1,4 @@
-define(['js/svg/SvgElement', "sprd/data/ImageService"], function (SvgElement, ImageService) {
+define(['js/svg/SvgElement', "sprd/data/ImageService", "sprd/view/svg/PrintAreaViewer"], function (SvgElement, ImageService, PrintAreaViewer) {
 
     return SvgElement.inherit('sprd/view/svg/ProductTypeViewViewer', {
 
@@ -24,6 +24,12 @@ define(['js/svg/SvgElement', "sprd/data/ImageService"], function (SvgElement, Im
             imageService: ImageService
         },
 
+        ctor: function() {
+            this.$printAreas = [];
+
+            this.callBase();
+        },
+
         url: function () {
             if (this.$.imageService && this.$._productType && this.$._view && this.$._productType.containsAppearance(this.$._appearance) ) {
                 return this.$.imageService.productTypeImage(this.$._productType.$.id, this.$._view.$.id, this.$._appearance.$.id, {
@@ -47,15 +53,49 @@ define(['js/svg/SvgElement', "sprd/data/ImageService"], function (SvgElement, Im
             });
 
             this.addChild(this.$productTypeImage);
-//
-//            var border = this.createComponent(SvgElement, {
-//                tagName: "rect",
-//                class: "print-area-border",
-//                width: this.get('printArea.boundary.size.width'),
-//                height: this.get('printArea.boundary.size.height')
-//            });
-//
-//            this.addChild(border);
+
+            this.callBase();
+
+        },
+
+        _removePrintAreas: function() {
+            for (var i = 0; i < this.$printAreas.length; i++) {
+                var printArea = this.$printAreas[i];
+                printArea.remove();
+                printArea.destroy();
+            }
+
+            this.$printAreas = [];
+        },
+
+        _render_view: function(view) {
+
+            this._removePrintAreas();
+
+            if (view) {
+
+                for (var i = 0; i < view.$.viewMaps.$items.length; i++) {
+                    var viewMap = view.$.viewMaps.$items[i];
+
+                    var printAreaViewer = this.createComponent(PrintAreaViewer, {
+                        product: this.$.product,
+                        productTypeViewViewer: this,
+
+                        _viewMap: viewMap
+                    });
+
+                    this.addChild(printAreaViewer);
+                    this.$printAreas.push(printAreaViewer);
+
+                }
+
+            }
+        },
+
+        destroy: function() {
+
+            this._removePrintAreas();
+            this.callBase();
         }
 
     });
