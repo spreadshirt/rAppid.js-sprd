@@ -1,53 +1,7 @@
-<ui:SelectionView xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml"
-                  needsSelection="{hasSelection()}" tagName="ul" items="{productType.appearances}">
-
-    <js:Script><![CDATA[
-        (function () {
-
-            return {
-                defaults: {
-                    componentClass: 'product-appearances',
-                    itemKey: 'appearance',
-                    colorWidth: 25,
-                    // if null use default view
-                    productType: null,
-                    product: null,
-                    multiSelect: false
-                },
-                initialize: function(){
-                    this.callBase();
-                    this.bind('change:product',this._onProductChange,this);
-                    this.bind('change:productType',this._onProductTypeChange,this);
-                },
-                _onProductChange: function(e){
-                    this.set('productType', this.get('product.productType'));
-                    if(this.$.productType && this.$.selectedItem && !this.$.productType.getAppearanceById(this.$.selectedItem.$.id)){
-                        this.set('selectedItem', this.$.productType.getAppearanceById(this.get('product.appearance.id')));
-                    }
-                },
-                _onProductTypeChange: function(){
-                    var appearances = this.get('productType.appearances');
-                    if(appearances === null){
-                        this.set('items',[]);
-                    } else if(appearances !== this.$items){
-                        var productType = this.$.productType;
-                        this.set('items', appearances);
-                        if(this.$.selectedItem && !productType.getAppearanceById(this.$.selectedItem.$.id)){
-                            this.set('selectedItem', productType.getDefaultAppearance());
-                        }
-                    }
-                },
-                getImageUrl: function (appearance) {
-                    if (appearance.$.resources && appearance.$.resources.length > 0) {
-                        return appearance.$.resources[0].href + ",width=" + this.$.colorWidth;
-                    }
-                }
-            }
-        })
-        ]]></js:Script>
+<view:ColorSelectorClass xmlns:js="js.core" xmlns="http://www.w3.org/1999/xhtml" xmlns:view="sprd.view">
     <js:Template name="item">
         <li>
             <img src="{getImageUrl(appearance)}" alt="{appearance.name}" width="{colorWidth}" title="{appearance.name}"/>
         </li>
     </js:Template>
-</ui:SelectionView>
+</view:ColorSelectorClass>
