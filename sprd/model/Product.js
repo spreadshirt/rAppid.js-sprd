@@ -131,7 +131,7 @@ define([
                         return printArea;
                     })
                     .seq("printType", function() {
-                        var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance);
+                        var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
 
                         if (printType && !_.contains(possiblePrintTypes, printType)) {
                             throw new Error("PrintType not possible for design and printArea");
