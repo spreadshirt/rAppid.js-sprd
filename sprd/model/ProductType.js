@@ -70,9 +70,9 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
 
         getPrintAreaById: function(printAreaId) {
             if(this.$.printAreas){
-                for (var i = 0; i < this.$.printAreas.length; i++) {
-                    var printArea = this.$.printAreas[i];
-                    if (printArea.id === printAreaId) {
+                for (var i = 0; i < this.$.printAreas.$items.length; i++) {
+                    var printArea = this.$.printAreas.$items[i];
+                    if (printArea.$.id === printAreaId) {
                         return printArea;
                     }
                 }
