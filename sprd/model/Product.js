@@ -6,8 +6,8 @@ define([
     'sprd/entity/DesignConfiguration',
     'sprd/entity/TextConfiguration',
     'sprd/entity/Appearance',
-    'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow"],
-    function (SprdModel, List, ProductType, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Appearance, TypeResolver, Entity, _, flow) {
+    'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/util/ProductUtil"],
+    function (SprdModel, List, ProductType, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Appearance, TypeResolver, Entity, _, flow, ProductUtil) {
         return SprdModel.inherit("sprd.model.Product", {
 
             schema: {
@@ -59,6 +59,102 @@ define([
                 if(this.$.appearance && this.$.productType){
                     return this.$.productType.getAppearanceById(this.$.appearance.$.id);
                 }
+            },
+
+            _addConfiguration: function(configuration) {
+                this.$.configurations.add(configuration);
+            },
+
+            addDesign: function (params, callback) {
+                params = _.defaults({}, params, {
+                    design: null,
+                    perspective: null, // front, back, etc...
+                    view: null,
+                    printArea: null,
+                    printType: null
+                });
+
+                var self = this,
+                    design = params.design,
+                    productType = this.$.productType,
+                    printArea = params.printArea,
+                    view = params.view,
+                    appearance = this.$.appearance,
+                    printType = params.printType;
+
+                if (!design) {
+                    callback(new Error("No design"));
+                    return;
+                }
+
+                if (!productType) {
+                    callback(new Error("ProductType not set"));
+                    return;
+                }
+
+                if (!appearance) {
+                    callback(new Error("Appearance for product not set"));
+                    return;
+                }
+
+                flow()
+                    .par(function (cb) {
+                        design.fetch(null, cb);
+                    }, function (cb) {
+                        productType.fetch(null, cb);
+                    })
+                    .seq("printArea", function () {
+
+                        if (!printArea && params.perspective && !view) {
+                            view = productType.getViewByPerspective(params.perspective);
+                        }
+
+                        if (!printArea && view) {
+                            // get print area by view
+                            if (!productType.containsView(view)) {
+                                throw new Error("View not on ProductType");
+                            }
+
+                            // TODO: look for print area that supports print types, etc...
+                            printArea = view.getDefaultPrintArea();
+                        }
+
+                        view = self.$.view || self.getDefaultView();
+                        if (!printArea && view) {
+                            printArea = view.getDefaultPrintArea();
+                        }
+
+                        if (!printArea) {
+                            throw new Error("target PrintArea couldn't be found.");
+                        }
+
+                        return printArea;
+                    })
+                    .seq("printType", function() {
+                        var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance);
+
+                        if (printType && !_.contains(possiblePrintTypes, printType)) {
+                            throw new Error("PrintType not possible for design and printArea");
+                        }
+
+                        printType = printType || possiblePrintTypes[0];
+
+                        if (!printType) {
+                            throw new Error("No printType available");
+                        }
+
+                        return printType;
+                    })
+                    .seq(function() {
+                        var configuration = new DesignConfiguration({
+                            printType: printType,
+                            printArea: printArea
+                        });
+
+                        self._addConfiguration(configuration)
+                    })
+                    .exec(callback)
+
             }
         });
     });
