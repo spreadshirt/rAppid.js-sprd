@@ -9,18 +9,6 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             stockStates: StockStates
         },
 
-        parse: function(data) {
-
-            var self = this;
-            if (data.views) {
-                data.views.each(function (value) {
-                    value.set('productType', self);
-                });
-            }
-
-            return data;
-        },
-
         getViewById: function(id){
             if(this.$.views){
                 for (var i = 0; i < this.$.views.$items.length; i++) {
