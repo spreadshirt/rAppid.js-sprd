@@ -1,0 +1,10 @@
+rect {
+    fill: none;
+}
+
+.print-area-border {
+    stroke-width: 1;
+    stroke: #333;
+    vector-effect: non-scaling-stroke;
+    shape-rendering: crispEdges;
+}
