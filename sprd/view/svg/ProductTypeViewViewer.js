@@ -4,7 +4,7 @@ define(['js/svg/SvgElement', "sprd/data/ImageService"], function (SvgElement, Im
 
         defaults: {
             tagName: "g",
-//            componentClass: "product-type-view",
+            componentClass: "product-type-view",
 
             product: null,
 
