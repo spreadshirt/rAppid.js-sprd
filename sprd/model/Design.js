@@ -1,4 +1,4 @@
-define(['sprd/data/SprdModel'], function (SprdModel) {
+define(['sprd/data/SprdModel', 'sprd/model/PrintType'], function (SprdModel, PrintType) {
 	return SprdModel.inherit('sprd.model.Design', {
 		defaults : {
 			name         : '',
@@ -9,7 +9,7 @@ define(['sprd/data/SprdModel'], function (SprdModel) {
         schema: {
             name: String,
             description: String,
-            type: String
+            printTypes: [PrintType]
         }
     });
 
