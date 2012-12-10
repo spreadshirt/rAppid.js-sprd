@@ -1,4 +1,4 @@
-define(['js/svg/SvgElement'], function(SvgElement) {
+define(['js/svg/SvgElement'], function (SvgElement) {
 
     var rRotationExtractor = /^rotate\(((?:[\-0-9]*\s?)*)\)$/;
 
@@ -24,34 +24,28 @@ define(['js/svg/SvgElement'], function(SvgElement) {
 
         },
 
-//
-//        ctor: function(printArea, viewMap) {
-//
-//            if (!printArea) {
-//                throw "PrintArea for PrintAreaViewer not defined";
-//            }
-//
-//            if (!viewMap) {
-//                throw "ViewMap for PrintAreaViewer not defined";
-//            }
-//
-//            this.$printArea = printArea;
-//            this.$viewMap = viewMap;
-//        },
+        initialize: function () {
 
-//        _render: function(paper) {
-//            var printArea = this.$printArea;
-//
-//            var rect = paper.rect(0, 0, printArea.boundary.size.width, printArea.boundary.size.height);
-//            var matrix = rect.matrix.clone();
-//
-//            this.transform(matrix);
-//            rect.transform(matrix.toTransformString());
-//
-//            return rect;
-//        },
+            this.bind(['product.configurations', 'add'], this._onConfigurationAdded);
+            this.bind(['product.configurations', 'change'], this._onConfigurationChanged);
+            this.bind(['product.configurations', 'remove'], this._onConfigurationRemoved);
 
-        transform: function(matrix) {
+            this.callBase();
+        },
+
+        _onConfigurationAdded: function () {
+            console.log("added", arguments);
+        },
+
+        _onConfigurationRemoved: function () {
+            console.log("removed", arguments);
+        },
+
+        _onConfigurationChanged: function () {
+            console.log("changed", arguments);
+        },
+
+        transform: function (matrix) {
 
             if (matrix) {
                 var viewMap = this.$viewMap;
