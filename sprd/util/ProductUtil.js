@@ -1,20 +1,34 @@
-define(["underscore"], function (_) {
+define(["underscore", "sprd/util/ArrayUtil"], function (_, ArrayUtil) {
 
-    var ProductUtil = {
+    return {
 
-        getPossiblePrintTypes: function(printTypesA, printTypesB) {
+        getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearanceId) {
+            return ArrayUtil.average(design.$.printTypes, this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId))
+        },
+
+        getPossiblePrintTypesForPrintAreas: function (printAreas, appearanceId) {
             var ret = [];
 
-            _.each(printTypesA, function(printType) {
-                if (_.contains(printTypesB, printType)) {
-                    ret.push(printType);
+            printAreas = ArrayUtil.getAsArray(printAreas);
+
+            _.each(printAreas, function (printArea) {
+
+                var productType = printArea.$parent,
+                    appearance = productType.getAppearanceById(appearanceId);
+
+                if (appearance) {
+                    _.each(appearance.$.printTypes.$items, function (printType) {
+                        if (!_.contains(printArea.$.restrictions.$.excludedPrintTypes.$items, printType) &&
+                            !_.contains(ret, printType)) {
+                            ret.push(printType);
+                        }
+                    });
                 }
             });
 
             return ret;
         }
-    };
 
-    return ProductUtil;
+    };
 
 });
