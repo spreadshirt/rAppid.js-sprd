@@ -19,7 +19,7 @@ define(["underscore", "js/core/List"], function (_, List) {
          */
         average: function () {
             var ret = [],
-                quantities = Array.prototype.splice(arguments);
+                quantities = Array.prototype.slice.call(arguments);
 
             if (quantities.length === 1) {
                 return quantities[0];
