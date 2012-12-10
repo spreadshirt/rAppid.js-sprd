@@ -41,7 +41,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             this.callBase();
         },
 
-        _onProductTypeChange: function(e) {
+        _removeProductTypeViewViewers: function() {
             // remove all views
             for (var key in this.$productTypeViewViewerCache) {
                 if (this.$productTypeViewViewerCache.hasOwnProperty(key)) {
@@ -51,7 +51,11 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             }
 
             this.$productTypeViewViewerCache = {};
+        },
 
+        _onProductTypeChange: function(e) {
+
+            this._removeProductTypeViewViewers();
             var productType = e.$;
 
             this.set('_productType', productType);
@@ -116,15 +120,15 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 this.addChild(this.$currentProductTypeViewViewer);
 
             }
-        }
+        },
 
-//        destroy: function(){
-//            this.unbind('product', 'change:productType', this._onProductTypeChange, this);
-//            this.unbind('product', 'change:appearance', this._onAppearanceChange, this);
-//            this.unbind('product.configurations', 'add', this._onConfigurationAdded, this);
-//
-//            this.callBase();
-//        }
+        destroy: function(){
+
+            this.unbind('product', 'change:productType', this._onProductTypeChange, this);
+            this._removeProductTypeViewViewers();
+
+            this.callBase();
+        }
 
     });
 
