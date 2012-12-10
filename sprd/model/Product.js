@@ -139,8 +139,10 @@ define([
 
                         printType = printType || possiblePrintTypes[0];
 
+
                         if (!printType) {
-                            throw new Error("No printType available");
+                            // FIXME: throw error
+                            // throw new Error("No printType available");
                         }
 
                         return printType;
