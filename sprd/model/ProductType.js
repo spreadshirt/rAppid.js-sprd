@@ -1,9 +1,10 @@
-define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance","sprd/collection/StockStates", 'js/core/List', 'sprd/entity/Size'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List, Size) {
+define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance","sprd/collection/StockStates", 'js/core/List', 'sprd/entity/Size', 'sprd/entity/PrintArea'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List, Size, PrintArea) {
     return SprdModel.inherit("sprd.model.ProductType", {
 
         schema: {
             views: [ProductTypeView],
             appearances: [Appearance],
+            printAreas: [PrintArea],
             sizes: [Size],
             stockStates: StockStates
         },
