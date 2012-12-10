@@ -3,7 +3,8 @@ define(["underscore", "sprd/util/ArrayUtil"], function (_, ArrayUtil) {
     return {
 
         getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearanceId) {
-            return ArrayUtil.average(design.$.printTypes, this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId))
+            return ArrayUtil.average(design.$.printTypes.$items,
+                this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId))
         },
 
         getPossiblePrintTypesForPrintAreas: function (printAreas, appearanceId) {
