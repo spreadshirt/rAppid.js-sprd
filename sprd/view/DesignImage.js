@@ -19,17 +19,15 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
         },
 
         imageUrl: function () {
-            var url = null;
-            var imageService = this.$.imageService;
+            var url = null,
+                imageService = this.$.imageService,
+                design = this.$.design;
 
-            if (this.$.design) {
-                var design = this.$.design;
-
-                url = imageService.$.endPoint + "/designs/" + design.$.id;
-
-                url = this.extendUrlWithSizes(url);
-
-                return url;
+            if (design && imageService) {
+                return imageService.designImage(this.$.design.$.id, {
+                    width: this.$.width,
+                    height: this.$.height
+                });
             }
             return url;
 
