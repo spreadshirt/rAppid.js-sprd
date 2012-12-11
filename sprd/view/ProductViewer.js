@@ -37,6 +37,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
         initialize: function(){
 
             this.bind('product','change:productType', this._onProductTypeChange, this);
+            this.bind(['product.productType', 'change:views'], this._onViewsChanged, this);
 
             this.callBase();
         },
@@ -51,6 +52,10 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             }
 
             this.$productTypeViewViewerCache = {};
+        },
+
+        _onViewsChanged: function() {
+            this._determinateInternalView();
         },
 
         _onProductTypeChange: function(e) {
@@ -115,7 +120,6 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                     this.$currentProductTypeViewViewer.remove();
                 }
 
-
                 this.$currentProductTypeViewViewer = this.$productTypeViewViewerCache[cacheId];
                 this.addChild(this.$currentProductTypeViewViewer);
 
@@ -123,10 +127,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
         },
 
         destroy: function(){
-
-            this.unbind('product', 'change:productType', this._onProductTypeChange, this);
             this._removeProductTypeViewViewers();
-
             this.callBase();
         }
 
