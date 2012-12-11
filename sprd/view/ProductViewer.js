@@ -14,7 +14,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             product: null,
 
             // private defaults
-            _productType: null,
+            _productType: "{product.productType}",
             _appearance: null,
             _view: null,
 
@@ -36,7 +36,6 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
 
         initialize: function(){
 
-            this.bind('product','change:productType', this._onProductTypeChange, this);
             this.bind(['product.productType', 'change:views'], this._onViewsChanged, this);
 
             this.callBase();
@@ -58,19 +57,6 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             this._determinateInternalView();
         },
 
-        _onProductTypeChange: function(e) {
-
-            this._removeProductTypeViewViewers();
-            var productType = e.$;
-
-            this.set('_productType', productType);
-
-            if (productType) {
-                this._determinateInternalView();
-            }
-
-        },
-
         _commitView: function() {
             this._determinateInternalView();
         },
@@ -90,9 +76,15 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
 
         },
 
-        _render_productType: function(productType) {
+        _render_productType: function(productType, oldProductType) {
 
-            this._renderProductTypeView(productType, this.$._view);
+            oldProductType && this._removeProductTypeViewViewers();
+
+            if (productType) {
+                this._determinateInternalView();
+                this._renderProductTypeView(productType, this.$._view);
+            }
+
         },
         
         _render_view: function(view) {
