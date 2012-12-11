@@ -154,7 +154,7 @@ define([
                             design: design
                         });
 
-                        self._addConfiguration(configuration)
+                        self._addConfiguration(configuration);
                     })
                     .exec(callback)
 
