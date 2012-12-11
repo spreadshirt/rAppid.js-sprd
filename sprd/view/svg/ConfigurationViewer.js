@@ -1,27 +1,47 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', 'sprd/view/svg/TextConfigurationRenderer', 'sprd/view/svg/DesignConfigurationRenderer'],
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer"],
     function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer) {
 
         return SvgElement.inherit({
 
             defaults: {
                 tagName: 'g',
-                "class": 'configuration-viewer'
+                componentClass: 'configuration-viewer',
+                configuration: null,
+
+                scaleX: "{configuration.scale.x}",
+                scaleY: "{configuration.scale.y}",
+
+                translateX: "{configuration.offset.x}",
+                translateY: "{configuration.offset.y}"
             },
 
-            $classAttributes: ["configuration"],
+            $classAttributes: ["configuration", "product", "printAreaViewer"],
 
-            ctor: function (attributes) {
+            _initializeRenderer: function () {
 
-                this.callBase();
 
-                var configuration = attributes.configuration;
+                var rendererFactory,
+                    configuration = this.$.configuration;
 
-                if (!configuration) {
-                    throw "Configuration for viewer not defined";
+                if (configuration instanceof DesignConfiguration) {
+                    rendererFactory = DesignConfigurationRenderer;
+                } else if (configuration instanceof TextConfiguration) {
+                    rendererFactory = TextConfigurationRenderer;
                 }
 
-                this.$configuration = configuration;
+                if (rendererFactory) {
+                    this.$asset = this.createComponent(rendererFactory, {
+                        configuration: configuration
+                    });
 
+                    this.addChild(this.$asset);
+                } else {
+                    this.log("Cannot create renderer for configuration", "error");
+                }
+
+
+
+                this.callBase();
             }
         });
     });
