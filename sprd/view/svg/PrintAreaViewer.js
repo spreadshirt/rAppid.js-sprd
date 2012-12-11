@@ -1,6 +1,6 @@
-define(['js/svg/SvgElement'], function (SvgElement) {
+define(['js/svg/SvgElement', 'sprd/view/svg/ConfigurationViewer'], function (SvgElement, ConfigurationViewer) {
 
-    return SvgElement.inherit('sprd/view/svg/PrintAreaViewer', {
+    return SvgElement.inherit('sprd.view.svg.PrintAreaViewer', {
 
         defaults: {
             tagName: "g",
@@ -14,6 +14,12 @@ define(['js/svg/SvgElement'], function (SvgElement) {
 
         $classAttributes: ["product", "productTypeViewViewer"],
 
+        ctor: function () {
+
+            this.$configurationViewerCache = {};
+
+            this.callBase();
+        },
 
         _initializeRenderer: function () {
 
@@ -24,8 +30,8 @@ define(['js/svg/SvgElement'], function (SvgElement) {
             var border = this.createComponent(SvgElement, {
                 tagName: "rect",
                 componentClass: "print-area-border",
-                width: '{_viewMap.printArea.boundary.size.width}',
-                height: '{_viewMap.printArea.boundary.size.height}'
+                width: this.get('_viewMap.printArea.boundary.size.width'),
+                height: this.get('_viewMap.printArea.boundary.size.height')
             });
 
             this.addChild(border);
@@ -34,24 +40,67 @@ define(['js/svg/SvgElement'], function (SvgElement) {
         },
 
         initialize: function () {
-
-            this.bind(['product.configurations', 'add'], this._onConfigurationAdded);
-            this.bind(['product.configurations', 'change'], this._onConfigurationChanged);
-            this.bind(['product.configurations', 'remove'], this._onConfigurationRemoved);
+            this.bind('product.configurations', 'add', this._onConfigurationAdded, this);
+            this.bind('product.configurations', 'change', this._onConfigurationChanged, this);
+            this.bind('product.configurations', 'remove', this._onConfigurationRemoved, this);
 
             this.callBase();
         },
 
-        _onConfigurationAdded: function () {
-            console.log("added", arguments);
+        _onConfigurationAdded: function (e) {
+            this._addConfiguration(e.$.item);
         },
 
-        _onConfigurationRemoved: function () {
-            console.log("removed", arguments);
+        _onConfigurationRemoved: function (e) {
+            this._removeConfiguration(e.$.item);
         },
 
-        _onConfigurationChanged: function () {
-            console.log("changed", arguments);
+        _addConfiguration: function (configuration) {
+
+            if (!configuration) {
+                return;
+            }
+
+            var configurationId = configuration.$cid;
+
+            if (!this.$configurationViewerCache.hasOwnProperty(configurationId)) {
+                var viewer = this.$configurationViewerCache[configurationId] = this.createComponent(ConfigurationViewer, {
+                    product: this.$.product,
+                    printAreaViewer: this,
+
+                    configuration: configuration
+                });
+
+                this.addChild(viewer);
+
+
+            }
+        },
+
+
+        _removeConfiguration: function (configuration) {
+
+            if (!configuration) {
+                return;
+            }
+
+            var viewer = this.$configurationViewerCache[configuration.$cid];
+            if (viewer) {
+                viewer.remove();
+                viewer.destroy();
+            }
+        },
+
+        _onConfigurationChanged: function (e) {
+            // remove or add
+            if (e && this._hasSome(e.$.changedAttributes, ["printArea"])) {
+                var configuration = e.$.item;
+                if (configuration.$.printArea === this.get('_viewMap.printArea')) {
+                    this._addConfiguration(configuration);
+                } else {
+                    this._removeConfiguration(configuration);
+                }
+            }
         }
 
     });
