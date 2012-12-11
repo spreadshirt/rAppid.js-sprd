@@ -1,4 +1,4 @@
-define([], function(){
+define(["sprd/entity/Size"], function(Size){
 
     return {
 
@@ -20,8 +20,19 @@ define([], function(){
         pixelToMm: function(pixel, dpi) {
             // dots / inch
             return pixel * 25.4 / dpi;
-        }
+        },
 
+        convertSizeToMm: function (size, dpi) {
+            if (size.$.unit === "px") {
+                return new Size({
+                    unit: "mm",
+                    height: this.pixelToMm(size.$.height, dpi),
+                    width: this.pixelToMm(size.$.width, dpi)
+                });
+            }
+
+            return size;
+        }
 
     };
 
