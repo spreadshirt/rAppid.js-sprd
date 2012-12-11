@@ -61,6 +61,11 @@ define(['js/svg/SvgElement', 'sprd/view/svg/ConfigurationViewer'], function (Svg
                 return;
             }
 
+            if (configuration.$.printArea !== this.get('_viewMap.printArea')) {
+                // not for this print area
+                return;
+            }
+
             var configurationId = configuration.$cid;
 
             if (!this.$configurationViewerCache.hasOwnProperty(configurationId)) {
