@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance","sprd/collection/StockStates", 'js/core/List', 'sprd/entity/Size', 'sprd/entity/PrintArea'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List, Size, PrintArea) {
+define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance","sprd/collection/StockStates", 'js/core/List', 'sprd/entity/ProductTypeSize', 'sprd/entity/PrintArea'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List, Size, PrintArea) {
     return SprdModel.inherit("sprd.model.ProductType", {
 
         schema: {
@@ -97,6 +97,14 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
                     }
                 }
             }
+            return null;
+        },
+
+        getDefaultPrintArea: function() {
+            if (this.$.printAreas) {
+                return this.$.printAreas.at(0);
+            }
+
             return null;
         },
 
