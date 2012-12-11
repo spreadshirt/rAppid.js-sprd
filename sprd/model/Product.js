@@ -150,7 +150,8 @@ define([
                     .seq(function() {
                         var configuration = new DesignConfiguration({
                             printType: printType,
-                            printArea: printArea
+                            printArea: printArea,
+                            design: design
                         });
 
                         self._addConfiguration(configuration)
