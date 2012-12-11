@@ -1,5 +1,5 @@
 define(['sprd/entity/Configuration'], function (Configuration) {
-	return Configuration.inherit('sprd.model.TextConfiguration', {
+	return Configuration.inherit('sprd.entity.TextConfiguration', {
 		defaults : {
             text: "",
             font: null,
