@@ -36,7 +36,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
 
         initialize: function(){
 
-            this.bind(['product.productType', 'change:views'], this._onViewsChanged, this);
+            this.bind('product.productType', 'change:views', this._onViewsChanged, this);
 
             this.callBase();
         },
