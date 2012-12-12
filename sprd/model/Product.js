@@ -141,11 +141,13 @@ define([
 
 
                         if (!printType) {
-                            // FIXME: throw error
-                            // throw new Error("No printType available");
+                            throw new Error("No printType available");
                         }
 
                         return printType;
+                    })
+                    .seq(function(cb) {
+                        printType.fetch(null, cb);
                     })
                     .seq(function() {
                         var configuration = new DesignConfiguration({
