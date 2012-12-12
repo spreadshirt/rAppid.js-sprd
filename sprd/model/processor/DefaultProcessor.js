@@ -8,6 +8,20 @@ define(['js/data/DataSource'], function (DataSource) {
                 // TODO: determinate href
                 href: model.$.href
             }
+        },
+
+        _getIdForValue: function (value) {
+
+            if (value.id && value.href) {
+                var id = value.href.split("/").pop();
+                if (id) {
+                    value.id = id;
+                    return id;
+                }
+            }
+
+            return value.id;
         }
+
     });
 });

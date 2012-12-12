@@ -139,7 +139,6 @@ define([
 
                         printType = printType || possiblePrintTypes[0];
 
-
                         if (!printType) {
                             throw new Error("No printType available");
                         }
