@@ -22,8 +22,8 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
                 }, this.callBase());
             },
 
-            createContext: function (properties, parentContext) {
-                return new SprdApiDataSource.SprdApiContext(this, properties, parentContext);
+            createContext: function (contextModel, properties, parentContext) {
+                return new SprdApiDataSource.SprdApiContext(this, contextModel, properties, parentContext);
             },
 
             /***
