@@ -1,4 +1,4 @@
-define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection"], function(RestDataSource, Model, Collection) {
+define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "underscore"], function(RestDataSource, Model, Collection, _) {
 
     var SprdDataSource = RestDataSource.inherit('sprd.data.SprdDataSource', {
         defaults: {
@@ -9,11 +9,19 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection"], functi
 
         _getConfigurationForResource: function (resource) {
 
-            if (resource instanceof Model) {
-                return this.$dataSourceConfiguration.getConfigurationForModelClass(resource.factory);
-            } else if (resource instanceof Collection) {
-                return this.$dataSourceConfiguration.getConfigurationForModelClass(resource.$modelFactory);
+            var parentContext = resource.$context;
+            var configuration = this.$dataSourceConfiguration;
+
+            if (parentContext && parentContext.$contextModel) {
+                configuration = configuration.getConfigurationForModelClass(parentContext.$contextModel.factory);
             }
+
+            if (resource instanceof Model) {
+                return configuration.getConfigurationForModelClass(resource.factory);
+            } else if (resource instanceof Collection) {
+                return configuration.getConfigurationForModelClass(resource.$modelFactory);
+            }
+
 
             return null;
         },
@@ -32,7 +40,9 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection"], functi
 
             if (this.$.session) {
                 // get the configuration only if needed
+
                 configuration = this._getConfigurationForResource(resource);
+
 
                 if (!configuration) {
                     throw new Error("Configuration for resource not found");
