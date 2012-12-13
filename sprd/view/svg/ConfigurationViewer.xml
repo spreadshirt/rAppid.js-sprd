@@ -1,0 +1,9 @@
+<sprdSvg:ConfigurationViewerClass xmlns="http://www.w3.org/1999/xhtml"
+                                  xmlns:svg="js.svg"
+                                  xmlns:sprdSvg="sprd.view.svg">
+
+    <svg:g cid="_assetContainer" scaleX="{configuration.scale.x}" scaleY="{configuration.scale.y}">
+    </svg:g>
+    <!--<svg:rect class="configuration-handle scale" x="{configuration.size().}"/>-->
+
+</sprdSvg:ConfigurationViewerClass>
