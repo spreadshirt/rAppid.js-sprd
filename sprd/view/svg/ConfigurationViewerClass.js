@@ -79,7 +79,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (this.$.productViewer && this.$.productViewer.$.enableEdit === true) {
                     var assetContainer = this.$._assetContainer;
 
-                    assetContainer.bindDomEvent(this.$downEvent, function(e) {
+                    assetContainer.bindDomEvent(this.$downEvent, function (e) {
                         self._down(e);
                     });
 
@@ -128,7 +128,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 window.bindDomEvent(this.$upEvent, this.$upHandler);
             },
 
-            _move: function(e) {
+            _move: function (e) {
                 if (!this.$moving) {
                     return;
                 }
@@ -152,7 +152,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 e.stopPropagation();
             },
 
-            _up: function(e) {
+            _up: function (e) {
                 if (!this.$moving) {
                     return;
                 }
