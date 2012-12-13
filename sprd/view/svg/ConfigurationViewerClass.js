@@ -76,7 +76,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return;
                 }
 
-                if (this.$.productViewer && this.$.productViewer.$.enableEdit === true) {
+                if (this.$.productViewer && this.$.productViewer.$.editable === true) {
                     var assetContainer = this.$._assetContainer;
 
                     assetContainer.bindDomEvent(this.$downEvent, function (e) {
@@ -94,6 +94,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             _down: function (e) {
 
                 if (!this.runsInBrowser()) {
+                    return;
+                }
+
+                if (!this.$hasTouch && e.which !== 1) {
+                    // not left mouse button
                     return;
                 }
 
@@ -166,6 +171,17 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 window.unbindDomEvent(this.$upEvent, this.$upHandler);
 
                 this.$moving = false;
+            },
+
+            getButtonSize: function (size) {
+                var localToGlobalFactor = this.localToGlobalFactor();
+
+                return {
+                    width: localToGlobalFactor.x * size,
+                    height: localToGlobalFactor.y * size
+                }
             }
+
         });
-    });
+    })
+;
