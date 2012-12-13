@@ -20,10 +20,10 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
 
                 componentClass: "product-viewer",
 
-                enableEdit: true
+                editable: true
             },
 
-            $classAttributes: ["product", "view", "enableEdit"],
+            $classAttributes: ["product", "view", "editable"],
 
             inject: {
                 imageService: ImageService
