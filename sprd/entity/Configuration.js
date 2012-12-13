@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Offset'], function (Entity, Offset) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size'], function (Entity, Offset, Size) {
 	return Entity.inherit('sprd.entity.Configuration', {
 
         ctor: function() {
@@ -22,11 +22,11 @@ define(['js/data/Entity', 'sprd/entity/Offset'], function (Entity, Offset) {
         },
 
         height: function () {
-            return this.$.size.height * this.$.scale.y;
-        },
+            return this.size().$.height * this.$.scale.y;
+        }.onChange("scale","size()"),
 
         width: function() {
-            return this.$.size.width * this.$.scale.x;
-        }
+            return this.size().$.width * this.$.scale.x;
+        }.onChange("scale","size()")
 	});
 });
