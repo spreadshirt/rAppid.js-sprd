@@ -1,5 +1,8 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer"],
-    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "underscore"],
+    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _) {
+
+        var MOVE = "move",
+            SCALE = "scale";
 
         return SvgElement.inherit({
 
@@ -12,6 +15,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 translateY: "{configuration.offset.y}",
 
                 _assetContainer: null,
+                _scaleHandle: null,
+
                 productViewer: null,
                 printAreaViewer: null
             },
@@ -80,7 +85,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var assetContainer = this.$._assetContainer;
 
                     assetContainer.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e);
+                        self._down(e, MOVE);
+                    });
+
+                    var scaleHandle = this.$._scaleHandle;
+                    scaleHandle.bindDomEvent(this.$downEvent, function(e){
+                        self._down(e, SCALE)
                     });
 
                 }
@@ -91,7 +101,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.callBase();
             },
 
-            _down: function (e) {
+            _down: function (e, mode) {
 
                 if (!this.runsInBrowser()) {
                     return;
@@ -114,26 +124,51 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 this.$moving = true;
 
-                this.$startOffset = configuration.$.offset.clone();
+                this.$downPoint = {
+                    x: this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
+                    y: this.$hasTouch ? e.changedTouches[0].pageY : e.pageY
+                };
 
-                this.$downX = this.$hasTouch ? e.changedTouches[0].pageX : e.pageX;
-                this.$downY = this.$hasTouch ? e.changedTouches[0].pageY : e.pageY;
+                if (mode === MOVE) {
+                    this.$startOffset = configuration.$.offset.clone();
+                } else if (mode === SCALE) {
+
+                    var factor = this.localToGlobalFactor();
+                    this.$startScale = _.clone(configuration.$.scale);
+
+                    // diagonal in real px
+                    this.$scaleDiagonalDistance = this._getDistance({
+                        x: 0,
+                        y: 0
+                    }, {
+                        x: configuration.width() * factor.x,
+                        y: configuration.height() * factor.y
+                    });
+
+                }
 
                 var window = this.dom(this.$stage.$window);
 
                 this.$moveHandler = function (e) {
-                    self._move(e);
+                    self._move(e, mode);
                 };
 
                 this.$upHandler = function (e) {
-                    self._up(e);
+                    self._up(e, mode);
                 };
 
                 window.bindDomEvent(this.$moveEvent, this.$moveHandler);
                 window.bindDomEvent(this.$upEvent, this.$upHandler);
             },
 
-            _move: function (e) {
+            _getDistance: function(p1, p2) {
+                var deltaX = p1.x - p2.x,
+                    deltaY = p1.y - p2.y;
+
+                return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            },
+
+            _move: function (e, mode) {
                 if (!this.$moving) {
                     return;
                 }
@@ -146,12 +181,45 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var productViewer = this.$.productViewer,
                     x = this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
                     y = this.$hasTouch ? e.changedTouches[0].pageY : e.pageY,
-                    factor = this.localToGlobalFactor();
+                    factor = this.globalToLocalFactor();
+                    var deltaX = (this.$downPoint.x - x) ,
+                        deltaY = (this.$downPoint.y - y);
 
-                configuration.$.offset.set({
-                    x: this.$startOffset.$.x - (this.$downX - x) * factor.x,
-                    y: this.$startOffset.$.y - (this.$downY - y) * factor.y
-                });
+                if(mode === MOVE){
+                    configuration.$.offset.set({
+                        x: this.$startOffset.$.x - deltaX * factor.x,
+                        y: this.$startOffset.$.y - deltaY * factor.y
+                    });
+
+                } else if(mode === SCALE){
+                    var multiple = 1,
+                        aspectRatio = configuration.width() / configuration.height();
+
+                    if(deltaX > 0 || deltaY > 0){
+                        multiple = -1;
+                    }
+
+                    if(deltaX >= deltaY){
+                        y = this.$downPoint.y + deltaX / aspectRatio;
+                    } else {
+                        x = this.$downPoint.x + deltaY / aspectRatio;
+                    }
+
+                    var mouseDistance = this._getDistance(this.$downPoint, {
+                        x: x,
+                        y: y
+                    });
+
+                    mouseDistance *= multiple;
+
+                    var scaleFactory = (this.$scaleDiagonalDistance + mouseDistance) / this.$scaleDiagonalDistance;
+
+                    configuration.set('scale', {
+                        x: scaleFactory * this.$startScale.x,
+                        y: scaleFactory * this.$startScale.y
+                    });
+
+                }
 
                 e.stopPropagation();
             },
@@ -174,11 +242,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             getButtonSize: function (size) {
-                var localToGlobalFactor = this.localToGlobalFactor();
+                var globalToLocalFactor = this.globalToLocalFactor();
 
                 return {
-                    width: localToGlobalFactor.x * size,
-                    height: localToGlobalFactor.y * size
+                    width: globalToLocalFactor.x * size,
+                    height: globalToLocalFactor.y * size
                 }
             }
 

@@ -4,9 +4,9 @@
 
     <svg:g cid="_assetContainer" scaleX="{configuration.scale.x}" scaleY="{configuration.scale.y}">
     </svg:g>
-    <svg:rect class="configuration-handle scale"
+    <svg:rect cid="_scaleHandle" class="configuration-handle scale"
               visible="{productViewer.editable}"
-              x="{configuration.size().width}" y="{configuration.size().height}"
+              x="{configuration.width()}" y="{configuration.height()}"
               width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
 
 </sprdSvg:ConfigurationViewerClass>
