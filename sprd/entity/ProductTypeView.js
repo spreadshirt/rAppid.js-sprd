@@ -1,10 +1,11 @@
-define(['js/data/Entity', 'sprd/entity/ViewMap'], function (Entity, ViewMap) {
+define(['js/data/Entity', 'sprd/entity/ViewMap', 'sprd/entity/Size'], function (Entity, ViewMap, Size) {
 	return Entity.inherit('sprd.entity.ProductTypeView', {
 
         schema: {
             name: String,
             perspective: String,
-            viewMaps: [ViewMap]
+            viewMaps: [ViewMap],
+            size: Size
         },
 
         getProductType: function() {
