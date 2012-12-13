@@ -8,3 +8,11 @@ rect {
     vector-effect: non-scaling-stroke;
     shape-rendering: crispEdges;
 }
+
+.configuration-handle {
+    fill: white;
+    stroke-width: 1;
+    stroke: black;
+    vector-effect: non-scaling-stroke;
+    shape-rendering: crispEdges;
+}
