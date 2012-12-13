@@ -1,5 +1,5 @@
-define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', 'sprd/data/ImageService', 'sprd/view/svg/ConfigurationViewer', 'sprd/view/svg/PrintAreaViewer', 'sprd/view/svg/ProductTypeViewViewer'],
-    function (Svg, SvgElement, Product, _, ImageService, ConfigurationViewer, PrintAreaViewer, ProductTypeViewViewer) {
+define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', 'sprd/data/ImageService', 'sprd/view/svg/PrintAreaViewer', 'sprd/view/svg/ProductTypeViewViewer'],
+    function (Svg, SvgElement, Product, _, ImageService, PrintAreaViewer, ProductTypeViewViewer) {
 
         return Svg.inherit('sprd.view.ProductViewer', {
             defaults: {
@@ -18,10 +18,12 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 _appearance: null,
                 _view: null,
 
-                componentClass: "product-viewer"
+                componentClass: "product-viewer",
+
+                enableEdit: true
             },
 
-            $classAttributes: ["product", "view"],
+            $classAttributes: ["product", "view", "enableEdit"],
 
             inject: {
                 imageService: ImageService
