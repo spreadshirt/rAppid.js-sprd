@@ -80,6 +80,7 @@ define(['js/svg/SvgElement', "sprd/data/ImageService", "sprd/view/svg/PrintAreaV
                     var printAreaViewer = this.createComponent(PrintAreaViewer, {
                         product: this.$.product,
                         productTypeViewViewer: this,
+                        productViewer: this.$.productViewer,
 
                         _viewMap: viewMap
                     });
