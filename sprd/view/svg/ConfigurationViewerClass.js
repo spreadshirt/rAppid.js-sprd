@@ -141,12 +141,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var productViewer = this.$.productViewer,
                     x = this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
                     y = this.$hasTouch ? e.changedTouches[0].pageY : e.pageY,
-                    factorX = productViewer.$._view.$.size.$.width / productViewer.$.width,
-                    factorY = productViewer.$._view.$.size.$.height / productViewer.$.height;
+                    factor = this.localToGlobalFactor();
 
                 configuration.$.offset.set({
-                    x: this.$startOffset.$.x - (this.$downX - x) * factorX,
-                    y: this.$startOffset.$.y - (this.$downY - y) * factorY
+                    x: this.$startOffset.$.x - (this.$downX - x) * factor.x,
+                    y: this.$startOffset.$.y - (this.$downY - y) * factor.y
                 });
 
                 e.stopPropagation();
