@@ -1,4 +1,4 @@
-define(['js/svg/SvgElement', 'sprd/view/svg/ConfigurationViewer'], function (SvgElement, ConfigurationViewer) {
+define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function (SvgElement, ConfigurationViewer) {
 
     return SvgElement.inherit('sprd.view.svg.PrintAreaViewer', {
 
@@ -8,11 +8,12 @@ define(['js/svg/SvgElement', 'sprd/view/svg/ConfigurationViewer'], function (Svg
 
             productTypeViewViewer: null,
             product: null,
+            productViewer: null,
 
             _viewMap: null
         },
 
-        $classAttributes: ["product", "productTypeViewViewer"],
+        $classAttributes: ["product", "productTypeViewViewer", "productViewer"],
 
         ctor: function () {
 
@@ -72,12 +73,12 @@ define(['js/svg/SvgElement', 'sprd/view/svg/ConfigurationViewer'], function (Svg
                 var viewer = this.$configurationViewerCache[configurationId] = this.createComponent(ConfigurationViewer, {
                     product: this.$.product,
                     printAreaViewer: this,
+                    productViewer: this.$.productViewer,
 
                     configuration: configuration
                 });
 
                 this.addChild(viewer);
-
 
             }
         },
