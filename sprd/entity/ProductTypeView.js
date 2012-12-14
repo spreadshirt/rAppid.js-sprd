@@ -14,20 +14,21 @@ define(['js/data/Entity', 'sprd/entity/ViewMap', 'sprd/entity/Size'], function (
 
 		getDefaultPrintArea : function() {
 
-			var defaultViewId = this.$.id,
-				printArea, i,
-                productType = this.getProductType();
+			var printArea,
+                productType;
 
-            if (productType) {
-                var printAreas = productType.$.printAreas.$items;
-
-                for (i = 0; i < printAreas.length; i++) {
-                    printArea = printAreas[i];
-                    if (printArea.$.id === defaultViewId) {
+            if (this.$.viewMaps) {
+                for (var i = 0; i < this.$.viewMaps.$items.length; i++) {
+                    printArea = this.$.viewMaps.$items[i].$.printArea;
+                    if (printArea) {
                         return printArea;
                     }
                 }
+            }
 
+            productType = this.getProductType();
+
+            if (productType) {
                 return productType.getDefaultPrintArea();
             }
 
