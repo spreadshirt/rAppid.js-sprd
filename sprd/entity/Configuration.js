@@ -1,5 +1,14 @@
-define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size'], function (Entity, Offset, Size) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea','sprd/model/PrintType'], function (Entity, Offset, Size, PrintArea, PrintType) {
 	return Entity.inherit('sprd.entity.Configuration', {
+
+        schema: {
+            offset: Offset,
+            printArea: {
+                type: PrintArea,
+                isReference: true
+            },
+            printType: PrintType
+        },
 
         ctor: function() {
             this.callBase();

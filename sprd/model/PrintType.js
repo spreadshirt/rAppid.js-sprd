@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "sprd/entity/Size"], function (SprdModel, Size) {
+define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/Color"], function (SprdModel, Size, Color) {
     return SprdModel.inherit("sprd.model.PrintType", {
 
         defaults: {
@@ -7,7 +7,8 @@ define(["sprd/data/SprdModel", "sprd/entity/Size"], function (SprdModel, Size) {
 
         schema: {
             dpi: String,
-            size: Size
+            size: Size,
+            colors: [Color]
         }
     })
 });

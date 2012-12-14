@@ -17,6 +17,17 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
 
             colors: [Color],
             price: Price
+        },
+
+        parse: function(data){
+            data = this.callBase();
+
+            if (data.href) {
+                data.wtfMbsId = data.id;
+                data.id = data.href.split("/").pop();
+            }
+
+            return data;
         }
     });
 

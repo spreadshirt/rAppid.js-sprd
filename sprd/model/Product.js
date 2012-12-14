@@ -12,14 +12,18 @@ define([
 
             schema: {
                 productType: ProductType,
-                appearance: Appearance,
+                appearance: {
+                    type: Appearance,
+                    isReference: true
+                },
                 configurations: [new AttributeTypeResolver({
                     attribute: "type",
                     mapping: {
                         "design": DesignConfiguration,
                         "text": TextConfiguration
                     }
-                })]
+                })],
+                restrictions: Object
             },
 
             defaults: {
@@ -159,6 +163,17 @@ define([
                     })
                     .exec(callback)
 
+            } ,
+
+            compose: function(){
+                var ret = this.callBase();
+
+                ret.restrictions = {
+                    freeColorSelection: false,
+                    example: false
+                };
+
+                return ret;
             }
         });
     });

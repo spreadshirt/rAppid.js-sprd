@@ -10,6 +10,18 @@ define(['js/data/Entity'], function(Entity) {
             x: Number,
             y: Number,
             unit: String
+        },
+
+        compose: function(){
+            var ret = this.callBase();
+
+
+            return {
+                x: Math.round(ret.x,3),
+                y: Math.round(ret.y,3),
+                unit: ret.unit
+            }
+
         }
     })
 });
