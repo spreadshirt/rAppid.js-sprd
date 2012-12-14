@@ -5,8 +5,14 @@
     <svg:g cid="_assetContainer" scaleX="{configuration.scale.x}" scaleY="{configuration.scale.y}">
     </svg:g>
     <svg:rect cid="_scaleHandle" class="configuration-handle scale"
-              visible="{productViewer.editable}"
-              x="{configuration.width()}" y="{configuration.height()}"
+              visible="{isSelectedConfiguration()}"
+              x="{substract(configuration.width(),8)}" y="{substract(configuration.height(),8)}"
+              width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
+
+    <svg:rect cid="_deleteHandle" class="configuration-handle delete"
+              visible="{isSelectedConfiguration()}"
+              onclick="deleteConfiguration"
+              x="-8" y="{substract(configuration.height(),8)}"
               width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
 
 </sprdSvg:ConfigurationViewerClass>

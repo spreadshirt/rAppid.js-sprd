@@ -16,9 +16,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 _assetContainer: null,
                 _scaleHandle: null,
+                _deleteHandle: null,
 
                 productViewer: null,
-                printAreaViewer: null
+                printAreaViewer: null,
+                product: null
             },
 
             $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer"],
@@ -82,14 +84,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 if (this.$.productViewer && this.$.productViewer.$.editable === true) {
-                    var assetContainer = this.$._assetContainer;
+                    var assetContainer = this.$._assetContainer,
+                        scaleHandle = this.$._scaleHandle,
+                        deleteHandle = this.$.deleteHandle;
 
                     assetContainer.bindDomEvent(this.$downEvent, function (e) {
                         self._down(e, MOVE);
                     });
 
-                    var scaleHandle = this.$._scaleHandle;
-                    scaleHandle.bindDomEvent(this.$downEvent, function(e){
+                    scaleHandle && scaleHandle.bindDomEvent(this.$downEvent, function (e) {
                         self._down(e, SCALE)
                     });
 
@@ -130,6 +133,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 };
 
                 if (mode === MOVE) {
+                    this.$.productViewer.set("selectedConfiguration", this.$.configuration);
                     this.$startOffset = configuration.$.offset.clone();
                 } else if (mode === SCALE) {
 
@@ -161,7 +165,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 window.bindDomEvent(this.$upEvent, this.$upHandler);
             },
 
-            _getDistance: function(p1, p2) {
+            _getDistance: function (p1, p2) {
                 var deltaX = p1.x - p2.x,
                     deltaY = p1.y - p2.y;
 
@@ -182,24 +186,24 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     x = this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
                     y = this.$hasTouch ? e.changedTouches[0].pageY : e.pageY,
                     factor = this.globalToLocalFactor();
-                    var deltaX = (this.$downPoint.x - x) ,
-                        deltaY = (this.$downPoint.y - y);
+                var deltaX = (this.$downPoint.x - x) ,
+                    deltaY = (this.$downPoint.y - y);
 
-                if(mode === MOVE){
+                if (mode === MOVE) {
                     configuration.$.offset.set({
                         x: this.$startOffset.$.x - deltaX * factor.x,
                         y: this.$startOffset.$.y - deltaY * factor.y
                     });
 
-                } else if(mode === SCALE){
+                } else if (mode === SCALE) {
                     var multiple = 1,
                         aspectRatio = configuration.width() / configuration.height();
 
-                    if(deltaX > 0 || deltaY > 0){
+                    if (deltaX > 0 || deltaY > 0) {
                         multiple = -1;
                     }
 
-                    if(deltaX >= deltaY){
+                    if (deltaX >= deltaY) {
                         y = this.$downPoint.y + deltaX / aspectRatio;
                     } else {
                         x = this.$downPoint.x + deltaY / aspectRatio;
@@ -248,7 +252,30 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     width: globalToLocalFactor.x * size,
                     height: globalToLocalFactor.y * size
                 }
-            }
+            },
+
+            deleteConfiguration: function () {
+                if (this.$.product) {
+                    var configuration = this.$.configuration,
+                        productViewer = this.$.productViewer;
+
+                    this.$.product.$.configurations.remove(configuration);
+
+                    if (productViewer && productViewer.$.selectedConfiguration === configuration) {
+                        productViewer.set('selectedConfiguration', null);
+                    }
+
+                }
+            },
+
+            substract: function (value, minuend) {
+                return value - minuend;
+            },
+
+            isSelectedConfiguration: function () {
+                return this.$.configuration !== null &&
+                    this.get('productViewer.editable') === true && this.get("productViewer.selectedConfiguration") === this.$.configuration
+            }.on(["productViewer", "change:selectedConfiguration"])
 
         });
     })
