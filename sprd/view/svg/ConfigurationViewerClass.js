@@ -2,7 +2,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
     function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _) {
 
         var MOVE = "move",
-            SCALE = "scale";
+            SCALE = "scale",
+            ROTATE = "rotate";
 
         return SvgElement.inherit({
 
@@ -14,9 +15,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 translateX: "{configuration.offset.x}",
                 translateY: "{configuration.offset.y}",
 
+                rotation: "{configuration.rotation}",
+                rotationX: "{half(configuration.width())}",
+                rotationY: "{half(configuration.height())}",
+
                 _assetContainer: null,
                 _scaleHandle: null,
                 _deleteHandle: null,
+                _rotateHandle: null,
 
                 productViewer: null,
                 printAreaViewer: null,
@@ -28,6 +34,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             ctor: function () {
 
                 this.callBase();
+
+                // this brings the translate transformation before the rotate transformation
+                this.translate(0, 0);
+                this.rotate(0, 0, 0);
 
                 this._initializeCapabilities(this.$stage.$window);
             },
@@ -69,10 +79,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this.log("Cannot create renderer for configuration", "error");
                 }
 
-
                 this.callBase();
             },
-
 
             _bindDomEvents: function () {
                 this.callBase();
@@ -86,7 +94,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (this.$.productViewer && this.$.productViewer.$.editable === true) {
                     var assetContainer = this.$._assetContainer,
                         scaleHandle = this.$._scaleHandle,
-                        deleteHandle = this.$.deleteHandle;
+                        rotateHandle = this.$._rotateHandle;
 
                     assetContainer.bindDomEvent(this.$downEvent, function (e) {
                         self._down(e, MOVE);
@@ -94,6 +102,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     scaleHandle && scaleHandle.bindDomEvent(this.$downEvent, function (e) {
                         self._down(e, SCALE)
+                    });
+
+                    rotateHandle && rotateHandle.bindDomEvent(this.$downEvent, function (e) {
+                        self._down(e, ROTATE)
                     });
 
                 }
@@ -116,7 +128,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 var self = this,
-                    configuration = this.$.configuration;
+                    configuration = this.$.configuration,
+                    factor,
+                    downPoint;
 
                 if (!configuration) {
                     return;
@@ -127,7 +141,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 this.$moving = true;
 
-                this.$downPoint = {
+                downPoint = this.$downPoint = {
                     x: this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
                     y: this.$hasTouch ? e.changedTouches[0].pageY : e.pageY
                 };
@@ -137,7 +151,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this.$startOffset = configuration.$.offset.clone();
                 } else if (mode === SCALE) {
 
-                    var factor = this.localToGlobalFactor();
+                    factor = this.localToGlobalFactor();
                     this.$startScale = _.clone(configuration.$.scale);
 
                     // diagonal in real px
@@ -148,7 +162,23 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         x: configuration.width() * factor.x,
                         y: configuration.height() * factor.y
                     });
+                } else if (mode === ROTATE) {
+                    factor = this.localToGlobalFactor();
+                    var halfWidth = (configuration.width() / 2) * factor.x,
+                        halfHeight = (configuration.height() / 2) * factor.y;
 
+                    this.$centerPoint = {
+                        x: downPoint.x - halfWidth,
+                        y: downPoint.y + halfHeight
+                    };
+
+                    this.$startRotateVector = {
+                        x: halfWidth,
+                        y: -halfHeight
+                    };
+                    this.$startRotation = configuration.$.rotation;
+
+                    console.log(this.$centerPoint, this.$downPoint);
                 }
 
                 var window = this.dom(this.$stage.$window);
@@ -196,12 +226,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     });
 
                 } else if (mode === SCALE) {
-                    var multiple = 1,
-                        aspectRatio = configuration.width() / configuration.height();
-
-                    if (deltaX > 0 || deltaY > 0) {
-                        multiple = -1;
-                    }
+                    var aspectRatio = configuration.width() / configuration.height();
 
                     if (deltaX >= deltaY) {
                         y = this.$downPoint.y + deltaX / aspectRatio;
@@ -214,14 +239,36 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         y: y
                     });
 
-                    mouseDistance *= multiple;
+                    if (deltaX > 0 || deltaY > 0) {
+                        mouseDistance *= -1;
+                    }
 
-                    var scaleFactory = (this.$scaleDiagonalDistance + mouseDistance) / this.$scaleDiagonalDistance;
+                    var scaleFactor = (this.$scaleDiagonalDistance + mouseDistance) / this.$scaleDiagonalDistance;
 
                     configuration.set('scale', {
-                        x: scaleFactory * this.$startScale.x,
-                        y: scaleFactory * this.$startScale.y
+                        x: scaleFactor * this.$startScale.x,
+                        y: scaleFactor * this.$startScale.y
                     });
+
+                } else if (mode === ROTATE) {
+                    var startVector = this.$startRotateVector;
+                    var currentVector = {
+                        x: x - this.$centerPoint.x,
+                        y: y - this.$centerPoint.y
+                    };
+
+                    var scaleProduct = startVector.x * currentVector.x + startVector.y * currentVector.y;
+                    var distanceCenterPoint = Math.sqrt(startVector.x * startVector.x + startVector.y * startVector.y);
+                    var distanceCurrentPoint = Math.sqrt(currentVector.x * currentVector.x + currentVector.y * currentVector.y);
+
+                    var angle = Math.acos(scaleProduct / (distanceCenterPoint * distanceCurrentPoint)) * 180 / Math.PI;
+
+                    var crossProduct = startVector.x * currentVector.y - startVector.y * currentVector.x;
+                    if (crossProduct < 0) {
+                        angle *= -1;
+                    }
+
+                    configuration.set("rotation", this.$startRotation + angle);
 
                 }
 
@@ -270,6 +317,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             substract: function (value, minuend) {
                 return value - minuend;
+            },
+
+            half: function(value) {
+                return value / 2
             },
 
             isSelectedConfiguration: function () {

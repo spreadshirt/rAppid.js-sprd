@@ -4,9 +4,21 @@
 
     <svg:g cid="_assetContainer" scaleX="{configuration.scale.x}" scaleY="{configuration.scale.y}">
     </svg:g>
+
+    <svg:rect class="configuration-boundary"
+              visible="{isSelectedConfiguration()}"
+              x="0" y="0"
+              width="{configuration.width()}" height="{configuration.height()}"/>
+
     <svg:rect cid="_scaleHandle" class="configuration-handle scale"
               visible="{isSelectedConfiguration()}"
               x="{substract(configuration.width(),8)}" y="{substract(configuration.height(),8)}"
+              width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
+
+
+    <svg:rect cid="_rotateHandle" class="configuration-handle rotate"
+              visible="{isSelectedConfiguration()}"
+              x="{substract(configuration.width(),8)}" y="-8"
               width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
 
     <svg:rect cid="_deleteHandle" class="configuration-handle delete"
