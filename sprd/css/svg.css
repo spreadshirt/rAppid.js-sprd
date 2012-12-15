@@ -16,3 +16,10 @@ rect {
     vector-effect: non-scaling-stroke;
     shape-rendering: crispEdges;
 }
+
+.configuration-boundary {
+    stroke-dasharray: 9, 5;
+    stroke: white;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+}
