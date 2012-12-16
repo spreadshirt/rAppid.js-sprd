@@ -1,8 +1,8 @@
 define(['js/core/Base'], function (Base) {
 
-    var Color = Base.inherit('sprd.type.Color', {
+    var Color = Base.inherit('sprd.type.Color', {}, {
 
-        ctor: function (color) {
+        parse: function(color) {
             if (/^#[0-9A-F]{3,6}$/.test(color)) {
                 // #rgb format
                 return Color.fromHexString(color);
@@ -11,15 +11,14 @@ define(['js/core/Base'], function (Base) {
             } else if (color instanceof Object && "r" in color && "g" in color && "b" in color) {
                 return new Color.RGB(color.r, color.g, color.b);
             }
-        }
-    }, {
+        },
 
         fromHexString: function (hexString) {
             return Color.fromHex(parseInt("0x" + hexString.replace(/^#/, "")));
         },
 
         fromHex: function (hex) {
-            return Color.RGB(( hex >> 16 ) & 0xFF, ( hex >> 8 ) & 0xFF, hex & 0xFF);
+            return new Color.RGB(( hex >> 16 ) & 0xFF, ( hex >> 8 ) & 0xFF, hex & 0xFF);
         }
     });
 
