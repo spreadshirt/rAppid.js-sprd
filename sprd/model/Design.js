@@ -1,4 +1,4 @@
-define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd/entity/Color', 'sprd/entity/Price'], function (SprdModel, PrintType, Size, Color, Price) {
+define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd/entity/DesignColor', 'sprd/entity/Price'], function (SprdModel, PrintType, Size, DesignColor, Price) {
 	return SprdModel.inherit('sprd.model.Design', {
 		defaults : {
 			name         : '',
@@ -15,7 +15,7 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
 
             tags: String,
 
-            colors: [Color],
+            colors: [DesignColor],
             price: Price
         },
 
