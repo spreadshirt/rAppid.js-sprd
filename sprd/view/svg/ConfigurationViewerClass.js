@@ -176,9 +176,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         x: halfWidth,
                         y: -halfHeight
                     };
-                    this.$startRotation = configuration.$.rotation;
 
-                    console.log(this.$centerPoint, this.$downPoint);
+                    this.$startRotation = configuration.$.rotation;
                 }
 
                 var window = this.dom(this.$stage.$window);
@@ -268,7 +267,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         angle *= -1;
                     }
 
-                    configuration.set("rotation", this.$startRotation + angle);
+                    configuration.set("rotation", Math.round(this.$startRotation + angle, 2));
 
                 }
 
