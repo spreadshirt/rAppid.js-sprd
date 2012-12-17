@@ -10,7 +10,6 @@ define(['js/ui/SelectionView'], function (SelectionView) {
 
             tagName: "ul",
             items: "{productType.appearances}"
-//            needsSelection: "{hasSelection()}"
         },
 
         initialize: function () {
@@ -27,11 +26,9 @@ define(['js/ui/SelectionView'], function (SelectionView) {
                 this.set('_appearances', null);
             } else {
                 appearances = productType.$.appearances;
-                if (appearances !== this.$items) {
+                if (appearances !== this.$.items) {
+                    this.set('selectedItem', null);
                     this.set('_appearances', appearances);
-                    if (!this.$.selectedItem || !productType.getAppearanceById(this.$.selectedItem.$.id)) {
-                       this.set('selectedItem', productType.getDefaultAppearance());
-                    }
                 }
             }
         }
