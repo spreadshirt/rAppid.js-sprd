@@ -94,6 +94,29 @@ define([
                     })
                     .seq(function () {
                         // TODO: convert all configurations: size, position, print type
+
+                        var configurations = self.$.configurations.$items,
+                            removeConfigurations = [];
+
+                        for (var i = 0; i < configurations.length; i++) {
+                            var configuration = configurations[i],
+                                targetView = configuration.$.printArea.getDefaultView(),
+                                targetPrintArea;
+
+                            if (targetView) {
+                                targetPrintArea = targetView.getDefaultPrintArea();
+                            }
+
+                            if (targetPrintArea) {
+                                configuration.set('printArea', targetPrintArea);
+                            } else {
+                                // no print area found, remove configuration
+                                removeConfigurations.push(configuration);
+                            }
+                        }
+
+                        self.$.configurations.remove(removeConfigurations);
+
                     })
                     .seq(function() {
                         // first set product type
