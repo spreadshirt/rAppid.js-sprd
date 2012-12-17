@@ -9,7 +9,8 @@ define(['js/ui/SelectionView'], function (SelectionView) {
             productType: null,
 
             tagName: "ul",
-            items: "{productType.appearances}"
+            items: "{productType.appearances}",
+            needsSelection: "{hasSelection()}"
         },
 
         initialize: function () {
@@ -27,7 +28,6 @@ define(['js/ui/SelectionView'], function (SelectionView) {
             } else {
                 appearances = productType.$.appearances;
                 if (appearances !== this.$.items) {
-                    this.set('selectedItem', null);
                     this.set('_appearances', appearances);
                 }
             }
