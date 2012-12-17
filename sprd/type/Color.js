@@ -1,6 +1,12 @@
 define(['js/core/Base'], function (Base) {
 
-    var Color = Base.inherit('sprd.type.Color', {}, {
+    var Color = Base.inherit('sprd.type.Color', {
+
+        distanceTo: function(color) {
+            return Color.calculateColorDistance(this, color);
+        }
+
+    }, {
 
         parse: function(color) {
             if (/^#[0-9A-F]{3,6}$/.test(color)) {
@@ -19,6 +25,13 @@ define(['js/core/Base'], function (Base) {
 
         fromHex: function (hex) {
             return new Color.RGB(( hex >> 16 ) & 0xFF, ( hex >> 8 ) & 0xFF, hex & 0xFF);
+        },
+
+        calculateColorDistance: function(color1, color2) {
+            var l1 = color1.toLAB(),
+                l2 = color2.toLAB();
+
+            return Math.sqrt(Math.pow(l2.l - l1.l, 2) + Math.pow(l2.a - l1.a, 2) + Math.pow(l2.b - l1.b, 2));
         }
     });
 
