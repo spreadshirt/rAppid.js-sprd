@@ -2,13 +2,13 @@ define(['js/core/Base'], function (Base) {
 
     var Color = Base.inherit('sprd.type.Color', {
 
-        distanceTo: function(color) {
+        distanceTo: function (color) {
             return Color.calculateColorDistance(this, color);
         }
 
     }, {
 
-        parse: function(color) {
+        parse: function (color) {
             if (/^#[0-9A-F]{3,6}$/.test(color)) {
                 // #rgb format
                 return Color.fromHexString(color);
@@ -27,7 +27,7 @@ define(['js/core/Base'], function (Base) {
             return new Color.RGB(( hex >> 16 ) & 0xFF, ( hex >> 8 ) & 0xFF, hex & 0xFF);
         },
 
-        calculateColorDistance: function(color1, color2) {
+        calculateColorDistance: function (color1, color2) {
             var l1 = color1.toLAB(),
                 l2 = color2.toLAB();
 
@@ -148,19 +148,19 @@ define(['js/core/Base'], function (Base) {
 
         },
 
-        toLAB: function() {
+        toLAB: function () {
             return this.toXYZ().toLAB();
         },
 
-        toHex: function() {
+        toHex: function () {
             return ( this.r << 16 ) | ( this.g << 8 ) | this.b;
         },
 
-        invert: function() {
+        invert: function () {
             return new Color.RGB(255 - this.r, 255 - this.g, 255 - this.b);
         },
 
-        toString: function() {
+        toString: function () {
             return "#" + this.toHex().toString(16);
         }
 
@@ -224,11 +224,11 @@ define(['js/core/Base'], function (Base) {
             return new Color.RGB(r * 255 >> 0, g * 255 >> 0, bl * 255 >> 0);
         },
 
-        toXZY: function() {
+        toXZY: function () {
             return this.toRGB().toXZY();
         },
 
-        toLAB: function() {
+        toLAB: function () {
             return this.toRGB().toLAB();
         }
 
@@ -274,7 +274,7 @@ define(['js/core/Base'], function (Base) {
     });
 
     Color.LAB = Color.inherit("sprd.type.Color.LAB", {
-        ctor: function(l, a, b) {
+        ctor: function (l, a, b) {
             this.l = l;
             this.a = a;
             this.b = b;
