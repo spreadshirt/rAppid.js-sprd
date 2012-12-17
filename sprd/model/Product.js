@@ -77,7 +77,8 @@ define([
              */
             setProductType: function(productType, callback) {
 
-                var self = this;
+                var self = this,
+                    appearance;
 
                 flow()
                     .seq(function(cb) {
@@ -85,15 +86,20 @@ define([
                     })
                     .seq(function() {
 
-                        var appearance = productType.getClosestAppearance(self.$.appearance.getMainColor());
-
-                        self.set({
-                            productType: productType,
-                            appearance: appearance
-                        });
+                        if (self.$.appearance) {
+                            appearance = productType.getClosestAppearance(self.$.appearance.getMainColor());
+                        } else {
+                            appearance = productType.getDefaultAppearance();
+                        }
                     })
                     .seq(function () {
                         // TODO: convert all configurations: size, position, print type
+                    })
+                    .seq(function() {
+                        // first set product type
+                        self.set("productType", productType);
+                        // and then the appearance, because appearance depends on product type
+                        self.set("appearance", appearance);
                     })
                     .exec(callback)
 
