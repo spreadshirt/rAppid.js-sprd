@@ -100,8 +100,13 @@ define([
 
                         for (var i = 0; i < configurations.length; i++) {
                             var configuration = configurations[i],
-                                targetView = configuration.$.printArea.getDefaultView(),
-                                targetPrintArea;
+                                currentView = configuration.$.printArea.getDefaultView(),
+                                targetView = null,
+                                targetPrintArea = null;
+
+                            if (currentView) {
+                                targetView = productType.getViewByPerspective(currentView.$.perspective);
+                            }
 
                             if (targetView) {
                                 targetPrintArea = targetView.getDefaultPrintArea();
