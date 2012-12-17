@@ -1,7 +1,7 @@
 <view:ColorSelectorClass xmlns:js="js.core" xmlns="http://www.w3.org/1999/xhtml" xmlns:view="sprd.view">
     <js:Template name="item">
         <li>
-            <img src="{getImageUrl(appearance)}" alt="{appearance.name}" width="{colorWidth}" title="{appearance.name}"/>
+            <view:AppearanceImage appearance="{appearance}" width="{colorWidth}"/>
         </li>
     </js:Template>
 </view:ColorSelectorClass>
