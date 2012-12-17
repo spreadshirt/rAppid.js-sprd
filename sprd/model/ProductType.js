@@ -87,7 +87,11 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             }
             return null;
         },
-
+        /***
+         * Returns closest appearance for Color
+         * @param {String|Color} color
+         * @return {*}
+         */
         getClosestAppearance: function(color) {
             if (_.isString(color)) {
                 color = Color.parse(color);
