@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance","sprd/collection/StockStates", 'js/core/List', 'sprd/entity/ProductTypeSize', 'sprd/entity/PrintArea'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List, Size, PrintArea) {
+define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance","sprd/collection/StockStates", 'js/core/List', 'sprd/entity/ProductTypeSize', 'sprd/entity/PrintArea', 'sprd/type/Color', 'underscore'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List, Size, PrintArea, Color, _) {
     return SprdModel.inherit("sprd.model.ProductType", {
 
         schema: {
@@ -86,6 +86,29 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
                 }
             }
             return null;
+        },
+
+        getClosestAppearance: function(color) {
+            if (_.isString(color)) {
+                color = Color.parse(color);
+            }
+
+            var ret = null,
+                minDistance = null,
+                appearances = this.$.appearances;
+
+            if (appearances) {
+                appearances.each(function(appearance) {
+                    var distance = color.distanceTo(appearance.getMainColor());
+                    if (minDistance === null || distance < minDistance) {
+                        minDistance = distance;
+                        ret = appearance;
+                    }
+                });
+            }
+
+            return ret;
+
         },
 
         getViewByPerspective: function(perspective){
