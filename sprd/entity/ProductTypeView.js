@@ -1,5 +1,5 @@
 define(['js/data/Entity', 'sprd/entity/ViewMap', 'sprd/entity/Size'], function (Entity, ViewMap, Size) {
-	return Entity.inherit('sprd.entity.ProductTypeView', {
+    return Entity.inherit('sprd.entity.ProductTypeView', {
 
         schema: {
             name: String,
@@ -8,13 +8,13 @@ define(['js/data/Entity', 'sprd/entity/ViewMap', 'sprd/entity/Size'], function (
             size: Size
         },
 
-        getProductType: function() {
+        getProductType: function () {
             return this.$parent;
         },
 
-		getDefaultPrintArea : function() {
+        getDefaultPrintArea: function () {
 
-			var printArea,
+            var printArea,
                 productType;
 
             if (this.$.viewMaps) {
@@ -34,6 +34,6 @@ define(['js/data/Entity', 'sprd/entity/ViewMap', 'sprd/entity/Size'], function (
 
             return null;
 
-		}
-	});
+        }
+    });
 });
