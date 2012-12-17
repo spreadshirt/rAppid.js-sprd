@@ -23,6 +23,19 @@ define(['js/data/Entity', 'sprd/model/PrintType'], function (Entity, PrintType) 
 
         schema: {
             restrictions: PrintAreaRestriction
+        },
+
+        getProductType: function () {
+            return this.$parent;
+        },
+
+        getDefaultView: function () {
+
+            if (this.$.defaultView && this.getProductType()) {
+                return this.getProductType().getViewById(this.$.defaultView.id);
+            }
+
+            return null;
         }
     });
 
