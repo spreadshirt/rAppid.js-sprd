@@ -51,8 +51,8 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
 
 
             elementPayload["type"] = model.$.element.getType();
-            elementPayload["href"] = element.item.href;
-            elementPayload["id"] = element.item.id;
+            elementPayload["href"] = model.get('element.item.href');
+            elementPayload["id"] = model.get('element.item.id');
 
             var ret = {
                 element: elementPayload,
