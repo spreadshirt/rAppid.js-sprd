@@ -4,6 +4,10 @@ define(['js/data/Entity', 'sprd/model/PrintType', 'sprd/entity/AppearanceColor']
             name: String,
             printTypes: [PrintType],
             colors: [AppearanceColor]
+        },
+
+        getMainColor: function() {
+            return this.get("colors[0].value");
         }
     })
 });
