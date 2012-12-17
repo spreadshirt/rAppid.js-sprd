@@ -17,6 +17,10 @@ define(['js/core/Component','underscore'], function(Component, _) {
             return this.buildUrl(['designs', designId], ImageService.getImageSizeParameter(options));
         },
 
+        appearanceImage: function(appearanceId, options){
+            return this.buildUrl(['appearances',appearanceId], ImageService.getImageSizeParameter(options));
+        },
+
         buildUrl: function(url, parameter) {
             url = url || [];
             url.unshift(this.$.endPoint);

@@ -9,8 +9,8 @@ define(['js/ui/SelectionView'], function (SelectionView) {
             productType: null,
 
             tagName: "ul",
-            items: "{productType.appearances}",
-            needsSelection: "{hasSelection()}"
+            items: "{productType.appearances}"
+//            needsSelection: "{hasSelection()}"
         },
 
         initialize: function () {
@@ -29,16 +29,10 @@ define(['js/ui/SelectionView'], function (SelectionView) {
                 appearances = productType.$.appearances;
                 if (appearances !== this.$items) {
                     this.set('_appearances', appearances);
-                    if (this.$.selectedItem && !productType.getAppearanceById(this.$.selectedItem.$.id)) {
-                        this.set('selectedItem', productType.getDefaultAppearance());
+                    if (!this.$.selectedItem || !productType.getAppearanceById(this.$.selectedItem.$.id)) {
+                       this.set('selectedItem', productType.getDefaultAppearance());
                     }
                 }
-            }
-        },
-        getImageUrl: function (appearance) {
-            // TODO: load with ImageService
-            if (appearance.$.resources && appearance.$.resources.length > 0) {
-                return appearance.$.resources[0].href + ",width=" + this.$.colorWidth;
             }
         }
     })
