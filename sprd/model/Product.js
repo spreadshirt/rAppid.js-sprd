@@ -69,6 +69,36 @@ define([
                 this.$.configurations.add(configuration);
             },
 
+            /***
+             * set the product type and converts all configurations
+             *
+             * @param {sprd.model.ProductType} productType
+             * @param callback
+             */
+            setProductType: function(productType, callback) {
+
+                var self = this;
+
+                flow()
+                    .seq(function(cb) {
+                        productType.fetch(null, cb);
+                    })
+                    .seq(function() {
+
+                        var appearance = productType.getClosestAppearance(self.$.appearance.getMainColor());
+
+                        self.set({
+                            productType: productType,
+                            appearance: appearance
+                        });
+                    })
+                    .seq(function () {
+                        // TODO: convert all configurations: size, position, print type
+                    })
+                    .exec(callback)
+
+            },
+
             addDesign: function (params, callback) {
                 params = _.defaults({}, params, {
                     design: null,
