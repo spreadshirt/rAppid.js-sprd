@@ -29,7 +29,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 product: null,
 
                 // tmp. offset during move
-                _offset: "{configuration.offset}"
+                _offset: "{configuration.offset}",
+                _scale: "{configuration.scale}",
+
+                _configurationWidth: "{configuration.width()}",
+                _configurationHeight: "{configuration.height()}"
+
             },
 
             $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer"],
@@ -155,7 +160,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 } else if (mode === SCALE) {
 
                     factor = this.localToGlobalFactor();
-                    this.$startScale = _.clone(configuration.$.scale);
+                    this.set('_scale', _.clone(configuration.$.scale));
 
                     // diagonal in real px
                     this.$scaleDiagonalDistance = this._getDistance({
@@ -246,9 +251,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     var scaleFactor = (this.$scaleDiagonalDistance + mouseDistance) / this.$scaleDiagonalDistance;
 
-                    configuration.set('scale', {
-                        x: scaleFactor * this.$startScale.x,
-                        y: scaleFactor * this.$startScale.y
+                    var scale = {
+                        x: scaleFactor * configuration.$.scale.x,
+                        y: scaleFactor * configuration.$.scale.y
+                    };
+                    this.set('_scale', scale);
+
+                    this.set({
+                        _configurationWidth: configuration.width(scale.x),
+                        _configurationHeight: configuration.height(scale.y)
                     });
 
                 } else if (mode === ROTATE) {
@@ -288,6 +299,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 if (mode === MOVE) {
                     configuration.set('offset', this.$._offset);
+                } else if (mode === SCALE) {
+                    configuration.set('scale', this.$._scale);
                 }
 
                 var window = this.dom(this.$stage.$window);
@@ -322,6 +335,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 }
             },
+
 
             substract: function (value, minuend) {
                 return value - minuend;
