@@ -15,7 +15,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 translateX: "{_offset.x}",
                 translateY: "{_offset.y}",
 
-                rotation: "{configuration.rotation}",
+                rotation: "{_rotation}",
                 rotationX: "{half(configuration.width())}",
                 rotationY: "{half(configuration.height())}",
 
@@ -33,8 +33,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _scale: "{configuration.scale}",
 
                 _configurationWidth: "{configuration.width()}",
-                _configurationHeight: "{configuration.height()}"
+                _configurationHeight: "{configuration.height()}",
 
+                _rotation: "{configuration.rotation}"
             },
 
             $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer"],
@@ -185,7 +186,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         y: -halfHeight
                     };
 
-                    this.$startRotation = configuration.$.rotation;
                 }
 
                 var window = this.dom(this.$stage.$window);
@@ -269,18 +269,18 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         y: y - this.$centerPoint.y
                     };
 
-                    var scaleProduct = startVector.x * currentVector.x + startVector.y * currentVector.y;
+                    var scalarProduct = startVector.x * currentVector.x + startVector.y * currentVector.y;
                     var distanceCenterPoint = Math.sqrt(startVector.x * startVector.x + startVector.y * startVector.y);
                     var distanceCurrentPoint = Math.sqrt(currentVector.x * currentVector.x + currentVector.y * currentVector.y);
 
-                    var angle = Math.acos(scaleProduct / (distanceCenterPoint * distanceCurrentPoint)) * 180 / Math.PI;
+                    var angle = Math.acos(scalarProduct / (distanceCenterPoint * distanceCurrentPoint)) * 180 / Math.PI;
 
                     var crossProduct = startVector.x * currentVector.y - startVector.y * currentVector.x;
                     if (crossProduct < 0) {
                         angle *= -1;
                     }
 
-                    configuration.set("rotation", Math.round(this.$startRotation + angle, 2));
+                    this.set("_rotation", Math.round(configuration.$.rotation + angle, 2));
 
                 }
 
@@ -301,6 +301,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     configuration.set('offset', this.$._offset);
                 } else if (mode === SCALE) {
                     configuration.set('scale', this.$._scale);
+                } else if (mode === ROTATE) {
+                    configuration.set('rotation', this.$._rotation);
                 }
 
                 var window = this.dom(this.$stage.$window);
