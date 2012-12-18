@@ -249,9 +249,9 @@ define(['js/core/Base'], function (Base) {
         },
 
         toLAB: function () {
-            const REF_X = 95.047;
-            const REF_Y = 100.000;
-            const REF_Z = 108.883;
+            var REF_X = 95.047,
+                REF_Y = 100.000,
+                REF_Z = 108.883;
 
             var x = this.x / REF_X,
                 y = this.y / REF_Y,
