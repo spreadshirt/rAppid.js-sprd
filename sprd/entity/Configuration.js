@@ -1,5 +1,8 @@
 define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea','sprd/model/PrintType'], function (Entity, Offset, Size, PrintArea, PrintType) {
-	return Entity.inherit('sprd.entity.Configuration', {
+
+    var undefined;
+
+    return Entity.inherit('sprd.entity.Configuration', {
 
         schema: {
             offset: Offset,
@@ -30,12 +33,22 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return null;
         },
 
-        height: function () {
-            return this.size().$.height * this.$.scale.y;
+        height: function (scale) {
+
+            if (!scale && scale !== 0) {
+                scale = this.$.scale.y;
+            }
+
+            return this.size().$.height * scale;
         }.onChange("scale","size()"),
 
-        width: function() {
-            return this.size().$.width * this.$.scale.x;
+        width: function(scale) {
+
+            if (!scale && scale !== 0) {
+                scale = this.$.scale.x;
+            }
+
+            return this.size().$.width * scale;
         }.onChange("scale","size()")
 	});
 });
