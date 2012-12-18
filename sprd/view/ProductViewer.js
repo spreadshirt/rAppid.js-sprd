@@ -97,6 +97,15 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 this._renderProductTypeView(this.$._productType, view);
             },
 
+            _commitProduct: function(product) {
+                var productTypeViewViewerCache = this.$productTypeViewViewerCache;
+                for (var key in productTypeViewViewerCache) {
+                    if (productTypeViewViewerCache.hasOwnProperty(key)) {
+                        productTypeViewViewerCache[key].set('product', product);
+                    }
+                }
+            },
+
             _renderProductTypeView: function (productType, view) {
                 if (productType && view && productType.containsView(view)) {
                     var cacheId = productType.$.id + "_" + view.$.id;

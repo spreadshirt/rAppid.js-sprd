@@ -93,6 +93,12 @@ define(['js/svg/SvgElement', "sprd/data/ImageService", "sprd/view/svg/PrintAreaV
             }
         },
 
+        _commitProduct: function(product) {
+            for (var i = 0; i < this.$printAreas.length; i++) {
+                this.$printAreas[i].set('product', product);
+            }
+        },
+
         destroy: function() {
 
             this._removePrintAreas();
