@@ -78,19 +78,34 @@ define([
             setProductType: function(productType, callback) {
 
                 var self = this,
-                    appearance;
+                    appearance,
+                    view;
 
                 flow()
                     .seq(function(cb) {
                         productType.fetch(null, cb);
                     })
                     .seq(function() {
-
                         if (self.$.appearance) {
                             appearance = productType.getClosestAppearance(self.$.appearance.getMainColor());
                         } else {
                             appearance = productType.getDefaultAppearance();
                         }
+                    })
+                    .seq(function() {
+                        // determinate closest view for new product type
+                        var currentView = self.$.view;
+
+                        if (currentView) {
+                            view = productType.getViewByPerspective(currentView.$.perspective);
+                        }
+
+                        if (!view) {
+                            view = productType.getDefaultView();
+                        }
+
+                        // self.set('view', view);
+
                     })
                     .seq(function () {
                         // TODO: convert all configurations: size, position, print type
@@ -100,7 +115,8 @@ define([
 
                         for (var i = 0; i < configurations.length; i++) {
                             var configuration = configurations[i],
-                                currentView = configuration.$.printArea.getDefaultView(),
+                                currentPrintArea = configuration.$.printArea,
+                                currentView = currentPrintArea.getDefaultView(),
                                 targetView = null,
                                 targetPrintArea = null;
 
@@ -114,6 +130,17 @@ define([
 
                             if (targetPrintArea) {
                                 configuration.set('printArea', targetPrintArea);
+
+                                var factor = targetPrintArea.get("boundary.size.width") / currentPrintArea.get("boundary.size.width");
+                                configuration.set('scale', {
+                                    x: configuration.$.scale.x * factor,
+                                    y: configuration.$.scale.y * factor
+                                });
+                                configuration.$.offset.set({
+                                    x: configuration.$.offset.$.x * factor,
+                                    y: configuration.$.offset.$.y * factor
+                                });
+
                             } else {
                                 // no print area found, remove configuration
                                 removeConfigurations.push(configuration);
