@@ -37,14 +37,6 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
 
             this.addChild(border);
 
-            var product = this.$.product,
-                self = this;
-            if (product && product.$.configurations) {
-                product.$.configurations.each(function(configuration) {
-                    self._addConfiguration(configuration);
-                });
-            }
-
             this.callBase();
         },
 
@@ -88,6 +80,16 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
 
                 this.addChild(viewer);
 
+            }
+        },
+
+        _renderProduct: function(product){
+
+            var self = this;
+            if (product && product.$.configurations) {
+                product.$.configurations.each(function (configuration) {
+                    self._addConfiguration(configuration);
+                });
             }
         },
 
