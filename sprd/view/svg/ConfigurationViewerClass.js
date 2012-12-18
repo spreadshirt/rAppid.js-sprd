@@ -289,6 +289,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 window.unbindDomEvent(this.$upEvent, this.$upHandler);
 
                 this.$moving = false;
+
+                this.$stage.$bus.trigger("ConfigurationModified");
+
             },
 
             getButtonSize: function (size) {
