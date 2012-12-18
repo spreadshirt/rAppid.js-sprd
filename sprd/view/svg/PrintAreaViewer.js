@@ -83,7 +83,11 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
             }
         },
 
-        _renderProduct: function(product){
+        _renderProduct: function(product, oldProduct){
+
+            if (oldProduct) {
+                this._removeConfigurationViewer();
+            }
 
             var self = this;
             if (product && product.$.configurations) {
@@ -107,6 +111,18 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
             }
         },
 
+        _removeConfigurationViewer: function() {
+            for (var key in this.$configurationViewerCache) {
+                if (this.$configurationViewerCache.hasOwnProperty(key)) {
+                    var viewer = this.$configurationViewerCache[key];
+                    viewer.remove();
+                    viewer.destroy();
+                }
+            }
+
+            this.$configurationViewerCache = {};
+        },
+
         _onConfigurationChanged: function (e) {
             // remove or add
             if (e && this._hasSome(e.$.changedAttributes, ["printArea"])) {
@@ -117,6 +133,11 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
                     this._removeConfiguration(configuration);
                 }
             }
+        },
+
+        destroy: function () {
+            this._removeProductTypeViewViewers();
+            this.callBase();
         }
 
     });
