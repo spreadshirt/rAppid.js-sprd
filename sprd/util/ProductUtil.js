@@ -1,4 +1,4 @@
-define(["underscore", "sprd/util/ArrayUtil"], function (_, ArrayUtil) {
+define(["underscore", "sprd/util/ArrayUtil","js/core/List","sprd/model/ProductType","flow"], function (_, ArrayUtil, List, ProductType, flow) {
 
     return {
 
@@ -28,6 +28,32 @@ define(["underscore", "sprd/util/ArrayUtil"], function (_, ArrayUtil) {
             });
 
             return ret;
+        },
+
+        fetchColorsForProductTypes: function(productTypes, minDistance, callback){
+            minDistance = minDistance || 2;
+
+            var colors = new List();
+            var appearances = [];
+
+            flow()
+                .parEach(productTypes,function(item, cb){
+                    item.fetch(null, cb);
+                })
+                .seqEach(productTypes,function(productType,cb){
+                    productType.$.appearances.each(function (appearance) {
+                        var merge = false;
+                        colors.each(function(color){
+                            merge = appearance.$.color.distanceTo(color) < minDistance;
+                        });
+                        if (!merge){
+                            colors.add(appearance.$.color);
+                        }
+                    })
+                })
+                .exec(function(err){
+                    callback(err, colors);
+                });
         }
 
     };
