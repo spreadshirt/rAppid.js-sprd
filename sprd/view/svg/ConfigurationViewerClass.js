@@ -12,8 +12,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 componentClass: 'configuration-viewer',
                 configuration: null,
 
-                translateX: "{configuration.offset.x}",
-                translateY: "{configuration.offset.y}",
+                translateX: "{_offset.x}",
+                translateY: "{_offset.y}",
 
                 rotation: "{configuration.rotation}",
                 rotationX: "{half(configuration.width())}",
@@ -26,7 +26,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 productViewer: null,
                 printAreaViewer: null,
-                product: null
+                product: null,
+
+                // tmp. offset during move
+                _offset: "{configuration.offset}"
             },
 
             $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer"],
@@ -148,7 +151,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 if (mode === MOVE) {
                     this.$.productViewer.set("selectedConfiguration", this.$.configuration);
-                    this.$startOffset = configuration.$.offset.clone();
+                    this.set('_offset', configuration.$.offset.clone());
                 } else if (mode === SCALE) {
 
                     factor = this.localToGlobalFactor();
@@ -219,11 +222,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     deltaY = (this.$downPoint.y - y);
 
                 if (mode === MOVE) {
-                    configuration.$.offset.set({
-                        x: this.$startOffset.$.x - deltaX * factor.x,
-                        y: this.$startOffset.$.y - deltaY * factor.y
+                    this.$._offset.set({
+                        x: configuration.$.offset.$.x - deltaX * factor.x,
+                        y: configuration.$.offset.$.y - deltaY * factor.y
                     });
-
                 } else if (mode === SCALE) {
                     var aspectRatio = configuration.width() / configuration.height();
 
@@ -274,7 +276,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 e.stopPropagation();
             },
 
-            _up: function (e) {
+            _up: function (e, mode) {
                 if (!this.$moving) {
                     return;
                 }
@@ -282,6 +284,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var configuration = this.$.configuration;
                 if (!configuration) {
                     return;
+                }
+
+                if (mode === MOVE) {
+                    configuration.set('offset', this.$._offset);
                 }
 
                 var window = this.dom(this.$stage.$window);
