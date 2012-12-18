@@ -162,6 +162,9 @@ define(['js/core/Base'], function (Base) {
 
         toString: function () {
             return "#" + this.toHex().toString(16);
+        },
+        clone: function () {
+            return new this.factory(this.r,this.g,this.b);
         }
 
     });
@@ -230,6 +233,9 @@ define(['js/core/Base'], function (Base) {
 
         toLAB: function () {
             return this.toRGB().toLAB();
+        },
+        clone: function () {
+            return new this.factory(this.h, this.s, this.b);
         }
 
     });
@@ -270,6 +276,9 @@ define(['js/core/Base'], function (Base) {
             }
 
             return new Color.LAB(( 116 * y ) - 16, 500 * ( x - y ), 200 * ( y - z ));
+        },
+        clone: function () {
+            return new this.factory(this.x, this.y, this.z);
         }
     });
 
@@ -278,6 +287,9 @@ define(['js/core/Base'], function (Base) {
             this.l = l;
             this.a = a;
             this.b = b;
+        },
+        clone: function () {
+            return new this.factory(this.l, this.a, this.b);
         }
     });
 
