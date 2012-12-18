@@ -133,11 +133,6 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
                     this._removeConfiguration(configuration);
                 }
             }
-        },
-
-        destroy: function () {
-            this._removeProductTypeViewViewers();
-            this.callBase();
         }
 
     });
