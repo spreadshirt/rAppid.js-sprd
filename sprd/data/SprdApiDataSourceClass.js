@@ -26,6 +26,16 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
                 return new SprdApiDataSource.SprdApiContext(this, contextModel, properties, parentContext);
             },
 
+            _getContextPath: function(data) {
+                var match = /\/api\/v1\/(.*)$/.exec(data[this.$.determinateContextAttribute]);
+
+                if (match) {
+                    return match[1];
+                }
+
+                return this.callBase();
+            },
+
             /***
              * returns the context for the shop
              *
