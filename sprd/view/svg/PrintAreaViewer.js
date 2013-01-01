@@ -26,7 +26,14 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
 
             // Could be done via binding, but viewMaps don't change at runtime and so just evalulating
             this.translate(this.get("_viewMap.offset.x"), this.get("_viewMap.offset.y"));
-            this.transform(this.get("_viewMap.transform"));
+
+            var transformations = this.get("_viewMap.transformations.operations");
+            if (transformations) {
+                this.$.transformations.add(new SvgElement.Transform({
+                    transform: transformations
+                }));
+            }
+
 
             var border = this.createComponent(SvgElement, {
                 tagName: "rect",
