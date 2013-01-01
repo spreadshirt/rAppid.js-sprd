@@ -104,8 +104,6 @@ define([
                             view = productType.getDefaultView();
                         }
 
-                        // self.set('view', view);
-
                     })
                     .seq(function () {
                         // TODO: convert all configurations: size, position, print type
@@ -154,7 +152,10 @@ define([
                         // first set product type
                         self.set("productType", productType);
                         // and then the appearance, because appearance depends on product type
-                        self.set("appearance", appearance);
+                        self.set({
+                            view: view,
+                            appearance: appearance
+                        });
                     })
                     .exec(callback)
 
