@@ -172,8 +172,13 @@ define(['js/core/Base'], function (Base) {
         },
 
         toString: function () {
-            return "#" + this.toHex().toString(16);
+            return "#" + this.toHexString();
         },
+
+        toHexString: function() {
+            return this.toHex().toString(16);
+        },
+
         clone: function () {
             return new this.factory(this.r,this.g,this.b);
         }
