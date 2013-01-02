@@ -13,8 +13,17 @@ define(['js/data/Entity', 'sprd/entity/Price', 'sprd/type/Color'], function (Ent
             return data;
         },
 
-        color: function() {
+        color: function () {
             return this.$.fill;
+        },
+
+        toHexString: function () {
+
+            if (this.$.fill) {
+                return this.$.fill.toRGB().toString();
+            }
+
+            return null;
         }
     });
 });
