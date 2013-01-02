@@ -9,14 +9,25 @@ define(['js/core/Base'], function (Base) {
     }, {
 
         parse: function (color) {
+
+            if (color instanceof Color) {
+                return color;
+            }
+
             if (/^#[0-9A-F]{3,6}$/.test(color)) {
                 // #rgb format
                 return Color.fromHexString(color);
-            } else if (Object.prototype.toString.call(color) === "[object Number]") {
+            }
+
+            if (Object.prototype.toString.call(color) === "[object Number]") {
                 return Color.fromHex(color);
-            } else if (color instanceof Object && "r" in color && "g" in color && "b" in color) {
+            }
+
+            if (color instanceof Object && "r" in color && "g" in color && "b" in color) {
                 return new Color.RGB(color.r, color.g, color.b);
             }
+
+            return null;
         },
 
         fromHexString: function (hexString) {
