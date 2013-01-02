@@ -10,13 +10,20 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
         defaults: {
             type: 'design',
-            _dpi: "{printType.dpi}"
+            _dpi: "{printType.dpi}",
+
+            design: null
         },
 
         ctor: function () {
             this.$sizeCache = {};
-
             this.callBase();
+
+            var printType = this.$.printType,
+                design = this.$.design;
+
+
+
         },
 
         size: function () {
@@ -67,6 +74,11 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             };
 
             return ret;
-        }
+        },
+
+        // TODO: add onchange for design.restriction.allowScale
+        isScalable: function () {
+            return this.get("printType.isScalable()") && this.get("design.restrictions.allowScale");
+        }.onChange("printType")
     });
 });
