@@ -7,20 +7,36 @@ define(['sprd/view/svg/ConfigurationRenderer', "sprd/data/ImageService"], functi
             href: "{url()}"
         },
 
+        ctor: function() {
+            this.callBase();
+
+            this.bind("configuration.printColors", "reset", function() {
+                this.trigger("designColorsChanged");
+            }, this);
+        },
+
         inject: {
             imageService: ImageService
         },
 
         url: function () {
-            if (this.$.imageService && this.$.configuration && this.$.configuration.$.design) {
-                return this.$.imageService.designImage(this.$.configuration.$.design.$.id, {
+
+            if (this.$.imageService && this.$.configuration && this.$.configuration.$.design && this.$.configuration.$.printColors) {
+                var options = {
                     width: this.$._width,
                     height: this.$._height
-                });
+                };
+
+                if (!this.$.configuration.hasDefaultColors()) {
+                    options.printColors =  this.$.configuration.getPrintColorsAsRGB();
+                }
+
+                return this.$.imageService.designImage(this.$.configuration.$.design.$.id, options);
             }
 
+
             return null;
-        }.onChange("design")
+        }.onChange("design").on("designColorsChanged")
 
     })
 });
