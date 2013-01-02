@@ -183,8 +183,8 @@ define(['js/core/Base'], function (Base) {
 
         toHexString: function() {
 
-            return ("0" + (this.r << 16).toString(16)).right(2) +
-                ("0" + (this.g << 8).toString(16)).right(2) +
+            return ("0" + this.r.toString(16)).right(2) +
+                ("0" + this.g.toString(16)).right(2) +
                 ("0" + this.b.toString(16)).right(2);
 
         },
