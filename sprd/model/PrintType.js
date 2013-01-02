@@ -12,6 +12,19 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
             colors: [PrintTypeColor]
         },
 
+        isScaleable: function() {
+            var scaleability = this.get("restrictions.scaleability");
+            return scaleability !== SCALEABILITY.UNUSABLE && scaleability === SCALEABILITY.UNSCALABLE;
+        },
+
+        isEnlargeable: function() {
+            return this.get("restrictions.scaleability") === SCALEABILITY.ENLARGEABLE;
+        },
+
+        isShrinkable: function () {
+            return this.get("restrictions.scaleability") === SCALEABILITY.SHRINKABLE;
+        },
+
         containsPrintTypeColor: function(printTypeColor) {
 
         }
