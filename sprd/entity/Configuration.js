@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea','sprd/model/PrintType'], function (Entity, Offset, Size, PrintArea, PrintType) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea','sprd/model/PrintType', 'js/core/List'], function (Entity, Offset, Size, PrintArea, PrintType, List) {
 
     var undefined;
 
@@ -10,11 +10,35 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 type: PrintArea,
                 isReference: true
             },
-            printType: PrintType
+            printType: PrintType,
+            printTypeColors: List
         },
 
         ctor: function() {
             this.callBase();
+        },
+
+        _commitPrintType: function(printType) {
+
+            if (!printType) {
+                return;
+            }
+
+            var printTypeColors = this.$.printTypeColors;
+
+            if (printTypeColors) {
+                // convert all colors to new print type
+
+                for (var i = 0; i < printTypeColors.$items.length; i++) {
+                    var printTypeColor = printTypeColors.$items[i];
+
+                    if (!printType.containsPrintTypeColor(printTypeColor)) {
+
+                    }
+                }
+
+            }
+
         },
 
 		defaults : {
@@ -49,6 +73,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
             return this.size().$.width * scale;
-        }.onChange("scale","size()")
+        }.onChange("scale","size()"),
+
+        isScalable: function() {
+            return this.get("printType.isScalable()");
+        }.onChange("printType")
 	});
 });
