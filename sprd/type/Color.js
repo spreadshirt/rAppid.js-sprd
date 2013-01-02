@@ -1,5 +1,11 @@
 define(['js/core/Base'], function (Base) {
 
+    if (!String.prototype.right) {
+        String.prototype.right = function(length) {
+            return this.substr(this.length - length);
+        }
+    }
+
     var Color = Base.inherit('sprd.type.Color', {
 
         distanceTo: function (color) {
@@ -176,8 +182,13 @@ define(['js/core/Base'], function (Base) {
         },
 
         toHexString: function() {
-            return this.toHex().toString(16);
+
+            return ("0" + (this.r << 16).toString(16)).right(2) +
+                ("0" + (this.g << 8).toString(16)).right(2) +
+                ("0" + this.b.toString(16)).right(2);
+
         },
+
 
         clone: function () {
             return new this.factory(this.r,this.g,this.b);
