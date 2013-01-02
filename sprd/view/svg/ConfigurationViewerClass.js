@@ -353,7 +353,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             }.on(["productViewer", "change:selectedConfiguration"]),
 
             isScalable: function() {
-                return this.isSelectedConfiguration() && this.get("configuration.printType.isScalable()");
+                return this.isSelectedConfiguration() && this.get("configuration.isScalable()");
             }.on(["productViewer", "change:selectedConfiguration"])
 
         });
