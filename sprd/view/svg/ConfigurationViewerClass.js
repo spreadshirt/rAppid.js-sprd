@@ -350,6 +350,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             isSelectedConfiguration: function () {
                 return this.$.configuration !== null &&
                     this.get('productViewer.editable') === true && this.get("productViewer.selectedConfiguration") === this.$.configuration
+            }.on(["productViewer", "change:selectedConfiguration"]),
+
+            isScalable: function() {
+                return this.isSelectedConfiguration() && this.get("configuration.printType.isScalable()");
             }.on(["productViewer", "change:selectedConfiguration"])
 
         });
