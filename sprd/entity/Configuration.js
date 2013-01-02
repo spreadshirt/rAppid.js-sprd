@@ -10,21 +10,28 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 type: PrintArea,
                 isReference: true
             },
-            printType: PrintType,
-            printTypeColors: List
+            printType: PrintType
         },
 
-        ctor: function() {
-            this.callBase();
+		defaults : {
+            printArea: null,
+            printType: null,
+            offset: Offset,
+            scale: {
+                x: 1,
+                y: 1
+            },
+            rotation: 0,
+            printColors: List
         },
 
-        _commitPrintType: function(printType) {
+        _commitPrintType: function (printType) {
 
             if (!printType) {
                 return;
             }
 
-            var printTypeColors = this.$.printTypeColors;
+            var printTypeColors = this.$.printColors;
 
             if (printTypeColors) {
                 // convert all colors to new print type
@@ -41,16 +48,6 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         },
 
-		defaults : {
-            printArea: null,
-            printType: null,
-            offset: Offset,
-            scale: {
-                x: 1,
-                y: 1
-            },
-            rotation: 0
-        },
 
         size: function() {
             this.log("size() not implemented", "debug");
