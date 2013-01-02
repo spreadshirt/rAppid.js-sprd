@@ -347,6 +347,22 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return value / 2
             },
 
+            flipOffsetX: function() {
+                if (this.$._scale.x < 0) {
+                    return -this.$.configuration.width();
+                }
+
+                return 0;
+            }.onChange("_scale"),
+
+            flipOffsetY: function() {
+                if (this.$._scale.y < 0) {
+                    return -this.$.configuration.height();
+                }
+
+                return 0;
+            }.onChange("_scale"),
+
             isSelectedConfiguration: function () {
                 return this.$.configuration !== null &&
                     this.get('productViewer.editable') === true && this.get("productViewer.selectedConfiguration") === this.$.configuration

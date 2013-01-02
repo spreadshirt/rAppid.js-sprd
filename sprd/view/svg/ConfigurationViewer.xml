@@ -5,26 +5,30 @@
     <svg:g cid="_assetContainer" scaleX="{_scale.x}" scaleY="{_scale.y}">
     </svg:g>
 
-    <svg:rect class="configuration-boundary"
-              visible="{isSelectedConfiguration()}"
-              x="0" y="0"
-              width="{_configurationWidth}" height="{_configurationHeight}"/>
+    <svg:g translateX="{flipOffsetX()}" translateY="{flipOffsetY()}">
+        <svg:rect class="configuration-boundary"
+                  visible="{isSelectedConfiguration()}"
+                  x="0" y="0"
+                  width="{_configurationWidth}" height="{_configurationHeight}"/>
 
-    <svg:rect cid="_scaleHandle" class="configuration-handle scale"
-              visible="{isScalable()}"
-              x="{substract(_configurationWidth,8)}" y="{substract(_configurationHeight,8)}"
-              width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
+        <svg:rect cid="_scaleHandle" class="configuration-handle scale"
+                  visible="{isScalable()}"
+                  x="{substract(_configurationWidth,8)}" y="{substract(_configurationHeight,8)}"
+                  width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
 
 
-    <svg:rect cid="_rotateHandle" class="configuration-handle rotate"
-              visible="{isSelectedConfiguration()}"
-              x="{substract(_configurationWidth,8)}" y="-8"
-              width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
+        <svg:rect cid="_rotateHandle" class="configuration-handle rotate"
+                  visible="{isSelectedConfiguration()}"
+                  x="{substract(_configurationWidth,8)}" y="-8"
+                  width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
 
-    <svg:rect cid="_deleteHandle" class="configuration-handle delete"
-              visible="{isSelectedConfiguration()}"
-              onclick="deleteConfiguration"
-              x="-8" y="{substract(_configurationHeight,8)}"
-              width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
+        <svg:rect cid="_deleteHandle" class="configuration-handle delete"
+                  visible="{isSelectedConfiguration()}"
+                  onclick="deleteConfiguration"
+                  x="-8" y="{substract(_configurationHeight,8)}"
+                  width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
+    </svg:g>
+
+
 
 </sprdSvg:ConfigurationViewerClass>
