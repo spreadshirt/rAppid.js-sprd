@@ -244,7 +244,7 @@ define([
                     .seq(function(cb) {
                         printType.fetch(null, cb);
                     })
-                    .seq(function() {
+                    .seq("designConfiguration", function() {
                         var configuration = new DesignConfiguration({
                             printType: printType,
                             printArea: printArea,
@@ -252,8 +252,12 @@ define([
                         });
 
                         self._addConfiguration(configuration);
+
+                        return configuration;
                     })
-                    .exec(callback)
+                    .exec(function(err, results) {
+                        callback && callback(err, results.designConfiguration);
+                    })
 
             } ,
 
