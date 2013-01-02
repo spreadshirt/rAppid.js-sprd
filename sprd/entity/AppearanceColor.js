@@ -9,6 +9,10 @@ define(['js/data/Entity', 'sprd/type/Color'], function(Entity, Color) {
             data = this.callBase();
             data.value = Color.parse(data.value);
             return data;
+        },
+
+        color: function() {
+            return this.$.value;
         }
     })
 });
