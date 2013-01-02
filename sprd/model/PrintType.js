@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor", "js/data/Entity"], function (SprdModel, Size, PrintTypeColor, Entity) {
+define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor", "js/data/Entity", 'sprd/type/Color', 'sprd/entity/Price'], function (SprdModel, Size, PrintTypeColor, Entity, Color, Price) {
 
     var PrintType = SprdModel.inherit("sprd.model.PrintType", {
 
@@ -9,7 +9,57 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
         schema: {
             dpi: String,
             size: Size,
-            colors: [PrintTypeColor]
+            colors: [PrintTypeColor],
+            price: Price
+        },
+
+        printColorCache: {},
+
+        getClosestPrintColor: function(color) {
+            color = Color.parse(color);
+
+            if (this.isPrintColorColorSpace()) {
+
+                var minDistance = null,
+                    ret = null;
+
+                    this.$.colors.each(function (printColor) {
+                        var distance = color.distanceTo(printColor.color());
+                        if (minDistance === null || distance < minDistance) {
+                            minDistance = distance;
+                            ret = printColor;
+                        }
+                    });
+
+                return ret;
+            } else {
+                // digital colors
+                var cacheId = color.toRGB().toString();
+
+                if (!this.printColorCache[cacheId]) {
+                    this.printColorCache[cacheId] = new PrintTypeColor({
+                        fill: color,
+                        price: this._getDigitalPrintColorPrice()
+                    });
+                }
+
+                return this.printColorCache[cacheId];
+            }
+        },
+
+        isPrintColorColorSpace: function() {
+            return this.get("restrictions.colorSpace") === COLOR_SPACE.PrintColors;
+        },
+
+        _getDigitalPrintColorPrice: function() {
+
+            if (!this.$digitalPrintColorPrice) {
+                this.$digitalPrintColorPrice = new Price({
+                    currency: this.$.price.$.currency
+                });
+            }
+
+            return this.$digitalPrintColorPrice;
         },
 
         isScalable: function() {
@@ -28,6 +78,15 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
 
         containsPrintTypeColor: function(printTypeColor) {
 
+            if (!printTypeColor) {
+                return false;
+            }
+
+            if (this.isPrintColorColorSpace()) {
+                return this.$.colors.includes(printTypeColor);
+            } else {
+                return true;
+            }
         }
     });
 
@@ -38,10 +97,16 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
         UNSCALABLE: "unscalable"
     };
 
+    var COLOR_SPACE = {
+        PrintColors: "print_colors",
+        CMYK: "cmyk",
+        RGB: "rgb"
+    };
+
     PrintType.Restrictions = Entity.inherit("sprd.model.PrintType.Restrictions", {
 
         defaults: {
-            colorSpace: "print_colors",
+            colorSpace: COLOR_SPACE.PrintColors,
             whiteSupported: true,
             transparencySupported: true,
             scaleability: SCALEABILITY.ENLARGEABLE,
@@ -65,6 +130,8 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
     PrintType.prototype.schema.restrictions = PrintType.Restrictions;
 
     PrintType.Restrictions.SCALEABILITY = SCALEABILITY;
+
+    PrintType.Restrictions.COLOR_SPACE = COLOR_SPACE;
 
     return PrintType;
 });
