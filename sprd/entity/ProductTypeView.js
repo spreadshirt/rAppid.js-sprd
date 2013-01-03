@@ -34,6 +34,16 @@ define(['js/data/Entity', 'sprd/entity/ViewMap', 'sprd/entity/Size'], function (
 
             return null;
 
+        },
+
+        getPrintAreas: function() {
+            var printAreas = [];
+
+            this.$.viewMaps.each(function (viewMap) {
+                printAreas = printAreas.concat(viewMap.printAreas());
+            });
+
+            return printAreas;
         }
     });
 });
