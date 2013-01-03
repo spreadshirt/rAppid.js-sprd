@@ -1,4 +1,4 @@
-define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore"], function (Configuration, Size, UnitUtil, Design, PrintTypeColor, _) {
+define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore", "sprd/model/PrintType"], function (Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType) {
     return Configuration.inherit('sprd.model.DesignConfiguration', {
 
         schema: {
@@ -50,6 +50,13 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 colors.push(printType.getClosestPrintColor(printColor.color()));
             });
 
+            if (printType.$.id === PrintType.Mapping.SpecialFlex) {
+                // convert all colors to the first one
+                for (var i = 1; i < colors.length; i++) {
+                    colors[i] = colors[0];
+                }
+            }
+
             printColors.reset(colors);
         },
 
@@ -85,6 +92,15 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             var printColors = this.$.printColors.$items;
             printColors.splice(layerIndex, 1, color);
+
+            if (printType.$.id === PrintType.Mapping.SpecialFlex) {
+                // convert all other layers to the new color
+                for (var i = 0; i < printColors.length; i++) {
+                    if (i !== layerIndex) {
+                        printColors[i] = printColors[layerIndex];
+                    }
+                }
+            }
 
             this.$hasDefaultColors = _.isEqual(printColors, this.$defaultPrintColors);
 
