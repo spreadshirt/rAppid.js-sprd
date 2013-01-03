@@ -74,6 +74,14 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         isScalable: function() {
             return this.get("printType.isScalable()");
-        }.onChange("printType")
+        }.onChange("printType"),
+
+        isRotatable: function() {
+            return true;
+        },
+
+        isRemovable: function() {
+            return true;
+        }
 	});
 });
