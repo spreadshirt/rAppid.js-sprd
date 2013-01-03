@@ -127,20 +127,20 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
     });
 
     PrintType.Mapping = {
-        DigitalTransfer: 1,
-        Flock: 2,
-        OffsetTransfer: 3,
-        ScreenPrintTransfer: 4,
-        ScreenPrint: 5,
-        NylonFlex: 6,
-        Sticker: 7,
-        ThermalSublimation: 10,
-        ColdTransfer: 11,
-        Flex: 14,
-        SpecialFlex: 16,
-        DigitalDirect: 17,
-        LaserPrinter: 20,
-        ButtonPrint: 21
+        DigitalTransfer: "1",
+        Flock: "2",
+        OffsetTransfer: "3",
+        ScreenPrintTransfer: "4",
+        ScreenPrint: "5",
+        NylonFlex: "6",
+        Sticker: "7",
+        ThermalSublimation: "10",
+        ColdTransfer: "11",
+        Flex: "14",
+        SpecialFlex: "16",
+        DigitalDirect: "17",
+        LaserPrinter: "20",
+        ButtonPrint: "21"
     };
 
     // extend schema, because circular dependency between PrintType and Restriction
