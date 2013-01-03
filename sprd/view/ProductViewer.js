@@ -35,6 +35,8 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 this.$productTypeViewViewerCache = {};
 
                 this.callBase();
+
+                this.bind("on:click", this._clickHandler, this);
             },
 
             initialize: function () {
@@ -62,6 +64,12 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
 
             _commitView: function () {
                 this._determinateInternalView();
+            },
+
+            _clickHandler: function(e) {
+                if (this.$.editable) {
+                    this.set('selectedConfiguration', null);
+                }
             },
 
             _determinateInternalView: function () {

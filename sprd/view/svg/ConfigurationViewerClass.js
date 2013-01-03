@@ -59,6 +59,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$downEvent = hasTouch ? "touchstart" : "mousedown";
                 this.$moveEvent = hasTouch ? "touchmove" : "mousemove";
                 this.$upEvent = hasTouch ? "touchend" : "mouseup";
+                this.$clickEvent = hasTouch ? "tap" : "click";
             },
 
             _initializeRenderer: function () {
@@ -116,6 +117,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     rotateHandle && rotateHandle.bindDomEvent(this.$downEvent, function (e) {
                         self._down(e, ROTATE)
                     });
+
+
+                    var stopPropagation = function (e) {
+                        e.stopPropagation();
+                    };
+
+                    assetContainer.bindDomEvent(this.$clickEvent, stopPropagation);
+                    scaleHandle && scaleHandle.bindDomEvent(this.$clickEvent, stopPropagation);
+                    rotateHandle && rotateHandle.bindDomEvent(this.$clickEvent, stopPropagation);
 
                 }
 
@@ -284,7 +294,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 }
 
-                e.stopPropagation();
             },
 
             _up: function (e, mode) {
@@ -312,6 +321,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$moving = false;
 
                 this.$stage.$bus.trigger("ConfigurationModified");
+
 
             },
 
