@@ -7,14 +7,6 @@ define(['sprd/view/svg/ConfigurationRenderer', "sprd/data/ImageService"], functi
             href: "{url()}"
         },
 
-        ctor: function() {
-            this.callBase();
-
-            this.bind("configuration.printColors", "reset", function() {
-                this.trigger("designColorsChanged");
-            }, this);
-        },
-
         inject: {
             imageService: ImageService
         },
@@ -36,7 +28,7 @@ define(['sprd/view/svg/ConfigurationRenderer', "sprd/data/ImageService"], functi
 
 
             return null;
-        }.onChange("design").on("designColorsChanged")
+        }.onChange("design").on(["configuration.printColors", "reset"])
 
     })
 });
