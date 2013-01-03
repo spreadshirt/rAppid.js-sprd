@@ -13,6 +13,10 @@ define(['js/data/Entity', 'sprd/entity/Price', 'sprd/type/Color'], function (Ent
             return data;
         },
 
+        getPrintType: function() {
+            return this.$parent;
+        },
+
         color: function () {
             return this.$.fill;
         },
