@@ -18,12 +18,12 @@
 
 
         <svg:rect cid="_rotateHandle" class="configuration-handle rotate"
-                  visible="{isSelectedConfiguration()}"
+                  visible="{isRotatable()}"
                   x="{substract(_configurationWidth,8)}" y="-8"
                   width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
 
         <svg:rect cid="_deleteHandle" class="configuration-handle delete"
-                  visible="{isSelectedConfiguration()}"
+                  visible="{isRemovable()}"
                   onclick="deleteConfiguration"
                   x="-8" y="{substract(_configurationHeight,8)}"
                   width="{getButtonSize(15).width}" height="{getButtonSize(15).height}"/>
