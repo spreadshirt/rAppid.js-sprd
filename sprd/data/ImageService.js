@@ -30,6 +30,10 @@ define(['js/core/Component','underscore'], function(Component, _) {
             return this.buildUrl(['appearances',appearanceId], ImageService.getImageSizeParameter(options));
         },
 
+        printColorImage: function (printColorId, options) {
+            return this.buildUrl(['printColors', printColorId], ImageService.getImageSizeParameter(options));
+        },
+
         buildUrl: function(url, parameter) {
             url = url || [];
             url.unshift(this.$.endPoint);
