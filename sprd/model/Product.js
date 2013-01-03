@@ -77,8 +77,7 @@ define([
 
                 view = view || this.$.view;
 
-                var ret = [],
-                    productType = this.$.productType;
+                var productType = this.$.productType;
 
                 if (view && productType) {
 
@@ -90,7 +89,7 @@ define([
 
                 }
 
-                return ret;
+                return [];
 
             },
 
