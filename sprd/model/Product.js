@@ -50,6 +50,8 @@ define([
                     }
                 }
 
+                return null;
+
             },
 
             getDefaultViewId: function(){
@@ -63,10 +65,52 @@ define([
                 if(this.$.appearance && this.$.productType){
                     return this.$.productType.getAppearanceById(this.$.appearance.$.id);
                 }
+
+                return null;
             },
 
             _addConfiguration: function(configuration) {
                 this.$.configurations.add(configuration);
+            },
+
+            getConfigurationsOnView: function(view) {
+
+                view = view || this.$.view;
+
+                var ret = [],
+                    productType = this.$.productType;
+
+                if (view && productType) {
+
+                    if (productType.containsView(view)) {
+                        return this.getConfigurationsOnPrintAreas(view.getPrintAreas());
+                    } else {
+                        throw new Error("View not on product type");
+                    }
+
+                }
+
+                return ret;
+
+            },
+
+            getConfigurationsOnPrintAreas: function(printAreas) {
+                printAreas = printAreas || [];
+
+                if (!(printAreas instanceof Array)) {
+                    printAreas = [printAreas];
+                }
+
+                var ret = [];
+
+                this.$.configurations.each(function (configuration) {
+                    if (_.contains(printAreas, configuration.$.printArea)) {
+                        ret.push(configuration);
+                    }
+                });
+
+                return ret;
+
             },
 
             /***
