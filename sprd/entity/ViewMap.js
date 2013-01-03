@@ -60,14 +60,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/PrintArea'], functi
             var productType = this.$parent;
 
             if (productType) {
-                for (var i = 0; i < this.$.viewMaps.length; i++) {
-                    var viewMap = this.$.viewMaps[i];
+                for (var i = 0; i < productType.$.viewMaps.$items.length; i++) {
+                    var viewMap = productType.$.viewMaps.$items[i];
 
                     if (viewMap.id === this.$.id) {
-                        var printArea = productType.getPrintAreaById(viewMap.printArea.id);
-                        if (printArea) {
-                            ret.push(printArea);
-                        }
+                        ret.push(viewMap.$.printArea);
                     }
                 }
             }
