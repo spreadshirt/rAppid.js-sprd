@@ -23,7 +23,6 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService", "sprd/model/PrintType"
             if (printColor) {
                 if (!this._isImagePrintColor()) {
                     backgroundColor = printColor.toHexString();
-                    this.set('loaded', true);
                 }
             } else {
                 this.set('loaded', true);
@@ -69,6 +68,8 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService", "sprd/model/PrintType"
                         width: this.$.width,
                         height: this.$.height
                     });
+                } else {
+                    return imageService.emptyImage();
                 }
             }
 
