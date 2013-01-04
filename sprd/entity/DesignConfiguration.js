@@ -17,6 +17,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
         ctor: function () {
             this.$sizeCache = {};
+
             this.callBase();
 
             var printType = this.$.printType,
@@ -26,27 +27,29 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             var printColors = [];
             var defaultPrintColors = [];
 
+            // FIXME: binding for design colors don't worked here -> do next block lazy
+            if (design) {
+                design.$.colors.each(function (designColor) {
+                    var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"]);
+                    printColors.push(closestPrintColor);
+                    defaultPrintColors.push(closestPrintColor);
+                });
 
-            design.$.colors.each(function (designColor) {
-                var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"]);
-                printColors.push(closestPrintColor);
-                defaultPrintColors.push(closestPrintColor);
-            });
+                this.$defaultPrintColors = defaultPrintColors;
 
-            this.$defaultPrintColors = defaultPrintColors;
-
-            this.$.printColors.reset(printColors);
-            this.$hasDefaultColors = true;
+                this.$.printColors.reset(printColors);
+                this.$hasDefaultColors = true;
+            }
 
         },
 
-        _commitPrintType: function(printType) {
+        _commitPrintType: function (printType) {
             // print type changed -> convert colors
 
             var colors = [],
                 printColors = this.$.printColors;
 
-            printColors.each(function(printColor) {
+            printColors.each(function (printColor) {
                 colors.push(printType.getClosestPrintColor(printColor.color()));
             });
 
