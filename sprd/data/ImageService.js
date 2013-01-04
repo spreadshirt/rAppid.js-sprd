@@ -34,6 +34,10 @@ define(['js/core/Component','underscore'], function(Component, _) {
             return this.buildUrl(['printColors', printColorId], ImageService.getImageSizeParameter(options));
         },
 
+        emptyImage: function() {
+            return "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+        },
+
         buildUrl: function(url, parameter) {
             url = url || [];
             url.unshift(this.$.endPoint);
