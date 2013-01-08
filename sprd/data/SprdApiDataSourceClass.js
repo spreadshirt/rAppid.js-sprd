@@ -16,7 +16,7 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
                 BasketItemProcessor: BasketItemProcessor
             },
 
-            getQueryParameter: function (method, resource) {
+            getQueryParameters: function (method, resource) {
                 return _.defaults({
                     mediaType: "json"
                 }, this.callBase());
@@ -90,7 +90,7 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
         });
 
         SprdApiDataSource.SprdApiContext = RestDataSource.RestContext.inherit({
-            getQueryParameter: function () {
+            getQueryParameters: function () {
 
                 var parameter = {
                     mediaType: "json"
