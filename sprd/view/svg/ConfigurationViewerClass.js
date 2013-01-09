@@ -1,9 +1,10 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "underscore"],
-    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "underscore", "sprd/type/Vector"],
+    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _, Vector) {
 
         var MOVE = "move",
             SCALE = "scale",
-            ROTATE = "rotate";
+            ROTATE = "rotate",
+            GESTURE = "gesture";
 
         return SvgElement.inherit({
 
@@ -95,29 +96,38 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             _bindDomEvents: function () {
                 this.callBase();
 
-                var self = this;
+                var self = this,
+                    productViewer = this.$.productViewer;
 
                 if (!this.runsInBrowser()) {
                     return;
                 }
 
-                if (this.$.productViewer && this.$.productViewer.$.editable === true) {
+                if (productViewer && productViewer.$.editable === true) {
                     var assetContainer = this.$._assetContainer,
                         scaleHandle = this.$._scaleHandle,
                         rotateHandle = this.$._rotateHandle;
 
                     assetContainer.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, MOVE);
+                        self._down(e, self._isGesture(e) ? GESTURE : MOVE);
                     });
 
                     scaleHandle && scaleHandle.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, SCALE)
+                        self._down(e, self._isGesture(e) ? GESTURE : SCALE)
                     });
 
                     rotateHandle && rotateHandle.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, ROTATE)
+                        self._down(e, self._isGesture(e) ? GESTURE : ROTATE)
                     });
 
+
+                    if (productViewer && this.$hasTouch) {
+                        productViewer.bindDomEvent(this.$downEvent, function (e) {
+                            if (productViewer.$.selectedConfiguration === self.$.configuration && self._isGesture(e)) {
+                                self._down(e, GESTURE);
+                            }
+                        });
+                    }
 
                     var stopPropagation = function (e) {
                         e.stopPropagation();
@@ -131,20 +141,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
+            _isGesture: function(e) {
+                return this.$hasTouch && e.touches.length > 1;
+            },
+
             unbindDomEvent: function (type, cb) {
                 this.callBase();
             },
 
             _down: function (e, mode) {
-
-                if (!this.runsInBrowser()) {
-                    return;
-                }
-
-                if (!this.$hasTouch && e.which !== 1) {
-                    // not left mouse button
-                    return;
-                }
 
                 var self = this,
                     configuration = this.$.configuration,
@@ -155,10 +160,26 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return;
                 }
 
+                if (!this.runsInBrowser()) {
+                    return;
+                }
+
+                if (!this.$hasTouch && e.which !== 1) {
+                    // not left mouse button
+                    return;
+                }
+
+                // there is a current action and another down -> gesture
+                if (this.$mode !== null) {
+                    // unbind the current handler
+                    this._unbindTransformationHandler();
+                }
+
                 e.preventDefault();
                 e.stopPropagation();
 
                 this.$moving = true;
+                this.$mode = mode;
 
                 downPoint = this.$downPoint = {
                     x: this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
@@ -196,6 +217,20 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         y: -halfHeight
                     };
 
+                } else if (mode === GESTURE) {
+                    // gesture -> start from beginning
+                    this._resetTransformation();
+
+                    var firstFinger = e.touches[0],
+                        secondFinger = e.touches[1];
+
+                    var first = new Vector([firstFinger.pageX, firstFinger.pageY]);
+                    var second = new Vector([secondFinger.pageX, secondFinger.pageY]);
+                    var initialVector = second.subtract(first);
+
+                    this.$downPoints = [first,second];
+                    this.$scaleDiagonalDistance = initialVector.distance();
+
                 }
 
                 var window = this.dom(this.$stage.$window);
@@ -208,8 +243,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     self._up(e, mode);
                 };
 
+                this.$keyDownHandler = function(e) {
+                    self._keyDown(e, mode);
+                };
+
                 window.bindDomEvent(this.$moveEvent, this.$moveHandler);
                 window.bindDomEvent(this.$upEvent, this.$upHandler);
+                window.bindDomEvent("keydown", this.$keyDownHandler);
+
             },
 
             _getDistance: function (p1, p2) {
@@ -220,11 +261,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             _move: function (e, mode) {
+
                 if (!this.$moving) {
                     return;
                 }
 
-                var configuration = this.$.configuration;
+                var self = this,
+                    configuration = this.$.configuration;
+
                 if (!configuration) {
                     return;
                 }
@@ -235,6 +279,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     factor = this.globalToLocalFactor();
                 var deltaX = (this.$downPoint.x - x) ,
                     deltaY = (this.$downPoint.y - y);
+
+                var scaleFactor;
 
                 if (mode === MOVE) {
                     this.$._offset.set({
@@ -259,18 +305,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         mouseDistance *= -1;
                     }
 
-                    var scaleFactor = (this.$scaleDiagonalDistance + mouseDistance) / this.$scaleDiagonalDistance;
 
-                    var scale = {
-                        x: scaleFactor * configuration.$.scale.x,
-                        y: scaleFactor * configuration.$.scale.y
-                    };
-                    this.set('_scale', scale);
+                    scaleFactor = (this.$scaleDiagonalDistance + mouseDistance) / this.$scaleDiagonalDistance;
 
-                    this.set({
-                        _configurationWidth: configuration.width(scale.x),
-                        _configurationHeight: configuration.height(scale.y)
-                    });
+                    scaleWithFactor(scaleFactor);
 
                 } else if (mode === ROTATE) {
                     var startVector = this.$startRotateVector;
@@ -292,6 +330,30 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     this.set("_rotation", Math.round(configuration.$.rotation + angle, 2));
 
+                } else if (mode === GESTURE) {
+
+                    var firstFinger = e.touches[0],
+                        secondFinger = e.touches[1];
+
+                    var first = new Vector([firstFinger.pageX, firstFinger.pageY]);
+                    var second = new Vector([secondFinger.pageX, secondFinger.pageY]);
+
+                    scaleWithFactor(second.subtract(first).distance() / this.$scaleDiagonalDistance);
+                }
+
+                function scaleWithFactor(scaleFactor) {
+
+                    var scale = {
+                        x: scaleFactor * configuration.$.scale.x,
+                        y: scaleFactor * configuration.$.scale.y
+                    };
+
+                    self.set('_scale', scale);
+
+                    self.set({
+                        _configurationWidth: configuration.width(scale.x),
+                        _configurationHeight: configuration.height(scale.y)
+                    });
                 }
 
             },
@@ -302,26 +364,62 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 var configuration = this.$.configuration;
-                if (!configuration) {
-                    return;
+                if (configuration) {
+                    if (mode === MOVE) {
+                        configuration.set('offset', this.$._offset);
+                    } else if (mode === SCALE) {
+                        configuration.set('scale', this.$._scale);
+                    } else if (mode === ROTATE) {
+                        configuration.set('rotation', this.$._rotation);
+                    } else if (mode === GESTURE) {
+                        configuration.set('scale', this.$._scale);
+                    }
                 }
 
-                if (mode === MOVE) {
-                    configuration.set('offset', this.$._offset);
-                } else if (mode === SCALE) {
-                    configuration.set('scale', this.$._scale);
-                } else if (mode === ROTATE) {
-                    configuration.set('rotation', this.$._rotation);
+                this._stopTransformation();
+            },
+
+            _keyDown: function(e, mode) {
+
+                if (e.keyCode === 27) {
+                    // esc
+                    this._cancelTransformation();
+                    e.preventDefault();
                 }
 
+            },
+
+            _stopTransformation: function() {
+
+                this._unbindTransformationHandler();
+
+                this.$mode = null;
+                this.$moving = false;
+            },
+
+            _unbindTransformationHandler: function() {
                 var window = this.dom(this.$stage.$window);
                 window.unbindDomEvent(this.$moveEvent, this.$moveHandler);
                 window.unbindDomEvent(this.$upEvent, this.$upHandler);
+                window.unbindDomEvent("keydown", this.$keyDownHandler);
+            },
 
-                this.$moving = false;
+            _resetTransformation: function() {
+                var configuration = this.$.configuration;
 
-                this.$stage.$bus.trigger("ConfigurationModified");
+                if (configuration) {
+                    this.set({
+                        _offset: configuration.$.offset,
+                        _scale: configuration.$.scale,
+                        _rotation: configuration.$.rotation
+                    });
+                }
+            },
 
+            _cancelTransformation: function() {
+
+                this._resetTransformation();
+                this._stopTransformation();
 
             },
 
