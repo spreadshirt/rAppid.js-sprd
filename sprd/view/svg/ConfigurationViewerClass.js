@@ -195,13 +195,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this.set('_scale', _.clone(configuration.$.scale));
 
                     // diagonal in real px
-                    this.$scaleDiagonalDistance = this._getDistance({
-                        x: 0,
-                        y: 0
-                    }, {
-                        x: configuration.width() * factor.x,
-                        y: configuration.height() * factor.y
-                    });
+                    this.$scaleDiagonalDistance = Vector.distance([configuration.width() * factor.x, configuration.height() * factor.y]);
                 } else if (mode === ROTATE) {
                     factor = this.localToGlobalFactor();
                     var halfWidth = (configuration.width() / 2) * factor.x,
@@ -253,13 +247,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _getDistance: function (p1, p2) {
-                var deltaX = p1.x - p2.x,
-                    deltaY = p1.y - p2.y;
-
-                return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            },
-
             _move: function (e, mode) {
 
                 if (!this.$moving) {
@@ -296,10 +283,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         x = this.$downPoint.x + deltaY / aspectRatio;
                     }
 
-                    var mouseDistance = this._getDistance(this.$downPoint, {
-                        x: x,
-                        y: y
-                    });
+                    var mouseDistance = Vector.distance([this.$downPoint.x - x, this.$downPoint.y -y]);
 
                     if (deltaX > 0 || deltaY > 0) {
                         mouseDistance *= -1;
