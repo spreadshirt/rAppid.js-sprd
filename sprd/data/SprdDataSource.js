@@ -26,7 +26,7 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
             return null;
         },
 
-        getQueryParameter: function (method, resource) {
+        getQueryParameters: function (method, resource) {
             var obj = {};
 
             if (this.$.locale) {
