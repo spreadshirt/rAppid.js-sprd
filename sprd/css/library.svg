@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <filter id="configurationError" x="0" y="0" width="100%" height="100%" filterUnits="userSpaceOnUse">
+            <feGaussianBlur stdDeviation="3" in="SourceAlpha" result="result0"/>
+            <feComposite in2="result0" result="result3" operator="arithmetic" in="SourceGraphic" k2="1" k3="10"/>
+            <feComposite in2="result3" k2="1" operator="in" in="result3" result="result4"/>
+        </filter>
+
+
+        <symbol id="rotateIcon">
+            <g transform="scale(0.25)">
+                <path d="M 129.3637,88.29113 128.2546,105 144.8677,94.61902 129.3637,88.29113 z"/>
+                <path d="m 154,56 c 13.2548,0 24,10.74517 24,24 0,13.25483 -10.7452,24 -24,24 -7.108,0 -13.4943,-3.09 -17.8889,-8 l -6.3017,0 c 5.1922,7.8342 14.0881,13 24.1906,13 16.0163,0 29,-12.98374 29,-29 0,-16.01626 -12.9837,-29 -29,-29 -3.1417,0 -6.1667,0.49958 -9,1.42366 l 0,5.32089 C 147.7793,56.61952 150.8173,56 154,56 z"/>
+            </g>
+        </symbol>
+
+        <symbol id="moveIcon">
+            <g transform="scale(0.25)">
+                <path d="m 61,78 40,0 0,6 -40,0 0,-6 z"/>
+                <path d="m 78,101 0,-40 6,0 0,40 -6,0 z"/>
+                <path d="m 49,81 13.58222,9.79487 0,-19.58974 L 49,81 z"/>
+                <path d="m 112.7911,81 -13.58221,-9.79487 0,19.58974 L 112.7911,81 z"/>
+                <path d="m 81,49 -9.79487,13.58222 19.58974,0 L 81,49 z"/>
+                <path d="m 81,113 9.79487,-13.58222 -19.58974,0 L 81,113 z"/>
+            </g>
+        </symbol>
+    </defs>
+
+    <rect x="0" y="0" width="10" height="10"/>
+
+    <use xlink:href="#moveIcon"/>
+    <use xlink:href="#rotateIcon"/>
+</svg>
