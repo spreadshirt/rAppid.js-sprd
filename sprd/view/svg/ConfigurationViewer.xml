@@ -1,6 +1,6 @@
 <sprdSvg:ConfigurationViewerClass xmlns="http://www.w3.org/1999/xhtml"
                                   xmlns:svg="js.svg"
-                                  xmlns:sprdSvg="sprd.view.svg">
+                                  xmlns:sprdSvg="sprd.view.svg" class="{errorClass()}">
 
     <svg:g cid="_assetContainer" scaleX="{_scale.x}" scaleY="{_scale.y}">
     </svg:g>
