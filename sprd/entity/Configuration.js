@@ -54,7 +54,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         _commitChangedAttributes: function($) {
-            if (this._hasSome(["_size", "_x", "_y", "scale"])) {
+            if (this._hasSome($, ["_size", "_x", "_y", "scale"])) {
                 this._setError("hardBoundary", this._hasHardBoundaryError(this.$.offset, this.width(), this.height()));
             }
         },
