@@ -17,6 +17,10 @@ define(['js/core/Base'], function (Base) {
             }
         },
 
+        vectorProduct: function(vector) {
+            return Vector.vectorProduct(this, vector);
+        },
+
         subtract: function(vector) {
             return Vector.subtract(this, vector);
         }
@@ -66,7 +70,24 @@ define(['js/core/Base'], function (Base) {
         },
 
         scalarProduct: function(vector1, vector2) {
+            vector1 = Vector.getComponents(vector1);
+            vector2 = Vector.getComponents(vector2);
 
+            return vector1[0] * vector2[0] +
+                vector1[1] * vector2[1] +
+                (vector1[2] || 0) * (vector1[2] || 0)
+
+        },
+
+        vectorProduct: function(a, b) {
+            a = Vector.getComponents(a);
+            b = Vector.getComponents(b);
+
+            return new Vector([
+                a[1] * b[2] - a[2] * b[1],
+                a[2] * b[0] - a[0] * b[2],
+                a[0] * b[1] - a[1] * b[0]
+            ]);
         },
 
         getComponents: function(vector) {
