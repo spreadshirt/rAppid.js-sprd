@@ -36,7 +36,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _configurationWidth: "{configuration.width()}",
                 _configurationHeight: "{configuration.height()}",
 
-                _rotation: "{configuration.rotation}"
+                _rotation: "{configuration.rotation}",
+
+                _configurationValid: "{configuration.isValid()}"
             },
 
             $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer"],
@@ -141,7 +143,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _isGesture: function(e) {
+            _isGesture: function (e) {
                 return this.$hasTouch && e.touches.length > 1;
             },
 
@@ -213,7 +215,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 } else if (mode === GESTURE) {
                     // gesture -> start from beginning
+
                     this._resetTransformation();
+
+                    this.set('_offset', configuration.$.offset.clone());
 
                     var firstFinger = e.touches[0],
                         secondFinger = e.touches[1];
@@ -222,7 +227,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var second = new Vector([secondFinger.pageX, secondFinger.pageY]);
                     var initialVector = second.subtract(first);
 
-                    this.$downPoints = [first,second];
+                    this.$downPoints = [first, second];
+
+                    this.$downVector = initialVector;
+                    this.$rotatePoint = initialVector.multiply(0.5);
                     this.$scaleDiagonalDistance = initialVector.distance();
 
                 }
@@ -237,7 +245,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     self._up(e, mode);
                 };
 
-                this.$keyDownHandler = function(e) {
+                this.$keyDownHandler = function (e) {
                     self._keyDown(e, mode);
                 };
 
@@ -263,8 +271,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var productViewer = this.$.productViewer,
                     x = this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
                     y = this.$hasTouch ? e.changedTouches[0].pageY : e.pageY,
-                    factor = this.globalToLocalFactor();
-                var deltaX = (this.$downPoint.x - x) ,
+                    factor = this.globalToLocalFactor(),
+                    deltaX = (this.$downPoint.x - x) ,
                     deltaY = (this.$downPoint.y - y);
 
                 var scaleFactor;
@@ -283,12 +291,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         x = this.$downPoint.x + deltaY / aspectRatio;
                     }
 
-                    var mouseDistance = Vector.distance([this.$downPoint.x - x, this.$downPoint.y -y]);
+                    var mouseDistance = Vector.distance([this.$downPoint.x - x, this.$downPoint.y - y]);
 
                     if (deltaX > 0 || deltaY > 0) {
                         mouseDistance *= -1;
                     }
-
 
                     scaleFactor = (this.$scaleDiagonalDistance + mouseDistance) / this.$scaleDiagonalDistance;
 
@@ -322,6 +329,24 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var first = new Vector([firstFinger.pageX, firstFinger.pageY]);
                     var second = new Vector([secondFinger.pageX, secondFinger.pageY]);
 
+                    var vector = second.subtract(first);
+                    var angle = Math.acos(Vector.scalarProduct(vector, this.$downVector) / (this.$downVector.distance() * vector.distance())) * 180 / Math.PI;
+                    if (this.$downVector[0] * vector[1] - this.$downVector[1] * vector[0] < 0) {
+                        console.log("reverse");
+                        angle *= -1;
+                    }
+
+                    var movement = vector.multiply(0.5).subtract(this.$rotatePoint);
+
+                    console.log(movement.components, this.$._offset, configuration.$.offset);
+
+                    this.$._offset.set({
+                        x: configuration.$.offset.$.x - movement.components[0],
+                        y: configuration.$.offset.$.y - movement.components[1]
+                    });
+
+                    this.set("_rotation", Math.round(configuration.$.rotation + angle, 2));
+
                     scaleWithFactor(second.subtract(first).distance() / this.$scaleDiagonalDistance);
                 }
 
@@ -340,6 +365,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     });
                 }
 
+
             },
 
             _up: function (e, mode) {
@@ -356,14 +382,17 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     } else if (mode === ROTATE) {
                         configuration.set('rotation', this.$._rotation);
                     } else if (mode === GESTURE) {
-                        configuration.set('scale', this.$._scale);
+                        configuration.set({
+                            rotation: this.$._rotation,
+                            scale: this.$._scale
+                        });
                     }
                 }
 
                 this._stopTransformation();
             },
 
-            _keyDown: function(e, mode) {
+            _keyDown: function (e, mode) {
 
                 if (e.keyCode === 27) {
                     // esc
@@ -373,7 +402,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _stopTransformation: function() {
+            _stopTransformation: function () {
 
                 this._unbindTransformationHandler();
 
@@ -381,14 +410,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$moving = false;
             },
 
-            _unbindTransformationHandler: function() {
+            _unbindTransformationHandler: function () {
                 var window = this.dom(this.$stage.$window);
                 window.unbindDomEvent(this.$moveEvent, this.$moveHandler);
                 window.unbindDomEvent(this.$upEvent, this.$upHandler);
                 window.unbindDomEvent("keydown", this.$keyDownHandler);
             },
 
-            _resetTransformation: function() {
+            _resetTransformation: function () {
                 var configuration = this.$.configuration;
 
                 if (configuration) {
@@ -400,7 +429,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _cancelTransformation: function() {
+            _cancelTransformation: function () {
 
                 this._resetTransformation();
                 this._stopTransformation();
@@ -435,11 +464,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return value - minuend;
             },
 
-            half: function(value) {
+            half: function (value) {
                 return value / 2
             },
 
-            flipOffsetX: function() {
+            flipOffsetX: function () {
                 if (this.$._scale.x < 0) {
                     return -this.$.configuration.width();
                 }
@@ -447,7 +476,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return 0;
             }.onChange("_scale"),
 
-            flipOffsetY: function() {
+            flipOffsetY: function () {
                 if (this.$._scale.y < 0) {
                     return -this.$.configuration.height();
                 }
@@ -455,12 +484,16 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return 0;
             }.onChange("_scale"),
 
+            errorClass: function() {
+                return this.$._configurationValid ? "" : "error";
+            }.onChange("_configurationValid"),
+
             isSelectedConfiguration: function () {
                 return this.$.configuration !== null &&
                     this.get('productViewer.editable') === true && this.get("productViewer.selectedConfiguration") === this.$.configuration
             }.on(["productViewer", "change:selectedConfiguration"]),
 
-            isScalable: function() {
+            isScalable: function () {
                 return this.isSelectedConfiguration() && this.get("configuration.isScalable()");
             }.on(["productViewer", "change:selectedConfiguration"]),
 
