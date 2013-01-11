@@ -23,3 +23,12 @@ rect {
     stroke-width: 1;
     vector-effect: non-scaling-stroke;
 }
+
+.configuration-viewer.error {
+    filter: url(library.svg#configurationError);
+}
+
+.configuration-viewer.error .configuration-boundary {
+    stroke: red;
+    stroke-width: 3;
+}
