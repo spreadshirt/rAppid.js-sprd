@@ -22,7 +22,12 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 y: 1
             },
             rotation: 0,
-            printColors: List
+            printColors: List,
+
+            // bind this
+            _size: "{size()}",
+            _x: "{offset.x}",
+            _y: "{offset.y}"
         },
 
         _commitPrintType: function (printType) {
@@ -48,6 +53,27 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         },
 
+        _commitChangedAttributes: function($) {
+            if (this._hasSome(["_size", "_x", "_y", "scale"])) {
+                this._setError("hardBoundary", this._hasHardBoundaryError(this.$.offset, this.width(), this.height()));
+            }
+        },
+
+        _hasHardBoundaryError: function(offset, width, height) {
+
+            var printArea = this.$.printArea;
+
+            if (!(printArea && offset)) {
+                return;
+            }
+
+            var x = offset.$.x,
+                y = offset.$.y;
+
+            return !(x >= 0 && y >= 0 &&
+                (x + width) <= printArea.get("boundary.size.width") &&
+                (y + height) <= printArea.get("boundary.size.height"));
+        },
 
         size: function() {
             this.log("size() not implemented", "debug");
