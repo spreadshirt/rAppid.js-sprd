@@ -189,6 +189,19 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
         // TODO: add onchange for design.restriction.allowScale
         isScalable: function () {
             return this.get("printType.isScalable()") && this.get("design.restrictions.allowScale");
-        }.onChange("printType")
+        }.onChange("printType"),
+
+        _validatePrintTypeSize: function(printType, width, height) {
+            this.callBase();
+
+            var scale = this.$.scale;
+
+            if (!printType || !scale) {
+                return;
+            }
+
+            this._setError("minBounds", Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale")));
+
+        }
     });
 });
