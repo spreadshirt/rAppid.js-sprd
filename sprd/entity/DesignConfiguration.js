@@ -12,13 +12,19 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             type: 'design',
             _dpi: "{printType.dpi}",
 
-            design: null
+            design: null,
+
+            _designColors: "{design.printColors}"
         },
 
         ctor: function () {
             this.$sizeCache = {};
 
             this.callBase();
+
+        },
+
+        _commit_designColors: function(designColors) {
 
             var printType = this.$.printType,
                 design = this.$.design;
@@ -27,7 +33,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             var printColors = [];
             var defaultPrintColors = [];
 
-            // FIXME: binding for design colors don't worked here -> do next block lazy
             if (design) {
                 design.$.colors.each(function (designColor) {
                     var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"]);
@@ -45,6 +50,10 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
         _commitPrintType: function (printType) {
             // print type changed -> convert colors
+
+            if (!printType) {
+                return;
+            }
 
             var colors = [],
                 printColors = this.$.printColors;
