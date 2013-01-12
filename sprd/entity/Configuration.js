@@ -54,9 +54,31 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         _commitChangedAttributes: function($) {
-            if (this._hasSome($, ["_size", "_x", "_y", "scale"])) {
-                this._setError("hardBoundary", this._hasHardBoundaryError(this.$.offset, this.width(), this.height()));
+            var sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale"]),
+                printTypeChanged = this._hasSome($, ["printType"]),
+                width, height;
+
+            if (sizeChanged) {
+                width = this.width();
+                height = this.height();
+                this._setError("hardBoundary", this._hasHardBoundaryError(this.$.offset, width, height));
             }
+
+            if (sizeChanged || printTypeChanged) {
+                width = width || this.width();
+                height = height || this.height();
+
+                this._validatePrintTypeSize(this.$.printType, width, height);
+            }
+
+        },
+
+        _validatePrintTypeSize: function(printType, width, height) {
+            if (!printType) {
+                return;
+            }
+
+            this._setError("maxBounds", width > printType.get("size.width") || height > printType.get("size.height"))
         },
 
         _hasHardBoundaryError: function(offset, width, height) {
