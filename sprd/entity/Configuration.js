@@ -30,38 +30,22 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             _y: "{offset.y}"
         },
 
-        _commitPrintType: function (printType) {
-
-            if (!printType) {
-                return;
-            }
-
-            var printTypeColors = this.$.printColors;
-
-            if (printTypeColors) {
-                // convert all colors to new print type
-
-                for (var i = 0; i < printTypeColors.$items.length; i++) {
-                    var printTypeColor = printTypeColors.$items[i];
-
-                    if (!printType.containsPrintTypeColor(printTypeColor)) {
-
-                    }
-                }
-
-            }
-
+        _commitChangedAttributes: function($) {
+            this._validateTransform($);
         },
 
-        _commitChangedAttributes: function($) {
-            var sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale"]),
-                printTypeChanged = this._hasSome($, ["printType"]),
-                width, height;
+        _validateTransform: function($) {
 
-            if (sizeChanged) {
-                width = this.width();
-                height = this.height();
-                this._setError("hardBoundary", this._hasHardBoundaryError(this.$.offset, width, height));
+            var rotationChanged = this._hasSome($, ["rotation"]),
+                sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale", "offset"]),
+                printTypeChanged = this._hasSome($, ["printType"]),
+                width, height,
+                scale = $.scale || this.$.scale;
+
+            if (sizeChanged || rotationChanged) {
+                width = this.width(scale.x);
+                height = this.height(scale.y);
+                this._setError("hardBoundary", this._hasHardBoundaryError($.offset || this.$.offset, width, height));
             }
 
             if (sizeChanged || printTypeChanged) {
