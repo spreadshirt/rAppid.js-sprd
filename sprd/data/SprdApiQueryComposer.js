@@ -1,7 +1,7 @@
 define(["js/data/Query"], function (Query) {
 
 
-    SprdApiQueryComposer = {
+    return {
 
         compose: function (query) {
 
@@ -12,6 +12,7 @@ define(["js/data/Query"], function (Query) {
                 params.sortField = query.sort[0].field;
                 params.sortOrder = query.sort[0].direction ? "asc" : "desc";
             }
+
 
             if (query.where) {
                 params.query = this.translateOperator(query.where);
@@ -36,7 +37,7 @@ define(["js/data/Query"], function (Query) {
             } else if (operator instanceof Query.Comparator) {
 
                 if (name === "in") {
-                    return ["+",operator.field,":(", operator.value.join(" "),")"].join("");
+                    return ["+", operator.field, ":(", operator.value.join(" "), ")"].join("");
                 } else if (name === "eql") {
                     return operator.value;
                 }
@@ -54,7 +55,5 @@ define(["js/data/Query"], function (Query) {
         }
 
     };
-
-    return SprdApiQueryComposer;
 
 });
