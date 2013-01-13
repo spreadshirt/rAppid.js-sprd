@@ -96,10 +96,12 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                     file = uploadDesign.$.file;
 
                 if (!uploadContext) {
-                    uploadDesign.set('status', UploadDesign.State.ERROR);
+                    uploadDesign.set('state', UploadDesign.State.ERROR);
                     this.log("No upload context set. Cancel upload", "warn");
                     return;
                 }
+
+                uploadDesign.set('state', UploadDesign.State.LOADING);
 
                 flow()
                     .seq(function(cb) {
@@ -133,8 +135,10 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                             }
                         }, cb);
                     })
-                    .exec(function(err, results) {
-                        console.log(err, results);
+                    .exec(function(err) {
+                        if (!err) {
+                            uploadDesign.set('state', UploadDesign.State.LOADED);
+                        }
                     });
 
             }

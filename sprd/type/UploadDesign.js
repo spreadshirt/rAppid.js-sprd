@@ -1,4 +1,10 @@
-define(["js/core/Bindable"], function(Bindable) {
+define(["js/core/Bindable"], function (Bindable) {
+
+    var State = {
+        ERROR: "error",
+        LOADING: "loading",
+        LOADED: "loaded"
+    };
 
     var UploadDesign = Bindable.inherit("sprd/type/UploadDesign", {
 
@@ -7,16 +13,11 @@ define(["js/core/Bindable"], function(Bindable) {
             image: null,
             uploadProgress: 0,
 
-            state: null
+            state: State.LOADED
         }
-
     });
 
-    UploadDesign.State = {
-        ERROR: "error",
-        LOADING: "loading",
-        LOADED: "loaded"
-    };
+    UploadDesign.State = State;
 
     return UploadDesign;
 });
