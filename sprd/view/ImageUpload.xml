@@ -10,13 +10,18 @@
 
     <div class="upload-notice" visible="{displayNotice}">{notice}</div>
 
-    <ui:ListView tagName="ul" items="{items}">
-        <js:Template name="item">
-            <div class="image-container">
-                <img src="${item.url}" alt="${item.name}"/>
-            </div>
-            <input type="text" value="{{item.name}}" />
-            <ui:ProgressBar value="{item.uploadProgress}" />
-        </js:Template>
-    </ui:ListView>
+    <js:Content name="list">
+        <ui:ListView tagName="ul" items="{items}">
+            <js:Template name="item">
+                <div class="image-container">
+                    <img src="${item.url}" alt="${item.name}"/>
+                </div>
+                <input type="text" value="{{item.name}}"/>
+                <ui:ProgressBar value="{item.uploadProgress}"/>
+            </js:Template>
+        </ui:ListView>
+    </js:Content>
+
+    <ui:ContentPlaceHolder name="list"/>
+
 </view:ImageUploadClass>
