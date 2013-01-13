@@ -18,14 +18,14 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
             _initializationComplete: function () {
                 this.callBase();
 
-                var self = this;
-                this.$.items.bind('add', function () {
-                    self.set('displayNotice', self.$.items.size() === 0);
-                });
+                var self = this,
+                    eventHandler = function () {
+                        self.set('displayNotice', self.$.items.size() === 0);
+                    };
 
-                this.$.items.bind('remove', function () {
-                    self.set('displayNotice', self.$.items.size() === 0);
-                });
+                this.$.items.bind('add', eventHandler);
+                this.$.items.bind('remove', eventHandler);
+                this.$.items.bind('reset', eventHandler);
 
             },
 
