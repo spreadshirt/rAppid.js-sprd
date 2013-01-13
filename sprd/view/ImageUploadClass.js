@@ -85,13 +85,14 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 this._upload(uploadDesign);
             },
 
-            _addUploadDesign: function(uploadDesign) {
+            _addUploadDesign: function (uploadDesign) {
                 this.$.items.add(uploadDesign, 0);
             },
 
-            _upload: function(uploadDesign) {
+            _upload: function (uploadDesign) {
 
-                var uploadContext = this.$.uploadContext,
+                var self = this,
+                    uploadContext = this.$.uploadContext,
                     imageServer = this.$.imageServer,
                     file = uploadDesign.$.file;
 
@@ -104,41 +105,56 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 uploadDesign.set('state', UploadDesign.State.LOADING);
 
                 flow()
-                    .seq(function(cb) {
+                    .seq(function (cb) {
                         uploadContext.fetch(null, cb);
                     })
-                    .seq("design", function() {
+                    .seq("design", function () {
                         var design = uploadContext.getCollection("designs").createItem();
                         design.set("name", file.name);
 
                         return design;
                     })
-                    .seq(function(cb) {
+                    .seq(function (cb) {
                         this.vars["design"].save(null, cb);
                     })
-                    .seq(function(cb) {
+                    .seq(function (cb) {
                         var design = this.vars["design"];
                         var uploadImage = imageServer.createEntity(UploadImage, design.$.id);
+
                         uploadImage.set("file", file);
+                        uploadDesign.set({
+                            design: design,
+                            id: design.$.id
+                        });
+
                         uploadImage.save({
-                            xhrBeforeSend: function(xhr) {
+                            xhrBeforeSend: function (xhr) {
                                 if (xhr && xhr.upload) {
                                     xhr.upload.onprogress = function (e) {
                                         uploadDesign.set('uploadProgress', 100 / e.total * e.loaded);
                                     }
                                 }
 
-                                xhr.onload = function() {
+                                xhr.onload = function () {
                                     uploadDesign.set('uploadProgress', 100);
                                 }
 
                             }
                         }, cb);
                     })
-                    .exec(function(err) {
+                    .exec(function (err) {
                         if (!err) {
                             uploadDesign.set('state', UploadDesign.State.LOADED);
+                            self.trigger("uploadComplete", {
+                                uploadDesign: uploadDesign
+                            });
+                        } else {
+                            self.trigger("uploadError", {
+                                error: err,
+                                uploadDesign: uploadDesign
+                            });
                         }
+
                     });
 
             }
