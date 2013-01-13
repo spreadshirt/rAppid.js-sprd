@@ -40,7 +40,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 _rotation: "{configuration.rotation}",
 
-                _configurationValid: "{configuration.isValid()}"
+                _configurationValid: "{configuration.isValid()}",
+
+                _globalToLocalFactor: {
+                    x: 1,
+                    y: 1
+                }
             },
 
             $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer"],
@@ -54,10 +59,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.rotate(0, 0, 0);
 
                 this._initializeCapabilities(this.$stage.$window);
+                this.set('_globalToLocalFactor', this.$.productViewer.globalToLocalFactor());
 
                 if (validateConfigurationOnTransform) {
                     this.bind("_offset", "change", this._offsetChanged, this);
                 }
+            },
+
+            _commit_globalToLocalFactor: function(factor) {
+                console.log(factor.x);
             },
 
             _initializeCapabilities: function (window) {
@@ -473,6 +483,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     height: globalToLocalFactor.y * size
                 }
             },
+
+            pixelToViewBox: function(pixel, yAxis) {
+                return pixel * this.$._globalToLocalFactor[yAxis ? "y" : "x"];
+            }.onChange("_globalToLocalFactor"),
 
             deleteConfiguration: function () {
                 if (this.$.product) {
