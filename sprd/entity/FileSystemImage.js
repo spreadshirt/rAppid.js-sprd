@@ -2,7 +2,8 @@ define(['sprd/entity/Image', 'underscore'], function(Image, _) {
 
     return Image.inherit('sprd/entity/FileSystemImage', {
         defaults: {
-            file: null
+            file: null,
+            src: null
         },
 
         ctor: function(attributes) {
