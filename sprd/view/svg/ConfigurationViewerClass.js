@@ -6,6 +6,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             ROTATE = "rotate",
             GESTURE = "gesture";
 
+        var validateConfigurationOnTransform = true;
+
         return SvgElement.inherit({
 
             defaults: {
@@ -52,6 +54,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.rotate(0, 0, 0);
 
                 this._initializeCapabilities(this.$stage.$window);
+
+                if (validateConfigurationOnTransform) {
+                    this.bind("_offset", "change", this._offsetChanged, this);
+                }
             },
 
             _initializeCapabilities: function (window) {
@@ -149,6 +155,27 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             unbindDomEvent: function (type, cb) {
                 this.callBase();
+            },
+
+            _offsetChanged: function() {
+                if (this.$.configuration) {
+                    this.$.configuration._validateTransform({
+                        offset: this.$._offset
+                    });
+                }
+            },
+
+            _commitChangedAttributes: function($) {
+
+                this.callBase();
+
+                if (validateConfigurationOnTransform && this.$.configuration && this._hasSome($, ["_scale", "_rotation"])) {
+                    this.$.configuration._validateTransform({
+                        scale: $._scale || this.$.scale,
+                        rotation: $._rotation || this.$.rotation
+                    });
+                }
+
             },
 
             _down: function (e, mode) {
@@ -426,6 +453,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         _scale: configuration.$.scale,
                         _rotation: configuration.$.rotation
                     });
+
+                    configuration._validateTransform(configuration.$);
                 }
             },
 
