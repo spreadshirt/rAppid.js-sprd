@@ -63,7 +63,13 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
 
             },
 
-            _addAndUploadFile: function (file) {
+            _addAndUploadFile: function (file, callback) {
+                var uploadDesign = this.uploadFile(file, callback);
+                this._addUploadDesign(uploadDesign);
+            },
+
+            uploadFile: function(file, callback) {
+
                 var reader = new FileReader();
 
                 var fileSystemImage = new FileSystemImage({
@@ -81,15 +87,17 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
 
                 reader.readAsDataURL(file);
 
-                this._addUploadDesign(uploadDesign);
-                this._upload(uploadDesign);
+                this._upload(uploadDesign, callback);
+
+                return uploadDesign;
+
             },
 
             _addUploadDesign: function (uploadDesign) {
                 this.$.items.add(uploadDesign, 0);
             },
 
-            _upload: function (uploadDesign) {
+            _upload: function (uploadDesign, callback) {
 
                 var self = this,
                     uploadContext = this.$.uploadContext,
@@ -154,6 +162,8 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                                 uploadDesign: uploadDesign
                             });
                         }
+
+                        callback && callback(err, uploadDesign);
 
                     });
 
