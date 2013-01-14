@@ -14,14 +14,14 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             design: null,
 
-            _designColors: "{design.printColors}"
+            _designColors: "{design.printColors}",
+            _designCommission: "{design.price.vatIncluded}"
         },
 
         ctor: function () {
             this.$sizeCache = {};
 
             this.callBase();
-
         },
 
         _commit_designColors: function(designColors) {
@@ -70,6 +70,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             }
 
             printColors.reset(colors);
+
+            this.trigger("priceChanged");
         },
 
 
@@ -115,8 +117,9 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             }
 
             this.$hasDefaultColors = _.isEqual(printColors, this.$defaultPrintColors);
-
             this.$.printColors.reset(printColors);
+
+            this.trigger("priceChanged");
         },
 
         size: function () {
@@ -202,6 +205,27 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             this._setError("minBounds", Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale")));
 
-        }
+        },
+
+        price: function() {
+
+            var usedPrintColors = [],
+                printColorPrice = 0;
+
+            this.$.printColors.each(function(printColor) {
+                if (_.indexOf(usedPrintColors, printColor) === -1) {
+                    usedPrintColors.push(printColor);
+                }
+            });
+
+            for (var i = 0; i < usedPrintColors.length; i++) {
+                printColorPrice += (usedPrintColors[i]).get("price.vatIncluded") || 0;
+            }
+
+            return (this.$._designCommission || 0) +
+                (this.$._printTypePrice || 0) +
+                printColorPrice;
+
+        }.on("priceChanged").onChange("_designCommission", "_printTypePrice")
     });
 });

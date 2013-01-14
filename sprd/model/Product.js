@@ -33,10 +33,32 @@ define([
                 configurations: List
             },
 
+            ctor: function() {
+                this.callBase();
+
+                var priceChangeHandler = function() {
+                    this.trigger("priceChanged");
+                };
+
+                this.bind("configurations", "*", priceChangeHandler, this);
+                this.bind("configurations", "item:priceChanged", priceChangeHandler, this);
+
+            },
+
             price: function () {
                 // TODO format price with currency
-                return this.$.price.vatIncluded;
-            },
+                if (this.$.price) {
+                    return this.$.price.vatIncluded;
+                } else {
+                    // calculate price
+                    var price = this.get("productType.price.vatIncluded");
+                    this.$.configurations.each(function(configuration) {
+                        price += configuration.price();
+                    });
+
+                    return price;
+                }
+            }.on("priceChanged"),
 
             getDefaultView: function () {
 
@@ -302,7 +324,7 @@ define([
                         callback && callback(err, results.designConfiguration);
                     })
 
-            } ,
+            },
 
             compose: function(){
                 var ret = this.callBase();

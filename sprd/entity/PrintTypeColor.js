@@ -1,6 +1,10 @@
 define(['js/data/Entity', 'sprd/entity/Price', 'sprd/type/Color'], function (Entity, Price, Color) {
     return Entity.inherit('sprd.entity.PrintTypeColor', {
 
+        defaults: {
+            price: Price
+        },
+
         schema: {
             name: String,
             fill: String,

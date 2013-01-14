@@ -27,7 +27,9 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             // bind this
             _size: "{size()}",
             _x: "{offset.x}",
-            _y: "{offset.y}"
+            _y: "{offset.y}",
+
+            _printTypePrice: "{printType.price.vatIncluded}"
         },
 
         _commitChangedAttributes: function($) {
@@ -114,6 +116,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         isRemovable: function() {
             return true;
+        },
+
+        price: function() {
+            // abstract
+            return 0;
         }
 	});
 });
