@@ -66,10 +66,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _commit_globalToLocalFactor: function(factor) {
-                console.log(factor.x);
-            },
-
             _initializeCapabilities: function (window) {
                 var runsInBrowser = this.runsInBrowser(),
                     hasTouch = runsInBrowser && ('ontouchstart' in window);
