@@ -104,9 +104,13 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                     imageServer = this.$.imageServer,
                     file = uploadDesign.$.file;
 
+                callback = callback || this.emptyCallback();
+
                 if (!uploadContext) {
                     uploadDesign.set('state', UploadDesign.State.ERROR);
-                    this.log("No upload context set. Cancel upload", "warn");
+                    var message = "No upload context set. Cancel upload";
+                    this.log(message, "warn");
+                    callback(message);
                     return;
                 }
 
