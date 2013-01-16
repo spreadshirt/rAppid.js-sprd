@@ -15,7 +15,9 @@
                     componentClass: 'sprd-image',
                     loaded: false,
                     width: null,
-                    height: null
+                    height: null,
+                    src: null,
+                    title: null
                 },
 
                 onLoad: function (e) {
@@ -34,7 +36,7 @@
                     return url;
                 },
                 imageUrl: function () {
-                    return "";
+                    return this.$.src;
                 },
                 _renderLoaded: function (loaded) {
                     if (loaded) {
@@ -44,7 +46,7 @@
                     }
                 },
                 alt: function () {
-                    return "";
+                    return this.$.title;
                 }
             }
         })
