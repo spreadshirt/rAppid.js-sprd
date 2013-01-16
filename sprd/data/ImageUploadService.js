@@ -44,7 +44,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
             }
 
             if (!imageServer) {
-                var message = "No imageServer available";
+                message = "No imageServer available";
             }
 
             if (message) {
