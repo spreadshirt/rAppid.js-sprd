@@ -45,6 +45,10 @@ define(['js/core/Base'], function (Base) {
         },
 
         calculateColorDistance: function (color1, color2) {
+
+            color1 = Color.parse(color1);
+            color2 = Color.parse(color2);
+
             var l1 = color1.toLAB(),
                 l2 = color2.toLAB();
 
