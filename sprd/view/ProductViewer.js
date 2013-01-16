@@ -39,6 +39,27 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 this.bind("on:click", this._clickHandler, this);
             },
 
+            _bindDomEvents: function() {
+                if (this.runsInBrowser() && this.$.editable) {
+                    var window = this.dom(this.$stage.$window),
+                        self = this;
+                    window.bindDomEvent("keydown", function(e) {
+                        var product = self.$.product;
+
+                        if ((e.keyCode === 8 || e.keyCode === 46) && self.$.selectedConfiguration && product) {
+                            // backspace || delete --> remove selected configuration
+
+                            product.$.configurations.remove(self.$.selectedConfiguration);
+                            self.set('selectedConfiguration', null);
+
+                            e.preventDefault();
+                        }
+                    });
+                }
+
+                this.callBase();
+            },
+
             initialize: function () {
 
                 this.bind('product.productType', 'change:views', this._onViewsChanged, this);
@@ -69,6 +90,12 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             _clickHandler: function(e) {
                 if (this.$.editable) {
                     this.set('selectedConfiguration', null);
+                }
+            },
+
+            _keyDownHandler: function(e) {
+                if (this.$.editable) {
+                                   console.log(e);
                 }
             },
 
