@@ -6,6 +6,7 @@
             <conf:ResourceConfiguration path="address" modelClassName="sprd.model.Address"/>
             <conf:ResourceConfiguration path="articles" modelClassName="sprd.model.Article" />
             <conf:ResourceConfiguration path="articleCategories" modelClassName="sprd.model.ArticleCategory"/>
+            <conf:ResourceConfiguration path="designCategories" modelClassName="sprd.model.DesignCategory"/>
             <conf:ResourceConfiguration path="printTypes" modelClassName="sprd.model.PrintType" />
             <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" />
             <conf:ResourceConfiguration path="designCategories" modelClassName="sprd.model.DesignCategory"/>
