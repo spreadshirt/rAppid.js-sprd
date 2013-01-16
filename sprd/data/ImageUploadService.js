@@ -37,9 +37,18 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
             var uploadContext = this.$.uploadContext,
                 imageServer = this.$.imageServer;
 
+            var message;
+
             if (!uploadContext) {
+                message = "No upload context set. Cancel upload";
+            }
+
+            if (!imageServer) {
+                var message = "No imageServer available";
+            }
+
+            if (message) {
                 uploadDesign.set('state', UploadDesign.State.ERROR);
-                var message = "No upload context set. Cancel upload";
                 this.log(message, "warn");
                 callback(message);
                 return;

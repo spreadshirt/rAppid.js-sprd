@@ -1,11 +1,11 @@
 define(['sprd/data/SprdModel'], function(SprdModel) {
     return SprdModel.inherit('sprd.model.UploadImage', {
         defaults: {
-            file: null
+            image: null
         },
 
         schema: {
-            file: Object
+            image: Object
         }
     });
 });
