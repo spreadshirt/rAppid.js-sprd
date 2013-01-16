@@ -12,7 +12,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             defaults: {
                 tagName: 'g',
-                componentClass: 'configuration-viewer',
+                componentClass: 'configuration-viewer {appearanceBrightness()}',
                 configuration: null,
 
                 translateX: "{_offset.x}",
@@ -542,7 +542,19 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             isRemovable: function () {
                 return this.isSelectedConfiguration() && this.get("configuration.isRemovable()");
-            }.on(["productViewer", "change:selectedConfiguration"])
+            }.on(["productViewer", "change:selectedConfiguration"]),
+
+            appearanceBrightness: function() {
+
+                var color = this.get("product.appearance.getMainColor()");
+
+                if (color) {
+                    return color.distanceTo("#000000") < color.distanceTo("#FFFFFF") ?
+                        "dark" : "bright";
+                }
+
+                return "";
+            }.on(["product", "change:appearance"])
 
         });
     })

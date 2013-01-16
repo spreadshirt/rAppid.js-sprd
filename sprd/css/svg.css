@@ -19,9 +19,13 @@ rect {
 
 .configuration-boundary {
     stroke-dasharray: 9, 5;
-    stroke: white;
     stroke-width: 1;
+    stroke: white;
     vector-effect: non-scaling-stroke;
+}
+
+.configuration-viewer.bright .configuration-boundary {
+    stroke: black;
 }
 
 .configuration-viewer.error {
