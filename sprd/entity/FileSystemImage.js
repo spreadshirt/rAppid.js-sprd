@@ -6,6 +6,10 @@ define(['sprd/entity/Image', 'underscore'], function(Image, _) {
             src: null
         },
 
+        schema: {
+            file: Object
+        },
+
         ctor: function(attributes) {
             attributes = attributes || {};
 

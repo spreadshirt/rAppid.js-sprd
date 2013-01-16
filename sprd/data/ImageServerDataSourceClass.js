@@ -53,7 +53,7 @@ define(["sprd/data/SprdDataSource", "js/data/Model", "js/data/RestDataSource", "
 
             serialize: function (data) {
                 var ret = new FormData();
-                ret.append('upload_field', data.file);
+                ret.append('upload_field', data.image.file);
                 return ret;
             },
 

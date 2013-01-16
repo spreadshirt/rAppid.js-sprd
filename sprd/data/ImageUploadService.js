@@ -1,4 +1,5 @@
-define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sprd/model/UploadImage", "sprd/type/UploadDesign", "underscore", 'sprd/entity/FileSystemImage', 'sprd/entity/RemoteImage'], function (Component, ImageServerDataSource, flow, UploadImage, UploadDesign, _, FileSystemImage, RemoteImage) {
+define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sprd/model/UploadImage", "sprd/type/UploadDesign", "underscore", 'sprd/entity/FileSystemImage', 'sprd/entity/RemoteImage', "sprd/entity/Image"],
+    function (Component, ImageServerDataSource, flow, UploadImage, UploadDesign, _, FileSystemImage, RemoteImage, Image) {
 
     return Component.inherit('sprd.data.ImageUploadService', {
 
@@ -15,7 +16,9 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
 
             var image;
 
-            if (_.isString(data)) {
+            if (data instanceof Image) {
+                image = data;
+            } else if (_.isString(data)) {
                 image = new RemoteImage({
                     src: data
                 });
@@ -24,6 +27,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                     file: data
                 });
             }
+
 
             this._uploadDesign(new UploadDesign({
                 image: image
