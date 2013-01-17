@@ -210,7 +210,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
         price: function() {
 
             var usedPrintColors = [],
-                printColorPrice = 0;
+                price = this.callBase();
 
             this.$.printColors.each(function(printColor) {
                 if (_.indexOf(usedPrintColors, printColor) === -1) {
@@ -219,12 +219,12 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             });
 
             for (var i = 0; i < usedPrintColors.length; i++) {
-                printColorPrice += (usedPrintColors[i]).get("price.vatIncluded") || 0;
+                price.add((usedPrintColors[i]).get("price"));
             }
 
-            return (this.$._designCommission || 0) +
-                (this.$._printTypePrice || 0) +
-                printColorPrice;
+            price.add(this.get('_designCommission'));
+
+            return price;
 
         }.on("priceChanged").onChange("_designCommission", "_printTypePrice")
     });

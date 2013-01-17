@@ -6,8 +6,9 @@ define([
     'sprd/entity/DesignConfiguration',
     'sprd/entity/TextConfiguration',
     'sprd/entity/Appearance',
+    'sprd/entity/Price',
     'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/util/ProductUtil"],
-    function (SprdModel, List, ProductType, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Appearance, TypeResolver, Entity, _, flow, ProductUtil) {
+    function (SprdModel, List, ProductType, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Appearance, Price, TypeResolver, Entity, _, flow, ProductUtil) {
         return SprdModel.inherit("sprd.model.Product", {
 
             schema: {
@@ -33,32 +34,34 @@ define([
                 configurations: List
             },
 
-            ctor: function() {
+            ctor: function () {
                 this.callBase();
 
-                var priceChangeHandler = function() {
+                var priceChangeHandler = function () {
                     this.trigger("priceChanged");
                 };
 
                 this.bind("configurations", "*", priceChangeHandler, this);
                 this.bind("configurations", "item:priceChanged", priceChangeHandler, this);
-
             },
 
             price: function () {
                 // TODO format price with currency
                 if (this.$.price) {
-                    return this.$.price.vatIncluded;
+                    return this.$.price;
                 } else {
                     // calculate price
-                    var price = this.get("productType.price.vatIncluded");
-                    this.$.configurations.each(function(configuration) {
-                        price += configuration.price();
+                    var price = new Price({
+                        vatIncluded: this.get("productType.price.vatIncluded"),
+                        currency: this.get('productType.price.currency')
+                    });
+                    this.$.configurations.each(function (configuration) {
+                        price.add(configuration.price());
                     });
 
                     return price;
                 }
-            }.on("priceChanged"),
+            }.on("priceChanged","change:productType"),
 
             getDefaultView: function () {
 
@@ -76,26 +79,26 @@ define([
 
             },
 
-            getDefaultViewId: function(){
+            getDefaultViewId: function () {
                 if (this.$.defaultValues) {
                     return this.$.defaultValues.defaultView.id;
                 }
                 return null;
             },
 
-            getDefaultAppearance: function() {
-                if(this.$.appearance && this.$.productType){
+            getDefaultAppearance: function () {
+                if (this.$.appearance && this.$.productType) {
                     return this.$.productType.getAppearanceById(this.$.appearance.$.id);
                 }
 
                 return null;
             },
 
-            _addConfiguration: function(configuration) {
+            _addConfiguration: function (configuration) {
                 this.$.configurations.add(configuration);
             },
 
-            getConfigurationsOnView: function(view) {
+            getConfigurationsOnView: function (view) {
 
                 view = view || this.$.view;
 
@@ -115,7 +118,7 @@ define([
 
             },
 
-            getConfigurationsOnPrintAreas: function(printAreas) {
+            getConfigurationsOnPrintAreas: function (printAreas) {
                 printAreas = printAreas || [];
 
                 if (!(printAreas instanceof Array)) {
@@ -140,24 +143,24 @@ define([
              * @param {sprd.model.ProductType} productType
              * @param callback
              */
-            setProductType: function(productType, callback) {
+            setProductType: function (productType, callback) {
 
                 var self = this,
                     appearance,
                     view;
 
                 flow()
-                    .seq(function(cb) {
+                    .seq(function (cb) {
                         productType.fetch(null, cb);
                     })
-                    .seq(function() {
+                    .seq(function () {
                         if (self.$.appearance) {
                             appearance = productType.getClosestAppearance(self.$.appearance.getMainColor());
                         } else {
                             appearance = productType.getDefaultAppearance();
                         }
                     })
-                    .seq(function() {
+                    .seq(function () {
                         // determinate closest view for new product type
                         var currentView = self.$.view;
 
@@ -213,7 +216,7 @@ define([
                         self.$.configurations.remove(removeConfigurations);
 
                     })
-                    .seq(function() {
+                    .seq(function () {
                         // first set product type
                         self.set("productType", productType);
                         // and then the appearance, because appearance depends on product type
@@ -291,7 +294,7 @@ define([
 
                         return printArea;
                     })
-                    .seq("printType", function() {
+                    .seq("printType", function () {
                         var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
 
                         if (printType && !_.contains(possiblePrintTypes, printType)) {
@@ -306,10 +309,10 @@ define([
 
                         return printType;
                     })
-                    .seq(function(cb) {
+                    .seq(function (cb) {
                         printType.fetch(null, cb);
                     })
-                    .seq("designConfiguration", function() {
+                    .seq("designConfiguration", function () {
                         var configuration = new DesignConfiguration({
                             printType: printType,
                             printArea: printArea,
@@ -320,13 +323,13 @@ define([
 
                         return configuration;
                     })
-                    .exec(function(err, results) {
+                    .exec(function (err, results) {
                         callback && callback(err, results.designConfiguration);
                     })
 
             },
 
-            compose: function(){
+            compose: function () {
                 var ret = this.callBase();
 
                 ret.restrictions = {

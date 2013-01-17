@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea','sprd/model/PrintType', 'js/core/List'], function (Entity, Offset, Size, PrintArea, PrintType, List) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea','sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price) {
 
     var undefined;
 
@@ -119,8 +119,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         price: function() {
-            // abstract
-            return 0;
+            return this.get('printType.price').clone() || new Price();
         }
 	});
 });
