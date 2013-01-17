@@ -14,7 +14,6 @@ rect {
     stroke-width: 1;
     stroke: black;
     vector-effect: non-scaling-stroke;
-    shape-rendering: crispEdges;
 }
 
 .configuration-boundary {
@@ -35,4 +34,16 @@ rect {
 .configuration-viewer.error .configuration-boundary {
     stroke: red;
     stroke-width: 3;
+}
+
+.configuration-viewer .rotation-center {
+    fill: #ffa53b;
+    stroke: none;
+}
+
+.configuration-viewer .rotation-circle {
+    fill: none;
+    stroke-width: 1;
+    stroke: #ffa53b;
+    vector-effect: non-scaling-stroke;
 }

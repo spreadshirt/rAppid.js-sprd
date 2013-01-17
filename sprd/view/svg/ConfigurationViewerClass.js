@@ -45,7 +45,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _globalToLocalFactor: {
                     x: 1,
                     y: 1
-                }
+                },
+
+                _mode: null,
+                _rotationRadius: null
             },
 
             $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer"],
@@ -205,7 +208,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 // there is a current action and another down -> gesture
-                if (this.$mode !== null) {
+                if (this.$._mode !== null) {
                     // unbind the current handler
                     this._unbindTransformationHandler();
                 }
@@ -214,7 +217,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 e.stopPropagation();
 
                 this.$moving = true;
-                this.$mode = mode;
+                this.set("_mode", mode);
 
                 downPoint = this.$downPoint = {
                     x: this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
@@ -245,6 +248,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         x: halfWidth,
                         y: -halfHeight
                     };
+
+                    this.set("_rotationRadius", Vector.distance([halfHeight, halfWidth]) / factor.x);
 
                 } else if (mode === GESTURE) {
                     // gesture -> start from beginning
@@ -439,7 +444,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 this._unbindTransformationHandler();
 
-                this.$mode = null;
+                this.set('_mode', null);
                 this.$moving = false;
             },
 
@@ -543,6 +548,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             isRemovable: function () {
                 return this.isSelectedConfiguration() && this.get("configuration.isRemovable()");
             }.on(["productViewer", "change:selectedConfiguration"]),
+
+            isRotating: function() {
+                return this.$._mode === ROTATE;
+            }.onChange("_mode"),
 
             appearanceBrightness: function() {
 
