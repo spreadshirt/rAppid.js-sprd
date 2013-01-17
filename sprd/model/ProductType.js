@@ -49,6 +49,17 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             return null;
         },
 
+        getSizeByName: function (name) {
+            if (this.$.sizes) {
+                return this.$.sizes.each(function (size) {
+                    if (size.$.name == name) {
+                        this['return'](size);
+                    }
+                });
+            }
+            return null;
+        },
+
         getDefaultView: function () {
             if (this.$.defaultValues) {
                 return this.getViewById(this.$.defaultValues.defaultView.id);
@@ -60,7 +71,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             if(this.$.printAreas){
                 for (var i = 0; i < this.$.printAreas.$items.length; i++) {
                     var printArea = this.$.printAreas.$items[i];
-                    if (printArea.$.id === printAreaId) {
+                    if (printArea.$.id == printAreaId) {
                         return printArea;
                     }
                 }
@@ -80,7 +91,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
                 var app;
                 for (var i = 0; i < this.$.appearances.$items.length; i++) {
                     app = this.$.appearances.$items[i];
-                    if (id === app.$.id) {
+                    if (id == app.$.id) {
                         return app;
                     }
                 }
@@ -117,7 +128,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             if (this.$.views) {
                 for (var i = 0; i < this.$.views.$items.length; i++) {
                     var view = this.$.views.$items[i];
-                    if (view.$.perspective === perspective) {
+                    if (view.$.perspective == perspective) {
                         return view;
                     }
                 }
@@ -152,11 +163,32 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             return sizes;
         }.on(['stockStates','add']),
 
+        isSizeAndAppearanceAvailable: function(size, appearance){
+            if(this.$.stockStates){
+                return this.$.stockStates.isSizeAndAppearanceAvailable(size, appearance);
+            }
+            return false;
+        }.on(['stockStates', 'add']),
+
+
         getMeasures: function(){
             if(this.$.sizes && this.$.sizes.size() > 0){
                 return this.$.sizes.at(0).$.measures;
             }
             return [];
+        }.onChange('sizes'),
+
+        hasOnlyNormalSizes: function(){
+            var isNormal = true;
+            if(this.$.sizes){
+                this.$.sizes.each(function(size){
+                    if(!size.isNormalSize()){
+                        isNormal = false;
+                    }
+                })
+            }
+
+            return isNormal;
         }.onChange('sizes')
     })
 });
