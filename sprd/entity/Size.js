@@ -1,5 +1,6 @@
 define(['js/data/Entity'], function(Entity) {
-    var Size = Entity.inherit('sprd.entity.Offset', {
+
+    var Size = Entity.inherit('sprd.entity.Size', {
         defaults: {
             width: 0,
             height: 0,
