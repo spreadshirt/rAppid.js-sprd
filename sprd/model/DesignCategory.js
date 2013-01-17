@@ -18,7 +18,9 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], funct
             });
         },
         parse: function(data){
-            data.id = "b" + data.id;
+            if(data.id.indexOf("b") === -1){
+                data.id = "b" + data.id;
+            }
             return data;
         }
     });
