@@ -224,6 +224,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     y: this.$hasTouch ? e.changedTouches[0].pageY : e.pageY
                 };
 
+                var downVector = new Vector([downPoint.x, downPoint.y]);
+
                 if (mode === MOVE) {
                     this.$.productViewer.set("selectedConfiguration", this.$.configuration);
                     this.set('_offset', configuration.$.offset.clone());
@@ -235,19 +237,17 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     // diagonal in real px
                     this.$scaleDiagonalDistance = Vector.distance([configuration.width() * factor.x, configuration.height() * factor.y]);
                 } else if (mode === ROTATE) {
+
                     factor = this.localToGlobalFactor();
                     var halfWidth = (configuration.width() / 2) * factor.x,
                         halfHeight = (configuration.height() / 2) * factor.y;
 
-                    this.$centerPoint = {
-                        x: downPoint.x - halfWidth,
-                        y: downPoint.y + halfHeight
-                    };
+                    this.$centerPoint = new Vector([
+                        downPoint.x - (halfWidth * Math.cos(configuration.$.rotation * Math.PI / 180)) - (halfHeight * Math.sin(configuration.$.rotation * Math.PI / 180)),
+                        downPoint.y - (halfWidth * Math.sin(configuration.$.rotation * Math.PI / 180)) + (halfHeight * Math.cos(configuration.$.rotation * Math.PI / 180))
+                    ]);
 
-                    this.$startRotateVector = {
-                        x: halfWidth,
-                        y: -halfHeight
-                    };
+                    this.$startRotateVector = downVector.subtract(this.$centerPoint);
 
                     this.set("_rotationRadius", Vector.distance([halfHeight, halfWidth]) / factor.x);
 
@@ -341,23 +341,18 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 } else if (mode === ROTATE) {
                     var startVector = this.$startRotateVector;
-                    var currentVector = {
-                        x: x - this.$centerPoint.x,
-                        y: y - this.$centerPoint.y
-                    };
+                    var currentVector = Vector.subtract([x, y], this.$centerPoint);
 
-                    var scalarProduct = startVector.x * currentVector.x + startVector.y * currentVector.y;
-                    var distanceCenterPoint = Math.sqrt(startVector.x * startVector.x + startVector.y * startVector.y);
-                    var distanceCurrentPoint = Math.sqrt(currentVector.x * currentVector.x + currentVector.y * currentVector.y);
+                    var scalarProduct = Vector.scalarProduct(startVector, currentVector);
+                    var rotateAngle = Math.acos(scalarProduct / (startVector.distance() * currentVector.distance())) * 180 / Math.PI;
 
-                    var angle = Math.acos(scalarProduct / (distanceCenterPoint * distanceCurrentPoint)) * 180 / Math.PI;
+                    var crossVector = Vector.vectorProduct(startVector, currentVector);
 
-                    var crossProduct = startVector.x * currentVector.y - startVector.y * currentVector.x;
-                    if (crossProduct < 0) {
-                        angle *= -1;
+                    if (crossVector.components[2] < 0) {
+                        rotateAngle *= -1;
                     }
 
-                    this.set("_rotation", Math.round(configuration.$.rotation + angle, 2));
+                    this.set("_rotation", Math.round(configuration.$.rotation + rotateAngle, 2));
 
                 } else if (mode === GESTURE) {
 
