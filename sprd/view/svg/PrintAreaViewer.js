@@ -51,8 +51,20 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
             this.bind('product.configurations', 'add', this._onConfigurationAdded, this);
             this.bind('product.configurations', 'change', this._onConfigurationChanged, this);
             this.bind('product.configurations', 'remove', this._onConfigurationRemoved, this);
+            this.bind('product.configurations', 'reset', this._onConfigurationsReset, this);
 
             this.callBase();
+        },
+
+        _onConfigurationsReset: function(e){
+            var self = this;
+
+            this._removeConfigurationViewer();
+            if(this.$.product && this.$.product.$.configurations){
+                this.$.product.$.configurations.each(function (configuration) {
+                    self._addConfiguration(configuration);
+                });
+            }
         },
 
         _onConfigurationAdded: function (e) {
@@ -69,7 +81,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
                 return;
             }
 
-            if (configuration.$.printArea !== this.get('_viewMap.printArea')) {
+            if (configuration.$.printArea.$.id !== this.get('_viewMap.printArea.id')) {
                 // not for this print area
                 return;
             }
