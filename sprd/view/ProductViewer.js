@@ -145,6 +145,8 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 if (productType && view && productType.containsView(view)) {
                     var cacheId = productType.$.id + "_" + view.$.id;
 
+                    view && this.setViewBox(0, 0, view.get('size.width'), view.get('size.height'));
+
                     if (!this.$productTypeViewViewerCache[cacheId]) {
                         this.$productTypeViewViewerCache[cacheId] = this.createComponent(ProductTypeViewViewer, {
                             product: this.$.product,
