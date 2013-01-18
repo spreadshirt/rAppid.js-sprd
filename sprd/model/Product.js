@@ -41,10 +41,27 @@ define([
                     this.trigger("priceChanged");
                 };
 
+                var productChangeHandler = function(){
+                    this.trigger("productChanged");
+                };
+
                 this.bind("configurations", "add", priceChangeHandler, this);
                 this.bind("configurations", "remove", priceChangeHandler, this);
                 this.bind("configurations", "reset", priceChangeHandler, this);
                 this.bind("configurations", "item:priceChanged", priceChangeHandler, this);
+
+                this.bind('change:productType', productChangeHandler, this);
+                this.bind('change:appearance', productChangeHandler, this);
+                this.bind('configurations', 'add', productChangeHandler, this);
+                this.bind('configurations', 'remove', productChangeHandler, this);
+                this.bind('configurations', 'reset', productChangeHandler, this);
+                this.bind('configurations', 'item:change:offset', productChangeHandler, this);
+                this.bind('configurations', 'item:change:scale', productChangeHandler, this);
+                this.bind('configurations', 'item:change:rotation', productChangeHandler, this);
+                this.bind('configurations', 'item:change:printColors', productChangeHandler, this);
+                this.bind('configurations', 'item:configurationChanged', productChangeHandler, this);
+                this.bind('configurations', 'item:change:printArea', productChangeHandler, this);
+
             },
 
             price: function () {
