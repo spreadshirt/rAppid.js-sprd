@@ -32,6 +32,16 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             _printTypePrice: "{printType.price.vatIncluded}"
         },
 
+        ctor: function(){
+            this.callBase();
+
+            function triggerConfigurationChanged(){
+                this.trigger('configurationChanged');
+            }
+
+            this.bind('printColors','reset', triggerConfigurationChanged, this);
+        },
+
         _commitChangedAttributes: function($) {
             this._validateTransform($);
         },
