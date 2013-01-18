@@ -41,7 +41,9 @@ define([
                     this.trigger("priceChanged");
                 };
 
-                this.bind("configurations", "*", priceChangeHandler, this);
+                this.bind("configurations", "add", priceChangeHandler, this);
+                this.bind("configurations", "remove", priceChangeHandler, this);
+                this.bind("configurations", "reset", priceChangeHandler, this);
                 this.bind("configurations", "item:priceChanged", priceChangeHandler, this);
             },
 

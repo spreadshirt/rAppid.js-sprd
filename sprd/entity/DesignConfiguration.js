@@ -15,7 +15,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             design: null,
 
             _designColors: "{design.printColors}",
-            _designCommission: "{design.price.vatIncluded}"
+            _designCommission: "{design.price}"
         },
 
         ctor: function () {
