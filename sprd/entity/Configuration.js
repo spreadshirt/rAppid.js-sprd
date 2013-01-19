@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea','sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price) {
 
     var undefined;
 
@@ -13,7 +13,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             printType: PrintType
         },
 
-		defaults : {
+        defaults: {
             printArea: null,
             printType: null,
             offset: Offset,
@@ -32,11 +32,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             _printTypePrice: "{printType.price.vatIncluded}"
         },
 
-        _commitChangedAttributes: function($) {
+        _commitChangedAttributes: function ($) {
             this._validateTransform($);
         },
 
-        _validateTransform: function($) {
+        _validateTransform: function ($) {
 
             var rotationChanged = this._hasSome($, ["rotation"]),
                 sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale", "offset"]),
@@ -54,20 +54,24 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 width = width || this.width();
                 height = height || this.height();
 
-                this._validatePrintTypeSize(this.$.printType, width, height);
+                this._validatePrintTypeSize(this.$.printType, width, height, scale);
             }
 
         },
 
-        _validatePrintTypeSize: function(printType, width, height) {
+        _validatePrintTypeSize: function (printType, width, height, scale) {
             if (!printType) {
                 return;
             }
 
-            this._setError("maxBounds", width > printType.get("size.width") || height > printType.get("size.height"))
+            this._setError({
+                printTypeScaling: !printType.isScalable() && (scale.x != 1 || scale.y != 1),
+                printTypeEnlarged: printType.isShrinkable() && Math.min(scale.x, scale.y) > 1,
+                maxBounds: width > printType.get("size.width") || height > printType.get("size.height")
+            });
         },
 
-        _hasHardBoundaryError: function(offset, width, height) {
+        _hasHardBoundaryError: function (offset, width, height) {
 
             var printArea = this.$.printArea;
 
@@ -83,7 +87,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 (y + height) <= printArea.get("boundary.size.height"));
         },
 
-        size: function() {
+        size: function () {
             this.log("size() not implemented", "debug");
             return null;
         },
@@ -95,31 +99,31 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
             return Math.abs(this.size().$.height * scale);
-        }.onChange("scale","size()"),
+        }.onChange("scale", "size()"),
 
-        width: function(scale) {
+        width: function (scale) {
 
             if (!scale && scale !== 0) {
                 scale = this.$.scale.x;
             }
 
             return Math.abs(this.size().$.width * scale);
-        }.onChange("scale","size()"),
+        }.onChange("scale", "size()"),
 
-        isScalable: function() {
+        isScalable: function () {
             return this.get("printType.isScalable()");
         }.onChange("printType"),
 
-        isRotatable: function() {
+        isRotatable: function () {
             return true;
         },
 
-        isRemovable: function() {
+        isRemovable: function () {
             return true;
         },
 
-        price: function() {
+        price: function () {
             return this.get('printType.price').clone() || new Price();
         }
-	});
+    });
 });
