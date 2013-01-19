@@ -80,9 +80,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 return;
             }
 
-
             var boundingBox = this._getBoundingBox(offset,width,height, rotation);
-            console.log(boundingBox);
 
             return !(boundingBox.x >= 0 && boundingBox.y >= 0 &&
                 (boundingBox.x + boundingBox.width) <= printArea.get("boundary.size.width") &&
