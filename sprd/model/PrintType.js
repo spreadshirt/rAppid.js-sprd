@@ -34,13 +34,16 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
                 return ret;
             } else {
                 // digital colors
-                var cacheId = color.toRGB().toString();
+                var cacheId = this.$.id + "_" + color.toRGB().toString();
 
                 if (!this.printColorCache[cacheId]) {
-                    this.printColorCache[cacheId] = new PrintTypeColor({
+                    var printTypeColor = new PrintTypeColor({
                         fill: color,
                         price: this._getDigitalPrintColorPrice()
                     });
+                    printTypeColor.$parent = this;
+
+                    this.printColorCache[cacheId] = printTypeColor;
                 }
 
                 return this.printColorCache[cacheId];
@@ -54,9 +57,7 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
         _getDigitalPrintColorPrice: function() {
 
             if (!this.$digitalPrintColorPrice) {
-                this.$digitalPrintColorPrice = new Price({
-                    currency: this.$.price.$.currency
-                });
+                this.$digitalPrintColorPrice = new Price();
             }
 
             return this.$digitalPrintColorPrice;
