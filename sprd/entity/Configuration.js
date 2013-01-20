@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price", "sprd/type/Matrix2d"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil) {
 
     var undefined;
 
@@ -177,6 +177,17 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         price: function () {
             return this.get('printType.price').clone() || new Price();
-        }
+        },
+
+        possiblePrintTypes: function(appearance) {
+            var ret = [],
+                printArea = this.$.printArea;
+
+            if (printArea && appearance) {
+                ret = ProductUtil.getPossiblePrintTypesForPrintAreas([printArea], appearance.$.id);
+            }
+
+            return ret;
+        }.onChange("printArea")
     });
 });

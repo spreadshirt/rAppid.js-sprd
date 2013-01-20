@@ -1,4 +1,4 @@
-define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore", "sprd/model/PrintType"], function (Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType) {
+define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore", "sprd/model/PrintType", "sprd/util/ProductUtil"], function (Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil) {
     return Configuration.inherit('sprd.model.DesignConfiguration', {
 
         schema: {
@@ -224,6 +224,18 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             return price;
 
-        }.on("priceChanged").onChange("_designCommission", "_printTypePrice")
+        }.on("priceChanged").onChange("_designCommission", "_printTypePrice"),
+
+        getPossiblePrintTypes: function (appearance) {
+            var ret = [],
+                printArea = this.$.printArea,
+                design = this.$.design;
+
+            if (printArea && appearance && design) {
+                ret = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
+            }
+
+            return ret;
+        }.onChange("printArea", "design")
     });
 });
