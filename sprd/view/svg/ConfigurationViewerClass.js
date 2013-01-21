@@ -6,7 +6,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             ROTATE = "rotate",
             GESTURE = "gesture";
 
-        var validateConfigurationOnTransform = true;
+        var validateConfigurationOnTransform = true,
+            rotationSnippingAngle = 45,
+            rotationSnippingThreshold = 5,
+            rotateSnippingEnabled = true;
 
         return SvgElement.inherit({
 
@@ -217,7 +220,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 e.stopPropagation();
 
                 this.$moving = true;
-                this.set("_mode", mode);
+                this.set({
+                    "_mode": mode,
+                    shiftKey: false
+                });
 
                 downPoint = this.$downPoint = {
                     x: this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
@@ -287,9 +293,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     self._keyDown(e, mode);
                 };
 
+                this.$keyUpHandler = function (e) {
+                    self._keyUp(e, mode);
+                };
+
                 window.bindDomEvent(this.$moveEvent, this.$moveHandler);
                 window.bindDomEvent(this.$upEvent, this.$upHandler);
                 window.bindDomEvent("keydown", this.$keyDownHandler);
+                window.bindDomEvent("keyup", this.$keyUpHandler);
 
             },
 
@@ -352,7 +363,24 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         rotateAngle *= -1;
                     }
 
-                    this.set("_rotation", Math.round(configuration.$.rotation + rotateAngle, 2));
+                    rotateAngle = Math.round(configuration.$.rotation + rotateAngle, 2);
+
+                    if (rotateSnippingEnabled && !this.$.shiftKey) {
+                        if (rotateAngle < 0) {
+                            rotateAngle += 360;
+                        }
+
+                        rotateAngle %= 360;
+
+                        if (rotateAngle % rotationSnippingAngle < rotationSnippingThreshold) {
+                            rotateAngle = Math.floor(rotateAngle / rotationSnippingAngle) * rotationSnippingAngle;
+                        } else if (rotationSnippingAngle - rotateAngle % rotationSnippingAngle < rotationSnippingThreshold) {
+                            rotateAngle = (Math.floor(rotateAngle / rotationSnippingAngle) + 1) * rotationSnippingAngle
+                        }
+
+                    }
+
+                    this.set("_rotation", rotateAngle);
 
                 } else if (mode === GESTURE) {
 
@@ -427,12 +455,21 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             _keyDown: function (e, mode) {
 
+                if (e.keyCode === 16) {
+                    this.set("shiftKey", true);
+                }
+
                 if (e.keyCode === 27) {
                     // esc
                     this._cancelTransformation();
                     e.preventDefault();
                 }
+            },
 
+            _keyUp: function (e, mode) {
+                if (e.keyCode === 16) {
+                    this.set("shiftKey", false);
+                }
             },
 
             _stopTransformation: function () {
@@ -448,6 +485,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 window.unbindDomEvent(this.$moveEvent, this.$moveHandler);
                 window.unbindDomEvent(this.$upEvent, this.$upHandler);
                 window.unbindDomEvent("keydown", this.$keyDownHandler);
+                window.unbindDomEvent("keyup", this.$keyUpHandler);
             },
 
             _resetTransformation: function () {
