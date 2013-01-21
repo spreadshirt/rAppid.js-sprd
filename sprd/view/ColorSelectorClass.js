@@ -9,8 +9,7 @@ define(['js/ui/SelectionView'], function (SelectionView) {
             productType: null,
 
             tagName: "ul",
-            items: "{productType.appearances}",
-            needsSelection: "{hasSelection()}"
+            items: "{productType.appearances}"
         },
 
         initialize: function () {
