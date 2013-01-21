@@ -177,19 +177,6 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
                 return this.$.sizes.at(0).$.measures;
             }
             return [];
-        }.onChange('sizes'),
-
-        hasOnlyNormalSizes: function(){
-            var isNormal = true;
-            if(this.$.sizes){
-                this.$.sizes.each(function(size){
-                    if(!size.isNormalSize()){
-                        isNormal = false;
-                    }
-                })
-            }
-
-            return isNormal;
         }.onChange('sizes')
     })
 });
