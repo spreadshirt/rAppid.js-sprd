@@ -1,4 +1,4 @@
-<view:SizeSelectorClass xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml" needsSelection="{hasSelection()}" xmlns:view="sprd.view" tagName="ul">
+<view:SizeSelectorClass xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml" allowDeselection="false" xmlns:view="sprd.view" tagName="ul">
     <js:Template name="item">
         <li enabled="{productType.isSizeAndAppearanceAvailable(size,appearance)}">
             <a>${size.name}</a>

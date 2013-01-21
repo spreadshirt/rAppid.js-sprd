@@ -9,16 +9,16 @@ define(['js/ui/SelectionView'], function (SelectionView) {
             items: "{productType.sizes}",
             multiSelect: false
         },
+        _commitItems: function(){
+            this.set('needsSelection', false);
+        },
+
         _commitChangedAttributes: function(attributes){
             this.callBase();
             if (this._hasSome(attributes, ["appearance"])) {
                 var self = this;
                 if (this.$lastSelectedSize) {
-                    this.$.productType.getAvailableSizesForAppearance(this.$.appearance).each(function (size) {
-                        if (size.$.name == self.$lastSelectedSize.$.name || size.$.id == self.$lastSelectedSize.$.id) {
-                            self.set('selectedItem', size);
-                        }
-                    });
+
                 }
             }
         },
