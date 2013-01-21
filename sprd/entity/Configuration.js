@@ -39,7 +39,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 this.trigger('configurationChanged');
             }
 
-            this.bind('printColors','reset', triggerConfigurationChanged, this);
+//            this.bind('printColors','reset', triggerConfigurationChanged, this);
         },
 
         _commitChangedAttributes: function ($) {
