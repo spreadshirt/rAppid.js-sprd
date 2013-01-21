@@ -17,6 +17,9 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], funct
                 }
             });
         },
+        hasSubCategories: function(){
+            return !(this.$.designCategories === undefined || this.$.designCategories === null);
+        },
         parse: function(data){
             if(data.id.indexOf("b") === -1){
                 data.id = "b" + data.id;
