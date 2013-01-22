@@ -361,7 +361,7 @@ define([
                     if (!err) {
                         self.$originalProduct = self.clone();
                     }
-                    this.callBase(options, callback);
+                    callback && callback(err, self);
                 });
             },
 
