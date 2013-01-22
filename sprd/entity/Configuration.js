@@ -161,7 +161,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         size: function () {
             this.log("size() not implemented", "debug");
-            return null;
+            return Size.empty;
         },
 
         height: function (scale) {
