@@ -105,6 +105,11 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             }
 
             var printColors = this.$.printColors.$items;
+
+            if(printColors[layerIndex] === color){
+                return;
+            }
+
             printColors.splice(layerIndex, 1, color);
 
             if (printType.$.id === PrintType.Mapping.SpecialFlex) {
@@ -117,9 +122,9 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             }
 
             this.$hasDefaultColors = _.isEqual(printColors, this.$defaultPrintColors);
+
             this.$.printColors.reset(printColors);
 
-            // TODO: check if the color really changed otherwise dont trigger this events!
             this.trigger('configurationChanged');
             this.trigger("priceChanged");
         },
