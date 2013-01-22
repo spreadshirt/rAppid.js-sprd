@@ -437,7 +437,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var configuration = this.$.configuration;
                 if (configuration) {
                     if (mode === MOVE) {
-                        configuration.set('offset', this.$._offset);
+                        if(configuration.$.offset && !configuration.$.offset.isDeepEqual(this.$._offset)){
+                            configuration.set('offset', this.$._offset);
+                        }
                     } else if (mode === SCALE) {
                         configuration.set('scale', this.$._scale);
                     } else if (mode === ROTATE) {
