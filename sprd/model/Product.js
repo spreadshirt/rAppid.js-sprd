@@ -41,7 +41,7 @@ define([
                     this.trigger("priceChanged");
                 };
 
-                var productChangeHandler = function(){
+                var productChangeHandler = function () {
                     this.trigger("productChanged");
                 };
 
@@ -55,10 +55,6 @@ define([
                 this.bind('configurations', 'add', productChangeHandler, this);
                 this.bind('configurations', 'remove', productChangeHandler, this);
                 this.bind('configurations', 'reset', productChangeHandler, this);
-                this.bind('configurations', 'item:change:offset', productChangeHandler, this);
-                this.bind('configurations', 'item:change:scale', productChangeHandler, this);
-                this.bind('configurations', 'item:change:rotation', productChangeHandler, this);
-                this.bind('configurations', 'item:change:printColors', productChangeHandler, this);
                 this.bind('configurations', 'item:configurationChanged', productChangeHandler, this);
                 this.bind('configurations', 'item:change:printArea', productChangeHandler, this);
 
@@ -80,7 +76,7 @@ define([
 
                     return price;
                 }
-            }.on("priceChanged","change:productType"),
+            }.on("priceChanged", "change:productType"),
 
             getDefaultView: function () {
 
@@ -357,6 +353,38 @@ define([
                 };
 
                 return ret;
+            },
+
+            fetch: function (options, callback) {
+                var self = this;
+                this.callBase(options, function (err) {
+                    if (!err) {
+                        self.$originalProduct = self.clone();
+                    }
+                    this.callBase(options, callback);
+                });
+            },
+
+            save: function (options, callback) {
+
+                if (this.$originalProduct) {
+                    if (this.$originalProduct.isDeepEqual(this)) {
+                        callback && callback(null, this);
+                        return;
+                    } else {
+                        this.set('id', undefined);
+                    }
+                }
+
+                var self = this;
+                this.callBase(options, function (err) {
+                    if (!err) {
+                        self.$originalProduct = self.clone();
+                    }
+
+                    callback && callback(err, self);
+                });
             }
+
         });
     });

@@ -35,11 +35,20 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         ctor: function(){
             this.callBase();
 
-            function triggerConfigurationChanged(){
+            function triggerConfigurationChanged(e){
                 this.trigger('configurationChanged');
             }
 
-//            this.bind('printColors','reset', triggerConfigurationChanged, this);
+
+            this.bind('change:offset',function(e){
+                if(e.$ && !e.$.isDeepEqual(this.$previousAttributes["offset"])){
+                    this.trigger('configurationChanged');
+                }
+            }, this);
+            this.bind('change:scale',triggerConfigurationChanged, this);
+            this.bind('change:rotation',triggerConfigurationChanged, this);
+            this.bind('change:printArea',triggerConfigurationChanged, this);
+            this.bind('change:printColors',triggerConfigurationChanged, this);
         },
 
         _commitChangedAttributes: function ($) {
