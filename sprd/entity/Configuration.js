@@ -29,7 +29,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             _x: "{offset.x}",
             _y: "{offset.y}",
 
-            _printTypePrice: "{printType.price.vatIncluded}"
+            _printTypePrice: "{printType.price}"
         },
 
         ctor: function(){
@@ -195,7 +195,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         price: function () {
-            return this.get('printType.price').clone() || new Price();
+            return this.get('_printTypePrice').clone() || new Price();
         },
 
         possiblePrintTypes: function(appearance) {

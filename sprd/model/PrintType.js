@@ -3,7 +3,8 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
     var PrintType = SprdModel.inherit("sprd.model.PrintType", {
 
         defaults: {
-            dpi: null
+            dpi: null,
+            price: Price
         },
 
         schema: {

@@ -233,9 +233,9 @@ define([
                     })
                     .seq(function () {
                         // first set product type
-                        self.set("productType", productType);
                         // and then the appearance, because appearance depends on product type
                         self.set({
+                            productType: productType,
                             view: view,
                             appearance: appearance
                         });
