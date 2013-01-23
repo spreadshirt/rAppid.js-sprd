@@ -18,20 +18,20 @@
 
         <svg:rect cid="_scaleHandle" class="configuration-handle scale"
                   visible="{isScalable()}"
-                  x="{substract(_configurationWidth,pixelToViewBox(8))}" y="{substract(_configurationHeight,pixelToViewBox(8,true))}"
-                  width="{pixelToViewBox(15)}" height="{pixelToViewBox(15,true)}"/>
+                  x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}" y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
+                  width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
 
         <svg:rect cid="_rotateHandle" class="configuration-handle rotate"
                   visible="{isRotatable()}"
-                  x="{substract(_configurationWidth,pixelToViewBox(8))}" y="{pixelToViewBox(-8,true)}"
-                  width="{pixelToViewBox(15)}" height="{pixelToViewBox(15,true)}"/>
+                  x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}" y="{pixelToViewBox(_handle-Offset)}"
+                  width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
         <svg:rect cid="_deleteHandle" class="configuration-handle delete"
                   visible="{isRemovable()}"
                   onclick="deleteConfiguration"
-                  x="{pixelToViewBox(-8)}" y="{substract(_configurationHeight,pixelToViewBox(8,true))}"
-                  width="{pixelToViewBox(15)}" height="{pixelToViewBox(15,true)}"/>
+                  x="{pixelToViewBox(_handle-Offset)}" y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
+                  width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
     </svg:g>
 

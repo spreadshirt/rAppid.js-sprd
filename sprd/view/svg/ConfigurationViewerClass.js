@@ -50,6 +50,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     y: 1
                 },
 
+                _handleWidth: 15,
+                _handleOffset: 8,
+                "_handle-Offset": -8,
+
                 _mode: null,
                 _rotationRadius: null
             },
@@ -81,6 +85,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$moveEvent = hasTouch ? "touchmove" : "mousemove";
                 this.$upEvent = hasTouch ? "touchend" : "mouseup";
                 this.$clickEvent = hasTouch ? "tap" : "click";
+
+                if (hasTouch) {
+                    this.set({
+                        _handleWidth: 20,
+                        _handleOffset: 10,
+                        "_handle-Offset": -10
+                    })
+                }
             },
 
             _initializeRenderer: function () {
@@ -547,8 +559,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            pixelToViewBox: function(pixel, yAxis) {
-                return pixel * this.$._globalToLocalFactor[yAxis ? "y" : "x"];
+            pixelToViewBox: function(pixel) {
+                return pixel * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
             deleteConfiguration: function () {
