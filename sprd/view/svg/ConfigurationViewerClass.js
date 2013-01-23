@@ -1,5 +1,5 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "underscore", "sprd/type/Vector"],
-    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _, Vector) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "underscore", "sprd/type/Vector", "sprd/type/Matrix2d"],
+    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _, Vector, Matrix2d) {
 
         var MOVE = "move",
             SCALE = "scale",
@@ -22,8 +22,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 translateY: "{_offset.y}",
 
                 rotation: "{_rotation}",
-                rotationX: "{half(configuration.width())}",
-                rotationY: "{half(configuration.height())}",
+                rotationX: "{half(configuration.width(_scale.x))}",
+                rotationY: "{half(configuration.height(_scale.y))}",
 
                 _assetContainer: null,
                 _scaleHandle: null,
@@ -232,21 +232,30 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 var downVector = new Vector([downPoint.x, downPoint.y]);
 
+                factor = this.localToGlobalFactor();
+                var halfWidth = (configuration.width() / 2) * factor.x,
+                    halfHeight = (configuration.height() / 2) * factor.y;
+
                 if (mode === MOVE) {
                     this.$.productViewer.set("selectedConfiguration", this.$.configuration);
                     this.set('_offset', configuration.$.offset.clone());
                 } else if (mode === SCALE) {
 
-                    factor = this.localToGlobalFactor();
-                    this.set('_scale', _.clone(configuration.$.scale));
+                    this.$centerPoint = new Vector([
+                        downPoint.x - (halfWidth * Math.cos(configuration.$.rotation * Math.PI / 180)) + (halfHeight * Math.sin(configuration.$.rotation * Math.PI / 180)),
+                        downPoint.y - (halfWidth * Math.sin(configuration.$.rotation * Math.PI / 180)) - (halfHeight * Math.cos(configuration.$.rotation * Math.PI / 180))
+                    ]);
+
+                    this.set({
+                        _scale: _.clone(configuration.$.scale),
+                        _offset: configuration.$.offset.clone()
+                    });
+
+                    var scaleVector = downVector.subtract(this.$centerPoint);
 
                     // diagonal in real px
-                    this.$scaleDiagonalDistance = Vector.distance([configuration.width() * factor.x, configuration.height() * factor.y]);
+                    this.$scaleDiagonalDistance = scaleVector.distance(); // Vector.distance([configuration.width() * factor.x, configuration.height() * factor.y]);
                 } else if (mode === ROTATE) {
-
-                    factor = this.localToGlobalFactor();
-                    var halfWidth = (configuration.width() / 2) * factor.x,
-                        halfHeight = (configuration.height() / 2) * factor.y;
 
                     this.$centerPoint = new Vector([
                         downPoint.x - (halfWidth * Math.cos(configuration.$.rotation * Math.PI / 180)) - (halfHeight * Math.sin(configuration.$.rotation * Math.PI / 180)),
@@ -254,7 +263,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     ]);
 
                     this.$startRotateVector = downVector.subtract(this.$centerPoint);
-
                     this.set("_rotationRadius", Vector.distance([halfHeight, halfWidth]) / factor.x);
 
                 } else if (mode === GESTURE) {
@@ -332,23 +340,39 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         y: configuration.$.offset.$.y - deltaY * factor.y
                     });
                 } else if (mode === SCALE) {
-                    var aspectRatio = configuration.width() / configuration.height();
 
-                    if (deltaX >= deltaY) {
-                        y = this.$downPoint.y + deltaX / aspectRatio;
-                    } else {
-                        x = this.$downPoint.x + deltaY / aspectRatio;
-                    }
+                    var downVector = new Vector([x, y]);
+                    var scaleVector = downVector.subtract(this.$centerPoint);
+                    var currentDistance = scaleVector.distance();
 
-                    var mouseDistance = Vector.distance([this.$downPoint.x - x, this.$downPoint.y - y]);
+                    scaleFactor = currentDistance / this.$scaleDiagonalDistance;
 
-                    if (deltaX > 0 || deltaY > 0) {
-                        mouseDistance *= -1;
-                    }
+                    var scale = {
+                        x: scaleFactor * configuration.$.scale.x,
+                        y: scaleFactor * configuration.$.scale.y
+                    };
 
-                    scaleFactor = (this.$scaleDiagonalDistance + mouseDistance) / this.$scaleDiagonalDistance;
+                    var offsetX = configuration.$.offset.$.x;
+                    var offsetY = configuration.$.offset.$.y;
+                    var newConfigurationWidth = configuration.width(scale.x);
+                    var newConfigurationHeight = configuration.height(scale.y);
+                    var configurationWidth = configuration.width();
+                    var configurationHeight = configuration.height();
 
-                    scaleWithFactor(scaleFactor);
+                    this.set('_scale', scale);
+
+                    this.$._offset.set({
+                        x: offsetX + (configurationWidth - newConfigurationWidth) / 2,
+                        y: offsetY + (configurationHeight - newConfigurationHeight) / 2
+                    });
+
+
+                    self.set({
+                        _configurationWidth: newConfigurationWidth,
+                        _configurationHeight: newConfigurationHeight
+                    });
+
+
 
                 } else if (mode === ROTATE) {
                     var startVector = this.$startRotateVector;
@@ -441,7 +465,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             configuration.set('offset', this.$._offset);
                         }
                     } else if (mode === SCALE) {
-                        configuration.set('scale', this.$._scale);
+                        configuration.set({
+                            scale: this.$._scale,
+                            offset: this.$._offset
+                        });
                     } else if (mode === ROTATE) {
                         configuration.set('rotation', this.$._rotation);
                     } else if (mode === GESTURE) {
