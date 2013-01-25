@@ -24,7 +24,8 @@ define([
                         "text": TextConfiguration
                     }
                 })],
-                restrictions: Object
+                restrictions: Object,
+                defaultValues: Object
             },
 
             defaults: {
@@ -351,6 +352,16 @@ define([
                     freeColorSelection: false,
                     example: false
                 };
+
+                var viewId = this.get("view.id");
+
+                if (viewId) {
+                    ret.defaultValues = {
+                        defaultView: {
+                            id: viewId
+                        }
+                    }
+                }
 
                 return ret;
             },
