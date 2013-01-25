@@ -329,17 +329,19 @@ define([
                         printType.fetch(null, cb);
                     })
                     .seq("designConfiguration", function () {
-                        var configuration = new DesignConfiguration({
+                        var entity = self.createEntity(DesignConfiguration);
+                        entity.set({
                             printType: printType,
                             printArea: printArea,
                             design: design
                         });
-
-                        self._addConfiguration(configuration);
-
-                        return configuration;
+                        return entity;
+                    })
+                    .seq(function(cb){
+                        this.vars.designConfiguration.init(cb);
                     })
                     .exec(function (err, results) {
+                        self._addConfiguration(results.designConfiguration);
                         callback && callback(err, results.designConfiguration);
                     })
 
