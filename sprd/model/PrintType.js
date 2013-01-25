@@ -51,6 +51,20 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
             }
         },
 
+        getPrintColorById: function(id) {
+
+            if (this.$.colors) {
+                for (var i = 0; i < this.$.colors.$items.length; i++) {
+                    var printColor = this.$.colors.$items[i];
+                    if (printColor.$.id == id) {
+                        return printColor;
+                    }
+                }
+            }
+
+            return null;
+        },
+
         isPrintColorColorSpace: function() {
             return this.get("restrictions.colorSpace") === COLOR_SPACE.PrintColors;
         },
