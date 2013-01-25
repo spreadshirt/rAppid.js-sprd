@@ -85,7 +85,14 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
             }
 
             if (this.isPrintColorColorSpace()) {
-                return this.$.colors.includes(printTypeColor);
+                var includes = false;
+                this.$.colors.each(function(color){
+                    if(color.$.id == printTypeColor.$.id && color.$.name == printTypeColor.$.name){
+                        includes = true;
+                    }
+
+                });
+                return includes;
             } else {
                 return true;
             }

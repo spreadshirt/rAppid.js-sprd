@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil","sprd/entity/PrintTypeColor"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor) {
 
     var undefined;
 
@@ -10,7 +10,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 type: PrintArea,
                 isReference: true
             },
-            printType: PrintType
+            printType: PrintType,
+            printColors: [PrintTypeColor]
         },
 
         defaults: {
@@ -52,7 +53,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         _commitChangedAttributes: function ($) {
-            this._validateTransform($);
+            if(this.$entityInitialized){
+                this._validateTransform($);
+            }
+            this.callBase();
         },
 
         _validateTransform: function ($) {

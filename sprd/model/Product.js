@@ -395,6 +395,25 @@ define([
 
                     callback && callback(err, self);
                 });
+            },
+
+            init: function (callback) {
+                var self = this;
+                flow()
+                    .seq(function (cb) {
+                        self.fetch(null, cb);
+                    })
+                    .seq(function (cb) {
+                        self.$.productType.fetch(null, cb);
+                    })
+                    .seq(function (cb) {
+                        flow()
+                            .parEach(self.$.configurations.$items, function (configuration, cb) {
+                                configuration.init(cb);
+                            })
+                            .exec(cb);
+                    })
+                    .exec(callback);
             }
 
         });

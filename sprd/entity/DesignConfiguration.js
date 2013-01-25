@@ -1,10 +1,10 @@
-define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore", "sprd/model/PrintType", "sprd/util/ProductUtil"], function (Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil) {
+define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore", "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow"], function (Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow) {
     return Configuration.inherit('sprd.model.DesignConfiguration', {
 
         schema: {
             type: String,
             content: Object,
-            designs: Object,
+            design: Design,
             restrictions: Object
         },
 
@@ -14,8 +14,21 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             design: null,
 
-            _designColors: "{design.printColors}",
+            _designColors: "{design.colors}",
             _designCommission: "{design.price}"
+        },
+
+        initSchema: {
+            design: function(design, key, cb){
+                var designModel = this.$context.$contextModel.$context.createEntity(Design,design);
+                designModel.fetch(null, cb);
+            },
+            printType: function(printType, key, cb){
+                printType.fetch(null, cb);
+            },
+            printArea: function(printArea, key, cb){
+                cb(null, this.$context.$contextModel.$.productType.getPrintAreaById(this.$$.printArea.$.id));
+            }
         },
 
         ctor: function () {
@@ -24,17 +37,18 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             this.callBase();
         },
 
-        _commit_designColors: function(designColors) {
-
-            var printType = this.$.printType,
-                design = this.$.design;
+        _commit_designColors: function (designColors) {
+            if (!this.$entityInitialized) {
+                return;
+            }
+            var printType = this.$.printType;
 
             // set print colors
             var printColors = [];
             var defaultPrintColors = [];
 
-            if (design) {
-                design.$.colors.each(function (designColor) {
+            if (designColors && printType._fetch.state === 2) {
+                designColors.each(function (designColor) {
                     var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"]);
                     printColors.push(closestPrintColor);
                     defaultPrintColors.push(closestPrintColor);
@@ -49,9 +63,12 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
         },
 
         _commitPrintType: function (printType) {
+            if (!this.$entityInitialized) {
+                return;
+            }
             // print type changed -> convert colors
 
-            if (!printType) {
+            if (!printType || !printType.get('restrictions.colorSpace')) {
                 return;
             }
 
@@ -83,7 +100,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             var ret = [];
 
             // go in the direction of the layers of the design
-
             for (var i = 0; i < this.$.design.$.colors.$items.length; i++) {
                 var designColor = this.$.design.$.colors.$items[i];
                 var printColor = this.$.printColors.$items[i];
@@ -106,7 +122,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             var printColors = this.$.printColors.$items;
 
-            if(printColors[layerIndex] === color){
+            if (printColors[layerIndex] === color) {
                 return;
             }
 
@@ -130,8 +146,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
         },
 
         size: function () {
-
-            if (this.$.design && this.$.printType && this.$.printType.$.dpi) {
+            if (this.$.design && this.$.design.$.size && this.$.printType && this.$.printType.$.dpi) {
                 var dpi = this.$.printType.$.dpi;
                 if (!this.$sizeCache[dpi]) {
                     this.$sizeCache[dpi] = UnitUtil.convertSizeToMm(this.$.design.$.size, dpi);
@@ -142,6 +157,55 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             return Size.empty;
         }.onChange("_dpi", "design"),
+
+        // TODO: add onchange for design.restriction.allowScale
+        isScalable: function () {
+            return this.get("printType.isScalable()") && this.get("design.restrictions.allowScale");
+        }.onChange("printType"),
+
+        _validatePrintTypeSize: function (printType, width, height, scale) {
+            this.callBase();
+
+            if (!printType || !scale) {
+                return;
+            }
+
+            this._setError("minBounds", !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale")));
+
+        },
+
+        price: function () {
+
+            var usedPrintColors = [],
+                price = this.callBase();
+
+            this.$.printColors.each(function (printColor) {
+                if (_.indexOf(usedPrintColors, printColor) === -1) {
+                    usedPrintColors.push(printColor);
+                }
+            });
+
+            for (var i = 0; i < usedPrintColors.length; i++) {
+                price.add((usedPrintColors[i]).get("price"));
+            }
+
+            price.add(this.get('_designCommission'));
+
+            return price;
+
+        }.on("priceChanged").onChange("_designCommission", "_printTypePrice"),
+
+        getPossiblePrintTypes: function (appearance) {
+            var ret = [],
+                printArea = this.$.printArea,
+                design = this.$.design;
+
+            if (printArea && appearance && design) {
+                ret = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
+            }
+
+            return ret;
+        }.onChange("printArea", "design"),
 
         compose: function () {
             var ret = this.callBase();
@@ -175,6 +239,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
             };
 
+            delete ret.design;
+
             var printColorIds = [],
                 printColorRGBs = [];
 
@@ -195,54 +261,46 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             return ret;
         },
+        parse: function (data) {
+            data = this.callBase();
 
-        // TODO: add onchange for design.restriction.allowScale
-        isScalable: function () {
-            return this.get("printType.isScalable()") && this.get("design.restrictions.allowScale");
-        }.onChange("printType"),
+            if (data.designs) {
+//                data.design = data.designs[0];
+            }
+            data.designs = undefined;
 
-        _validatePrintTypeSize: function(printType, width, height, scale) {
-            this.callBase();
-
-            if (!printType || !scale) {
-                return;
+            if(data.printArea){
+                // remove printArea from payload since it is the wrong one
+                data.printArea = null;
             }
 
-            this._setError("minBounds", !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale")));
+            if (data.content) {
+                this.$$.design = data.content.svg.image.designId;
 
-        },
+                var transformations = data.content.svg.image.transform.match(/\w+\([^)]+\)/ig),
+                    transformation,
+                    type, values;
 
-        price: function() {
-
-            var usedPrintColors = [],
-                price = this.callBase();
-
-            this.$.printColors.each(function(printColor) {
-                if (_.indexOf(usedPrintColors, printColor) === -1) {
-                    usedPrintColors.push(printColor);
+                if (transformations) {
+                    for (var i = 0; i < transformations.length; i++) {
+                        transformation = transformations[i];
+                        type = transformation[1];
+                        values = transformation[2].split(",");
+                        if (type === "rotate") {
+                            data.rotation = parseInt(values.shift());
+                        } else if (type === "scale") {
+                            var scale = values;
+                            data.scale = {
+                                x: parseInt(scale[0]),
+                                y: parseInt(scale[1])
+                            }
+                        }
+                    }
                 }
-            });
 
-            for (var i = 0; i < usedPrintColors.length; i++) {
-                price.add((usedPrintColors[i]).get("price"));
             }
 
-            price.add(this.get('_designCommission'));
-
-            return price;
-
-        }.on("priceChanged").onChange("_designCommission", "_printTypePrice"),
-
-        getPossiblePrintTypes: function (appearance) {
-            var ret = [],
-                printArea = this.$.printArea,
-                design = this.$.design;
-
-            if (printArea && appearance && design) {
-                ret = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
-            }
-
-            return ret;
-        }.onChange("printArea", "design")
+            return data;
+        }
     });
 });
