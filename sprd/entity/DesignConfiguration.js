@@ -1,4 +1,7 @@
 define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore", "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow"], function (Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow) {
+
+    var undefined;
+
     return Configuration.inherit('sprd.model.DesignConfiguration', {
 
         schema: {
@@ -14,52 +17,13 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             design: null,
 
-            _designColors: "{design.colors}",
             _designCommission: "{design.price}"
-        },
-
-        initSchema: {
-            design: function(design, key, cb){
-                var designModel = this.$context.$contextModel.$context.createEntity(Design,design);
-                designModel.fetch(null, cb);
-            },
-            printType: function(printType, key, cb){
-                printType.fetch(null, cb);
-            },
-            printArea: function(printArea, key, cb){
-                cb(null, this.$context.$contextModel.$.productType.getPrintAreaById(this.$$.printArea.$.id));
-            }
         },
 
         ctor: function () {
             this.$sizeCache = {};
-
+            this.$$ = {};
             this.callBase();
-        },
-
-        _commit_designColors: function (designColors) {
-            if (!this.$entityInitialized) {
-                return;
-            }
-            var printType = this.$.printType;
-
-            // set print colors
-            var printColors = [];
-            var defaultPrintColors = [];
-
-            if (designColors && printType._fetch.state === 2) {
-                designColors.each(function (designColor) {
-                    var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"]);
-                    printColors.push(closestPrintColor);
-                    defaultPrintColors.push(closestPrintColor);
-                });
-
-                this.$defaultPrintColors = defaultPrintColors;
-
-                this.$.printColors.reset(printColors);
-                this.$hasDefaultColors = true;
-            }
-
         },
 
         _commitPrintType: function (printType) {
@@ -99,11 +63,13 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
         getPrintColorsAsRGB: function () {
             var ret = [];
 
-            // go in the direction of the layers of the design
-            for (var i = 0; i < this.$.design.$.colors.$items.length; i++) {
-                var designColor = this.$.design.$.colors.$items[i];
-                var printColor = this.$.printColors.$items[i];
-                ret[designColor.$.layer] = printColor.color().toRGB().toHexString();
+            if(this.$.design.$.colors.size() === this.$.printColors.size()){
+                // go in the direction of the layers of the design
+                for (var i = 0; i < this.$.design.$.colors.$items.length; i++) {
+                    var designColor = this.$.design.$.colors.$items[i];
+                    var printColor = this.$.printColors.$items[i];
+                    ret[designColor.$.layer] = printColor.color().toRGB().toHexString();
+                }
             }
 
             return ret;
@@ -264,43 +230,127 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
         parse: function (data) {
             data = this.callBase();
 
-            if (data.designs) {
-//                data.design = data.designs[0];
-            }
             data.designs = undefined;
 
             if(data.printArea){
                 // remove printArea from payload since it is the wrong one
+                // it will be set within the initSchema methods
+                this.$$.printArea = data.printArea;
                 data.printArea = null;
             }
 
             if (data.content) {
-                this.$$.design = data.content.svg.image.designId;
-
-                var transformations = data.content.svg.image.transform.match(/\w+\([^)]+\)/ig),
-                    transformation,
-                    type, values;
-
-                if (transformations) {
-                    for (var i = 0; i < transformations.length; i++) {
-                        transformation = transformations[i];
-                        type = transformation[1];
-                        values = transformation[2].split(",");
-                        if (type === "rotate") {
-                            data.rotation = parseInt(values.shift());
-                        } else if (type === "scale") {
-                            var scale = values;
-                            data.scale = {
-                                x: parseInt(scale[0]),
-                                y: parseInt(scale[1])
-                            }
-                        }
-                    }
-                }
-
+                this.$$.svg = data.content.svg;
             }
 
             return data;
+        },
+
+        init: function(callback) {
+
+
+            var self = this,
+                $$ = self.$$,
+                svg = $$.svg,
+                printType = this.$.printType,
+                printArea,
+                design;
+            if(svg){
+                design = this.$context.$contextModel.$context.createEntity(Design, svg.image.designId);
+            } else {
+                design = this.$.design;
+            }
+
+            flow()
+                .par(function(cb){
+                    design.fetch(null, cb);
+                }, function(cb) {
+                    printType.fetch(null, cb);
+                })
+                .seq(function() {
+                    if($$.printArea){
+                        printArea = self.$context.$contextModel.$.productType.getPrintAreaById($$.printArea.$.id)
+                    } else {
+                        printArea = self.$.printArea;
+                    }
+                })
+                .seq(function () {
+                    self.set({
+                        design: design,
+                        printArea: printArea
+                    })
+                })
+                .seq(function() {
+                    var printType = self.$.printType;
+
+                    // set print colors
+                    var printColors = [],
+                        defaultPrintColors = [],
+                        designColors = design.$.colors,
+                        values;
+
+                    if (svg) {
+
+                        var key,
+                            method;
+
+                        if (svg.image.hasOwnProperty("printColorIds")) {
+                            key = "printColorIds";
+                            method = "getPrintColorById";
+                        } else {
+                            key = "printColorRGBs";
+                            method = "getClosestPrintColor";
+                        }
+
+                        values = svg.image[key].split(" ");
+                        for (var i = 0; i < values.length; i++) {
+                            printColors.push(printType[method](values[i]));
+                        }
+                    } else if (designColors) {
+                            designColors.each(function (designColor) {
+                                var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"]);
+                                printColors.push(closestPrintColor);
+                                defaultPrintColors.push(closestPrintColor);
+                            });
+
+                            self.$hasDefaultColors = true;
+                            self.$defaultPrintColors = defaultPrintColors;
+
+                        }
+
+                    self.$.printColors.reset(printColors);
+                })
+                .seq(function() {
+                    var match,
+                        type,
+                        values,
+                        ret = {
+                            scale: {
+                                x: svg.image.width / design.$.size.$.width,
+                                y: svg.image.height / design.$.size.$.height
+                            }
+                        };
+
+                    var regExp = /^(\w+)\(([^(]+)\)/ig;
+                    while (match = regExp.exec(svg.image.transform)) {
+                        type = match[1];
+                        values = match[2].split(",");
+                        if (type === "rotate") {
+                            ret.rotation = parseFloat(values.shift());
+                        } else if (type === "scale") {
+                            // only flipping
+                            var scale = values;
+                            ret.scale.x *= scale[0] < 0 ? -1 : 1;
+                            ret.scale.x *= scale[1] < 0 ? -1 : 1;
+                        }
+                    }
+
+
+                    self.set(ret);
+
+                })
+                .exec(callback)
+
         }
     });
 });
