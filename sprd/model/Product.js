@@ -406,6 +406,9 @@ define([
                     .seq(function (cb) {
                         self.$.productType.fetch(null, cb);
                     })
+                    .seq(function(){
+                        self.set('appearance',self.$.productType.getAppearanceById(self.$.appearance.$.id));
+                    })
                     .seq(function (cb) {
                         flow()
                             .parEach(self.$.configurations.$items, function (configuration, cb) {
