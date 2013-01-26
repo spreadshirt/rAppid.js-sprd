@@ -63,7 +63,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
         getPrintColorsAsRGB: function () {
             var ret = [];
 
-            if(this.$.design.$.colors.size() === this.$.printColors.size()){
+            if (this.$.design.$.colors.size() === this.$.printColors.size()) {
                 // go in the direction of the layers of the design
                 for (var i = 0; i < this.$.design.$.colors.$items.length; i++) {
                     var designColor = this.$.design.$.colors.$items[i];
@@ -232,7 +232,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             data.designs = undefined;
 
-            if(data.printArea){
+            if (data.printArea) {
                 // remove printArea from payload since it is the wrong one
                 // it will be set within the initSchema methods
                 this.$$.printArea = data.printArea;
@@ -246,8 +246,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             return data;
         },
 
-        init: function(callback) {
-
+        init: function (callback) {
 
             var self = this,
                 $$ = self.$$,
@@ -255,20 +254,21 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 printType = this.$.printType,
                 printArea,
                 design;
-            if(svg){
+
+            if (svg) {
                 design = this.$context.$contextModel.$context.createEntity(Design, svg.image.designId);
             } else {
                 design = this.$.design;
             }
 
             flow()
-                .par(function(cb){
+                .par(function (cb) {
                     design.fetch(null, cb);
-                }, function(cb) {
+                }, function (cb) {
                     printType.fetch(null, cb);
                 })
-                .seq(function() {
-                    if($$.printArea){
+                .seq(function () {
+                    if ($$.printArea) {
                         printArea = self.$context.$contextModel.$.productType.getPrintAreaById($$.printArea.$.id)
                     } else {
                         printArea = self.$.printArea;
@@ -280,7 +280,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                         printArea: printArea
                     })
                 })
-                .seq(function() {
+                .seq(function () {
                     var printType = self.$.printType;
 
                     // set print colors
@@ -307,47 +307,48 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                             printColors.push(printType[method](values[i]));
                         }
                     } else if (designColors) {
-                            designColors.each(function (designColor) {
-                                var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"]);
-                                printColors.push(closestPrintColor);
-                                defaultPrintColors.push(closestPrintColor);
-                            });
+                        designColors.each(function (designColor) {
+                            var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"]);
+                            printColors.push(closestPrintColor);
+                            defaultPrintColors.push(closestPrintColor);
+                        });
 
-                            self.$hasDefaultColors = true;
-                            self.$defaultPrintColors = defaultPrintColors;
+                        self.$hasDefaultColors = true;
+                        self.$defaultPrintColors = defaultPrintColors;
 
-                        }
+                    }
 
                     self.$.printColors.reset(printColors);
                 })
-                .seq(function() {
-                    var match,
-                        type,
-                        values,
-                        ret = {
-                            scale: {
-                                x: svg.image.width / design.$.size.$.width,
-                                y: svg.image.height / design.$.size.$.height
+                .seq(function () {
+
+                    if (svg) {
+                        var match,
+                            type,
+                            values,
+                            ret = {
+                                scale: {
+                                    x: svg.image.width / design.$.size.$.width,
+                                    y: svg.image.height / design.$.size.$.height
+                                }
+                            };
+
+                        var regExp = /^(\w+)\(([^(]+)\)/ig;
+                        while (match = regExp.exec(svg.image.transform)) {
+                            type = match[1];
+                            values = match[2].split(",");
+                            if (type === "rotate") {
+                                ret.rotation = parseFloat(values.shift());
+                            } else if (type === "scale") {
+                                // only flipping
+                                var scale = values;
+                                ret.scale.x *= scale[0] < 0 ? -1 : 1;
+                                ret.scale.x *= scale[1] < 0 ? -1 : 1;
                             }
-                        };
-
-                    var regExp = /^(\w+)\(([^(]+)\)/ig;
-                    while (match = regExp.exec(svg.image.transform)) {
-                        type = match[1];
-                        values = match[2].split(",");
-                        if (type === "rotate") {
-                            ret.rotation = parseFloat(values.shift());
-                        } else if (type === "scale") {
-                            // only flipping
-                            var scale = values;
-                            ret.scale.x *= scale[0] < 0 ? -1 : 1;
-                            ret.scale.x *= scale[1] < 0 ? -1 : 1;
                         }
+
+                        self.set(ret);
                     }
-
-
-                    self.set(ret);
-
                 })
                 .exec(callback)
 
