@@ -53,9 +53,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         _commitChangedAttributes: function ($) {
-            if(this.$entityInitialized){
-                this._validateTransform($);
-            }
+            this._validateTransform($);
             this.callBase();
         },
 
