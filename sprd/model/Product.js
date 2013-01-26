@@ -340,10 +340,109 @@ define([
                     .seq(function(cb){
                         this.vars.designConfiguration.init(cb);
                     })
+                    .seq(function () {
+                        // determinate position
+                        self._positionConfiguration(this.vars["designConfiguration"]);
+                    })
                     .exec(function (err, results) {
-                        self._addConfiguration(results.designConfiguration);
+                        !err && self._addConfiguration(results.designConfiguration);
                         callback && callback(err, results.designConfiguration);
                     })
+
+            },
+
+            _positionConfiguration: function(configuration) {
+
+                var printArea = configuration.$.printArea,
+                    printAreaWidth = printArea.get("boundary.size.width"),
+                    printAreaHeight = printArea.get("boundary.size.height"),
+                    defaultBox = printArea.$.defaultBox || {
+                        x: 0,
+                        y: 0,
+                        width: printAreaWidth,
+                        height: printAreaHeight
+                    },
+                    boundingBox,
+                    defaultBoxCenterX = defaultBox.x + defaultBox.width / 2,
+                    defaultBoxCenterY = defaultBox.y + defaultBox.height / 2,
+                    offset = configuration.$.offset.clone(),
+                    newScale;
+
+                boundingBox = configuration._getBoundingBox();
+
+                // position centered within defaultBox
+                offset.set({
+                    x: defaultBoxCenterX - boundingBox.width / 2,
+                    y: defaultBox.y
+                });
+
+                if (offset.$.x < 0 || offset.$.x + boundingBox.width > printAreaWidth) {
+
+                    // hard boundary error
+                    var maxPossibleWidthToHardBoundary = Math.min(defaultBoxCenterX, printAreaWidth - defaultBoxCenterX) * 2;
+
+                    // scale to avoid hard boundary error
+                    var scaleToAvoidCollision = maxPossibleWidthToHardBoundary / boundingBox.width;
+
+                    // scale to fit into default box
+                    var scaleToFixDefaultBox = defaultBox.width / boundingBox.width;
+
+                    // TODO: first use scaleToFixDefaultBox and use scaleToAvoidCollission only if
+                    // scaleToFitDefaultBox is not possible for print type
+
+                    newScale = scaleToFixDefaultBox; // scaleToFixDefaultBox;
+
+                    configuration.set("scale", {
+                        x: newScale,
+                        y: newScale
+                    });
+
+                    boundingBox = configuration._getBoundingBox();
+
+                    // position centered within defaultBox
+                    offset.set({
+                        x: defaultBoxCenterX - boundingBox.width / 2,
+                        y: defaultBox.y
+                    });
+                }
+
+                if (boundingBox.height > printAreaHeight) {
+                    // y-scale needed to fit print area
+
+                    // calculate maxScale to fix height
+                    var maxScaleToFitPrintArea = configuration.$.scale.y * printAreaHeight / boundingBox.height;
+                    var maxScaleToFitDefaultBox = configuration.$.scale.y * defaultBox.height / boundingBox.height;
+
+                    // TODO: try the two different scales, prefer defaultBox and fallback to printArea if size to small
+                    newScale = maxScaleToFitPrintArea;
+
+                    configuration.set("scale", {
+                        x: newScale,
+                        y: newScale
+                    });
+
+                    boundingBox = configuration._getBoundingBox();
+
+                    // position centered within defaultBox
+                    offset.set({
+                        x: defaultBoxCenterX - boundingBox.width / 2,
+                        y: defaultBoxCenterY - boundingBox.height / 2
+                    });
+
+                }
+
+                if (offset.$.y < 0 || offset.$.y + boundingBox.height > printAreaHeight) {
+                    // hard boundary error
+
+                    // center in print area
+                    offset.set({
+                        y: printAreaHeight / 2 - boundingBox.height / 2
+                    });
+                }
+
+                configuration.set({
+                    offset: offset
+                });
 
             },
 
