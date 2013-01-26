@@ -401,15 +401,26 @@ define([
 
             init: function (callback) {
                 var self = this;
+
                 flow()
                     .seq(function (cb) {
-                        self.fetch(null, cb);
+                        if (self.isNew()) {
+                            cb();
+                        } else {
+                            self.fetch(null, cb);
+                        }
                     })
                     .seq(function (cb) {
-                        self.$.productType.fetch(null, cb);
+                        var productType = self.$.productType;
+                        productType.fetch(null, cb);
                     })
                     .seq(function(){
-                        self.set('appearance',self.$.productType.getAppearanceById(self.$.appearance.$.id));
+                        var productType = self.$.productType;
+
+                        self.set({
+                            appearance: productType.getAppearanceById(self.$.appearance.$.id),
+                            view: productType.getViewById(self.get("defaultValues.defaultView.id")) || productType.getDefaultView()
+                        });
                     })
                     .seq(function (cb) {
                         flow()
@@ -418,7 +429,13 @@ define([
                             })
                             .exec(cb);
                     })
-                    .exec(callback);
+                    .exec(function(err) {
+                        if (err) {
+                            callback && callback(err);
+                        } else {
+                            callback && callback(null, self);
+                        }
+                    });
             }
 
         });
