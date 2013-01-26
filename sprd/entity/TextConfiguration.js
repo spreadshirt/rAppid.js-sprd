@@ -5,6 +5,10 @@ define(['sprd/entity/Configuration'], function (Configuration) {
             font: null,
             fontSize: 48,
             typeFace: "regular"
+        },
+
+        init: function(callback) {
+            callback && callback("Textconfigurations aren't supported yet");
         }
 	});
 });
