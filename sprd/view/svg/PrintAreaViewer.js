@@ -34,7 +34,6 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
                 }));
             }
 
-
             var border = this.createComponent(SvgElement, {
                 tagName: "rect",
                 componentClass: "print-area-border",
@@ -42,7 +41,21 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
                 height: this.get('_viewMap.printArea.boundary.size.height')
             });
 
+            var defaultBox = this.get("_viewMap.printArea.defaultBox");
+            if (defaultBox) {
+                defaultBox = this.createComponent(SvgElement, {
+                    tagName: "rect",
+                    componentClass: "print-area-default-box",
+                    x: defaultBox.x,
+                    y: defaultBox.y,
+                    width: defaultBox.width,
+                    height: defaultBox.height
+                });
+            }
+
             this.addChild(border);
+
+            defaultBox && this.addChild(defaultBox);
 
             this.callBase();
         },
@@ -56,11 +69,11 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
             this.callBase();
         },
 
-        _onConfigurationsReset: function(e){
+        _onConfigurationsReset: function (e) {
             var self = this;
 
             this._removeConfigurationViewer();
-            if(this.$.product && this.$.product.$.configurations){
+            if (this.$.product && this.$.product.$.configurations) {
                 this.$.product.$.configurations.each(function (configuration) {
                     self._addConfiguration(configuration);
                 });
@@ -102,7 +115,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
             }
         },
 
-        _renderProduct: function(product, oldProduct){
+        _renderProduct: function (product, oldProduct) {
 
             if (oldProduct) {
                 this._removeConfigurationViewer();
@@ -130,7 +143,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
             }
         },
 
-        _removeConfigurationViewer: function() {
+        _removeConfigurationViewer: function () {
             for (var key in this.$configurationViewerCache) {
                 if (this.$configurationViewerCache.hasOwnProperty(key)) {
                     var viewer = this.$configurationViewerCache[key];
