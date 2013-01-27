@@ -210,18 +210,106 @@ define([
                                 targetPrintArea = targetView.getDefaultPrintArea();
                             }
 
-                            if (targetPrintArea) {
+                            if (targetPrintArea && configuration.isAllowedOnPrintArea(targetPrintArea)) {
                                 configuration.set('printArea', targetPrintArea);
 
-                                var factor = targetPrintArea.get("boundary.size.width") / currentPrintArea.get("boundary.size.width");
-                                configuration.set('scale', {
-                                    x: configuration.$.scale.x * factor,
-                                    y: configuration.$.scale.y * factor
-                                });
-                                configuration.$.offset.set({
-                                    x: configuration.$.offset.$.x * factor,
-                                    y: configuration.$.offset.$.y * factor
-                                });
+                                var currentPrintAreaWidth = currentPrintArea.get("boundary.size.width");
+                                var currentPrintAreaHeight = currentPrintArea.get("boundary.size.height");
+                                var targetPrintAreaWidth = targetPrintArea.get("boundary.size.width");
+                                var targetPrintAreaHeight = targetPrintArea.get("boundary.size.height");
+
+                                var preferredPrintType = null;
+                                var preferredScale;
+                                var preferredOffset;
+
+                                var currentConfigurationWidth = configuration.width();
+                                var currentConfigurationHeight = configuration.height();
+
+                                // find new print type
+                                var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(targetPrintArea, appearance.$.id);
+                                var printType = configuration.$.printType;
+
+                                var center = {
+                                    x: configuration.$.offset.$.x + currentConfigurationWidth / 2,
+                                    y: configuration.$.offset.$.y + currentConfigurationHeight / 2
+                                };
+
+                                if (printType && !_.contains(possiblePrintTypes, printType)) {
+                                    // print type not possible any more
+                                    printType = null;
+                                }
+
+                                if (printType) {
+                                    var index = _.indexOf(possiblePrintTypes, printType);
+                                    if (index >= 0) {
+                                        // remove print type from original position
+                                        possiblePrintTypes.splice(index, 1);
+                                    }
+
+                                    // and add it to first position
+                                    possiblePrintTypes.unshift(printType);
+                                }
+
+                                var optimalScale = Math.min(
+                                    targetPrintAreaWidth / currentPrintAreaWidth,
+                                    targetPrintAreaHeight / currentPrintAreaHeight
+                                ) * Math.abs(configuration.$.scale.x);
+
+                                var allowScale = configuration.allowScale();
+
+                                for (var j = 0; j < possiblePrintTypes.length; j++) {
+                                    printType = possiblePrintTypes[j];
+
+                                    var factor = optimalScale;
+                                    var minimumScale = optimalScale;
+
+                                    if (printType.isEnlargeable()) {
+                                        minimumScale = configuration.minimumScale();
+                                    }
+
+                                    var configurationPrintTypeSize = configuration.getSizeForPrintType(printType);
+
+                                    var maximumScale = Math.min(
+                                        printType.get("size.width") / configurationPrintTypeSize.$.width,
+                                        printType.get("size.height") / configurationPrintTypeSize.$.height);
+
+                                    if (!allowScale && (maximumScale < 1 || minimumScale > 1)) {
+                                        continue;
+                                    }
+                                    if (minimumScale > maximumScale) {
+                                        continue;
+                                    }
+
+                                    factor = Math.max(factor, minimumScale);
+                                    factor = Math.min(factor, maximumScale);
+
+                                    preferredScale = {
+                                        x: factor,
+                                        y: factor
+                                    };
+
+                                    preferredPrintType = printType;
+                                    break;
+                                }
+
+                                if (preferredPrintType) {
+
+                                    configuration.set({
+                                        printType: preferredPrintType,
+                                        scale: preferredScale
+                                    });
+
+                                    preferredOffset = {
+                                        x: targetPrintAreaWidth * center.x / currentPrintAreaWidth - configuration.width() / 2,
+                                        y: targetPrintAreaHeight * center.y / currentPrintAreaHeight - configuration.height() / 2
+                                    };
+
+                                    configuration.$.offset.set(preferredOffset);
+
+                                } else {
+                                    // remove configuration
+                                    removeConfigurations.push(configuration);
+                                }
 
                             } else {
                                 // no print area found, remove configuration
@@ -341,7 +429,7 @@ define([
                         });
                         return entity;
                     })
-                    .seq(function(cb){
+                    .seq(function (cb) {
                         this.vars.designConfiguration.init(cb);
                     })
                     .seq(function () {
@@ -355,7 +443,7 @@ define([
 
             },
 
-            _positionConfiguration: function(configuration) {
+            _positionConfiguration: function (configuration) {
 
                 var printArea = configuration.$.printArea,
                     printAreaWidth = printArea.get("boundary.size.width"),
@@ -517,7 +605,7 @@ define([
                         var productType = self.$.productType;
                         productType.fetch(null, cb);
                     })
-                    .seq(function(){
+                    .seq(function () {
                         var productType = self.$.productType;
 
                         self.set({
@@ -532,7 +620,7 @@ define([
                             })
                             .exec(cb);
                     })
-                    .exec(function(err) {
+                    .exec(function (err) {
                         if (err) {
                             callback && callback(err);
                         } else {

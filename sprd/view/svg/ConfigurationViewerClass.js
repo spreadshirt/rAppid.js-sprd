@@ -183,22 +183,29 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             _offsetChanged: function() {
-                if (this.$.configuration) {
-                    this.$.configuration._validateTransform({
-                        offset: this.$._offset
-                    });
+                var configuration = this.$.configuration;
+                if (configuration) {
+                    configuration._setError(configuration._validateTransform({
+                        offset: this.$._offset,
+                        scale: this.$._scale,
+                        rotation: this.$._rotation
+                    }));
                 }
             },
 
             _commitChangedAttributes: function($) {
-
                 this.callBase();
 
-                if (validateConfigurationOnTransform && this.$.configuration && this._hasSome($, ["_scale", "_rotation"])) {
-                    this.$.configuration._validateTransform({
+                var configuration = this.$.configuration;
+
+                if (validateConfigurationOnTransform && configuration && this._hasSome($, ["_scale", "_rotation"])) {
+
+                    // TODO: validate within invalidation interval
+                    configuration._setError(configuration._validateTransform({
                         scale: $._scale || this.$.scale,
-                        rotation: $._rotation || this.$.rotation
-                    });
+                        rotation: $._rotation || this.$.rotation,
+                        offset: this.$._offset
+                    }));
                 }
 
             },

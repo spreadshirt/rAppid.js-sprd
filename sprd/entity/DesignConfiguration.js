@@ -17,7 +17,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             design: null,
 
-            _designCommission: "{design.price}"
+            _designCommission: "{design.price}",
+            _allowScale: "{design.restrictions.allowScale}"
         },
 
         ctor: function () {
@@ -112,8 +113,12 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
         },
 
         size: function () {
-            if (this.$.design && this.$.design.$.size && this.$.printType && this.$.printType.$.dpi) {
-                var dpi = this.$.printType.$.dpi;
+            return this.getSizeForPrintType(this.$.printType);
+        }.onChange("_dpi", "design"),
+
+        getSizeForPrintType: function(printType) {
+            if (this.$.design && this.$.design.$.size && printType && printType.$.dpi) {
+                var dpi = printType.$.dpi;
                 if (!this.$sizeCache[dpi]) {
                     this.$sizeCache[dpi] = UnitUtil.convertSizeToMm(this.$.design.$.size, dpi);
                 }
@@ -122,21 +127,27 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             }
 
             return Size.empty;
-        }.onChange("_dpi", "design"),
+        },
 
         // TODO: add onchange for design.restriction.allowScale
         isScalable: function () {
-            return this.get("printType.isScalable()") && this.get("design.restrictions.allowScale");
-        }.onChange("printType"),
+            return this.get("printType.isScalable()") && this.$._allowScale;
+        }.onChange("printType", "_allowScale"),
+
+        allowScale: function() {
+            return this.$._allowScale;
+        },
 
         _validatePrintTypeSize: function (printType, width, height, scale) {
-            this.callBase();
+            var ret = this.callBase();
 
             if (!printType || !scale) {
-                return;
+                return ret;
             }
 
-            this._setError("minBounds", !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale")));
+            ret.minBounds = !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale"));
+
+            return ret;
 
         },
 
@@ -352,6 +363,18 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 })
                 .exec(callback)
 
+        },
+
+        isAllowedOnPrintArea: function (printArea) {
+            return printArea && printArea.get("restrictions.designAllowed") == true;
+        },
+
+        getPossiblePrintTypesForPrintArea: function(printArea, appearanceId) {
+            return ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(this.$.design, printArea, appearanceId);
+        },
+
+        minimumScale: function() {
+            return (this.get("design.restrictions.minimumScale") || 100 ) / 100;
         }
     });
 });

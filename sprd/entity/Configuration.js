@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil","sprd/entity/PrintTypeColor"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _) {
 
     var undefined;
 
@@ -33,27 +33,27 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             _printTypePrice: "{printType.price}"
         },
 
-        ctor: function(){
+        ctor: function () {
             this.callBase();
 
-            function triggerConfigurationChanged(e){
+            function triggerConfigurationChanged(e) {
                 this.trigger('configurationChanged');
             }
 
 
-            this.bind('change:offset',function(e){
-                if(e.$ && !e.$.isDeepEqual(this.$previousAttributes["offset"])){
+            this.bind('change:offset', function (e) {
+                if (e.$ && !e.$.isDeepEqual(this.$previousAttributes["offset"])) {
                     this.trigger('configurationChanged');
                 }
             }, this);
-            this.bind('change:scale',triggerConfigurationChanged, this);
-            this.bind('change:rotation',triggerConfigurationChanged, this);
-            this.bind('change:printArea',triggerConfigurationChanged, this);
-            this.bind('change:printColors',triggerConfigurationChanged, this);
+            this.bind('change:scale', triggerConfigurationChanged, this);
+            this.bind('change:rotation', triggerConfigurationChanged, this);
+            this.bind('change:printArea', triggerConfigurationChanged, this);
+            this.bind('change:printColors', triggerConfigurationChanged, this);
         },
 
         _commitChangedAttributes: function ($) {
-            this._validateTransform($);
+            this._setError(this._validateTransform($));
             this.callBase();
         },
 
@@ -63,34 +63,43 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale", "offset"]),
                 printTypeChanged = this._hasSome($, ["printType"]),
                 width, height,
+                printType = $.printType || this.$.printType,
                 scale = $.scale || this.$.scale,
-                rotation = $.rotation || this.$.rotation;
+                rotation = $.rotation || this.$.rotation,
+                ret = {};
 
             if (sizeChanged || rotationChanged) {
                 width = this.width(scale.x);
                 height = this.height(scale.y);
-                this._setError("hardBoundary", this._hasHardBoundaryError($.offset || this.$.offset, width, height, rotation, scale));
+
+                ret.hardBoundary = this._hasHardBoundaryError($.offset || this.$.offset, width, height, rotation, scale);
             }
 
             if (sizeChanged || printTypeChanged) {
                 width = width || this.width();
                 height = height || this.height();
-
-                this._validatePrintTypeSize(this.$.printType, width, height, scale);
+                _.extend(ret, this._validatePrintTypeSize(printType, width, height, scale));
             }
+
+            if (!this.isValid(ret)) {
+                console.log(ret);
+            }
+
+            return ret;
 
         },
 
         _validatePrintTypeSize: function (printType, width, height, scale) {
             if (!printType) {
-                return;
+                return {};
             }
 
-            this._setError({
+            return {
                 printTypeScaling: !printType.isScalable() && (scale.x != 1 || scale.y != 1),
                 printTypeEnlarged: printType.isShrinkable() && Math.min(scale.x, scale.y) > 1,
                 maxBounds: width > printType.get("size.width") || height > printType.get("size.height")
-            });
+            };
+
         },
 
         _hasHardBoundaryError: function (offset, width, height, rotation, scale) {
@@ -101,7 +110,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 return;
             }
 
-            var boundingBox = this._getBoundingBox(offset,width,height, rotation);
+            var boundingBox = this._getBoundingBox(offset, width, height, rotation);
 
             return !(boundingBox.x >= 0 && boundingBox.y >= 0 &&
                 (boundingBox.x + boundingBox.width) <= printArea.get("boundary.size.width") &&
@@ -109,7 +118,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         },
 
-        _getBoundingBox: function(offset, width, height, rotation) {
+        _getBoundingBox: function (offset, width, height, rotation) {
 
             offset = offset || this.$.offset;
             width = width || this.width();
@@ -135,7 +144,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 matrix = new Matrix2d().rotateDeg(rotation);
 
             var halfW = width / 2,
-                halfH = height /2;
+                halfH = height / 2;
 
             var points = [
                 [-halfW, -halfH],
@@ -205,7 +214,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return this.get('_printTypePrice').clone() || new Price();
         },
 
-        possiblePrintTypes: function(appearance) {
+        possiblePrintTypes: function (appearance) {
             var ret = [],
                 printArea = this.$.printArea;
 
@@ -214,6 +223,22 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
             return ret;
-        }.onChange("printArea")
+        }.onChange("printArea"),
+
+        isAllowedOnPrintArea: function (printArea) {
+            return false;
+        },
+
+        getPossiblePrintTypesForPrintArea: function () {
+            return [];
+        },
+
+        allowScale: function () {
+            return true
+        },
+
+        minimumScale: function () {
+            return 0
+        }
     });
 });
