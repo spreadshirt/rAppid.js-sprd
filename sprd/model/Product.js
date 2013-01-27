@@ -308,6 +308,10 @@ define([
                             throw new Error("target PrintArea couldn't be found.");
                         }
 
+                        if (printArea.get("restrictions.designAllowed") == false) {
+                            throw new Error("designs cannot be added to this print area");
+                        }
+
                         return printArea;
                     })
                     .seq("printType", function () {
