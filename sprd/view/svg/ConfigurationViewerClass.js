@@ -9,7 +9,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
         var validateConfigurationOnTransform = true,
             rotationSnippingAngle = 45,
             rotationSnippingThreshold = 5,
-            rotateSnippingEnabled = true;
+            rotateSnippingEnabled = true,
+            enableGestures = false;
 
         return SvgElement.inherit({
 
@@ -214,6 +215,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 if (!this.runsInBrowser()) {
+                    return;
+                }
+
+                if (mode === GESTURE && !enableGestures) {
                     return;
                 }
 
