@@ -21,17 +21,32 @@
                   x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}" y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
+        <svg:use visible="{isScalable()}"
+                 href="sprd/css/library.svg#scale" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
+                 translateX="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}" translateY="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
+                 style="pointer-events: none"/>
 
         <svg:rect cid="_rotateHandle" class="configuration-handle rotate"
                   visible="{isRotatable()}"
                   x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}" y="{pixelToViewBox(_handle-Offset)}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
+        <svg:use visible="{isRotatable()}"
+                 href="sprd/css/library.svg#rotate" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
+                 translateX="{_rotateHandle.x}" translateY="{_rotateHandle.y}"
+                 style="pointer-events: none"/>
+
+
         <svg:rect cid="_deleteHandle" class="configuration-handle delete"
                   visible="{isRemovable()}"
                   onclick="deleteConfiguration"
                   x="{pixelToViewBox(_handle-Offset)}" y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
+
+        <svg:use visible="{isRemovable()}"
+                 href="sprd/css/library.svg#remove" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
+                 translateX="{_deleteHandle.x}" translateY="{_deleteHandle.y}"
+                 style="pointer-events: none"/>
 
     </svg:g>
 

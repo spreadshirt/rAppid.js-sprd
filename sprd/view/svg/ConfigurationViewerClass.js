@@ -575,6 +575,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return pixel * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
+            scaleIconToViewBox: function() {
+                return 0.1 * this.$._globalToLocalFactor["x"];
+            }.onChange("_globalToLocalFactor"),
+
             deleteConfiguration: function () {
                 if (this.$.product) {
                     var configuration = this.$.configuration,
