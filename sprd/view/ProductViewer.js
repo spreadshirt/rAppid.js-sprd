@@ -43,18 +43,63 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 if (this.runsInBrowser() && this.$.editable) {
                     var window = this.dom(this.$stage.$window),
                         self = this;
-                    window.bindDomEvent("keyup", function(e) {
+
+                    // TODO: surround product viewer with div and set tabindex="1" on the div, so
+                    // it can get a focus: then bind key events directly to product viewer
+                    window.bindDomEvent("keydown", function(e) {
                         var product = self.$.product;
 
-                        if (e.keyCode === 46 && self.$.selectedConfiguration && product &&
-                            (e.target.localName != "input" && e.target.localName != "textarea")) {
-                            // backspace || delete --> remove selected configuration
+                        var selectedConfiguration = self.$.selectedConfiguration;
 
-                            product.$.configurations.remove(self.$.selectedConfiguration);
-                            self.set('selectedConfiguration', null);
+                        if (selectedConfiguration && product) {
 
-                            e.preventDefault();
+                            var deltaX = 0,
+                                deltaY = 0;
+
+                            switch (e.keyCode) {
+                                case 40:
+                                    deltaY = 1;
+                                    break;
+                                case 38:
+                                    deltaY = -1;
+                                    break;
+                                case 37:
+                                    deltaX = -1;
+                                    break;
+                                case 39:
+                                    deltaX = 1;
+                            }
+
+                            if (deltaX || deltaY) {
+
+                                if (e.shiftKey) {
+                                    deltaX *= 10;
+                                    deltaY *= 10;
+                                }
+
+                                var offset = selectedConfiguration.$.offset;
+                                offset.set({
+                                    x: offset.$.x + deltaX,
+                                    y: offset.$.y + deltaY
+                                });
+                                selectedConfiguration.set('offset', offset);
+
+                                e.preventDefault();
+                            }
+
+
+                            if (e.keyCode === 46 &&
+                                (e.target.localName != "input" && e.target.localName != "textarea")) {
+                                // backspace || delete --> remove selected configuration
+
+                                product.$.configurations.remove(selectedConfiguration);
+                                self.set('selectedConfiguration', null);
+
+                                e.preventDefault();
+                            }
                         }
+
+
                     });
                 }
 
