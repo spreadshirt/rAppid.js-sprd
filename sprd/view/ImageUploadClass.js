@@ -31,8 +31,14 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
             },
 
             dragEnter: function () {
-                this.addClass('drag-over');
+                if (this.$.enabled) {
+                    this.addClass('drag-over');
+                }
                 return false;
+            },
+
+            _commitEnabled: function(enabled){
+                this.set('displayNotice',enabled);
             },
 
             dragOver: function (e) {
@@ -41,23 +47,25 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
             },
 
             dragExit: function () {
-                this.removeClass('drag-over');
+                if (this.$.enabled) {
+                    this.removeClass('drag-over');
+                }
                 return false;
             },
 
             dropImage: function (e) {
+                if(this.$.enabled){
+                    this.removeClass('drag-over');
+                    if (e && e.$) {
+                        e = e.$;
 
-                this.removeClass('drag-over');
-                if (e && e.$) {
-                    e = e.$;
-
-                    if (e.dataTransfer && e.dataTransfer.files.length) {
-                        for (var i = 0; i < e.dataTransfer.files.length; i++) {
-                            this._addAndUploadFile(e.dataTransfer.files[i]);
+                        if (e.dataTransfer && e.dataTransfer.files.length) {
+                            for (var i = 0; i < e.dataTransfer.files.length; i++) {
+                                this._addAndUploadFile(e.dataTransfer.files[i]);
+                            }
                         }
                     }
                 }
-
                 e.preventDefault();
                 e.stopPropagation();
                 return false;
