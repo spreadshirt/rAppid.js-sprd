@@ -81,10 +81,6 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 _.extend(ret, this._validatePrintTypeSize(printType, width, height, scale));
             }
 
-            if (!this.isValid(ret)) {
-                console.log(ret);
-            }
-
             return ret;
 
         },
