@@ -46,8 +46,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                     window.bindDomEvent("keyup", function(e) {
                         var product = self.$.product;
 
-                        if ((e.keyCode === 8 || e.keyCode === 46) &&
-                            self.$.selectedConfiguration && product &&
+                        if (e.keyCode === 46 && self.$.selectedConfiguration && product &&
                             (e.target.localName != "input" && e.target.localName != "textarea")) {
                             // backspace || delete --> remove selected configuration
 
