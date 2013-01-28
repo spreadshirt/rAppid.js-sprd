@@ -221,6 +221,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 ret.content.svg.image.printColorRGBs = printColorRGBs.join(" ");
             }
 
+            ret.printColors = undefined;
+
             ret.restrictions = {
                 changeable: true
             };
