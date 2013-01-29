@@ -19,7 +19,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 _view: null,
                 selectedConfiguration: null,
 
-                componentClass: "product-viewer",
+                componentClass: "product-viewer {product.appearanceBrightness()}",
 
                 editable: true
             },

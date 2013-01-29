@@ -4,9 +4,13 @@ rect {
 
 .print-area-border {
     stroke-width: 1;
-    stroke: #333;
+    stroke: white;
     vector-effect: non-scaling-stroke;
     shape-rendering: crispEdges;
+}
+
+.bright .print-area-border {
+    stroke : black;
 }
 
 .configuration-handle {
@@ -23,7 +27,7 @@ rect {
     vector-effect: non-scaling-stroke;
 }
 
-.configuration-viewer.bright .configuration-boundary {
+.bright .configuration-boundary {
     stroke: black;
 }
 

@@ -627,7 +627,19 @@ define([
                             callback && callback(null, self);
                         }
                     });
-            }
+            },
+
+            appearanceBrightness: function () {
+
+                var color = this.get("appearance.getMainColor()");
+
+                if (color) {
+                    return color.distanceTo("#000000") < color.distanceTo("#FFFFFF") ?
+                        "dark" : "bright";
+                }
+
+                return "";
+            }.onChange(["appearance"])
 
         });
     });

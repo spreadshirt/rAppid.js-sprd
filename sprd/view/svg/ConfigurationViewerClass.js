@@ -16,7 +16,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             defaults: {
                 tagName: 'g',
-                componentClass: 'configuration-viewer {appearanceBrightness()}',
+                componentClass: 'configuration-viewer',
                 configuration: null,
 
                 translateX: "{_offset.x}",
@@ -643,17 +643,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return this.$._mode === ROTATE;
             }.onChange("_mode"),
 
-            appearanceBrightness: function() {
-
-                var color = this.get("product.appearance.getMainColor()");
-
-                if (color) {
-                    return color.distanceTo("#000000") < color.distanceTo("#FFFFFF") ?
-                        "dark" : "bright";
-                }
-
-                return "";
-            }.on(["product", "change:appearance"])
 
         });
     })
