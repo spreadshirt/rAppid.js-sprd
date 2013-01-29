@@ -8,7 +8,7 @@
 
                         notice="Drop your files here.">
 
-    <div class="upload-notice" visible="{displayNotice}">{notice}</div>
+    <div class="upload-notice" visible="{displayNotice()}">{notice}</div>
 
     <js:Content name="list">
         <ui:ListView tagName="ul" items="{items}">

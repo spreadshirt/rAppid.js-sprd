@@ -37,9 +37,9 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 return false;
             },
 
-            _commitEnabled: function(enabled){
-                this.set('displayNotice',enabled);
-            },
+            displayNotice: function() {
+                return this.$.enabled && this.$.displayNotice;
+            }.onChange("displayNotice", "enabled"),
 
             dragOver: function (e) {
                 e.preventDefault();
