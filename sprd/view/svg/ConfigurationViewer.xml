@@ -12,7 +12,7 @@
 
     <svg:g translateX="{flipOffsetX()}" translateY="{flipOffsetY()}">
         <svg:rect class="configuration-boundary"
-                  visible="{isSelectedConfiguration()}"
+                  visible="{isSelectedConfigurationOrConfigurationHasError()}"
                   x="0" y="0"
                   width="{_configurationWidth}" height="{_configurationHeight}"/>
 

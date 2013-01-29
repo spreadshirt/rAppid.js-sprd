@@ -627,6 +627,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this.get('productViewer.editable') === true && this.get("productViewer.selectedConfiguration") === this.$.configuration
             }.on(["productViewer", "change:selectedConfiguration"]),
 
+            isSelectedConfigurationOrConfigurationHasError: function () {
+                return this.$.configuration !== null &&
+                    (this.get('productViewer.editable') === true &&
+                        this.get("productViewer.selectedConfiguration") === this.$.configuration)
+                    ||
+                    (!this.$.configuration.isValid())
+            }.on(["productViewer", "change:selectedConfiguration"], ["configuration", "isValidChanged"]),
+
             isScalable: function () {
                 return this.isSelectedConfiguration() && this.get("configuration.isScalable()");
             }.on(["productViewer", "change:selectedConfiguration"]),
