@@ -37,7 +37,7 @@
                 },
                 imageUrl: function () {
                     return this.$.src;
-                },
+                }.onChange('src'),
                 _renderLoaded: function (loaded) {
                     if (loaded) {
                         this.removeClass('loading');
