@@ -485,7 +485,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var configuration = this.$.configuration;
                 if (configuration) {
                     if (mode === MOVE) {
-                        if(configuration.$.offset && !configuration.$.offset.isDeepEqual(this.$._offset)){
+                        if(configuration.$.offset && configuration.$.offset !== this.$._offset){
                             configuration.set('offset', this.$._offset);
                         }
                     } else if (mode === SCALE) {
@@ -573,6 +573,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             pixelToViewBox: function(pixel) {
                 return pixel * this.$._globalToLocalFactor["x"];
+            }.onChange("_globalToLocalFactor"),
+
+            scaleIconToViewBox: function() {
+                return 0.1 * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
             deleteConfiguration: function () {
