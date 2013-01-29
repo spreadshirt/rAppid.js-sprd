@@ -19,9 +19,7 @@ define(['sprd/view/svg/ConfigurationRenderer', "sprd/data/ImageService"], functi
                     height: this.$._height
                 };
 
-                if (!this.$.configuration.hasDefaultColors()) {
-                    options.printColors =  this.$.configuration.getPrintColorsAsRGB();
-                }
+                options.printColors =  this.$.configuration.getPrintColorsAsRGB();
 
                 return this.$.imageService.designImage(this.$.configuration.$.design.$.id, options);
             }
