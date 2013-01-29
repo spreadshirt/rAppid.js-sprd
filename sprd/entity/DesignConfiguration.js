@@ -337,13 +337,16 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 .seq(function () {
 
                     if (svg) {
+
+                        var size = UnitUtil.convertSizeToMm(design.$.size, self.$.printType.$.dpi);
+
                         var match,
                             type,
                             values,
                             ret = {
                                 scale: {
-                                    x: svg.image.width / design.$.size.$.width,
-                                    y: svg.image.height / design.$.size.$.height
+                                    x: svg.image.width / size.$.width,
+                                    y: svg.image.height / size.$.height
                                 }
                             };
 
