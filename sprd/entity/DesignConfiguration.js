@@ -106,7 +106,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             return this.getSizeForPrintType(this.$.printType);
         }.onChange("_dpi", "design"),
 
-        getSizeForPrintType: function(printType) {
+        getSizeForPrintType: function (printType) {
             if (this.$.design && this.$.design.$.size && printType && printType.$.dpi) {
                 var dpi = printType.$.dpi;
                 if (!this.$sizeCache[dpi]) {
@@ -124,7 +124,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             return this.get("printType.isScalable()") && this.$._allowScale;
         }.onChange("printType", "_allowScale"),
 
-        allowScale: function() {
+        allowScale: function () {
             return this.$._allowScale;
         },
 
@@ -153,7 +153,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             });
 
             for (var i = 0; i < usedPrintColors.length; i++) {
-                if(usedPrintColors[i]){
+                if (usedPrintColors[i]) {
                     price.add((usedPrintColors[i]).get("price"));
                 }
             }
@@ -291,8 +291,12 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                     // set print colors
                     var printColors = [],
                         defaultPrintColors = [],
+                        designColorsRGBs = self.$.designColorRGBs,
+                        designColorIds = self.$.designColorIds,
                         designColors = design.$.colors,
-                        values;
+                        values, i,
+                        colorsSet = false,
+                        printColor;
 
                     if (svg) {
 
@@ -307,13 +311,40 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                             method = "getClosestPrintColor";
                         }
 
-                        if(svg.image[key]){
+                        if (svg.image[key]) {
                             values = svg.image[key].split(" ");
-                            for (var i = 0; i < values.length; i++) {
+                            for (i = 0; i < values.length; i++) {
                                 printColors.push(printType[method](values[i]));
                             }
+
+                            colorsSet = true;
                         }
-                    } else if (designColors) {
+                    } else if (designColorIds && designColorIds.length) {
+
+                        colorsSet = true;
+
+                        for (i = 0; i < designColorIds.length; i++) {
+                            printColor = printType.getPrintColorById(designColorIds[i]);
+                            printColors.push(printColor);
+                            if (!printColor) {
+                                colorsSet = false;
+                            }
+                        }
+                    } else if (designColorsRGBs && designColorsRGBs.length) {
+                        colorsSet = true;
+
+                        for (i = 0; i < designColorsRGBs.length; i++) {
+                            printColor = printType.getClosestPrintColor(designColorsRGBs[i]);
+                            printColors.push(printColor);
+                            if (!printColor) {
+                                colorsSet = false;
+                            }
+                        }
+                    }
+
+                    if (!colorsSet && designColors) {
+                        printColors = [];
+
                         designColors.each(function (designColor) {
                             var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"]);
                             printColors.push(closestPrintColor);
@@ -321,7 +352,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                         });
 
                         self.$defaultPrintColors = defaultPrintColors;
-
                     }
 
                     self.$.printColors.reset(printColors);
@@ -367,11 +397,11 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             return printArea && printArea.get("restrictions.designAllowed") == true;
         },
 
-        getPossiblePrintTypesForPrintArea: function(printArea, appearanceId) {
+        getPossiblePrintTypesForPrintArea: function (printArea, appearanceId) {
             return ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(this.$.design, printArea, appearanceId);
         },
 
-        minimumScale: function() {
+        minimumScale: function () {
             return (this.get("design.restrictions.minimumScale") || 100 ) / 100;
         }
     });
