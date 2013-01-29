@@ -160,7 +160,9 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             });
 
             for (var i = 0; i < usedPrintColors.length; i++) {
-                price.add((usedPrintColors[i]).get("price"));
+                if(usedPrintColors[i]){
+                    price.add((usedPrintColors[i]).get("price"));
+                }
             }
 
             price.add(this.get('_designCommission'));
@@ -312,9 +314,11 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                             method = "getClosestPrintColor";
                         }
 
-                        values = svg.image[key].split(" ");
-                        for (var i = 0; i < values.length; i++) {
-                            printColors.push(printType[method](values[i]));
+                        if(svg.image[key]){
+                            values = svg.image[key].split(" ");
+                            for (var i = 0; i < values.length; i++) {
+                                printColors.push(printType[method](values[i]));
+                            }
                         }
                     } else if (designColors) {
                         designColors.each(function (designColor) {
