@@ -53,11 +53,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             this.trigger("priceChanged");
         },
 
-
-        hasDefaultColors: function () {
-            return this.$hasDefaultColors;
-        },
-
         getPrintColorsAsRGB: function () {
             var ret = [];
 
@@ -100,8 +95,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                     }
                 }
             }
-
-            this.$hasDefaultColors = _.isEqual(printColors, this.$defaultPrintColors);
 
             this.$.printColors.reset(printColors);
 
@@ -327,7 +320,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                             defaultPrintColors.push(closestPrintColor);
                         });
 
-                        self.$hasDefaultColors = true;
                         self.$defaultPrintColors = defaultPrintColors;
 
                     }
