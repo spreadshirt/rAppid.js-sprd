@@ -20,7 +20,7 @@ define(['js/core/Base'], function (Base) {
                 return color;
             }
 
-            if (/^#[0-9A-F]{3,6}$/.test(color)) {
+            if (/^#[0-9A-F]{3,6}$/i.test(color)) {
                 // #rgb format
                 return Color.fromHexString(color);
             }
