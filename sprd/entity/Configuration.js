@@ -93,7 +93,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return {
                 printTypeScaling: !printType.isScalable() && (scale.x != 1 || scale.y != 1),
                 printTypeEnlarged: printType.isShrinkable() && Math.min(scale.x, scale.y) > 1,
-                maxBounds: width > printType.get("size.width") || height > printType.get("size.height")
+                maxBound: width > printType.get("size.width") || height > printType.get("size.height")
             };
 
         },

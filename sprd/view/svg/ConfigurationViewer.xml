@@ -48,6 +48,12 @@
                  translateX="{_deleteHandle.x}" translateY="{_deleteHandle.y}"
                  style="pointer-events: none"/>
 
+        <svg:g visible="{hasError()}" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}" translateY="-{pixelToViewBox(_handleWidth)}" >
+            <svg:title>{errorDescription()}</svg:title>
+            <svg:use href="{baseUrl('sprd/css/library.svg#info')}" />
+        </svg:g>
+
+
     </svg:g>
 
 

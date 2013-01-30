@@ -1,5 +1,5 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "underscore", "sprd/type/Vector", "sprd/type/Matrix2d"],
-    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _, Vector, Matrix2d) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n"],
+    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _, Vector, I18n) {
 
         var MOVE = "move",
             SCALE = "scale",
@@ -57,6 +57,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 _mode: null,
                 _rotationRadius: null
+            },
+
+            inject: {
+                i18n: I18n
             },
 
             $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer"],
@@ -650,6 +654,37 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             isRotating: function() {
                 return this.$._mode === ROTATE;
             }.onChange("_mode"),
+
+            hasError: function() {
+                return !this.$.configuration.isValid() && this.get('productViewer.editable') === true;
+            }.on(["configuration", "isValidChanged"]),
+
+            errorDescription: function() {
+
+                var error = null,
+                    configuration = this.$.configuration;
+
+                if (!(configuration && configuration.$errors)) {
+                    return;
+                }
+
+                for (var key in configuration.$errors.$) {
+                    if (configuration.$errors.$.hasOwnProperty(key)) {
+                        error = configuration.$errors.$[key];
+                        if (error) {
+                            error = key;
+                            break;
+                        }
+                    }
+                }
+
+                if (error) {
+                    return this.$.i18n.ts("configurationViewer.design", error);
+                }
+
+                return null;
+
+            }.on(["configuration", "isValidChanged"])
 
 
         });
