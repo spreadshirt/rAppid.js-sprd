@@ -207,7 +207,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         price: function () {
-            return this.get('_printTypePrice').clone() || new Price();
+            var printTypePrice = this.get('printType.price');
+            if(printTypePrice){
+                return printTypePrice.clone();
+            }
+            return new Price();
         },
 
         possiblePrintTypes: function (appearance) {
