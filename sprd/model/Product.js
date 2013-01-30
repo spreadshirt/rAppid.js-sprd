@@ -339,7 +339,9 @@ define([
                     perspective: null, // front, back, etc...
                     view: null,
                     printArea: null,
-                    printType: null
+                    printType: null,
+                    designColorRGBs: null,
+                    designColorIds: null
                 });
 
                 var self = this,
@@ -425,12 +427,14 @@ define([
                         entity.set({
                             printType: printType,
                             printArea: printArea,
-                            design: design
+                            design: design,
+                            designColorIds: params.designColorIds,
+                            designColorRGBs: params.designColorRGBs
                         });
                         return entity;
                     })
                     .seq(function (cb) {
-                        this.vars.designConfiguration.init(cb);
+                        this.vars["designConfiguration"].init(cb);
                     })
                     .seq(function () {
                         // determinate position
