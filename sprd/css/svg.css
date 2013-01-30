@@ -32,7 +32,7 @@ rect {
 }
 
 .configuration-viewer.error {
-    filter: url(library.svg#configurationError);
+    /*filter: url(library.svg#configurationError);*/
 }
 
 .configuration-viewer.error .configuration-boundary {
