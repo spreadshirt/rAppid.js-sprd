@@ -51,7 +51,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
 
                         var selectedConfiguration = self.$.selectedConfiguration;
 
-                        if (selectedConfiguration && product) {
+                        if (selectedConfiguration && product && (e.target.localName != "input" && e.target.localName != "textarea")) {
 
                             var deltaX = 0,
                                 deltaY = 0;
@@ -88,8 +88,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                             }
 
 
-                            if (e.keyCode === 46 &&
-                                (e.target.localName != "input" && e.target.localName != "textarea")) {
+                            if (e.keyCode === 46) {
                                 // backspace || delete --> remove selected configuration
 
                                 product.$.configurations.remove(selectedConfiguration);
