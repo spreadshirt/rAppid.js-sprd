@@ -74,7 +74,7 @@ define(["sprd/data/SprdDataSource", "js/data/Model", "js/data/RestDataSource", "
             },
 
             getContentType: function () {
-                return false;
+                return "application/xml";
             }
         });
 
