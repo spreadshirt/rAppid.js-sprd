@@ -447,6 +447,149 @@ define([
 
             },
 
+            addText: function (params, callback) {
+
+                params = _.defaults({}, params, {
+                    text: null,
+                    font: null,
+                    perspective: null, // front, back, etc...
+                    view: null,
+                    printArea: null,
+                    printType: null,
+                    style: "normal",
+                    weight: "normal"
+                });
+
+                var self = this,
+                    context = this.$.context,
+                    text = params.text,
+                    productType = this.$.productType,
+                    printArea = params.printArea,
+                    view = params.view,
+                    font = null,
+                    appearance = this.$.appearance,
+                    printType = params.printType;
+
+                if (!text) {
+                    callback(new Error("No text"));
+                    return;
+                }
+
+                if (!productType) {
+                    callback(new Error("ProductType not set"));
+                    return;
+                }
+
+                if (!appearance) {
+                    callback(new Error("Appearance for product not set"));
+                    return;
+                }
+
+                flow()
+                    .par({
+                        fontFamilies: function(cb) {
+                            context.$.fontFamilies.fetch({
+                                fullData: true
+                            }, cb)
+                        },
+                        productType: function (cb) {
+                            productType.fetch(null, cb);
+                        }
+                    })
+                    .seq("fontFamily", function() {
+                        var fontFamily = this.vars["fontFamilies"].at(0);
+                        if (!fontFamily) {
+                            throw new Error("No found");
+                        }
+
+                        font = fontFamily.getFont(params.weight, params.style);
+
+                        if (!font) {
+                            self.log("Font with for required style & weight not found. Fallback to default font", "warn");
+                        }
+
+                        font = font || fontFamily.getDefaultFont();
+
+                        if (!font) {
+                            throw new Error("No font in family found")
+                        }
+
+                        return fontFamily;
+                    })
+                    .seq("printArea", function () {
+
+                        if (!printArea && params.perspective && !view) {
+                            view = productType.getViewByPerspective(params.perspective);
+                        }
+
+                        if (!printArea && view) {
+                            // get print area by view
+                            if (!productType.containsView(view)) {
+                                throw new Error("View not on ProductType");
+                            }
+
+                            // TODO: look for print area that supports print types, etc...
+                            printArea = view.getDefaultPrintArea();
+                        }
+
+                        view = self.$.view || self.getDefaultView();
+                        if (!printArea && view) {
+                            printArea = view.getDefaultPrintArea();
+                        }
+
+                        if (!printArea) {
+                            throw new Error("target PrintArea couldn't be found.");
+                        }
+
+                        if (printArea.get("restrictions.textAllowed") == false) {
+                            throw new Error("text cannot be added to this print area");
+                        }
+
+                        return printArea;
+                    })
+                    .seq("printType", function () {
+                        var fontFamily = this.vars.fontFamily;
+                        var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance.$.id);
+
+                        if (printType && !_.contains(possiblePrintTypes, printType)) {
+                            throw new Error("PrintType not possible for text and printArea");
+                        }
+
+                        printType = printType || possiblePrintTypes[0];
+
+                        if (!printType) {
+                            throw new Error("No printType available");
+                        }
+
+                        return printType;
+                    })
+                    .seq(function (cb) {
+                        printType.fetch(null, cb);
+                    })
+                    .seq("configuration", function () {
+                        var entity = self.createEntity(TextConfiguration);
+                        entity.set({
+                            printType: printType,
+                            printArea: printArea,
+                            text: text,
+                            font: font
+                        });
+                        return entity;
+                    })
+                    .seq(function (cb) {
+                        this.vars["configuration"].init(cb);
+                    })
+                    .seq(function () {
+                        // determinate position
+                        // TODO: self._positionConfiguration(this.vars["configuration"]);
+                    })
+                    .exec(function (err, results) {
+                        !err && self._addConfiguration(results.configuration);
+                        callback && callback(err, results.configuration);
+                    })
+
+            },
+
             _positionConfiguration: function (configuration) {
 
                 var printArea = configuration.$.printArea,
