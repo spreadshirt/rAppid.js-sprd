@@ -39,14 +39,14 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 this.bind("on:click", this._clickHandler, this);
             },
 
-            _bindDomEvents: function() {
+            _bindDomEvents: function () {
                 if (this.runsInBrowser() && this.$.editable) {
                     var window = this.dom(this.$stage.$window),
                         self = this;
 
                     // TODO: surround product viewer with div and set tabindex="1" on the div, so
                     // it can get a focus: then bind key events directly to product viewer
-                    window.bindDomEvent("keydown", function(e) {
+                    window.bindDomEvent("keydown", function (e) {
                         var product = self.$.product;
 
                         var selectedConfiguration = self.$.selectedConfiguration;
@@ -132,15 +132,15 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 this._determinateInternalView();
             },
 
-            _clickHandler: function(e) {
+            _clickHandler: function (e) {
                 if (this.$.editable) {
                     this.set('selectedConfiguration', null);
                 }
             },
 
-            _keyDownHandler: function(e) {
+            _keyDownHandler: function (e) {
                 if (this.$.editable) {
-                                   console.log(e);
+                    console.log(e);
                 }
             },
 
@@ -177,7 +177,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 this._renderProductTypeView(this.$._productType, view);
             },
 
-            _commitProduct: function(product) {
+            _commitProduct: function (product) {
                 var productTypeViewViewerCache = this.$productTypeViewViewerCache;
                 for (var key in productTypeViewViewerCache) {
                     if (productTypeViewViewerCache.hasOwnProperty(key)) {
