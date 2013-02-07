@@ -1,0 +1,3 @@
+<sprdSvg:TextConfigurationRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:sprdSvg="sprd.view.svg">
+    <rect class="text-configuration-background" width="{width}" height="{height}" fill="red"/>
+</sprdSvg:TextConfigurationRendererClass>
