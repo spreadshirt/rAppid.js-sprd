@@ -51,3 +51,8 @@ rect {
     stroke: #ffa53b;
     vector-effect: non-scaling-stroke;
 }
+
+.text-configuration-background {
+    fill: red;
+    fill-opacity: 0.01;
+}
