@@ -1,4 +1,4 @@
-define(['sprd/view/svg/ConfigurationRenderer', 'sprd/util/UnitUtil'], function(ConfigurationRenderer, UnitUtil) {
+define(['sprd/view/svg/ConfigurationRenderer'], function(ConfigurationRenderer) {
 
     return ConfigurationRenderer.inherit("sprd.view.svg.TextConfigurationRendererClass", {
 
@@ -10,5 +10,5 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/util/UnitUtil'], function(C
         ctor: function() {
             this.callBase();
         }
-    })
+    });
 });
