@@ -1,12 +1,8 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size'], function (Configuration, flow, Size) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'text/entity/TextFlow'], function (Configuration, flow, Size, TextFlow) {
 	return Configuration.inherit('sprd.entity.TextConfiguration', {
 		defaults : {
-            text: "",
-            font: null,
-            fontSize: 48,
-            typeFace: "regular",
-
-            textArea: null
+            textArea: null,
+            textFlow: TextFlow
         },
 
         init: function(callback) {
