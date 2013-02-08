@@ -1,37 +1,25 @@
 define([
-    "sprd/data/SprdModel",
+    "sprd/model/ProductBase",
     'js/core/List',
-    'sprd/model/ProductType',
     'js/data/AttributeTypeResolver',
     'sprd/entity/DesignConfiguration',
     'sprd/entity/TextConfiguration',
-    'sprd/entity/Appearance',
     'sprd/entity/Price',
     'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/util/ProductUtil"],
-    function (SprdModel, List, ProductType, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Appearance, Price, TypeResolver, Entity, _, flow, ProductUtil) {
-        return SprdModel.inherit("sprd.model.Product", {
+    function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, ProductUtil) {
+        return ProductBase.inherit("sprd.model.Product", {
 
             schema: {
-                productType: ProductType,
-                appearance: {
-                    type: Appearance,
-                    isReference: true
-                },
                 configurations: [new AttributeTypeResolver({
                     attribute: "type",
                     mapping: {
                         "design": DesignConfiguration,
                         "text": TextConfiguration
                     }
-                })],
-                restrictions: Object,
-                defaultValues: Object
+                })]
             },
 
             defaults: {
-                productType: null,
-                appearance: null,
-                view: null,
                 configurations: List
             },
 
@@ -78,37 +66,6 @@ define([
                     return price;
                 }
             }.on("priceChanged", "change:productType"),
-
-            getDefaultView: function () {
-
-                if (this.$.productType) {
-                    var defaultViewId = this.getDefaultViewId();
-
-                    if (defaultViewId !== null) {
-                        return this.$.productType.getViewById(defaultViewId);
-                    } else {
-                        return this.$.productType.getDefaultView();
-                    }
-                }
-
-                return null;
-
-            },
-
-            getDefaultViewId: function () {
-                if (this.$.defaultValues) {
-                    return this.$.defaultValues.defaultView.id;
-                }
-                return null;
-            },
-
-            getDefaultAppearance: function () {
-                if (this.$.appearance && this.$.productType) {
-                    return this.$.productType.getAppearanceById(this.$.appearance.$.id);
-                }
-
-                return null;
-            },
 
             _addConfiguration: function (configuration) {
                 this.$.configurations.add(configuration);
