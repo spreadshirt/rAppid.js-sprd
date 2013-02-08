@@ -32,7 +32,7 @@ define(['sprd/view/svg/ConfigurationRenderer', 'underscore'], function(Configura
 
             function addFonts(flowElement) {
                 if (flowElement) {
-                    var font = flowElement.$.style.$.font;
+                    var font = flowElement.get("style.font");
 
                     if (font && _.indexOf(fonts, font) === -1) {
                         fonts.push(font);
