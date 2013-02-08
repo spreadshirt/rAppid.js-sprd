@@ -6,7 +6,7 @@ define(["text/type/Style"], function(Style) {
             font: null
         },
 
-        _getFontFamily: function() {
+        _getUniqueFontName: function() {
             var font = this.$.font;
             if (font) {
                 return font.getUniqueFontName();
@@ -28,7 +28,7 @@ define(["text/type/Style"], function(Style) {
 
             var ret = this.callBase();
 
-            ret.fontFamily = this.getFontFamily();
+            ret.fontFamily = this._getUniqueFontName();
             ret.fontWeight = "normal"; // done via different font
             ret.fontStyle = "normal";
             ret.color = this._getColor();
