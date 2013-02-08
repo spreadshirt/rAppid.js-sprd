@@ -7,13 +7,13 @@ define(["sprd/data/SprdModel", "sprd/model/PrintType", "sprd/entity/Font"], func
             deprecated: Boolean
         },
 
-        getFont: function (weight, style) {
-            weight = weight || "normal";
-            style = style || "normal";
+        getFont: function (fontWeight, fontStyle) {
+            fontWeight = fontWeight || "normal";
+            fontStyle = fontStyle || "normal";
 
             for (var i = 0; i < this.$.fonts.$items.length; i++) {
                 var font = this.$.fonts.$items[i];
-                if (font.$.weight === weight || font.$.style === style) {
+                if (font.$.weight === fontWeight || font.$.style === fontStyle) {
                     return font;
                 }
             }
