@@ -408,13 +408,13 @@ define([
 
                 params = _.defaults({}, params, {
                     text: null,
-                    font: null,
+                    fontFamily: null,
                     perspective: null, // front, back, etc...
                     view: null,
                     printArea: null,
                     printType: null,
-                    style: "normal",
-                    weight: "normal"
+                    fontStyle: "normal",
+                    fontWeight: "normal"
                 });
 
                 var self = this,
@@ -445,21 +445,25 @@ define([
                 flow()
                     .par({
                         fontFamilies: function(cb) {
-                            context.$.fontFamilies.fetch({
-                                fullData: true
-                            }, cb)
+                            if (params.fontFamily) {
+                                cb();
+                            } else {
+                                context.$.fontFamilies.fetch({
+                                    fullData: true
+                                }, cb)
+                            }
                         },
                         productType: function (cb) {
                             productType.fetch(null, cb);
                         }
                     })
                     .seq("fontFamily", function() {
-                        var fontFamily = this.vars["fontFamilies"].at(0);
+                        var fontFamily = params.fontFamily || this.vars["fontFamilies"].at(0);
                         if (!fontFamily) {
                             throw new Error("No found");
                         }
 
-                        font = fontFamily.getFont(params.weight, params.style);
+                        font = fontFamily.getFont(params.fontWeight, params.fontStyle);
 
                         if (!font) {
                             self.log("Font with for required style & weight not found. Fallback to default font", "warn");
@@ -540,6 +544,13 @@ define([
                             font: font,
                             printTypeColor: this.vars["printTypeColor"]
                         }));
+
+
+                        for (var i = 0; i < textFlow.$.children.$items.length; i++) {
+                            textFlow.$.children.$items[i];
+                        }
+
+
 
                         var entity = self.createEntity(TextConfiguration);
                         entity.set({
