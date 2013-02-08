@@ -5,8 +5,8 @@ define([
     'sprd/entity/DesignConfiguration',
     'sprd/entity/TextConfiguration',
     'sprd/entity/Price',
-    'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/util/ProductUtil"],
-    function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, ProductUtil) {
+    'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style'],
+    function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, ProductUtil, TextFlow, Style) {
         return ProductBase.inherit("sprd.model.Product", {
 
             schema: {
@@ -523,13 +523,29 @@ define([
                     .seq(function (cb) {
                         printType.fetch(null, cb);
                     })
+                    .seq("printTypeColor", function () {
+                        var color = self.appearanceBrightness() !== "dark" ? "#000000" : "#FFFFFF";
+                        color = printType.getClosestPrintColor(color);
+
+                        if (!color) {
+                            throw "No print type color"
+                        }
+
+                        return color;
+                    })
                     .seq("configuration", function () {
+
+                        var textFlow = TextFlow.initializeFromText(text);
+                        textFlow.set("style", new Style({
+                            font: font,
+                            printTypeColor: this.vars["printTypeColor"]
+                        }));
+
                         var entity = self.createEntity(TextConfiguration);
                         entity.set({
                             printType: printType,
                             printArea: printArea,
-                            text: text,
-                            font: font
+                            textFlow: textFlow
                         });
                         return entity;
                     })
