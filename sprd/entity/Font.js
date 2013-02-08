@@ -10,6 +10,10 @@ define(["js/data/Entity"], function (Entity) {
 
         getFontFamily: function() {
             return this.$parent;
+        },
+
+        getUniqueFontName: function() {
+            return this.$.name + "_" + this.$.style + "_" + this.$.weight;
         }
 
     })
