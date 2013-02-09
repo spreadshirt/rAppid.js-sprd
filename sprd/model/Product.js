@@ -542,15 +542,9 @@ define([
                         var textFlow = TextFlow.initializeFromText(text);
                         textFlow.set("style", new Style({
                             font: font,
+                            fontSize: 20,
                             printTypeColor: this.vars["printTypeColor"]
                         }));
-
-
-                        for (var i = 0; i < textFlow.$.children.$items.length; i++) {
-                            textFlow.$.children.$items[i];
-                        }
-
-
 
                         var entity = self.createEntity(TextConfiguration);
                         entity.set({
@@ -565,7 +559,7 @@ define([
                     })
                     .seq(function () {
                         // determinate position
-                        // TODO: self._positionConfiguration(this.vars["configuration"]);
+                        self._positionConfiguration(this.vars["configuration"]);
                     })
                     .exec(function (err, results) {
                         !err && self._addConfiguration(results.configuration);
