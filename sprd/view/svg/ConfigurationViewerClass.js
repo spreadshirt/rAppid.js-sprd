@@ -166,13 +166,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         });
                     }
 
-                    var stopPropagation = function (e) {
-                        e.stopPropagation();
+                    var preventDefault = function (e) {
+                        e.preventDefault();
                     };
 
-                    assetContainer.bindDomEvent(this.$clickEvent, stopPropagation);
-                    scaleHandle && scaleHandle.bindDomEvent(this.$clickEvent, stopPropagation);
-                    rotateHandle && rotateHandle.bindDomEvent(this.$clickEvent, stopPropagation);
+                    assetContainer.bindDomEvent(this.$clickEvent, preventDefault);
+                    scaleHandle && scaleHandle.bindDomEvent(this.$clickEvent, preventDefault);
+                    rotateHandle && rotateHandle.bindDomEvent(this.$clickEvent, preventDefault);
 
                 }
 
@@ -245,7 +245,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 e.preventDefault();
-                e.stopPropagation();
+//                e.stopPropagation();
 
                 this.$moving = true;
                 this.set({
