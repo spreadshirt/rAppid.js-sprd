@@ -4,13 +4,26 @@ define(['sprd/view/svg/ConfigurationRenderer', 'underscore'], function(Configura
 
         defaults: {
             tagName: "g",
-            componentClass: "text-configuration"
+            componentClass: "text-configuration",
+            textArea: null
+        },
+
+        ctor: function() {
+            this.callBase();
+
+            this.bind("configuration", "formatChanged", function() {
+                this._loadFonts();
+                var textArea = this.$.textArea;
+                textArea && textArea._renderTextFlow(textArea.$.textFlow);
+            }, this);
         },
 
         _initialize: function() {
-
             this.callBase();
+            this._loadFonts();
+        },
 
+        _loadFonts: function() {
             var fonts = this.getFonts(),
                 svgRoot = this.getSvgRoot();
 
