@@ -5,6 +5,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'text/entity/Te
             textFlow: TextFlow
         },
 
+        type: "text",
+
         init: function(callback) {
 
             var self = this,

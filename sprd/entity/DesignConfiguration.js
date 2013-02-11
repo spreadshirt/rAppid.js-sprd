@@ -27,6 +27,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             this.callBase();
         },
 
+        type: "design",
+
         _commitPrintType: function (printType) {
             // print type changed -> convert colors
 
