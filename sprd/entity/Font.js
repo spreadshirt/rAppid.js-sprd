@@ -14,7 +14,15 @@ define(["js/data/Entity"], function (Entity) {
 
         getUniqueFontName: function() {
             return this.$.name + "_" + this.$.style + "_" + this.$.weight;
-        }
+        },
+
+        isBold: function() {
+            return this.$.weight === "bold";
+        }.onChange("weight"),
+
+        isItalic: function () {
+            return this.$.style === "italic";
+        }.onChange("style")
 
     })
 });
