@@ -8,18 +8,46 @@ define(["sprd/data/SprdModel", "sprd/model/PrintType", "sprd/entity/Font"], func
         },
 
         getFont: function (fontWeight, fontStyle) {
+
+            if (fontWeight === true) {
+                fontWeight = "bold";
+            } else if (fontWeight === false) {
+                fontWeight = "normal";
+            }
+
+            if (fontStyle === true) {
+                fontStyle = "italic";
+            } else if (fontStyle === false) {
+                fontStyle = "normal";
+            }
+
             fontWeight = fontWeight || "normal";
             fontStyle = fontStyle || "normal";
 
             for (var i = 0; i < this.$.fonts.$items.length; i++) {
                 var font = this.$.fonts.$items[i];
-                if (font.$.weight === fontWeight || font.$.style === fontStyle) {
+                if (font.$.weight === fontWeight && font.$.style === fontStyle) {
                     return font;
                 }
             }
 
             return null;
 
+        },
+
+        getNearestFont: function(bold, italic) {
+
+            var font = this.getFont(bold, italic);
+
+            if (!font && italic) {
+                font = this.getFont(bold, false);
+            }
+
+            if (!font && bold) {
+                font = this.getFont(false, italic);
+            }
+
+            return font || this.getDefaultFont();
         },
 
         getDefaultFont: function () {
@@ -29,7 +57,32 @@ define(["sprd/data/SprdModel", "sprd/model/PrintType", "sprd/entity/Font"], func
             }
 
             return this.$.fonts.at(0);
-        }
+        },
+
+        _supports: function(what) {
+
+            if (!this.$.fonts) {
+                return false;
+            }
+
+            var fonts = this.$.fonts.$items;
+
+            for (var i = 0; i < fonts.length; i++) {
+                if (fonts[i][what] && fonts[i][what]()) {
+                    return true;
+                }
+            }
+
+            return false;
+        },
+
+        supportsBold: function() {
+            return this._supports("isBold");
+        }.onChange("fonts"),
+
+        supportsItalic: function () {
+            return this._supports("isItalic");
+        }.onChange("fonts")
 
     })
 });
