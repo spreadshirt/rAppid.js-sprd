@@ -35,75 +35,8 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 this.$productTypeViewViewerCache = {};
 
                 this.callBase();
-
-                this.bind("on:click", this._clickHandler, this);
             },
 
-            _bindDomEvents: function () {
-                if (this.runsInBrowser() && this.$.editable) {
-                    var window = this.dom(this.$stage.$window),
-                        self = this;
-
-                    // TODO: surround product viewer with div and set tabindex="1" on the div, so
-                    // it can get a focus: then bind key events directly to product viewer
-                    window.bindDomEvent("keydown", function (e) {
-                        var product = self.$.product;
-
-                        var selectedConfiguration = self.$.selectedConfiguration;
-
-                        if (selectedConfiguration && product && (e.target.localName != "input" && e.target.localName != "textarea")) {
-
-                            var deltaX = 0,
-                                deltaY = 0;
-
-                            switch (e.keyCode) {
-                                case 40:
-                                    deltaY = 1;
-                                    break;
-                                case 38:
-                                    deltaY = -1;
-                                    break;
-                                case 37:
-                                    deltaX = -1;
-                                    break;
-                                case 39:
-                                    deltaX = 1;
-                            }
-
-                            if (deltaX || deltaY) {
-
-                                if (e.shiftKey) {
-                                    deltaX *= 10;
-                                    deltaY *= 10;
-                                }
-
-                                var offset = selectedConfiguration.$.offset;
-                                offset.set({
-                                    x: offset.$.x + deltaX,
-                                    y: offset.$.y + deltaY
-                                });
-                                selectedConfiguration.set('offset', offset);
-
-                                e.preventDefault();
-                            }
-
-
-                            if (e.keyCode === 46) {
-                                // backspace || delete --> remove selected configuration
-
-                                product.$.configurations.remove(selectedConfiguration);
-                                self.set('selectedConfiguration', null);
-
-                                e.preventDefault();
-                            }
-                        }
-
-
-                    });
-                }
-
-                this.callBase();
-            },
 
             initialize: function () {
 
@@ -130,18 +63,6 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
 
             _commitView: function () {
                 this._determinateInternalView();
-            },
-
-            _clickHandler: function (e) {
-                if (this.$.editable) {
-                    this.set('selectedConfiguration', null);
-                }
-            },
-
-            _keyDownHandler: function (e) {
-                if (this.$.editable) {
-                    console.log(e);
-                }
             },
 
             _determinateInternalView: function () {
