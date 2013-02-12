@@ -22,6 +22,14 @@ define(["sprd/entity/Size"], function(Size){
             return pixel * 25.4 / dpi;
         },
 
+        ptToMm: function(pt) {
+            return pt / 72 * 25.4;
+        },
+
+        mmToPt: function(mm) {
+            return mm / 25.4 * 72;
+        },
+
         convertSizeToMm: function (size, dpi) {
             if (size.$.unit === "px") {
                 return new Size({
