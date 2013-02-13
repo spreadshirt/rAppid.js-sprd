@@ -112,7 +112,20 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
 
                 this.addChild(viewer);
 
+                this.$.productViewer.trigger('configurationViewerAdded',viewer);
+
             }
+        },
+
+        getViewerForConfiguration: function (configuration) {
+            for (var key in this.$configurationViewerCache) {
+                if (this.$configurationViewerCache.hasOwnProperty(key)) {
+                    if (this.$configurationViewerCache[key].$.configuration === configuration) {
+                        return this.$configurationViewerCache[key];
+                    }
+                }
+            }
+            return null;
         },
 
         _renderProduct: function (product, oldProduct) {

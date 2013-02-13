@@ -10,6 +10,19 @@ define(["js/ui/View"], function (View) {
             editable: true
         },
 
+        ctor: function(){
+            this.callBase();
+            this.bind('productViewerSvg','configurationViewerAdded', this._onConfigurationViewerAdded, this);
+        },
+
+        _onConfigurationViewerAdded: function(e){
+            var viewer = e.$;
+            if(viewer.$.configuration === this.$.selectedConfiguration){
+                this.set('selectedConfigurationViewer', viewer);
+            }
+
+        },
+
         _clickHandler: function (e) {
             if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented)) {
                 this.set('selectedConfiguration', null);
@@ -19,9 +32,35 @@ define(["js/ui/View"], function (View) {
 
         },
 
+        _commitChangedAttributes: function ($) {
+            this.callBase();
+            if($.hasOwnProperty('selectedConfiguration')){
+                var configuration = $['selectedConfiguration'],
+                    viewer = null;
+                if (!configuration) {
+                    viewer = null;
+                } else {
+                    if (this.$.productViewerSvg) {
+                        viewer = this.$.productViewerSvg.getViewerForConfiguration(configuration);
+                    }
+                }
+
+                this.set('selectedConfigurationViewer', viewer);
+
+            }
+        },
+
         _keyDownHandler: function (e) {
             var self = this,
                 product = self.$.product;
+
+            var viewer = this.$.selectedConfigurationViewer;
+            if (viewer) {
+                viewer._keyDown(e);
+                if(e.defaultPrevented){
+                    return;
+                }
+            }
 
             var selectedConfiguration = self.$.selectedConfiguration;
 
@@ -76,13 +115,20 @@ define(["js/ui/View"], function (View) {
 
         },
 
+        _keyPressHandler: function(e){
+            var viewer = this.$.selectedConfigurationViewer;
+            if(viewer){
+                viewer._keyPress(e);
+            }
+        },
+
         _bindDomEvents: function () {
             if (this.runsInBrowser() && this.$.editable) {
                 var self = this;
 
                 this.bind("on:click", this._clickHandler, this);
 
-                this.bindDomEvent("keydown", function(e) {
+                this.bindDomEvent("keydown", function (e) {
                     self._keyDownHandler(e);
                 });
 

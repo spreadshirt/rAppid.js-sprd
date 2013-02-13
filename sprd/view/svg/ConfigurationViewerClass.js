@@ -521,12 +521,18 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this._cancelTransformation();
                     e.preventDefault();
                 }
+
+                this.$asset.handleKeyDown && this.$asset.handleKeyDown(e)
             },
 
             _keyUp: function (e, mode) {
                 if (e.keyCode === 16) {
                     this.set("shiftKey", false);
                 }
+            },
+
+            _keyPress: function(e){
+                this.$asset.handleKeyPress && this.$asset.handleKeyPress(e)
             },
 
             _stopTransformation: function () {

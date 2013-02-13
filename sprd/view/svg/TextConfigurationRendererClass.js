@@ -56,6 +56,15 @@ define(['sprd/view/svg/ConfigurationRenderer', 'underscore'], function(Configura
                     });
                 }
             }
+        },
+
+        handleKeyPress: function(e){
+            this.$.textArea.handleKeyPress(e);
+        },
+
+        handleKeyDown: function(e){
+            console.log(e);
+            this.$.textArea.handleKeyDown(e);
         }
 
     });

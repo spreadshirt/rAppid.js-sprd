@@ -136,6 +136,10 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             destroy: function () {
                 this._removeProductTypeViewViewers();
                 this.callBase();
+            },
+
+            getViewerForConfiguration: function(configuration){
+                return this.$currentProductTypeViewViewer.getViewerForConfiguration(configuration);
             }
 
         });

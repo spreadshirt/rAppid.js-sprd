@@ -1,5 +1,6 @@
 <sprdView:ProductViewerClass xmlns:sprdView="sprd.view">
     <sprdView:ProductViewerSvg view="{view}" product="{product}"
+                               cid="productViewerSvg"
                                selectedConfiguration="{{selectedConfiguration}}"
                                width="{width}" height="{height}" editable="{editable}"/>
 </sprdView:ProductViewerClass>
