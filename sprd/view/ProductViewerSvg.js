@@ -139,12 +139,10 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             },
 
             getViewerForConfiguration: function(configuration){
-
-                if (!this.$currentProductTypeViewViewer) {
-                    return null;
+                if(this.$currentProductTypeViewViewer){
+                    return this.$currentProductTypeViewViewer.getViewerForConfiguration(configuration);
                 }
-
-                return this.$currentProductTypeViewViewer.getViewerForConfiguration(configuration);
+                return null;
             }
 
         });
