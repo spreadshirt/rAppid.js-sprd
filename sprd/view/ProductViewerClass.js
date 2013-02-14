@@ -40,14 +40,19 @@ define(["js/ui/View"], function (View) {
                 if (!configuration) {
                     viewer = null;
                 } else {
-                    if (this.$.productViewerSvg) {
-                        viewer = this.$.productViewerSvg.getViewerForConfiguration(configuration);
-                    }
+                    viewer = this.getViewerForConfiguration(configuration);
                 }
 
                 this.set('selectedConfigurationViewer', viewer);
 
             }
+        },
+
+        getViewerForConfiguration: function(configuration){
+            if (this.$.productViewerSvg) {
+                return this.$.productViewerSvg.getViewerForConfiguration(configuration);
+            }
+            return null;
         },
 
         _keyDownHandler: function (e) {
