@@ -694,14 +694,18 @@ define([
                 });
             },
 
+            hasChanges: function() {
+                return this.$originalProduct.isDeepEqual(this);
+            },
+
             save: function (options, callback) {
 
                 if (this.$originalProduct) {
-                    if (this.$originalProduct.isDeepEqual(this)) {
+                    if (this.hasChanges()) {
+                        this.set('id', undefined);
+                    } else {
                         callback && callback(null, this);
                         return;
-                    } else {
-                        this.set('id', undefined);
                     }
                 }
 
