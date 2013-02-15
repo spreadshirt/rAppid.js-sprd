@@ -1,5 +1,6 @@
 define(["js/data/Query"], function (Query) {
 
+    var undefined;
 
     return {
 
