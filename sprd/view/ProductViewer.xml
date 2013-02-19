@@ -1,4 +1,11 @@
-<sprdView:ProductViewerClass xmlns:sprdView="sprd.view">
+<sprdView:ProductViewerClass xmlns:sprdView="sprd.view" xmlns="http://www.w3.org/1999/xhtml">
+
+    <textarea cid="textArea" visible="{showTextAreaOverlay()}" position="absolute"
+              left="{textAreaPosition.x}" top="{textAreaPosition.y}" width="{textAreaPosition.width}" height="{textAreaPosition.height}"
+              class="text-configuration-overlay" heightUpdatePolicy="out" widthUpdatePolicy="out"
+              onkeypress="keypress" onkeydown="keydown" autocomplete="off"
+            />
+
     <sprdView:ProductViewerSvg view="{view}" product="{product}"
                                cid="productViewerSvg"
                                selectedConfiguration="{{selectedConfiguration}}"

@@ -7,12 +7,65 @@ define(["js/ui/View"], function (View) {
             width: 300,
             height: 300,
             selectedConfiguration: null,
-            editable: true
+            editable: true,
+
+            productViewerSvg: null,
+            textArea: null,
+            textAreaPosition: null
         },
 
         ctor: function(){
             this.callBase();
             this.bind('productViewerSvg','configurationViewerAdded', this._onConfigurationViewerAdded, this);
+            this.bind('selectedConfiguration', 'change:scale', this._positionTextArea, this);
+            this.bind('selectedConfiguration', 'change:offset', this._positionTextArea, this);
+        },
+
+        _commitSelectedConfiguration: function(selectedConfiguration) {
+            this._positionTextArea();
+
+            if (selectedConfiguration && this.showTextAreaOverlay()){
+                this.$.textArea.$el.focus();
+            }
+
+        },
+
+        keypress: function(e) {
+            this.$.textArea.$el.value = "";
+            this._keyPressHandler(e.domEvent);
+        },
+
+        keydown: function(e) {
+            this.$.textArea.$el.value = "";
+            this._keyDownHandler(e.domEvent);
+        },
+
+        _positionTextArea: function() {
+            var position = null,
+                selectedConfiguration = this.$.selectedConfiguration;
+
+            if (this.$.editable && selectedConfiguration && selectedConfiguration.type === "text") {
+                var factor = this.$.productViewerSvg.localToGlobalFactor(),
+                    view = this.$.productViewerSvg.$currentProductTypeViewViewer.$._view,
+                    viewMap;
+
+                for (var i = 0; i < view.$.viewMaps.$items.length; i++) {
+                    if (view.$.viewMaps.$items[i].$.printArea === selectedConfiguration.$.printArea) {
+                        viewMap = view.$.viewMaps.$items[i];
+                        break;
+                    }
+                }
+
+                position = {
+                    x: (viewMap.get("offset.x")  + selectedConfiguration.get("offset.x")) * factor.x ,
+                    y: (viewMap.get("offset.y")  + selectedConfiguration.get("offset.y")) * factor.y ,
+                    width: selectedConfiguration.width() * factor.x - 10,
+                    height: selectedConfiguration.height() * factor.y - 10
+                };
+
+            }
+
+            this.set("textAreaPosition", position);
         },
 
         _onConfigurationViewerAdded: function(e){
@@ -24,7 +77,7 @@ define(["js/ui/View"], function (View) {
         },
 
         _clickHandler: function (e) {
-            if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented)) {
+            if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent.target !== this.$.textArea.$el) {
                 this.set('selectedConfiguration', null);
             }
 
@@ -139,7 +192,10 @@ define(["js/ui/View"], function (View) {
 
                 this.callBase();
             }
+        },
 
-        }
+        showTextAreaOverlay: function() {
+            return this.$.editable && this.$.selectedConfiguration && this.$.selectedConfiguration.type === "text";
+        }.onChange("selectedConfiguration")
     });
 });
