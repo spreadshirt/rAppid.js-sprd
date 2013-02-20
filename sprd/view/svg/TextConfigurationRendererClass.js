@@ -63,7 +63,6 @@ define(['sprd/view/svg/ConfigurationRenderer', 'underscore'], function(Configura
         },
 
         handleKeyDown: function(e){
-            console.log(e);
             this.$.textArea.handleKeyDown(e);
         }
 
