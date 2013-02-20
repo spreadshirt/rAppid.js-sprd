@@ -41,6 +41,30 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'text/entity/Te
                 .exec(callback);
         },
 
+        getUsedFonts: function() {
+            var fonts = [];
+
+            if (this.$.textFlow) {
+                addFonts(this.$.textFlow);
+            }
+
+            return fonts;
+
+            function addFonts(flowElement) {
+                if (flowElement) {
+                    var font = flowElement.get("style.font");
+
+                    if (font && _.indexOf(fonts, font) === -1) {
+                        fonts.push(font);
+                    }
+
+                    !flowElement.isLeaf && flowElement.$.children.each(function (child) {
+                        addFonts(child);
+                    });
+                }
+            }
+        },
+
         size: function() {
             return this.$.textArea || Size.empty;
         }.onChange("textArea")
