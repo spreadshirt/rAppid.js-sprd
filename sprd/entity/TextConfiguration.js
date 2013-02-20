@@ -2,7 +2,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'text/entity/Te
 	return Configuration.inherit('sprd.entity.TextConfiguration', {
 		defaults : {
             textArea: null,
-            textFlow: TextFlow
+            textFlow: TextFlow,
+            composedTextFlow: null
         },
 
         type: "text",
