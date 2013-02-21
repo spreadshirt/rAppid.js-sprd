@@ -1,7 +1,8 @@
 define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, ImageService) {
 
     var PRODUCT = "product",
-        COMPOSITION = "composition";
+        COMPOSITION = "composition",
+        viewIdExtractor = /\/views\/(\d+)/;
 
     var ProductImage = Image.inherit({
 
@@ -35,7 +36,26 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
                 } else {
                     url = imageService.$.endPoint + "/compositions/" + product.$.id;
                 }
-                url += '/views/' +  (this.$.view ? this.$.view.$.id : product.getDefaultViewId());
+
+                var viewId = this.$.view ? this.$.view.$.id : product.getDefaultViewId();
+
+                var resources = product.$.resources;
+
+                if (!viewId && resources instanceof Array) {
+                    // get view id from resource -> this is a hack, because image server
+                    // can't generate an image without the view id -> should be implemented by image server
+
+                    for (var i = 0; i < resources.length; i++) {
+                        viewId = viewIdExtractor.exec(resources[i].href);
+                        if (viewId) {
+                            viewId = viewId[1];
+                            break;
+                        }
+                    }
+
+                }
+
+                url += '/views/' +  viewId;
 
                 url = this.extendUrlWithSizes(url);
 

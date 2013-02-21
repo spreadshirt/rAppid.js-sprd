@@ -1,9 +1,16 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "underscore"],
-    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "xaml!sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n"],
+    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _, Vector, I18n) {
 
         var MOVE = "move",
             SCALE = "scale",
-            ROTATE = "rotate";
+            ROTATE = "rotate",
+            GESTURE = "gesture";
+
+        var validateConfigurationOnTransform = true,
+            rotationSnippingAngle = 45,
+            rotationSnippingThreshold = 5,
+            rotateSnippingEnabled = true,
+            enableGestures = false;
 
         return SvgElement.inherit({
 
@@ -16,8 +23,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 translateY: "{_offset.y}",
 
                 rotation: "{_rotation}",
-                rotationX: "{half(configuration.width())}",
-                rotationY: "{half(configuration.height())}",
+                rotationX: "{half(configuration.width(_scale.x))}",
+                rotationY: "{half(configuration.height(_scale.y))}",
 
                 _assetContainer: null,
                 _scaleHandle: null,
@@ -35,7 +42,25 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _configurationWidth: "{configuration.width()}",
                 _configurationHeight: "{configuration.height()}",
 
-                _rotation: "{configuration.rotation}"
+                _rotation: "{configuration.rotation}",
+
+                _configurationValid: "{configuration.isValid()}",
+
+                _globalToLocalFactor: {
+                    x: 1,
+                    y: 1
+                },
+
+                _handleWidth: 15,
+                _handleOffset: 8,
+                "_handle-Offset": -8,
+
+                _mode: null,
+                _rotationRadius: null
+            },
+
+            inject: {
+                i18n: I18n
             },
 
             $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer"],
@@ -49,6 +74,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.rotate(0, 0, 0);
 
                 this._initializeCapabilities(this.$stage.$window);
+                this.set('_globalToLocalFactor', this.$.productViewer.globalToLocalFactor());
+
+                if (validateConfigurationOnTransform) {
+                    this.bind("_offset", "change", this._offsetChanged, this);
+                }
             },
 
             _initializeCapabilities: function (window) {
@@ -59,6 +89,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$downEvent = hasTouch ? "touchstart" : "mousedown";
                 this.$moveEvent = hasTouch ? "touchmove" : "mousemove";
                 this.$upEvent = hasTouch ? "touchend" : "mouseup";
+                this.$clickEvent = hasTouch ? "tap" : "click";
+
+                if (hasTouch) {
+                    this.set({
+                        _handleWidth: 20,
+                        _handleOffset: 10,
+                        "_handle-Offset": -10
+                    })
+                }
             },
 
             _initializeRenderer: function () {
@@ -94,47 +133,88 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             _bindDomEvents: function () {
                 this.callBase();
 
-                var self = this;
+                var self = this,
+                    productViewer = this.$.productViewer;
 
                 if (!this.runsInBrowser()) {
                     return;
                 }
 
-                if (this.$.productViewer && this.$.productViewer.$.editable === true) {
+                if (productViewer && productViewer.$.editable === true) {
                     var assetContainer = this.$._assetContainer,
                         scaleHandle = this.$._scaleHandle,
                         rotateHandle = this.$._rotateHandle;
 
                     assetContainer.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, MOVE);
+                        self._down(e, self._isGesture(e) ? GESTURE : MOVE);
                     });
 
                     scaleHandle && scaleHandle.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, SCALE)
+                        self._down(e, self._isGesture(e) ? GESTURE : SCALE)
                     });
 
                     rotateHandle && rotateHandle.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, ROTATE)
+                        self._down(e, self._isGesture(e) ? GESTURE : ROTATE)
                     });
+
+
+                    if (productViewer && this.$hasTouch) {
+                        productViewer.bindDomEvent(this.$downEvent, function (e) {
+                            if (productViewer.$.selectedConfiguration === self.$.configuration && self._isGesture(e)) {
+                                self._down(e, GESTURE);
+                            }
+                        });
+                    }
+
+                    var preventDefault = function (e) {
+                        e.preventDefault();
+                    };
+
+                    assetContainer.bindDomEvent(this.$clickEvent, preventDefault);
+                    scaleHandle && scaleHandle.bindDomEvent(this.$clickEvent, preventDefault);
+                    rotateHandle && rotateHandle.bindDomEvent(this.$clickEvent, preventDefault);
 
                 }
 
+            },
+
+            _isGesture: function (e) {
+                return this.$hasTouch && e.touches.length > 1;
             },
 
             unbindDomEvent: function (type, cb) {
                 this.callBase();
             },
 
+            _offsetChanged: function() {
+                var configuration = this.$.configuration;
+                if (configuration) {
+                    configuration._setError(configuration._validateTransform({
+                        offset: this.$._offset,
+                        scale: this.$._scale,
+                        rotation: this.$._rotation
+                    }));
+                }
+            },
+
+            _commitChangedAttributes: function($) {
+                this.callBase();
+
+                var configuration = this.$.configuration;
+
+                if (validateConfigurationOnTransform && configuration && this._hasSome($, ["_scale", "_rotation"])) {
+
+                    // TODO: validate within invalidation interval
+                    configuration._setError(configuration._validateTransform({
+                        scale: $._scale || this.$.scale,
+                        rotation: $._rotation || this.$.rotation,
+                        offset: this.$._offset
+                    }));
+                }
+
+            },
+
             _down: function (e, mode) {
-
-                if (!this.runsInBrowser()) {
-                    return;
-                }
-
-                if (!this.$hasTouch && e.which !== 1) {
-                    // not left mouse button
-                    return;
-                }
 
                 var self = this,
                     configuration = this.$.configuration,
@@ -145,46 +225,93 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return;
                 }
 
+                if (!this.runsInBrowser()) {
+                    return;
+                }
+
+                if (mode === GESTURE && !enableGestures) {
+                    return;
+                }
+
+                if (!this.$hasTouch && e.which !== 1) {
+                    // not left mouse button
+                    return;
+                }
+
+                // there is a current action and another down -> gesture
+                if (this.$._mode !== null) {
+                    // unbind the current handler
+                    this._unbindTransformationHandler();
+                }
+
                 e.preventDefault();
-                e.stopPropagation();
+//                e.stopPropagation();
 
                 this.$moving = true;
+                this.set({
+                    "_mode": mode,
+                    shiftKey: false
+                });
 
                 downPoint = this.$downPoint = {
                     x: this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
                     y: this.$hasTouch ? e.changedTouches[0].pageY : e.pageY
                 };
 
+                var downVector = new Vector([downPoint.x, downPoint.y]);
+
+                factor = this.localToGlobalFactor();
+                var halfWidth = (configuration.width() / 2) * factor.x,
+                    halfHeight = (configuration.height() / 2) * factor.y;
+
                 if (mode === MOVE) {
                     this.$.productViewer.set("selectedConfiguration", this.$.configuration);
                     this.set('_offset', configuration.$.offset.clone());
                 } else if (mode === SCALE) {
 
-                    factor = this.localToGlobalFactor();
-                    this.set('_scale', _.clone(configuration.$.scale));
+                    this.$centerPoint = new Vector([
+                        downPoint.x - (halfWidth * Math.cos(configuration.$.rotation * Math.PI / 180)) + (halfHeight * Math.sin(configuration.$.rotation * Math.PI / 180)),
+                        downPoint.y - (halfWidth * Math.sin(configuration.$.rotation * Math.PI / 180)) - (halfHeight * Math.cos(configuration.$.rotation * Math.PI / 180))
+                    ]);
+
+                    this.set({
+                        _scale: _.clone(configuration.$.scale),
+                        _offset: configuration.$.offset.clone()
+                    });
+
+                    var scaleVector = downVector.subtract(this.$centerPoint);
 
                     // diagonal in real px
-                    this.$scaleDiagonalDistance = this._getDistance({
-                        x: 0,
-                        y: 0
-                    }, {
-                        x: configuration.width() * factor.x,
-                        y: configuration.height() * factor.y
-                    });
+                    this.$scaleDiagonalDistance = scaleVector.distance(); // Vector.distance([configuration.width() * factor.x, configuration.height() * factor.y]);
                 } else if (mode === ROTATE) {
-                    factor = this.localToGlobalFactor();
-                    var halfWidth = (configuration.width() / 2) * factor.x,
-                        halfHeight = (configuration.height() / 2) * factor.y;
 
-                    this.$centerPoint = {
-                        x: downPoint.x - halfWidth,
-                        y: downPoint.y + halfHeight
-                    };
+                    this.$centerPoint = new Vector([
+                        downPoint.x - (halfWidth * Math.cos(configuration.$.rotation * Math.PI / 180)) - (halfHeight * Math.sin(configuration.$.rotation * Math.PI / 180)),
+                        downPoint.y - (halfWidth * Math.sin(configuration.$.rotation * Math.PI / 180)) + (halfHeight * Math.cos(configuration.$.rotation * Math.PI / 180))
+                    ]);
 
-                    this.$startRotateVector = {
-                        x: halfWidth,
-                        y: -halfHeight
-                    };
+                    this.$startRotateVector = downVector.subtract(this.$centerPoint);
+                    this.set("_rotationRadius", Vector.distance([halfHeight, halfWidth]) / factor.x);
+
+                } else if (mode === GESTURE) {
+                    // gesture -> start from beginning
+
+                    this._resetTransformation();
+
+                    this.set('_offset', configuration.$.offset.clone());
+
+                    var firstFinger = e.touches[0],
+                        secondFinger = e.touches[1];
+
+                    var first = new Vector([firstFinger.pageX, firstFinger.pageY]);
+                    var second = new Vector([secondFinger.pageX, secondFinger.pageY]);
+                    var initialVector = second.subtract(first);
+
+                    this.$downPoints = [first, second];
+
+                    this.$downVector = initialVector;
+                    this.$rotatePoint = initialVector.multiply(0.5);
+                    this.$scaleDiagonalDistance = initialVector.distance();
 
                 }
 
@@ -198,23 +325,30 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     self._up(e, mode);
                 };
 
+                this.$keyDownHandler = function (e) {
+                    self._keyDown(e, mode);
+                };
+
+                this.$keyUpHandler = function (e) {
+                    self._keyUp(e, mode);
+                };
+
                 window.bindDomEvent(this.$moveEvent, this.$moveHandler);
                 window.bindDomEvent(this.$upEvent, this.$upHandler);
-            },
+                window.bindDomEvent("keydown", this.$keyDownHandler);
+                window.bindDomEvent("keyup", this.$keyUpHandler);
 
-            _getDistance: function (p1, p2) {
-                var deltaX = p1.x - p2.x,
-                    deltaY = p1.y - p2.y;
-
-                return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
             },
 
             _move: function (e, mode) {
+
                 if (!this.$moving) {
                     return;
                 }
 
-                var configuration = this.$.configuration;
+                var self = this,
+                    configuration = this.$.configuration;
+
                 if (!configuration) {
                     return;
                 }
@@ -222,9 +356,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var productViewer = this.$.productViewer,
                     x = this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
                     y = this.$hasTouch ? e.changedTouches[0].pageY : e.pageY,
-                    factor = this.globalToLocalFactor();
-                var deltaX = (this.$downPoint.x - x) ,
+                    factor = this.globalToLocalFactor(),
+                    deltaX = (this.$downPoint.x - x) ,
                     deltaY = (this.$downPoint.y - y);
+
+                var scaleFactor;
 
                 if (mode === MOVE) {
                     this.$._offset.set({
@@ -232,59 +368,117 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         y: configuration.$.offset.$.y - deltaY * factor.y
                     });
                 } else if (mode === SCALE) {
-                    var aspectRatio = configuration.width() / configuration.height();
 
-                    if (deltaX >= deltaY) {
-                        y = this.$downPoint.y + deltaX / aspectRatio;
-                    } else {
-                        x = this.$downPoint.x + deltaY / aspectRatio;
-                    }
+                    var downVector = new Vector([x, y]);
+                    var scaleVector = downVector.subtract(this.$centerPoint);
+                    var currentDistance = scaleVector.distance();
 
-                    var mouseDistance = this._getDistance(this.$downPoint, {
-                        x: x,
-                        y: y
-                    });
-
-                    if (deltaX > 0 || deltaY > 0) {
-                        mouseDistance *= -1;
-                    }
-
-                    var scaleFactor = (this.$scaleDiagonalDistance + mouseDistance) / this.$scaleDiagonalDistance;
+                    scaleFactor = currentDistance / this.$scaleDiagonalDistance;
 
                     var scale = {
                         x: scaleFactor * configuration.$.scale.x,
                         y: scaleFactor * configuration.$.scale.y
                     };
+
+                    var offsetX = configuration.$.offset.$.x;
+                    var offsetY = configuration.$.offset.$.y;
+                    var newConfigurationWidth = configuration.width(scale.x);
+                    var newConfigurationHeight = configuration.height(scale.y);
+                    var configurationWidth = configuration.width();
+                    var configurationHeight = configuration.height();
+
                     this.set('_scale', scale);
 
-                    this.set({
-                        _configurationWidth: configuration.width(scale.x),
-                        _configurationHeight: configuration.height(scale.y)
+                    this.$._offset.set({
+                        x: offsetX + (configurationWidth - newConfigurationWidth) / 2,
+                        y: offsetY + (configurationHeight - newConfigurationHeight) / 2
                     });
+
+
+                    self.set({
+                        _configurationWidth: newConfigurationWidth,
+                        _configurationHeight: newConfigurationHeight
+                    });
+
+
 
                 } else if (mode === ROTATE) {
                     var startVector = this.$startRotateVector;
-                    var currentVector = {
-                        x: x - this.$centerPoint.x,
-                        y: y - this.$centerPoint.y
-                    };
+                    var currentVector = Vector.subtract([x, y], this.$centerPoint);
 
-                    var scalarProduct = startVector.x * currentVector.x + startVector.y * currentVector.y;
-                    var distanceCenterPoint = Math.sqrt(startVector.x * startVector.x + startVector.y * startVector.y);
-                    var distanceCurrentPoint = Math.sqrt(currentVector.x * currentVector.x + currentVector.y * currentVector.y);
+                    var scalarProduct = Vector.scalarProduct(startVector, currentVector);
+                    var rotateAngle = Math.acos(scalarProduct / (startVector.distance() * currentVector.distance())) * 180 / Math.PI;
 
-                    var angle = Math.acos(scalarProduct / (distanceCenterPoint * distanceCurrentPoint)) * 180 / Math.PI;
+                    var crossVector = Vector.vectorProduct(startVector, currentVector);
 
-                    var crossProduct = startVector.x * currentVector.y - startVector.y * currentVector.x;
-                    if (crossProduct < 0) {
+                    if (crossVector.components[2] < 0) {
+                        rotateAngle *= -1;
+                    }
+
+                    rotateAngle = Math.round(configuration.$.rotation + rotateAngle, 2);
+
+                    if (rotateSnippingEnabled && !this.$.shiftKey) {
+                        if (rotateAngle < 0) {
+                            rotateAngle += 360;
+                        }
+
+                        rotateAngle %= 360;
+
+                        if (rotateAngle % rotationSnippingAngle < rotationSnippingThreshold) {
+                            rotateAngle = Math.floor(rotateAngle / rotationSnippingAngle) * rotationSnippingAngle;
+                        } else if (rotationSnippingAngle - rotateAngle % rotationSnippingAngle < rotationSnippingThreshold) {
+                            rotateAngle = (Math.floor(rotateAngle / rotationSnippingAngle) + 1) * rotationSnippingAngle
+                        }
+
+                    }
+
+                    this.set("_rotation", rotateAngle);
+
+                } else if (mode === GESTURE) {
+
+                    var firstFinger = e.touches[0],
+                        secondFinger = e.touches[1];
+
+                    var first = new Vector([firstFinger.pageX, firstFinger.pageY]);
+                    var second = new Vector([secondFinger.pageX, secondFinger.pageY]);
+
+                    var vector = second.subtract(first);
+                    var angle = Math.acos(Vector.scalarProduct(vector, this.$downVector) / (this.$downVector.distance() * vector.distance())) * 180 / Math.PI;
+                    if (this.$downVector[0] * vector[1] - this.$downVector[1] * vector[0] < 0) {
+                        console.log("reverse");
                         angle *= -1;
                     }
 
+                    var movement = vector.multiply(0.5).subtract(this.$rotatePoint);
+
+                    console.log(movement.components, this.$._offset, configuration.$.offset);
+
+                    this.$._offset.set({
+                        x: configuration.$.offset.$.x - movement.components[0],
+                        y: configuration.$.offset.$.y - movement.components[1]
+                    });
+
                     this.set("_rotation", Math.round(configuration.$.rotation + angle, 2));
 
+                    scaleWithFactor(second.subtract(first).distance() / this.$scaleDiagonalDistance);
                 }
 
-                e.stopPropagation();
+                function scaleWithFactor(scaleFactor) {
+
+                    var scale = {
+                        x: scaleFactor * configuration.$.scale.x,
+                        y: scaleFactor * configuration.$.scale.y
+                    };
+
+                    self.set('_scale', scale);
+
+                    self.set({
+                        _configurationWidth: configuration.width(scale.x),
+                        _configurationHeight: configuration.height(scale.y)
+                    });
+                }
+
+
             },
 
             _up: function (e, mode) {
@@ -293,25 +487,88 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 var configuration = this.$.configuration;
-                if (!configuration) {
-                    return;
+                if (configuration) {
+                    if (mode === MOVE) {
+                        if(configuration.$.offset && configuration.$.offset !== this.$._offset){
+                            configuration.set('offset', this.$._offset);
+                        }
+                    } else if (mode === SCALE) {
+                        configuration.set({
+                            scale: this.$._scale,
+                            offset: this.$._offset
+                        });
+                    } else if (mode === ROTATE) {
+                        configuration.set('rotation', this.$._rotation);
+                    } else if (mode === GESTURE) {
+                        configuration.set({
+                            rotation: this.$._rotation,
+                            scale: this.$._scale
+                        });
+                    }
                 }
 
-                if (mode === MOVE) {
-                    configuration.set('offset', this.$._offset);
-                } else if (mode === SCALE) {
-                    configuration.set('scale', this.$._scale);
-                } else if (mode === ROTATE) {
-                    configuration.set('rotation', this.$._rotation);
+                this._stopTransformation();
+            },
+
+            _keyDown: function (e, mode) {
+
+                if (e.keyCode === 16) {
+                    this.set("shiftKey", true);
                 }
 
+                if (e.keyCode === 27) {
+                    // esc
+                    this._cancelTransformation();
+                    e.preventDefault();
+                }
+
+                this.$asset.handleKeyDown && this.$asset.handleKeyDown(e)
+            },
+
+            _keyUp: function (e, mode) {
+                if (e.keyCode === 16) {
+                    this.set("shiftKey", false);
+                }
+            },
+
+            _keyPress: function(e){
+                this.$asset.handleKeyPress && this.$asset.handleKeyPress(e)
+            },
+
+            _stopTransformation: function () {
+
+                this._unbindTransformationHandler();
+
+                this.set('_mode', null);
+                this.$moving = false;
+            },
+
+            _unbindTransformationHandler: function () {
                 var window = this.dom(this.$stage.$window);
                 window.unbindDomEvent(this.$moveEvent, this.$moveHandler);
                 window.unbindDomEvent(this.$upEvent, this.$upHandler);
+                window.unbindDomEvent("keydown", this.$keyDownHandler);
+                window.unbindDomEvent("keyup", this.$keyUpHandler);
+            },
 
-                this.$moving = false;
+            _resetTransformation: function () {
+                var configuration = this.$.configuration;
 
-                this.$stage.$bus.trigger("ConfigurationModified");
+                if (configuration) {
+                    this.set({
+                        _offset: configuration.$.offset,
+                        _scale: configuration.$.scale,
+                        _rotation: configuration.$.rotation
+                    });
+
+                    configuration._validateTransform(configuration.$);
+                }
+            },
+
+            _cancelTransformation: function () {
+
+                this._resetTransformation();
+                this._stopTransformation();
 
             },
 
@@ -323,6 +580,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     height: globalToLocalFactor.y * size
                 }
             },
+
+            pixelToViewBox: function(pixel) {
+                return pixel * this.$._globalToLocalFactor["x"];
+            }.onChange("_globalToLocalFactor"),
+
+            scaleIconToViewBox: function() {
+                return 0.1 * this.$._globalToLocalFactor["x"];
+            }.onChange("_globalToLocalFactor"),
 
             deleteConfiguration: function () {
                 if (this.$.product) {
@@ -343,14 +608,90 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return value - minuend;
             },
 
-            half: function(value) {
+            half: function (value) {
                 return value / 2
             },
+
+            flipOffsetX: function () {
+                if (this.$._scale.x < 0) {
+                    return -this.$.configuration.width();
+                }
+
+                return 0;
+            }.onChange("_scale"),
+
+            flipOffsetY: function () {
+                if (this.$._scale.y < 0) {
+                    return -this.$.configuration.height();
+                }
+
+                return 0;
+            }.onChange("_scale"),
+
+            errorClass: function() {
+                return this.$._configurationValid ? "" : "error";
+            }.onChange("_configurationValid"),
 
             isSelectedConfiguration: function () {
                 return this.$.configuration !== null &&
                     this.get('productViewer.editable') === true && this.get("productViewer.selectedConfiguration") === this.$.configuration
-            }.on(["productViewer", "change:selectedConfiguration"])
+            }.on(["productViewer", "change:selectedConfiguration"]),
+
+            isSelectedConfigurationOrConfigurationHasError: function () {
+                return this.$.configuration !== null &&
+                    (this.get('productViewer.editable') === true &&
+                        this.get("productViewer.selectedConfiguration") === this.$.configuration)
+                    ||
+                    (!this.$.configuration.isValid())
+            }.on(["productViewer", "change:selectedConfiguration"], ["configuration", "isValidChanged"]),
+
+            isScalable: function () {
+                return this.isSelectedConfiguration() && this.get("configuration.isScalable()");
+            }.on(["productViewer", "change:selectedConfiguration"]),
+
+            isRotatable: function () {
+                return this.isSelectedConfiguration() && this.get("configuration.isRotatable()");
+            }.on(["productViewer", "change:selectedConfiguration"]),
+
+            isRemovable: function () {
+                return this.isSelectedConfiguration() && this.get("configuration.isRemovable()");
+            }.on(["productViewer", "change:selectedConfiguration"]),
+
+            isRotating: function() {
+                return this.$._mode === ROTATE;
+            }.onChange("_mode"),
+
+            hasError: function() {
+                return !this.$.configuration.isValid() && this.get('productViewer.editable') === true;
+            }.on(["configuration", "isValidChanged"]),
+
+            errorDescription: function() {
+
+                var error = null,
+                    configuration = this.$.configuration;
+
+                if (!(configuration && configuration.$errors)) {
+                    return;
+                }
+
+                for (var key in configuration.$errors.$) {
+                    if (configuration.$errors.$.hasOwnProperty(key)) {
+                        error = configuration.$errors.$[key];
+                        if (error) {
+                            error = key;
+                            break;
+                        }
+                    }
+                }
+
+                if (error) {
+                    return this.$.i18n.ts("configurationViewer.design", error);
+                }
+
+                return null;
+
+            }.on(["configuration", "isValidChanged"])
+
 
         });
     })

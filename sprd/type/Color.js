@@ -1,5 +1,11 @@
 define(['js/core/Base'], function (Base) {
 
+    if (!String.prototype.right) {
+        String.prototype.right = function(length) {
+            return this.substr(this.length - length);
+        }
+    }
+
     var Color = Base.inherit('sprd.type.Color', {
 
         distanceTo: function (color) {
@@ -9,14 +15,25 @@ define(['js/core/Base'], function (Base) {
     }, {
 
         parse: function (color) {
-            if (/^#[0-9A-F]{3,6}$/.test(color)) {
+
+            if (color instanceof Color) {
+                return color;
+            }
+
+            if (/^#[0-9A-F]{3,6}$/i.test(color)) {
                 // #rgb format
                 return Color.fromHexString(color);
-            } else if (Object.prototype.toString.call(color) === "[object Number]") {
+            }
+
+            if (Object.prototype.toString.call(color) === "[object Number]") {
                 return Color.fromHex(color);
-            } else if (color instanceof Object && "r" in color && "g" in color && "b" in color) {
+            }
+
+            if (color instanceof Object && "r" in color && "g" in color && "b" in color) {
                 return new Color.RGB(color.r, color.g, color.b);
             }
+
+            return null;
         },
 
         fromHexString: function (hexString) {
@@ -28,6 +45,10 @@ define(['js/core/Base'], function (Base) {
         },
 
         calculateColorDistance: function (color1, color2) {
+
+            color1 = Color.parse(color1);
+            color2 = Color.parse(color2);
+
             var l1 = color1.toLAB(),
                 l2 = color2.toLAB();
 
@@ -161,8 +182,18 @@ define(['js/core/Base'], function (Base) {
         },
 
         toString: function () {
-            return "#" + this.toHex().toString(16);
+            return "#" + this.toHexString();
         },
+
+        toHexString: function() {
+
+            return ("0" + this.r.toString(16)).right(2) +
+                ("0" + this.g.toString(16)).right(2) +
+                ("0" + this.b.toString(16)).right(2);
+
+        },
+
+
         clone: function () {
             return new this.factory(this.r,this.g,this.b);
         }

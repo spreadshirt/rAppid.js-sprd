@@ -4,8 +4,6 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
     return Image.inherit('sprd.view.AppearanceImage', {
 
         defaults: {
-            // if null use default view
-            view: null,
             appearance: null
         },
 
@@ -33,6 +31,6 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
             }
             return url;
 
-        }.onChange('design')
+        }.onChange('appearance')
     });
 });

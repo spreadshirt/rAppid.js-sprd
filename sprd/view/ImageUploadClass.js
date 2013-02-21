@@ -1,5 +1,5 @@
-define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xaml!sprd/data/ImageServerDataSource', 'sprd/model/UploadImage'],
-    function (View, List, FileSystemImage, flow, ImageServerDataSource, UploadImage) {
+define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xaml!sprd/data/ImageServerDataSource', 'sprd/model/UploadImage', 'sprd/type/UploadDesign', 'sprd/data/ImageUploadService'],
+    function (View, List, FileSystemImage, flow, ImageServerDataSource, UploadImage, UploadDesign, ImageUploadService) {
 
         return View.inherit('sprd.view.ImageUploadClass', {
 
@@ -12,27 +12,34 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
             },
 
             inject: {
-                imageServer: ImageServerDataSource
+                imageServer: ImageServerDataSource,
+                imageUploadService: ImageUploadService
             },
 
-            initialize: function () {
+            _initializationComplete: function () {
                 this.callBase();
 
-                var self = this;
-                this.$.items.bind('add', function () {
-                    self.set('displayNotice', self.$.items.size() === 0);
-                });
+                var self = this,
+                    eventHandler = function () {
+                        self.set('displayNotice', self.$.items.size() === 0);
+                    };
 
-                this.$.items.bind('remove', function () {
-                    self.set('displayNotice', self.$.items.size() === 0);
-                })
+                this.$.items.bind('add', eventHandler);
+                this.$.items.bind('remove', eventHandler);
+                this.$.items.bind('reset', eventHandler);
+
             },
-
 
             dragEnter: function () {
-                this.addClass('drag-over');
+                if (this.$.enabled) {
+                    this.addClass('drag-over');
+                }
                 return false;
             },
+
+            displayNotice: function() {
+                return this.$.enabled && this.$.displayNotice;
+            }.onChange("displayNotice", "enabled"),
 
             dragOver: function (e) {
                 e.preventDefault();
@@ -40,96 +47,75 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
             },
 
             dragExit: function () {
-                this.removeClass('drag-over');
+                if (this.$.enabled) {
+                    this.removeClass('drag-over');
+                }
                 return false;
             },
 
             dropImage: function (e) {
+                if(this.$.enabled){
+                    this.removeClass('drag-over');
+                    if (e && e.$) {
+                        e = e.$;
 
-                this.removeClass('drag-over');
-                if (e && e.$) {
-                    e = e.$;
-
-                    if (e.dataTransfer && e.dataTransfer.files.length) {
-                        for (var i = 0; i < e.dataTransfer.files.length; i++) {
-                            this._addAndUploadFile(e.dataTransfer.files[i]);
+                        if (e.dataTransfer && e.dataTransfer.files.length) {
+                            for (var i = 0; i < e.dataTransfer.files.length; i++) {
+                                this._addAndUploadFile(e.dataTransfer.files[i]);
+                            }
                         }
                     }
                 }
-
                 e.preventDefault();
                 e.stopPropagation();
                 return false;
 
             },
 
-            _addAndUploadFile: function (file) {
+            _addAndUploadFile: function (file, callback) {
+                var uploadDesign = this.uploadFile(file, callback);
+                this._addUploadDesign(uploadDesign);
+            },
+
+            uploadFile: function(file, callback) {
+
                 var self = this,
                     reader = new FileReader();
 
-
-                var img = new FileSystemImage({
+                var fileSystemImage = new FileSystemImage({
                     file: file
                 });
 
+                var uploadDesign = new UploadDesign({
+                    image: fileSystemImage
+                });
+
                 reader.onload = function (evt) {
-                    img.set('url', evt.target.result);
-                    self.$.items.add(img);
+                    fileSystemImage.set('url', evt.target.result);
                 };
 
                 reader.readAsDataURL(file);
+                this.$.imageUploadService._uploadDesign(uploadDesign, function(err) {
+                    if (!err) {
+                        uploadDesign.set('state', UploadDesign.State.LOADED);
+                        self.trigger("uploadComplete", {
+                            uploadDesign: uploadDesign
+                        });
+                    } else {
+                        self.trigger("uploadError", {
+                            error: err,
+                            uploadDesign: uploadDesign
+                        });
+                    }
 
-                this._upload(file, img);
+                    callback && callback(err, uploadDesign);
+                });
 
+                return uploadDesign;
             },
 
-            _upload: function(file, image) {
-
-                var uploadContext = this.$.uploadContext,
-                    imageServer = this.$.imageServer;
-
-                if (!uploadContext) {
-                    this.log("No upload context set. Cancel upload", "warn");
-                    return;
-                }
-
-
-                flow()
-                    .seq(function(cb) {
-                        uploadContext.fetch(null, cb);
-                    })
-                    .seq("design", function() {
-                        var design = uploadContext.getCollection("designs").createItem();
-                        design.set("name", file.name);
-
-                        return design;
-                    })
-                    .seq(function(cb) {
-                        this.vars["design"].save(null, cb);
-                    })
-                    .seq(function(cb) {
-                        var design = this.vars["design"];
-                        var uploadImage = imageServer.createEntity(UploadImage, design.$.id);
-                        uploadImage.set("file", file);
-                        uploadImage.save({
-                            xhrBeforeSend: function(xhr) {
-                                if (xhr && xhr.upload) {
-                                    xhr.upload.onprogress = function (e) {
-                                        image.set('uploadProgress', 100 / e.total * e.loaded);
-                                    }
-                                }
-
-                                xhr.onload = function() {
-                                    image.set('uploadProgress', 100);
-                                }
-
-                            }
-                        }, cb);
-                    })
-                    .exec(function(err, results) {
-                        console.log(err, results);
-                    });
-
+            _addUploadDesign: function (uploadDesign) {
+                this.$.items.add(uploadDesign, 0);
             }
         });
     });

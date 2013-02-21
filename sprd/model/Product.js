@@ -1,270 +1,216 @@
-define([
-    "sprd/data/SprdModel",
-    'js/core/List',
-    'sprd/model/ProductType',
-    'js/data/AttributeTypeResolver',
-    'sprd/entity/DesignConfiguration',
-    'sprd/entity/TextConfiguration',
-    'sprd/entity/Appearance',
-    'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/util/ProductUtil"],
-    function (SprdModel, List, ProductType, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Appearance, TypeResolver, Entity, _, flow, ProductUtil) {
-        return SprdModel.inherit("sprd.model.Product", {
+define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow"], function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow) {
 
-            schema: {
-                productType: ProductType,
-                appearance: {
-                    type: Appearance,
-                    isReference: true
-                },
-                configurations: [new AttributeTypeResolver({
-                    attribute: "type",
-                    mapping: {
-                        "design": DesignConfiguration,
-                        "text": TextConfiguration
-                    }
-                })],
-                restrictions: Object
-            },
+    var undef;
 
-            defaults: {
-                productType: null,
-                appearance: null,
-                view: null,
-                configurations: List
-            },
+    return ProductBase.inherit("sprd.model.Product", {
 
-            price: function () {
-                // TODO format price with currency
-                return this.$.price.vatIncluded;
-            },
-
-            getDefaultView: function () {
-
-                if (this.$.productType) {
-                    var defaultViewId = this.getDefaultViewId();
-
-                    if (defaultViewId !== null) {
-                        return this.$.productType.getViewById(defaultViewId);
-                    } else {
-                        return this.$.productType.getDefaultView();
-                    }
+        schema: {
+            configurations: [new AttributeTypeResolver({
+                attribute: "type",
+                mapping: {
+                    "design": DesignConfiguration,
+                    "text": TextConfiguration
                 }
+            })]
+        },
 
-            },
+        defaults: {
+            configurations: List
+        },
 
-            getDefaultViewId: function(){
-                if (this.$.defaultValues) {
-                    return this.$.defaultValues.defaultView.id;
-                }
-                return null;
-            },
+        ctor: function () {
+            this.callBase();
 
-            getDefaultAppearance: function() {
-                if(this.$.appearance && this.$.productType){
-                    return this.$.productType.getAppearanceById(this.$.appearance.$.id);
-                }
-            },
+            var priceChangeHandler = function () {
+                this.trigger("priceChanged");
+            };
 
-            _addConfiguration: function(configuration) {
-                this.$.configurations.add(configuration);
-            },
+            var productChangeHandler = function () {
+                this.trigger("productChanged");
+            };
 
-            /***
-             * set the product type and converts all configurations
-             *
-             * @param {sprd.model.ProductType} productType
-             * @param callback
-             */
-            setProductType: function(productType, callback) {
+            this.bind("configurations", "add", priceChangeHandler, this);
+            this.bind("configurations", "remove", priceChangeHandler, this);
+            this.bind("configurations", "reset", priceChangeHandler, this);
+            this.bind("configurations", "item:priceChanged", priceChangeHandler, this);
 
-                var self = this,
-                    appearance,
-                    view;
+            this.bind('change:productType', productChangeHandler, this);
+            this.bind('change:appearance', productChangeHandler, this);
+            this.bind('configurations', 'add', productChangeHandler, this);
+            this.bind('configurations', 'remove', productChangeHandler, this);
+            this.bind('configurations', 'reset', productChangeHandler, this);
+            this.bind('configurations', 'item:configurationChanged', productChangeHandler, this);
+            this.bind('configurations', 'item:change:printArea', productChangeHandler, this);
 
-                flow()
-                    .seq(function(cb) {
-                        productType.fetch(null, cb);
-                    })
-                    .seq(function() {
-                        if (self.$.appearance) {
-                            appearance = productType.getClosestAppearance(self.$.appearance.getMainColor());
-                        } else {
-                            appearance = productType.getDefaultAppearance();
-                        }
-                    })
-                    .seq(function() {
-                        // determinate closest view for new product type
-                        var currentView = self.$.view;
+        },
 
-                        if (currentView) {
-                            view = productType.getViewByPerspective(currentView.$.perspective);
-                        }
-
-                        if (!view) {
-                            view = productType.getDefaultView();
-                        }
-
-                        // self.set('view', view);
-
-                    })
-                    .seq(function () {
-                        // TODO: convert all configurations: size, position, print type
-
-                        var configurations = self.$.configurations.$items,
-                            removeConfigurations = [];
-
-                        for (var i = 0; i < configurations.length; i++) {
-                            var configuration = configurations[i],
-                                currentPrintArea = configuration.$.printArea,
-                                currentView = currentPrintArea.getDefaultView(),
-                                targetView = null,
-                                targetPrintArea = null;
-
-                            if (currentView) {
-                                targetView = productType.getViewByPerspective(currentView.$.perspective);
-                            }
-
-                            if (targetView) {
-                                targetPrintArea = targetView.getDefaultPrintArea();
-                            }
-
-                            if (targetPrintArea) {
-                                configuration.set('printArea', targetPrintArea);
-
-                                var factor = targetPrintArea.get("boundary.size.width") / currentPrintArea.get("boundary.size.width");
-                                configuration.set('scale', {
-                                    x: configuration.$.scale.x * factor,
-                                    y: configuration.$.scale.y * factor
-                                });
-                                configuration.$.offset.set({
-                                    x: configuration.$.offset.$.x * factor,
-                                    y: configuration.$.offset.$.y * factor
-                                });
-
-                            } else {
-                                // no print area found, remove configuration
-                                removeConfigurations.push(configuration);
-                            }
-                        }
-
-                        self.$.configurations.remove(removeConfigurations);
-
-                    })
-                    .seq(function() {
-                        // first set product type
-                        self.set("productType", productType);
-                        // and then the appearance, because appearance depends on product type
-                        self.set("appearance", appearance);
-                    })
-                    .exec(callback)
-
-            },
-
-            addDesign: function (params, callback) {
-                params = _.defaults({}, params, {
-                    design: null,
-                    perspective: null, // front, back, etc...
-                    view: null,
-                    printArea: null,
-                    printType: null
+        price: function () {
+            // TODO format price with currency
+            if (this.$.price) {
+                return this.$.price;
+            } else {
+                // calculate price
+                var price = new Price({
+                    vatIncluded: this.get("productType.price.vatIncluded"),
+                    currency: this.get('productType.price.currency')
+                });
+                this.$.configurations.each(function (configuration) {
+                    price.add(configuration.price());
                 });
 
-                var self = this,
-                    design = params.design,
-                    productType = this.$.productType,
-                    printArea = params.printArea,
-                    view = params.view,
-                    appearance = this.$.appearance,
-                    printType = params.printType;
-
-                if (!design) {
-                    callback(new Error("No design"));
-                    return;
-                }
-
-                if (!productType) {
-                    callback(new Error("ProductType not set"));
-                    return;
-                }
-
-                if (!appearance) {
-                    callback(new Error("Appearance for product not set"));
-                    return;
-                }
-
-                flow()
-                    .par(function (cb) {
-                        design.fetch(null, cb);
-                    }, function (cb) {
-                        productType.fetch(null, cb);
-                    })
-                    .seq("printArea", function () {
-
-                        if (!printArea && params.perspective && !view) {
-                            view = productType.getViewByPerspective(params.perspective);
-                        }
-
-                        if (!printArea && view) {
-                            // get print area by view
-                            if (!productType.containsView(view)) {
-                                throw new Error("View not on ProductType");
-                            }
-
-                            // TODO: look for print area that supports print types, etc...
-                            printArea = view.getDefaultPrintArea();
-                        }
-
-                        view = self.$.view || self.getDefaultView();
-                        if (!printArea && view) {
-                            printArea = view.getDefaultPrintArea();
-                        }
-
-                        if (!printArea) {
-                            throw new Error("target PrintArea couldn't be found.");
-                        }
-
-                        return printArea;
-                    })
-                    .seq("printType", function() {
-                        var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
-
-                        if (printType && !_.contains(possiblePrintTypes, printType)) {
-                            throw new Error("PrintType not possible for design and printArea");
-                        }
-
-                        printType = printType || possiblePrintTypes[0];
-
-                        if (!printType) {
-                            throw new Error("No printType available");
-                        }
-
-                        return printType;
-                    })
-                    .seq(function(cb) {
-                        printType.fetch(null, cb);
-                    })
-                    .seq(function() {
-                        var configuration = new DesignConfiguration({
-                            printType: printType,
-                            printArea: printArea,
-                            design: design
-                        });
-
-                        self._addConfiguration(configuration);
-                    })
-                    .exec(callback)
-
-            } ,
-
-            compose: function(){
-                var ret = this.callBase();
-
-                ret.restrictions = {
-                    freeColorSelection: false,
-                    example: false
-                };
-
-                return ret;
+                return price;
             }
-        });
+        }.on("priceChanged", "change:productType"),
+
+        _addConfiguration: function (configuration) {
+            this.$.configurations.add(configuration);
+        },
+
+        getConfigurationsOnView: function (view) {
+
+            view = view || this.$.view;
+
+            var productType = this.$.productType;
+
+            if (view && productType) {
+
+                if (productType.containsView(view)) {
+                    return this.getConfigurationsOnPrintAreas(view.getPrintAreas());
+                } else {
+                    throw new Error("View not on product type");
+                }
+
+            }
+
+            return [];
+
+        },
+
+        getConfigurationsOnPrintAreas: function (printAreas) {
+            printAreas = printAreas || [];
+
+            if (!(printAreas instanceof Array)) {
+                printAreas = [printAreas];
+            }
+
+            var ret = [];
+
+            this.$.configurations.each(function (configuration) {
+                if (_.contains(printAreas, configuration.$.printArea)) {
+                    ret.push(configuration);
+                }
+            });
+
+            return ret;
+
+        },
+
+        compose: function () {
+            var ret = this.callBase();
+
+            ret.restrictions = {
+                freeColorSelection: false,
+                example: false
+            };
+
+            var viewId = this.get("view.id");
+
+            if (viewId) {
+                ret.defaultValues = {
+                    defaultView: {
+                        id: viewId
+                    }
+                };
+            }
+
+            return ret;
+        },
+
+        fetch: function (options, callback) {
+            var self = this;
+            this.callBase(options, function (err) {
+                if (!err) {
+                    self.$originalProduct = self.clone();
+                }
+                callback && callback(err, self);
+            });
+        },
+
+        hasChanges: function () {
+            return this.$originalProduct.isDeepEqual(this);
+        },
+
+        save: function (options, callback) {
+
+            if (this.$originalProduct) {
+                if (this.hasChanges()) {
+                    this.set('id', undef);
+                } else {
+                    callback && callback(null, this);
+                    return;
+                }
+            }
+
+            var self = this;
+            this.callBase(options, function (err) {
+                if (!err) {
+                    self.$originalProduct = self.clone();
+                }
+
+                callback && callback(err, self);
+            });
+        },
+
+        init: function (callback) {
+            var self = this;
+
+            flow()
+                .seq(function (cb) {
+                    if (self.isNew()) {
+                        cb();
+                    } else {
+                        self.fetch(null, cb);
+                    }
+                })
+                .seq(function (cb) {
+                    var productType = self.$.productType;
+                    productType.fetch(null, cb);
+                })
+                .seq(function () {
+                    var productType = self.$.productType;
+
+                    self.set({
+                        appearance: productType.getAppearanceById(self.$.appearance.$.id),
+                        view: productType.getViewById(self.get("defaultValues.defaultView.id")) || productType.getDefaultView()
+                    });
+                })
+                .seq(function (cb) {
+                    flow()
+                        .parEach(self.$.configurations.$items, function (configuration, cb) {
+                            configuration.init(cb);
+                        })
+                        .exec(cb);
+                })
+                .exec(function (err) {
+                    if (err) {
+                        callback && callback(err);
+                    } else {
+                        callback && callback(null, self);
+                    }
+                });
+        },
+
+        appearanceBrightness: function () {
+
+            var color = this.get("appearance.getMainColor()");
+
+            if (color) {
+                return color.distanceTo("#000000") < color.distanceTo("#FFFFFF") ?
+                    "dark" : "bright";
+            }
+
+            return "";
+        }.onChange(["appearance"])
+
     });
+});

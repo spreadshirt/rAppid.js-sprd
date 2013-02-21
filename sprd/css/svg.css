@@ -4,9 +4,13 @@ rect {
 
 .print-area-border {
     stroke-width: 1;
-    stroke: #333;
+    stroke: white;
     vector-effect: non-scaling-stroke;
     shape-rendering: crispEdges;
+}
+
+.bright .print-area-border {
+    stroke : black;
 }
 
 .configuration-handle {
@@ -14,12 +18,41 @@ rect {
     stroke-width: 1;
     stroke: black;
     vector-effect: non-scaling-stroke;
-    shape-rendering: crispEdges;
 }
 
 .configuration-boundary {
     stroke-dasharray: 9, 5;
-    stroke: white;
     stroke-width: 1;
+    stroke: white;
     vector-effect: non-scaling-stroke;
+}
+
+.bright .configuration-boundary {
+    stroke: black;
+}
+
+.configuration-viewer.error {
+    /*filter: url(library.svg#configurationError);*/
+}
+
+.configuration-viewer.error .configuration-boundary {
+    stroke: red;
+    stroke-width: 3;
+}
+
+.configuration-viewer .rotation-center {
+    fill: #ffa53b;
+    stroke: none;
+}
+
+.configuration-viewer .rotation-circle {
+    fill: none;
+    stroke-width: 1;
+    stroke: #ffa53b;
+    vector-effect: non-scaling-stroke;
+}
+
+.text-configuration-background {
+    fill: red;
+    fill-opacity: 0.01;
 }

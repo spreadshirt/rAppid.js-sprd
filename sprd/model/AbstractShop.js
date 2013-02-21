@@ -7,8 +7,9 @@ define([
     'sprd/model/ProductType',
     'sprd/model/ProductTypeDepartment',
     'sprd/model/ArticleCategory',
+    'sprd/model/DesignCategory',
     'sprd/model/Article', 'sprd/model/Country', 'sprd/model/PrintType', 'sprd/model/FontFamily', "sprd/model/Product"],
-    function (SprdModel, Collection, Basket, Currency, Design, ProductType, ProductTypeDepartment, ArticleCategory, Article, Country, PrintType, FontFamily, Product) {
+    function (SprdModel, Collection, Basket, Currency, Design, ProductType, ProductTypeDepartment, ArticleCategory, DesignCategory, Article, Country, PrintType, FontFamily, Product) {
 
         return SprdModel.inherit("sprd.model.Shop", {
             schema: {
@@ -24,7 +25,7 @@ define([
                 fontFamilies: Collection.of(FontFamily),
                 productTypeDepartments: Collection.of(ProductTypeDepartment),
 //            shippingTypes: Collection,
-//            designCategories: Collection,
+            designCategories: Collection.of(DesignCategory),
                 designs: Collection.of(Design),
                 articleCategories: Collection.of(ArticleCategory),
                 articles: Collection.of(Article),

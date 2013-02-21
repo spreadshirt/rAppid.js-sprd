@@ -27,7 +27,7 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
                 return this.$.item.$.product;
             }
             return null;
-        }.on(['item', 'change:product']),
+        }.on(['item', 'change:product']).onChange('item'),
 
         getArticle: function () {
             if (this.$.item instanceof Article) {

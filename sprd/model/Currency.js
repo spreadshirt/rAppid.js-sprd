@@ -4,13 +4,18 @@ define(["sprd/data/SprdModel", "underscore"], function (Model, _) {
 
     return Model.inherit('sprd.model.Currency', {
 
+        defaults: {
+            decimalCount: 2
+        },
+
         formatPrice: function (price, type) {
             if(!price) {
                 return null;
             }
             type = type || "vatIncluded";
-            return this.formatValue(price[type]);
-        },
+            return this.formatValue(price.get(type));
+        }.on("change"),
+
         formatValue: function(val){
 
             var pow= Math.pow(10, this.$.decimalCount);

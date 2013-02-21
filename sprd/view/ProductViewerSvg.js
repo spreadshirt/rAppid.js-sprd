@@ -19,7 +19,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 _view: null,
                 selectedConfiguration: null,
 
-                componentClass: "product-viewer",
+                componentClass: "product-viewer {product.appearanceBrightness()}",
 
                 editable: true
             },
@@ -36,6 +36,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
 
                 this.callBase();
             },
+
 
             initialize: function () {
 
@@ -97,7 +98,7 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 this._renderProductTypeView(this.$._productType, view);
             },
 
-            _commitProduct: function(product) {
+            _commitProduct: function (product) {
                 var productTypeViewViewerCache = this.$productTypeViewViewerCache;
                 for (var key in productTypeViewViewerCache) {
                     if (productTypeViewViewerCache.hasOwnProperty(key)) {
@@ -109,6 +110,8 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             _renderProductTypeView: function (productType, view) {
                 if (productType && view && productType.containsView(view)) {
                     var cacheId = productType.$.id + "_" + view.$.id;
+
+                    view && this.setViewBox(0, 0, view.get('size.width'), view.get('size.height'));
 
                     if (!this.$productTypeViewViewerCache[cacheId]) {
                         this.$productTypeViewViewerCache[cacheId] = this.createComponent(ProductTypeViewViewer, {
@@ -133,6 +136,13 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
             destroy: function () {
                 this._removeProductTypeViewViewers();
                 this.callBase();
+            },
+
+            getViewerForConfiguration: function(configuration){
+                if(this.$currentProductTypeViewViewer){
+                    return this.$currentProductTypeViewViewer.getViewerForConfiguration(configuration);
+                }
+                return null;
             }
 
         });

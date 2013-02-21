@@ -13,6 +13,25 @@ define(['js/data/Entity', 'sprd/model/Currency'], function(Entity, Currency) {
             vatIncluded: Number,
             vat: Number,
             currency: Currency
+        },
+
+        formattedPrice: function () {
+            var currency = this.$.currency;
+
+            if (currency) {
+                return currency.formatPrice(this);
+            }
+
+            return null;
+        },
+
+        add: function(price){
+            if(price){
+                this.set({
+                    vatIncluded: this.$.vatIncluded + price.$.vatIncluded,
+                    vatExcluded: this.$.vatExcluded + price.$.vatExcluded
+                })
+            }
         }
     })
 });

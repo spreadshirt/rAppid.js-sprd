@@ -6,7 +6,10 @@ define([
 
         defaults: {
             type: "preview",
-            productType: null
+            productType: null,
+
+            appearance: null,
+            view: null
         },
 
         imageUrl: function () {

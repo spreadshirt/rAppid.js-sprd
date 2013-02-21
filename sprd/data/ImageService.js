@@ -14,11 +14,28 @@ define(['js/core/Component','underscore'], function(Component, _) {
         },
 
         designImage: function(designId, options) {
-            return this.buildUrl(['designs', designId], ImageService.getImageSizeParameter(options));
+            var parameter = ImageService.getImageSizeParameter(options) || {};
+
+            var printColors = options.printColors;
+            if (printColors) {
+                for (var i = 0; i < printColors.length; i++) {
+                    parameter["colors[" + i + "]"] = printColors[i];
+                }
+            }
+
+            return this.buildUrl(['designs', designId], parameter);
         },
 
         appearanceImage: function(appearanceId, options){
             return this.buildUrl(['appearances',appearanceId], ImageService.getImageSizeParameter(options));
+        },
+
+        printColorImage: function (printColorId, options) {
+            return this.buildUrl(['printColors', printColorId], ImageService.getImageSizeParameter(options));
+        },
+
+        emptyImage: function() {
+            return "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
         },
 
         buildUrl: function(url, parameter) {

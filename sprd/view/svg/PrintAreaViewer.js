@@ -26,7 +26,13 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
 
             // Could be done via binding, but viewMaps don't change at runtime and so just evalulating
             this.translate(this.get("_viewMap.offset.x"), this.get("_viewMap.offset.y"));
-            this.transform(this.get("_viewMap.transform"));
+
+            var transformations = this.get("_viewMap.transformations.operations");
+            if (transformations) {
+                this.$.transformations.add(new SvgElement.Transform({
+                    transform: transformations
+                }));
+            }
 
             var border = this.createComponent(SvgElement, {
                 tagName: "rect",
@@ -35,7 +41,21 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
                 height: this.get('_viewMap.printArea.boundary.size.height')
             });
 
+            var defaultBox = this.get("_viewMap.printArea.defaultBox");
+            if (defaultBox) {
+                defaultBox = this.createComponent(SvgElement, {
+                    tagName: "rect",
+                    componentClass: "print-area-default-box",
+                    x: defaultBox.x,
+                    y: defaultBox.y,
+                    width: defaultBox.width,
+                    height: defaultBox.height
+                });
+            }
+
             this.addChild(border);
+
+            defaultBox && this.addChild(defaultBox);
 
             this.callBase();
         },
@@ -44,8 +64,20 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
             this.bind('product.configurations', 'add', this._onConfigurationAdded, this);
             this.bind('product.configurations', 'change', this._onConfigurationChanged, this);
             this.bind('product.configurations', 'remove', this._onConfigurationRemoved, this);
+            this.bind('product.configurations', 'reset', this._onConfigurationsReset, this);
 
             this.callBase();
+        },
+
+        _onConfigurationsReset: function (e) {
+            var self = this;
+
+            this._removeConfigurationViewer();
+            if (this.$.product && this.$.product.$.configurations) {
+                this.$.product.$.configurations.each(function (configuration) {
+                    self._addConfiguration(configuration);
+                });
+            }
         },
 
         _onConfigurationAdded: function (e) {
@@ -62,7 +94,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
                 return;
             }
 
-            if (configuration.$.printArea !== this.get('_viewMap.printArea')) {
+            if (configuration.$.printArea.$.id !== this.get('_viewMap.printArea.id')) {
                 // not for this print area
                 return;
             }
@@ -80,10 +112,23 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
 
                 this.addChild(viewer);
 
+                this.$.productViewer.trigger('configurationViewerAdded',viewer);
+
             }
         },
 
-        _renderProduct: function(product, oldProduct){
+        getViewerForConfiguration: function (configuration) {
+            for (var key in this.$configurationViewerCache) {
+                if (this.$configurationViewerCache.hasOwnProperty(key)) {
+                    if (this.$configurationViewerCache[key].$.configuration === configuration) {
+                        return this.$configurationViewerCache[key];
+                    }
+                }
+            }
+            return null;
+        },
+
+        _renderProduct: function (product, oldProduct) {
 
             if (oldProduct) {
                 this._removeConfigurationViewer();
@@ -111,7 +156,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
             }
         },
 
-        _removeConfigurationViewer: function() {
+        _removeConfigurationViewer: function () {
             for (var key in this.$configurationViewerCache) {
                 if (this.$configurationViewerCache.hasOwnProperty(key)) {
                     var viewer = this.$configurationViewerCache[key];

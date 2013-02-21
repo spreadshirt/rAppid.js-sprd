@@ -1,5 +1,5 @@
-define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/model/processor/DefaultProcessor", "sprd/model/processor/BasketProcessor", "sprd/model/processor/BasketItemProcessor"],
-    function (SprdDataSource, RestDataSource, _, SprdModel, DefaultProcessor, BasketProcessor, BasketItemProcessor) {
+define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/model/processor/DefaultProcessor", "sprd/model/processor/BasketProcessor", "sprd/model/processor/BasketItemProcessor", "sprd/data/SprdApiQueryComposer"],
+    function (SprdDataSource, RestDataSource, _, SprdModel, DefaultProcessor, BasketProcessor, BasketItemProcessor, SprdApiQueryComposer) {
 
         var SprdApiDataSource = SprdDataSource.inherit('sprd.data.SprdApiDataSource', {
 
@@ -16,7 +16,7 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
                 BasketItemProcessor: BasketItemProcessor
             },
 
-            getQueryParameter: function (method, resource) {
+            getQueryParameters: function (method, resource) {
                 return _.defaults({
                     mediaType: "json"
                 }, this.callBase());
@@ -24,6 +24,20 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
 
             createContext: function (contextModel, properties, parentContext) {
                 return new SprdApiDataSource.SprdApiContext(this, contextModel, properties, parentContext);
+            },
+
+            getQueryComposer: function(){
+                return SprdApiQueryComposer;
+            },
+
+            _getContextPath: function(data) {
+                var match = /\/api\/v1\/(.*)$/.exec(data[this.$.determinateContextAttribute]);
+
+                if (match) {
+                    return match[1];
+                }
+
+                return this.callBase();
             },
 
             /***
@@ -76,7 +90,7 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
         });
 
         SprdApiDataSource.SprdApiContext = RestDataSource.RestContext.inherit({
-            getQueryParameter: function () {
+            getQueryParameters: function () {
 
                 var parameter = {
                     mediaType: "json"

@@ -1,0 +1,4 @@
+<sprdSvg:TextConfigurationRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:sprdSvg="sprd.view.svg" xmlns:textUi="text.ui">
+    <rect class="text-configuration-background" width="{width}" height="{height}" fill="red"/>
+    <textUi:SvgTextArea cid="textArea" textFlow="{configuration.textFlow}" width="{configuration.textArea.width}" height="{configuration.textArea.height}"/>
+</sprdSvg:TextConfigurationRendererClass>

@@ -93,6 +93,17 @@ define(['js/svg/SvgElement', "sprd/data/ImageService", "sprd/view/svg/PrintAreaV
             }
         },
 
+        getViewerForConfiguration: function(configuration){
+            var viewer;
+            for(var i = 0; i < this.$printAreas.length; i++){
+                viewer = this.$printAreas[i].getViewerForConfiguration(configuration);
+                if(viewer){
+                    return viewer;
+                }
+            }
+            return null;
+        },
+
         _commitProduct: function(product) {
             for (var i = 0; i < this.$printAreas.length; i++) {
                 this.$printAreas[i].set('product', product);

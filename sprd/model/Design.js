@@ -1,25 +1,56 @@
-define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd/entity/DesignColor', 'sprd/entity/Price'], function (SprdModel, PrintType, Size, DesignColor, Price) {
-	return SprdModel.inherit('sprd.model.Design', {
-		defaults : {
-			name         : '',
-			description  : '',
-			restrictions : null
-		},
+define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd/entity/DesignColor', 'sprd/entity/Price', 'js/data/Entity'], function (SprdModel, PrintType, Size, DesignColor, Price, Entity) {
+
+    var DENY_ON = {
+        No: "no",
+        OnPrintArea: "onPrintArea",
+        OnProduct: "onProduct"
+    };
+
+    var Restrictions = Entity.inherit('sprd.model.Design.Restrictions', {
+
+        defaults: {
+            denyOtherDesigns: DENY_ON.No,
+            denyOtherText: DENY_ON.No
+        },
+
+        schema: {
+            fixedColors: Boolean,
+            colorCount: Number,
+            ownText: Boolean,
+            minimumScale: Number,
+
+            denyOtherText: String,
+            denyOtherDesigns: String,
+
+            allowScale: Boolean,
+            allowFlip: Boolean,
+            allowRotate: Boolean
+        }
+
+    });
+
+    var Design = SprdModel.inherit('sprd.model.Design', {
+        defaults: {
+            name: '',
+            description: '',
+            restrictions: null
+        },
 
         schema: {
             name: String,
             description: String,
             size: Size,
-            printTypes: [PrintType] ,
-
+            printTypes: [PrintType],
 
             tags: String,
 
             colors: [DesignColor],
-            price: Price
+            price: Price,
+
+            restrictions: Restrictions
         },
 
-        parse: function(data){
+        parse: function (data) {
             data = this.callBase();
 
             if (data.href) {
@@ -30,5 +61,12 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             return data;
         }
     });
+
+
+    Design.Restrictions = Restrictions;
+
+
+
+    return Design;
 
 });

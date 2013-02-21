@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/model/PrintType'], function (Entity, PrintType) {
+define(['js/data/Entity', 'sprd/model/PrintType', 'sprd/entity/Size'], function (Entity, PrintType, Size) {
 
     var PrintAreaRestriction = Entity.inherit('sprd.entity.PrintArea.Restriction', {
 
@@ -18,7 +18,10 @@ define(['js/data/Entity', 'sprd/model/PrintType'], function (Entity, PrintType) 
     var PrintArea = Entity.inherit('sprd.entity.PrintArea', {
 
         defaults: {
-            restrictions: PrintAreaRestriction
+            restrictions: PrintAreaRestriction,
+            boundary: null,
+            _size: "{boundary.size}",
+            defaultBox: null
         },
 
         schema: {
@@ -27,6 +30,17 @@ define(['js/data/Entity', 'sprd/model/PrintType'], function (Entity, PrintType) 
 
         getProductType: function () {
             return this.$parent;
+        },
+
+        _commit_size: function(size) {
+            if (size) {
+                this.set("defaultBox", {
+                    x: size.width / 6,
+                    y: size.height / 7,
+                    width: size.width * 4 / 6,
+                    height: size.height * 5 / 7
+                });
+            }
         },
 
         getDefaultView: function () {

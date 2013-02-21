@@ -1,6 +1,6 @@
 <ui:SelectionView xmlns:js="js.core" xmlns:ui="js.ui" xmlns:view="sprd.view" xmlns="http://www.w3.org/1999/xhtml"
                   items="{product.productType.views}"
-                  needsSelection="true"
+                  selectedItem="{{product.view}}"
                   multiSelect="false"
                   itemKey="view"
                   tagName="ul"

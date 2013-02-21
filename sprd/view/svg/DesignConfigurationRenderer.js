@@ -12,15 +12,21 @@ define(['sprd/view/svg/ConfigurationRenderer', "sprd/data/ImageService"], functi
         },
 
         url: function () {
-            if (this.$.imageService && this.$.configuration && this.$.configuration.$.design) {
-                return this.$.imageService.designImage(this.$.configuration.$.design.$.id, {
+
+            if (this.$.imageService && this.$.configuration && this.$.configuration.$.design && this.$.configuration.$.printColors) {
+                var options = {
                     width: this.$._width,
                     height: this.$._height
-                });
+                };
+
+                options.printColors =  this.$.configuration.getPrintColorsAsRGB();
+
+                return this.$.imageService.designImage(this.$.configuration.$.design.$.id, options);
             }
 
+
             return null;
-        }.onChange("design")
+        }.onChange("design").on(["configuration.printColors", "reset"])
 
     })
 });
