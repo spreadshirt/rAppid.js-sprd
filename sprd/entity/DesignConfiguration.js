@@ -32,7 +32,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
         _commitPrintType: function (printType) {
             // print type changed -> convert colors
 
-            if (!printType || !printType.get('restrictions.colorSpace')) {
+            if (!printType) {
                 return;
             }
 
