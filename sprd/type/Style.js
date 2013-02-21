@@ -1,10 +1,6 @@
-define(["text/type/Style"], function(Style) {
+define(["text/type/Style","underscore"], function(Style,_) {
 
     return Style.inherit({
-        defaults: {
-            printTypeColor: null,
-            font: null
-        },
 
         _getUniqueFontName: function() {
             var font = this.$.font;
@@ -34,6 +30,9 @@ define(["text/type/Style"], function(Style) {
             ret.color = this._getColor();
 
             return ret;
+        },
+        clone: function(){
+            return new this.factory(_.clone(this.$));
         }
     });
 
