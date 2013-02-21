@@ -1,6 +1,6 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'text/entity/TextFlow'], function (Configuration, flow, Size, TextFlow) {
-	return Configuration.inherit('sprd.entity.TextConfiguration', {
-		defaults : {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'text/entity/TextFlow', 'underscore'], function (Configuration, flow, Size, TextFlow, _) {
+    return Configuration.inherit('sprd.entity.TextConfiguration', {
+        defaults: {
             textArea: null,
             textFlow: TextFlow,
             composedTextFlow: null
@@ -8,7 +8,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'text/entity/Te
 
         type: "text",
 
-        init: function(callback) {
+        init: function (callback) {
 
             var self = this,
                 $$ = self.$$,
@@ -17,17 +17,17 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'text/entity/Te
                 printArea;
 
             flow()
-                .seq(function(cb) {
+                .seq(function (cb) {
                     printType.fetch(null, cb);
                 })
-                .seq(function() {
+                .seq(function () {
                     if ($$ && $$.printArea) {
-                        printArea = self.$context.$contextModel.$.productType.getPrintAreaById($$.printArea.$.id)
+                        printArea = self.$context.$contextModel.$.productType.getPrintAreaById($$.printArea.$.id);
                     } else {
                         printArea = self.$.printArea;
                     }
                 })
-                .seq(function() {
+                .seq(function () {
                     if (!self.textArea) {
 
                         var size = printArea.get("defaultBox") || printArea.get("boundary.size");
@@ -41,7 +41,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'text/entity/Te
                 .exec(callback);
         },
 
-        getUsedFonts: function() {
+        getUsedFonts: function () {
             var fonts = [];
 
             if (this.$.textFlow) {
@@ -58,15 +58,17 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'text/entity/Te
                         fonts.push(font);
                     }
 
-                    !flowElement.isLeaf && flowElement.$.children.each(function (child) {
-                        addFonts(child);
-                    });
+                    if (!flowElement.isLeaf) {
+                        flowElement.$.children.each(function (child) {
+                            addFonts(child);
+                        });
+                    }
                 }
             }
         },
 
-        size: function() {
+        size: function () {
             return this.$.textArea || Size.empty;
         }.onChange("textArea")
-	});
+    });
 });
