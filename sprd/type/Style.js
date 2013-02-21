@@ -1,10 +1,6 @@
 define(["text/type/Style"], function(Style) {
 
     return Style.inherit({
-        defaults: {
-            printTypeColor: null,
-            font: null
-        },
 
         _getUniqueFontName: function() {
             var font = this.$.font;
