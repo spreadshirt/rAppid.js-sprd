@@ -1,8 +1,8 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'text/entity/TextFlow', 'underscore'], function (Configuration, flow, Size, TextFlow, _) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore'], function (Configuration, flow, Size, _) {
     return Configuration.inherit('sprd.entity.TextConfiguration', {
         defaults: {
             textArea: null,
-            textFlow: TextFlow,
+            textFlow: null,
             composedTextFlow: null
         },
 
