@@ -4,12 +4,12 @@ define(["underscore", "sprd/util/ArrayUtil","js/core/List","sprd/model/ProductTy
 
         getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearanceId) {
             return ArrayUtil.average(design.$.printTypes.$items,
-                this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId))
+                this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId));
         },
 
         getPossiblePrintTypesForTextOnPrintArea: function (fontFamily, printArea, appearanceId) {
             return ArrayUtil.average(fontFamily.$.printTypes.$items,
-                this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId))
+                this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId));
         },
 
         getPossiblePrintTypesForPrintAreas: function (printAreas, appearanceId) {
@@ -39,7 +39,6 @@ define(["underscore", "sprd/util/ArrayUtil","js/core/List","sprd/model/ProductTy
             minDistance = minDistance || 2;
 
             var colors = new List();
-            var appearances = [];
 
             flow()
                 .parEach(productTypes,function(item, cb){
@@ -54,7 +53,7 @@ define(["underscore", "sprd/util/ArrayUtil","js/core/List","sprd/model/ProductTy
                         if (!merge){
                             colors.add(appearance.$.color);
                         }
-                    })
+                    });
                 })
                 .exec(function(err){
                     callback(err, colors);
