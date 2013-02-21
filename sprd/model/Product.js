@@ -1,4 +1,7 @@
 define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow"], function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow) {
+
+    var undef;
+
     return ProductBase.inherit("sprd.model.Product", {
 
         schema: {
@@ -141,7 +144,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
             if (this.$originalProduct) {
                 if (this.hasChanges()) {
-                    this.set('id', undefined);
+                    this.set('id', undef);
                 } else {
                     callback && callback(null, this);
                     return;
