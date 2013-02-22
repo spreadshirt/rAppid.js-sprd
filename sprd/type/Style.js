@@ -20,14 +20,36 @@ define(["text/type/Style","underscore"], function(Style,_) {
             return null;
         },
 
+        _getPrintColorId: function () {
+            var printTypeColor = this.$.printTypeColor;
+            if (printTypeColor) {
+                return printTypeColor.$.id;
+            }
+
+            return null;
+        },
+
         compose: function() {
 
             var ret = this.callBase();
 
-            ret.fontFamily = this._getUniqueFontName();
-            ret.fontWeight = "normal"; // done via different font
-            ret.fontStyle = "normal";
+            if (this.$.font) {
+                ret.fontFamily = this._getUniqueFontName();
+                ret.fontWeight = "normal"; // done via different font
+                ret.fontStyle = "normal";
+            }
+
             ret.color = this._getColor();
+            ret.printColorId = this._getPrintColorId();
+
+            delete ret.printTypeColor;
+            delete ret.font;
+
+            for (var key in ret) {
+                if (ret.hasOwnProperty(key) && ret[key] === null) {
+                    delete ret[key];
+                }
+            }
 
             return ret;
         },
