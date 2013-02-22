@@ -11,10 +11,10 @@ define(['sprd/view/svg/ConfigurationRenderer', 'underscore'], function(Configura
         ctor: function() {
             this.callBase();
 
-            this.bind("configuration", "formatChanged", function() {
+            this.bind("configuration.textFlow", "operationCompleted", function() {
                 this._loadFonts();
                 var textArea = this.$.textArea;
-                textArea && textArea._renderTextFlow(textArea.$.textFlow);
+                textArea && textArea._renderTextFlow(this.$.configuration.$.textFlow);
             }, this);
         },
 
