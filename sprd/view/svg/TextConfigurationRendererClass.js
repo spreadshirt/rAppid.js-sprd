@@ -8,16 +8,6 @@ define(['sprd/view/svg/ConfigurationRenderer', 'underscore'], function(Configura
             textArea: null
         },
 
-        ctor: function() {
-            this.callBase();
-
-            this.bind("configuration.textFlow", "operationCompleted", function() {
-                this._loadFonts();
-                var textArea = this.$.textArea;
-                textArea && textArea._renderTextFlow(this.$.configuration.$.textFlow);
-            }, this);
-        },
-
         _initialize: function() {
             this.callBase();
             this._loadFonts();
