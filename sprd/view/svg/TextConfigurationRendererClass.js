@@ -1,4 +1,4 @@
-define(['sprd/view/svg/ConfigurationRenderer', 'underscore'], function(ConfigurationRenderer, _) {
+define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], function(ConfigurationRenderer, ImageService) {
 
     return ConfigurationRenderer.inherit("sprd.view.svg.TextConfigurationRendererClass", {
 
@@ -6,6 +6,10 @@ define(['sprd/view/svg/ConfigurationRenderer', 'underscore'], function(Configura
             tagName: "g",
             componentClass: "text-configuration",
             textArea: null
+        },
+
+        inject: {
+            imageService: ImageService
         },
 
         _initialize: function() {
@@ -26,7 +30,7 @@ define(['sprd/view/svg/ConfigurationRenderer', 'underscore'], function(Configura
 
             for (var i = 0; i < fonts.length; i++) {
                 var font = fonts[i];
-                svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), "fonts/svg/" + font.$.id + ".svg#font");
+                svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font));
             }
         },
 
