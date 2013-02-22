@@ -1,9 +1,14 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType'], function (Configuration, flow, Size, _, PrintType) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', 'js/core/Bus'], function (Configuration, flow, Size, _, PrintType, Bus) {
     return Configuration.inherit('sprd.entity.TextConfiguration', {
         defaults: {
             textArea: null,
             textFlow: null,
             composedTextFlow: null
+        },
+
+        inject: {
+            composer: "composer",
+            bus: Bus
         },
 
         type: "text",
@@ -39,6 +44,29 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     }
                 })
                 .exec(callback);
+        },
+
+        _postConstruct: function() {
+            this.bind("textFlow", "operationComplete", this._composeText, this);
+            this._composeText();
+        },
+
+        _preDestroy: function() {
+            this.unbind("textFlow", "operationComplete", this._composeText, this);
+        },
+
+        _composeText: function() {
+
+            var textFlow = this.$.textFlow;
+            if (!textFlow) {
+                return;
+            }
+
+            var composer = this.$.composer,
+                self = this;
+            composer.compose(textFlow, this.$.textArea, function(err, composed) {
+                self.set('composedTextFlow', composed);
+            });
         },
 
         _commitPrintType: function (printType) {
@@ -137,6 +165,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
         size: function () {
             return this.$.textArea || Size.empty;
-        }.onChange("textArea")
+        }.onChange("textArea"),
+
+        clone: function(options) {
+            options = options || {};
+            options.exclude = options.exclude || [];
+
+            options.exclude.push("bus", "composer", "composedTextFlow");
+
+            return this.callBase(options);
+
+        }
     });
 });

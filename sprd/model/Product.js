@@ -29,19 +29,65 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                 this.trigger("productChanged");
             };
 
-            this.bind("configurations", "add", priceChangeHandler, this);
-            this.bind("configurations", "remove", priceChangeHandler, this);
+
+            var configurationAdd = function(e) {
+
+                this._setUpConfiguration(e.$.item);
+
+                productChangeHandler.call(this);
+                priceChangeHandler.call(this);
+            };
+
+            var configurationRemove = function (e) {
+
+                this._tearDownConfiguration(e.$.item);
+
+                productChangeHandler.call(this);
+                priceChangeHandler.call(this);
+            };
+
+            this.bind("configurations", "add", configurationAdd, this);
+            this.bind("configurations", "remove", configurationRemove, this);
             this.bind("configurations", "reset", priceChangeHandler, this);
             this.bind("configurations", "item:priceChanged", priceChangeHandler, this);
 
             this.bind('change:productType', productChangeHandler, this);
             this.bind('change:appearance', productChangeHandler, this);
-            this.bind('configurations', 'add', productChangeHandler, this);
-            this.bind('configurations', 'remove', productChangeHandler, this);
             this.bind('configurations', 'reset', productChangeHandler, this);
             this.bind('configurations', 'item:configurationChanged', productChangeHandler, this);
             this.bind('configurations', 'item:change:printArea', productChangeHandler, this);
 
+        },
+
+        _setUpConfiguration: function(configuration) {
+            this.$stage.$bus.setUp(configuration);
+        },
+
+        _tearDownConfiguration: function(configuration) {
+            this.$stage.$bus.tearDown(configuration);
+        },
+
+        _postConstruct: function() {
+
+            var configurations = this.$.configurations,
+                self = this;
+
+            if (configurations) {
+                configurations.each(function(configuration) {
+                    self._setUpConfiguration(configuration);
+                });
+            }
+        },
+
+        _preDestroy: function() {
+            var configurations = this.$.configurations,
+                self = this;
+
+            if (configurations) {
+                configurations.each(function (configuration) {
+                    self._tearDownConfiguration(configuration);
+                });
+            }
         },
 
         price: function () {
