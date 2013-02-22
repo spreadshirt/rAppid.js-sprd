@@ -38,6 +38,10 @@ define(['js/core/Component','underscore'], function(Component, _) {
             return "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
         },
 
+        fontUrl: function(font) {
+            return "fonts/svg/" + font.$.id + ".svg#font";
+        },
+
         buildUrl: function(url, parameter) {
             url = url || [];
             url.unshift(this.$.endPoint);
