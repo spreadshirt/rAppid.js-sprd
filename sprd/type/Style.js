@@ -53,6 +53,23 @@ define(["text/type/Style","underscore"], function(Style,_) {
 
             return ret;
         },
+
+        serialize: function() {
+            var font = this.$.font,
+                fontFamily = font.getFontFamily();
+
+             return {
+                fontFamilyId: fontFamily.$.id,
+                fontId: font.$.id,
+                printColorId: this._getPrintColorId(),
+                fill: "#" + this._getColor(),
+                fontFamily: font.$.name,
+                fontWeight: font.$.weight,
+                fontStyle: font.$.style,
+                fontSize: this.$.fontSize
+            };
+        },
+
         clone: function(){
             return new this.factory(_.clone(this.$));
         }

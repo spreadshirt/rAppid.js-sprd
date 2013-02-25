@@ -46,16 +46,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 .exec(callback);
         },
 
-        _postConstruct: function() {
+        _postConstruct: function () {
             this.bind("textFlow", "operationComplete", this._composeText, this);
             this._composeText();
         },
 
-        _preDestroy: function() {
+        _preDestroy: function () {
             this.unbind("textFlow", "operationComplete", this._composeText, this);
         },
 
-        _composeText: function() {
+        _composeText: function () {
 
             var textFlow = this.$.textFlow;
             if (!textFlow) {
@@ -64,7 +64,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             var composer = this.$.composer,
                 self = this;
-            composer.compose(textFlow, this.$.textArea, function(err, composed) {
+            composer.compose(textFlow, this.$.textArea, function (err, composed) {
                 self.set('composedTextFlow', composed);
             });
         },
@@ -163,11 +163,105 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             }
         },
 
+        compose: function () {
+            var ret = this.callBase();
+
+            ret.type = "text";
+
+            ret.restrictions = {
+                changeable: true
+            };
+
+            delete ret.printColors;
+
+            var composedTextFlow = this.$.composedTextFlow,
+                scaleX = this.$.scale.x,
+                scaleY = this.$.scale.y,
+                text = {
+                    width: this.$.textArea.width * scaleX,
+                    height: this.$.textArea.height * scaleY,
+                    content: []
+                };
+
+            var y = 0;
+
+            for (var i = 0; i < composedTextFlow.composed.children.length; i++) {
+                var paragraph = composedTextFlow.composed.children[i],
+                    paragraphStyle = paragraph.item.composeStyle();
+
+                for (var j = 0; j < paragraph.children.length; j++) {
+                    var softLine = paragraph.children[j];
+
+                    for (var k = 0; k < softLine.children.length; k++) {
+
+                        var line = softLine.children[k];
+
+                        y += line.getTextHeight() * scaleY;
+
+                        for (var l = 0; l < line.children.length; l++) {
+                            var lineElement = line.children[l].item;
+
+                            var tspan = {
+                                content: [lineElement.$.text]
+                            };
+
+
+                            var style = lineElement.$.style.serialize();
+
+                            if (j === 0 && k === 0 && l === 0) {
+                                _.extend(text, style);
+                            }
+
+                            if (l === 0) {
+                                // apply paragraph style
+                                if (paragraphStyle) {
+                                    _.extend(style, {
+                                        textAnchor: paragraphStyle.textAnchor
+                                    });
+                                }
+
+                                var x = 0;
+
+                                switch (style["text-anchor"]) {
+                                    case "middle":
+                                        x = this.$.width / 2;
+                                        break;
+                                    case "end":
+                                        x = this.$.width;
+                                }
+
+                                style.x = x;
+                                style.y = y;
+
+                            }
+
+                            _.extend(tspan, style);
+                            text.content.push(tspan);
+
+                        }
+
+                        y += line.getHeight() - line.getTextHeight();
+
+                    }
+                }
+            }
+
+            ret.content = {
+                dpi: "25.4",
+                unit: "mm",
+                svg: {
+                    text: text
+                }
+            };
+
+            return ret;
+        },
+
         size: function () {
             return this.$.textArea || Size.empty;
         }.onChange("textArea"),
 
-        clone: function(options) {
+        clone: function (options) {
             options = options || {};
             options.exclude = options.exclude || [];
 

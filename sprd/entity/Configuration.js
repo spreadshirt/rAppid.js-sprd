@@ -1,7 +1,5 @@
 define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _) {
 
-    var undefined;
-
     return Entity.inherit('sprd.entity.Configuration', {
 
         schema: {
@@ -11,7 +9,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 isReference: true
             },
             printType: PrintType,
-            printColors: [PrintTypeColor]
+            printColors: [PrintTypeColor],
+
+            content: Object,
+            restrictions: Object,
+            type: String
         },
 
         defaults: {
@@ -234,11 +236,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         allowScale: function () {
-            return true
+            return true;
         },
 
         minimumScale: function () {
-            return 0
+            return 0;
         }
     });
 });

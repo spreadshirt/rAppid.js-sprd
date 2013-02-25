@@ -5,10 +5,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
     return Configuration.inherit('sprd.model.DesignConfiguration', {
 
         schema: {
-            type: String,
-            content: Object,
-            design: Design,
-            restrictions: Object
+            design: Design
         },
 
         defaults: {
@@ -217,7 +214,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             this.$.printColors.each(function (printColor) {
                 printColorIds.push(printColor.$.id);
-                printColorRGBs.push(printColor.color().toString())
+                printColorRGBs.push(printColor.color().toString());
             });
 
             if (this.$.printType.isPrintColorColorSpace()) {
@@ -276,7 +273,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 })
                 .seq(function () {
                     if ($$.printArea) {
-                        printArea = self.$context.$contextModel.$.productType.getPrintAreaById($$.printArea.$.id)
+                        printArea = self.$context.$contextModel.$.productType.getPrintAreaById($$.printArea.$.id);
                     } else {
                         printArea = self.$.printArea;
                     }
@@ -285,7 +282,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                     self.set({
                         design: design,
                         printArea: printArea
-                    })
+                    });
                 })
                 .seq(function () {
                     var printType = self.$.printType;
@@ -375,7 +372,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                             };
 
                         var regExp = /^(\w+)\(([^(]+)\)/ig;
-                        while (match = regExp.exec(svg.image.transform)) {
+                        while ((match = regExp.exec(svg.image.transform))) {
                             type = match[1];
                             values = match[2].split(",");
                             if (type === "rotate") {
@@ -391,7 +388,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                         self.set(ret);
                     }
                 })
-                .exec(callback)
+                .exec(callback);
 
         },
 
