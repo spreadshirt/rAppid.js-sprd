@@ -214,8 +214,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 scaleX = this.$.scale.x,
                 scaleY = this.$.scale.y,
                 text = {
-                    width: this.$.textArea.width * scaleX,
-                    height: this.$.textArea.height * scaleY,
+                    width: this.$.textArea.$.width * scaleX,
+                    height: this.$.textArea.$.height * scaleY,
                     content: []
                 };
 
@@ -257,12 +257,12 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                                 var x = 0;
 
-                                switch (style["text-anchor"]) {
+                                switch (style.textAnchor) {
                                     case "middle":
-                                        x = this.$.width / 2;
+                                        x = this.$.textArea.$.width / 2;
                                         break;
                                     case "end":
-                                        x = this.$.width;
+                                        x = this.$.textArea.$.width;
                                 }
 
                                 style.x = x;
