@@ -64,7 +64,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             var composer = this.$.composer,
                 self = this;
-            composer.compose(textFlow, this.$.textArea, function (err, composed) {
+            composer.compose(textFlow, this.$.textArea.$, function (err, composed) {
                 self.set('composedTextFlow', composed);
             });
         },
