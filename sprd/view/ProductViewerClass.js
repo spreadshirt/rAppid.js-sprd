@@ -194,8 +194,18 @@ define(["js/ui/View"], function (View) {
             }
         },
 
+        textAreaFocused: function() {
+            this.$.textArea.set('visibility', 'hidden');
+        },
+
+        textAreaBlured: function() {
+            this.$.textArea.set('visibility', 'visible');
+        },
+
         showTextAreaOverlay: function() {
-            return this.$.editable && this.$.selectedConfiguration && this.$.selectedConfiguration.type === "text";
-        }.onChange("selectedConfiguration")
+            return this.$.editable &&
+                this.$.selectedConfiguration && this.$.selectedConfiguration.type === "text" &&
+                this.runsInBrowser() && ('ontouchstart' in window);
+        }.onChange("selectedConfiguration", "editable")
     });
 });
