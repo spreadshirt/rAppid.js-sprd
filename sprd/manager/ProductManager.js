@@ -436,7 +436,7 @@ define(["underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', '
 
                         (new ApplyStyleToElementOperation(TextRange.createTextRange(0, textFlow.textLength()), textFlow, new Style({
                             font: font,
-                            fontSize: UnitUtil.ptToMm(50),
+                            fontSize: 25,
                             printTypeColor: this.vars["printTypeColor"]
                         }))).doOperation();
 
