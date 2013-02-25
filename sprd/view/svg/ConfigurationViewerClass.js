@@ -96,7 +96,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         _handleWidth: 20,
                         _handleOffset: 10,
                         "_handle-Offset": -10
-                    })
+                    });
                 }
             },
 
@@ -150,11 +150,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     });
 
                     scaleHandle && scaleHandle.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : SCALE)
+                        self._down(e, self._isGesture(e) ? GESTURE : SCALE);
                     });
 
                     rotateHandle && rotateHandle.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : ROTATE)
+                        self._down(e, self._isGesture(e) ? GESTURE : ROTATE);
                     });
 
 
@@ -522,7 +522,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     e.preventDefault();
                 }
 
-                this.$asset.handleKeyDown && this.$asset.handleKeyDown(e)
+                this.$asset.handleKeyDown && this.$asset.handleKeyDown(e);
             },
 
             _keyUp: function (e, mode) {
@@ -532,7 +532,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             _keyPress: function(e){
-                this.$asset.handleKeyPress && this.$asset.handleKeyPress(e)
+                this.$asset.handleKeyPress && this.$asset.handleKeyPress(e);
             },
 
             _stopTransformation: function () {
@@ -578,7 +578,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return {
                     width: globalToLocalFactor.x * size,
                     height: globalToLocalFactor.y * size
-                }
+                };
             },
 
             pixelToViewBox: function(pixel) {
@@ -609,7 +609,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             half: function (value) {
-                return value / 2
+                return value / 2;
             },
 
             flipOffsetX: function () {
@@ -640,9 +640,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             isSelectedConfigurationOrConfigurationHasError: function () {
                 return this.$.configuration !== null &&
                     (this.get('productViewer.editable') === true &&
-                        this.get("productViewer.selectedConfiguration") === this.$.configuration)
-                    ||
-                    (!this.$.configuration.isValid())
+                        this.get("productViewer.selectedConfiguration") === this.$.configuration) ||
+                    (!this.$.configuration.isValid()) ;
             }.on(["productViewer", "change:selectedConfiguration"], ["configuration", "isValidChanged"]),
 
             isScalable: function () {
