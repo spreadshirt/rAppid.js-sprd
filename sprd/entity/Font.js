@@ -24,5 +24,5 @@ define(["js/data/Entity"], function (Entity) {
             return this.$.style === "italic";
         }.onChange("style")
 
-    })
+    });
 });
