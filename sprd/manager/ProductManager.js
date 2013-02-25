@@ -438,6 +438,9 @@ define(["underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', '
                             font: font,
                             fontSize: 25,
                             printTypeColor: this.vars["printTypeColor"]
+                        }), new
+                        Style({
+                            textAnchor: "middle"
                         }))).doOperation();
 
 
