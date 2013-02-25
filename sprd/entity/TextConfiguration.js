@@ -1,4 +1,4 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', 'js/core/Bus'], function (Configuration, flow, Size, _, PrintType, Bus) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', 'js/core/Bus', 'sprd/util/UnitUtil'], function (Configuration, flow, Size, _, PrintType, Bus, UnitUtil) {
     return Configuration.inherit('sprd.entity.TextConfiguration', {
         defaults: {
             textArea: null,
@@ -67,6 +67,42 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             composer.compose(textFlow, this.$.textArea, function (err, composed) {
                 self.set('composedTextFlow', composed);
             });
+        },
+
+        _validatePrintTypeSize: function (printType, width, height, scale) {
+
+            var ret = this.callBase();
+
+            if (!printType || !scale) {
+                return ret;
+            }
+
+            var fontToSmall = false;
+
+            var textFlow = this.$.textFlow;
+
+            if (textFlow) {
+
+                var leaf = textFlow.getFirstLeaf();
+                do {
+                    var style = leaf.get("style");
+
+                    if (style && style.$.fontSize && style.$.font) {
+                        var fontSize = (style.$.fontSize || 0) * scale.x;
+                        if (fontSize < style.$.font.$.minimalSize) {
+                            fontToSmall = true;
+                            break;
+                        }
+                    }
+
+                } while ((leaf = leaf.getNextLeaf(textFlow)));
+
+            }
+
+            ret.minBound = fontToSmall;
+
+            return ret;
+
         },
 
         _commitPrintType: function (printType) {
