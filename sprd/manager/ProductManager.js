@@ -1,5 +1,5 @@
-define(["underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange'],
-    function (_, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, ApplyStyleToElementOperation, TextRange) {
+define(["underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil'],
+    function (_, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil) {
 
         return {
 
@@ -436,7 +436,7 @@ define(["underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', '
 
                         (new ApplyStyleToElementOperation(TextRange.createTextRange(0, textFlow.textLength()), textFlow, new Style({
                             font: font,
-                            fontSize: 20,
+                            fontSize: UnitUtil.ptToMm(50),
                             printTypeColor: this.vars["printTypeColor"]
                         }))).doOperation();
 
