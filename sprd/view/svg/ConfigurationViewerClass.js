@@ -157,7 +157,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         self._down(e, self._isGesture(e) ? GESTURE : ROTATE);
                     });
 
-
                     if (productViewer && this.$hasTouch) {
                         productViewer.bindDomEvent(this.$downEvent, function (e) {
                             if (productViewer.$.selectedConfiguration === self.$.configuration && self._isGesture(e)) {

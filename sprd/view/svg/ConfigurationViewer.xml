@@ -39,7 +39,7 @@
 
         <svg:rect cid="_deleteHandle" class="configuration-handle delete"
                   visible="{isRemovable()}"
-                  onclick="deleteConfiguration"
+                  onpointerdown="deleteConfiguration"
                   x="{pixelToViewBox(_handle-Offset)}" y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
