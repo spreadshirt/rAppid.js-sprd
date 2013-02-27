@@ -31,7 +31,6 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
 
             var configurationAdd = function(e) {
-
                 this._setUpConfiguration(e.$.item);
 
                 productChangeHandler.call(this);
@@ -60,10 +59,20 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
         },
 
         _setUpConfiguration: function(configuration) {
+
+            if (!this.$stage) {
+                return;
+            }
+
             this.$stage.$bus.setUp(configuration);
         },
 
         _tearDownConfiguration: function(configuration) {
+
+            if (!this.$stage) {
+                return;
+            }
+
             this.$stage.$bus.tearDown(configuration);
         },
 
