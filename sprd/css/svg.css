@@ -56,3 +56,7 @@ rect {
     fill: red;
     fill-opacity: 0.01;
 }
+
+.text-selection {
+    fill: blue;
+}
