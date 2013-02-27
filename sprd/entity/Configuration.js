@@ -185,7 +185,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
             return Math.abs(this.size().$.height * scale);
-        }.onChange("scale", "size()"),
+        }.onChange("scale", "size()").on("sizeChanged"),
 
         width: function (scale) {
 
@@ -194,7 +194,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
             return Math.abs(this.size().$.width * scale);
-        }.onChange("scale", "size()"),
+        }.onChange("scale", "size()").on("sizeChanged"),
 
         isScalable: function () {
             return this.get("printType.isScalable()");

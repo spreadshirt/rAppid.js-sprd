@@ -64,8 +64,13 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             var composer = this.$.composer,
                 self = this;
-            composer.compose(textFlow, this.$.textArea.$, function (err, composed) {
-                self.set('composedTextFlow', composed);
+            composer.compose(textFlow, this.$.textArea.$, function (err, composedTextFlow) {
+                self.set('composedTextFlow', composedTextFlow);
+
+                if (composedTextFlow) {
+                    self.$.textArea.set('height', composedTextFlow.composed.getHeight());
+                    self.trigger("sizeChanged");
+                }
             });
         },
 
@@ -296,7 +301,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
         size: function () {
             return this.$.textArea || Size.empty;
-        }.onChange("textArea"),
+        }.onChange("textArea").on("sizeChanged"),
 
         clone: function (options) {
             options = options || {};
