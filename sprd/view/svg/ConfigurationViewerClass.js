@@ -115,7 +115,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (rendererFactory) {
                     this.$asset = this.createComponent(rendererFactory, {
                         configuration: configuration,
-                        productViewer: this.$.productViewer
+                        productViewer: this.$.productViewer,
+                        configurationViewer: this
                     });
 
                     if (assetContainer) {

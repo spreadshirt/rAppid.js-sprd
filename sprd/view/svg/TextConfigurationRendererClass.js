@@ -5,7 +5,9 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], functi
         defaults: {
             tagName: "g",
             componentClass: "text-configuration",
-            textArea: null
+            productViewer: null,
+            configurationViewer: null,
+            configuration: null
         },
 
         inject: {

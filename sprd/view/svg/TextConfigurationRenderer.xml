@@ -2,5 +2,5 @@
     <rect class="text-configuration-background" width="{width}" height="{height}" fill="red"/>
     <textUi:SvgTextArea cid="textArea" composedTextFlow="{configuration.composedTextFlow}"
                         width="{configuration.textArea.width}" height="{configuration.textArea.height}"
-            editable="{productViewer.editable}" selectable="{editable}"/>
+            editable="{productViewer.editable}" selectable="{editable}" showSelection="{configurationViewer.isSelectedConfiguration()}"/>
 </sprdSvg:TextConfigurationRendererClass>
