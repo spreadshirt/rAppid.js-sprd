@@ -23,11 +23,6 @@ define(["js/ui/View"], function (View) {
 
         _commitSelectedConfiguration: function(selectedConfiguration) {
             this._positionTextArea();
-
-            if (selectedConfiguration && this.showTextAreaOverlay()){
-                this.$.textArea.$el.focus();
-            }
-
         },
 
         keypress: function(e) {
@@ -198,7 +193,7 @@ define(["js/ui/View"], function (View) {
             this.$.textArea.set('visibility', 'hidden');
         },
 
-        textAreaBlured: function() {
+        textAreaBlured: function(e) {
             this.$.textArea.set('visibility', 'visible');
         },
 
