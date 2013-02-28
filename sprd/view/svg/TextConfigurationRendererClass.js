@@ -7,7 +7,10 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], functi
             componentClass: "text-configuration",
             productViewer: null,
             configurationViewer: null,
-            configuration: null
+            configuration: null,
+
+            showSelection: "{configurationViewer.isSelectedConfiguration()}",
+            textArea: null
         },
 
         inject: {
@@ -17,6 +20,19 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], functi
         _initialize: function() {
             this.callBase();
             this._loadFonts();
+        },
+
+        _commitShowSelection: function(showSelection) {
+            if (showSelection && this.$.textArea) {
+                var selection = this.$.textArea.getSelection();
+
+                if (selection) {
+                    selection.set({
+                        activeIndex: 0,
+                        anchorIndex: -1
+                    });
+                }
+            }
         },
 
         _loadFonts: function() {
