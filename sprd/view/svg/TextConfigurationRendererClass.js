@@ -1,4 +1,4 @@
-define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], function(ConfigurationRenderer, ImageService) {
+define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], function (ConfigurationRenderer, ImageService) {
 
     return ConfigurationRenderer.inherit("sprd.view.svg.TextConfigurationRendererClass", {
 
@@ -17,25 +17,34 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], functi
             imageService: ImageService
         },
 
-        _initialize: function() {
+        ctor: function () {
+            this.$firstSelection = true;
+            this.callBase();
+        },
+
+        _initialize: function () {
             this.callBase();
             this._loadFonts();
         },
 
-        _commitShowSelection: function(showSelection) {
-            if (showSelection && this.$.textArea) {
+        _commitShowSelection: function (showSelection) {
+
+            var configuration = this.$.configuration;
+            if (showSelection && this.$.textArea && this.$firstSelection && configuration && configuration.$.textFlow) {
+
                 var selection = this.$.textArea.getSelection();
 
                 if (selection) {
+                    this.$firstSelection = false;
                     selection.set({
-                        activeIndex: 0,
-                        anchorIndex: -1
+                        activeIndex: configuration.$.textFlow.textLength(),
+                        anchorIndex: 0
                     });
                 }
             }
         },
 
-        _loadFonts: function() {
+        _loadFonts: function () {
 
             var configuration = this.$.configuration;
 
@@ -52,11 +61,11 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], functi
             }
         },
 
-        handleKeyPress: function(e){
+        handleKeyPress: function (e) {
             this.$.textArea.handleKeyPress(e);
         },
 
-        handleKeyDown: function(e){
+        handleKeyDown: function (e) {
             this.$.textArea.handleKeyDown(e);
         }
 
