@@ -267,6 +267,16 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 if (mode === MOVE) {
                     this.$.productViewer.set("selectedConfiguration", this.$.configuration);
+                    var parent = this.$.productViewer.$parent;
+
+                    if (parent) {
+                        var textArea = parent.$.textArea;
+                        if (textArea && textArea.$el) {
+                            // bring up the keyboard in ios
+                            textArea.$el.focus();
+                        }
+                    }
+
                     this.set('_offset', configuration.$.offset.clone());
                 } else if (mode === SCALE) {
 
