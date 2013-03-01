@@ -65,12 +65,14 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             var composer = this.$.composer,
                 self = this;
             composer.compose(textFlow, this.$.textArea.$, function (err, composedTextFlow) {
-                self.set('composedTextFlow', composedTextFlow);
 
                 if (composedTextFlow) {
                     self.$.textArea.set('height', composedTextFlow.composed.getHeight());
                     self.trigger("sizeChanged");
                 }
+
+                self.set('composedTextFlow', composedTextFlow);
+
             });
         },
 
@@ -226,64 +228,66 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             var y = 0;
 
-            for (var i = 0; i < composedTextFlow.composed.children.length; i++) {
-                var paragraph = composedTextFlow.composed.children[i],
-                    paragraphStyle = paragraph.item.composeStyle();
+            if (composedTextFlow) {
+                for (var i = 0; i < composedTextFlow.composed.children.length; i++) {
+                    var paragraph = composedTextFlow.composed.children[i],
+                        paragraphStyle = paragraph.item.composeStyle();
 
-                for (var j = 0; j < paragraph.children.length; j++) {
-                    var softLine = paragraph.children[j];
+                    for (var j = 0; j < paragraph.children.length; j++) {
+                        var softLine = paragraph.children[j];
 
-                    for (var k = 0; k < softLine.children.length; k++) {
+                        for (var k = 0; k < softLine.children.length; k++) {
 
-                        var line = softLine.children[k];
+                            var line = softLine.children[k];
 
-                        y += line.getTextHeight() * scaleY;
+                            y += line.getTextHeight() * scaleY;
 
-                        for (var l = 0; l < line.children.length; l++) {
-                            var lineElement = line.children[l].item;
+                            for (var l = 0; l < line.children.length; l++) {
+                                var lineElement = line.children[l].item;
 
-                            var tspan = {
-                                content: [lineElement.$.text]
-                            };
+                                var tspan = {
+                                    content: [lineElement.$.text]
+                                };
 
-                            var style = lineElement.$.style.serialize();
+                                var style = lineElement.$.style.serialize();
 
-                            if (j === 0 && k === 0 && l === 0) {
-                                _.extend(text, style);
-                            }
-
-                            if (l === 0) {
-                                // apply paragraph style
-                                if (paragraphStyle) {
-                                    _.extend(style, {
-                                        textAnchor: paragraphStyle.textAnchor
-                                    });
+                                if (j === 0 && k === 0 && l === 0) {
+                                    _.extend(text, style);
                                 }
 
-                                var x = 0;
+                                if (l === 0) {
+                                    // apply paragraph style
+                                    if (paragraphStyle) {
+                                        _.extend(style, {
+                                            textAnchor: paragraphStyle.textAnchor
+                                        });
+                                    }
 
-                                switch (style.textAnchor) {
-                                    case "middle":
-                                        x = this.$.textArea.$.width / 2;
-                                        break;
-                                    case "end":
-                                        x = this.$.textArea.$.width;
+                                    var x = 0;
+
+                                    switch (style.textAnchor) {
+                                        case "middle":
+                                            x = this.$.textArea.$.width / 2;
+                                            break;
+                                        case "end":
+                                            x = this.$.textArea.$.width;
+                                    }
+
+                                    style.x = x;
+                                    style.y = y;
+
                                 }
 
-                                style.x = x;
-                                style.y = y;
+                                style.fontSize = (style.fontSize || 0) * scaleY;
+
+                                _.extend(tspan, style);
+                                text.content.push(tspan);
 
                             }
 
-                            style.fontSize = (style.fontSize || 0) * scaleY;
-
-                            _.extend(tspan, style);
-                            text.content.push(tspan);
+                            y += (line.getHeight() - line.getTextHeight()) * scaleY;
 
                         }
-
-                        y += (line.getHeight() - line.getTextHeight()) * scaleY;
-
                     }
                 }
             }
