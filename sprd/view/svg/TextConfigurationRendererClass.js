@@ -37,7 +37,7 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], functi
                 if (selection) {
                     this.$firstSelection = false;
                     selection.set({
-                        activeIndex: configuration.$.textFlow.textLength(),
+                        activeIndex: configuration.$.textFlow.textLength() - 1,
                         anchorIndex: 0
                     });
                 }
