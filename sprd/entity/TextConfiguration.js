@@ -215,6 +215,21 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 changeable: true
             };
 
+            var transform = [],
+                scale = this.$.scale,
+                rotation = this.$.rotation,
+
+                width = this.width(),
+                height = this.height();
+
+            if (rotation) {
+                transform.push("rotate(" + rotation + "," + Math.round(width / 2, 3) + "," + Math.round(height / 2, 3) + ")");
+            }
+
+            if (scale && (scale.x < 0 || scale.y < 0)) {
+                transform.push("scale(" + (scale.x < 0 ? -1 : 1) + "," + (scale.y < 0 ? -1 : 1) + ")");
+            }
+
             delete ret.printColors;
 
             var composedTextFlow = this.$.composedTextFlow,
@@ -225,6 +240,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     height: this.$.textArea.$.height * scaleY,
                     content: []
                 };
+
+            text.transform = transform.join(" ");
 
             var y = 0;
 
