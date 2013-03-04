@@ -12,43 +12,43 @@
 
     <svg:g translateX="{flipOffsetX()}" translateY="{flipOffsetY()}">
         <svg:rect class="configuration-boundary"
-                  visible="{isSelectedConfigurationOrConfigurationHasError()}"
+                  selected="{isSelectedConfigurationOrConfigurationHasError()}"
                   x="0" y="0"
                   width="{_configurationWidth}" height="{_configurationHeight}"/>
 
         <svg:rect cid="_scaleHandle" class="configuration-handle scale"
-                  visible="{isScalable()}"
+                  selected="{isScalable()}"
                   x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}" y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
-        <svg:use visible="{isScalable()}"
+        <svg:use selected="{isScalable()}" class="configuration-handle-icon"
                  href="{baseUrl('sprd/css/library.svg#scale')}" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
                  translateX="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}" translateY="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
                  style="pointer-events: none"/>
 
         <svg:rect cid="_rotateHandle" class="configuration-handle rotate"
-                  visible="{isRotatable()}"
+                  selected="{isRotatable()}"
                   x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}" y="{pixelToViewBox(_handle-Offset)}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
-        <svg:use visible="{isRotatable()}"
+        <svg:use selected="{isRotatable()}" class="configuration-handle-icon"
                  href="{baseUrl('sprd/css/library.svg#rotate')}" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
                  translateX="{_rotateHandle.x}" translateY="{_rotateHandle.y}"
                  style="pointer-events: none"/>
 
 
         <svg:rect cid="_deleteHandle" class="configuration-handle delete"
-                  visible="{isRemovable()}"
+                  selected="{isRemovable()}"
                   onpointerdown="deleteConfiguration"
                   x="{pixelToViewBox(_handle-Offset)}" y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
-        <svg:use visible="{isRemovable()}"
+        <svg:use selected="{isRemovable()}" class="configuration-handle-icon"
                  href="{baseUrl('sprd/css/library.svg#remove')}" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
                  translateX="{_deleteHandle.x}" translateY="{_deleteHandle.y}"
                  style="pointer-events: none"/>
 
-        <svg:g visible="{hasError()}" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}" translateY="-{pixelToViewBox(_handleWidth)}" >
+        <svg:g selected="{hasError()}" class="configuration-handle-icon" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}" translateY="-{pixelToViewBox(_handleWidth)}" >
             <svg:title>{errorDescription()}</svg:title>
             <svg:use href="{baseUrl('sprd/css/library.svg#info')}" />
         </svg:g>
