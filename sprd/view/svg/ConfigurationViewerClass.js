@@ -245,8 +245,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this._unbindTransformationHandler();
                 }
 
+                this.$.productViewer.set("selectedConfiguration", this.$.configuration);
+
+                if (e.defaultPrevented) {
+                    return;
+                }
+
                 e.preventDefault();
-//                e.stopPropagation();
 
                 this.$moving = true;
                 this.set({
@@ -266,7 +271,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     halfHeight = (configuration.height() / 2) * factor.y;
 
                 if (mode === MOVE) {
-                    this.$.productViewer.set("selectedConfiguration", this.$.configuration);
                     var parent = this.$.productViewer.$parent;
 
                     if (parent) {
