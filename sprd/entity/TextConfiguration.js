@@ -1,4 +1,4 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/entity/PrintTypeColor",'js/core/Bus', 'sprd/util/UnitUtil'], function (Configuration, flow, Size, _, PrintType, PrintTypeColor, Bus, UnitUtil) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/entity/PrintTypeColor", "sprd/util/ProductUtil",'js/core/Bus', 'sprd/util/UnitUtil'], function (Configuration, flow, Size, _, PrintType, PrintTypeColor, ProductUtil, Bus, UnitUtil) {
     return Configuration.inherit('sprd.entity.TextConfiguration', {
         defaults: {
             textArea: null,
@@ -356,6 +356,22 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.trigger("priceChanged");
             }
         },
+
+        getPossiblePrintTypes: function (appearance) {
+            var ret = [],
+                printArea = this.$.printArea,
+                textFlow = this.$.textFlow,
+                selection = this.$.selection;
+
+            if (printArea && appearance && textFlow && selection) {
+                var leafStyle = selection.getCommonLeafStyle(textFlow);
+                if(leafStyle && leafStyle.$.font){
+                    ret = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(leafStyle.$.font.getFontFamily(), printArea, appearance.$.id);
+                }
+            }
+
+            return ret;
+        }.onChange("printArea", "design"),
 
         size: function () {
             return this.$.textArea || Size.empty;
