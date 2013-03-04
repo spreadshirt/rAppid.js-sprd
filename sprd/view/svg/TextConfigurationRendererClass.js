@@ -30,9 +30,9 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], functi
         _commitShowSelection: function (showSelection) {
 
             var configuration = this.$.configuration;
-            if (showSelection && this.$.textArea && this.$firstSelection && configuration && configuration.$.textFlow) {
+            if (showSelection && this.$firstSelection && configuration && configuration.$.textFlow) {
 
-                var selection = this.$.textArea.getSelection();
+                var selection = configuration.$.selection;
 
                 if (selection) {
                     this.$firstSelection = false;
