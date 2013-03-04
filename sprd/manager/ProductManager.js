@@ -448,7 +448,8 @@ define(["underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', '
                         entity.set({
                             printType: printType,
                             printArea: printArea,
-                            textFlow: textFlow
+                            textFlow: textFlow,
+                            selection: TextRange.createTextRange(0, textFlow.textLength())
                         });
                         return entity;
                     })
