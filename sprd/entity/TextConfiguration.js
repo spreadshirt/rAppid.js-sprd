@@ -1,4 +1,4 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/entity/PrintTypeColor", "sprd/util/ProductUtil",'js/core/Bus', 'sprd/util/UnitUtil'], function (Configuration, flow, Size, _, PrintType, PrintTypeColor, ProductUtil, Bus, UnitUtil) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/entity/PrintTypeColor", "sprd/util/ProductUtil",'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/type/Style'], function (Configuration, flow, Size, _, PrintType, PrintTypeColor, ProductUtil, Bus, UnitUtil, Style) {
     return Configuration.inherit('sprd.entity.TextConfiguration', {
         defaults: {
             textArea: null,
@@ -9,7 +9,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
         inject: {
             composer: "composer",
-            bus: Bus
+            bus: Bus,
+            ApplyStyleToElementOperation: "ApplyStyleToElementOperation"
         },
 
         type: "text",
@@ -322,39 +323,22 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
         },
 
         setColor: function (layerIndex, color) {
-            if (this.$.selection) {
-                var printType = this.$.printType;
+            if(this.$.ApplyStyleToElementOperation){
+                var selection = this.$.selection;
+                if (selection.$.anchorIndex === selection.$.activeIndex) {
+                    selection = selection.clone();
+                    selection.set({
+                        anchorIndex: 0,
+                        activeIndex: this.$.textFlow.textLength() - 1
+                    })
 
-                if (!(color instanceof PrintTypeColor)) {
-                    color = printType.getClosestPrintColor(color);
                 }
-
-                if (!printType.containsPrintTypeColor(color)) {
-                    throw new Error("Color not contained in print type");
-                }
-
-                var printColors = this.$.printColors.$items;
-
-                if (printColors[layerIndex] === color) {
-                    return;
-                }
-
-                printColors.splice(layerIndex, 1, color);
-
-                if (printType.$.id === PrintType.Mapping.SpecialFlex) {
-                    // convert all other layers to the new color
-                    for (var i = 0; i < printColors.length; i++) {
-                        if (i !== layerIndex) {
-                            printColors[i] = printColors[layerIndex];
-                        }
-                    }
-                }
-
-                this.$.printColors.reset(printColors);
-
-                this.trigger('configurationChanged');
-                this.trigger("priceChanged");
+                new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new Style({printTypeColor: color})).doOperation();
             }
+
+
+            this.trigger('configurationChanged');
+            this.trigger("priceChanged");
         },
 
         getPossiblePrintTypes: function (appearance) {
