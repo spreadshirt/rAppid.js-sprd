@@ -1,9 +1,10 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', 'js/core/Bus', 'sprd/util/UnitUtil'], function (Configuration, flow, Size, _, PrintType, Bus, UnitUtil) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/entity/PrintTypeColor",'js/core/Bus', 'sprd/util/UnitUtil'], function (Configuration, flow, Size, _, PrintType, PrintTypeColor, Bus, UnitUtil) {
     return Configuration.inherit('sprd.entity.TextConfiguration', {
         defaults: {
             textArea: null,
             textFlow: null,
-            composedTextFlow: null
+            composedTextFlow: null,
+            selection: null
         },
 
         inject: {
@@ -318,6 +319,42 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             };
 
             return ret;
+        },
+
+        setColor: function (layerIndex, color) {
+            if (this.$.selection) {
+                var printType = this.$.printType;
+
+                if (!(color instanceof PrintTypeColor)) {
+                    color = printType.getClosestPrintColor(color);
+                }
+
+                if (!printType.containsPrintTypeColor(color)) {
+                    throw new Error("Color not contained in print type");
+                }
+
+                var printColors = this.$.printColors.$items;
+
+                if (printColors[layerIndex] === color) {
+                    return;
+                }
+
+                printColors.splice(layerIndex, 1, color);
+
+                if (printType.$.id === PrintType.Mapping.SpecialFlex) {
+                    // convert all other layers to the new color
+                    for (var i = 0; i < printColors.length; i++) {
+                        if (i !== layerIndex) {
+                            printColors[i] = printColors[layerIndex];
+                        }
+                    }
+                }
+
+                this.$.printColors.reset(printColors);
+
+                this.trigger('configurationChanged');
+                this.trigger("priceChanged");
+            }
         },
 
         size: function () {
