@@ -112,7 +112,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
 
                 this.addChild(viewer);
 
-                this.$.productViewer.trigger('configurationViewerAdded',viewer);
+                this.$.productViewer.trigger('add:configurationViewer',viewer);
 
             }
         },

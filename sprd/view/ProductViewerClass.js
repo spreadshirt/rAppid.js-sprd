@@ -16,7 +16,7 @@ define(["js/ui/View"], function (View) {
 
         ctor: function(){
             this.callBase();
-            this.bind('productViewerSvg','configurationViewerAdded', this._onConfigurationViewerAdded, this);
+            this.bind('productViewerSvg','add:configurationViewer', this._onConfigurationViewerAdded, this);
             this.bind('selectedConfiguration', 'change:scale', this._positionTextArea, this);
             this.bind('selectedConfiguration', 'change:offset', this._positionTextArea, this);
         },
@@ -68,6 +68,7 @@ define(["js/ui/View"], function (View) {
             if(viewer.$.configuration === this.$.selectedConfiguration){
                 this.set('selectedConfigurationViewer', viewer);
             }
+            this.trigger('add:configurationViewer',viewer);
 
         },
 
