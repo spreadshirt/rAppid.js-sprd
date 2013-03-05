@@ -468,7 +468,6 @@ define(["underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', '
 
             },
 
-
             _positionConfiguration: function (configuration) {
 
                 var printArea = configuration.$.printArea,
