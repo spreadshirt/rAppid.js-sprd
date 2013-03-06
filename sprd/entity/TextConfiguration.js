@@ -348,9 +348,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 selection = this.$.selection;
 
             if (printArea && appearance && textFlow && selection) {
-                var leafStyle = selection.getCommonLeafStyle(textFlow);
-                if(leafStyle && leafStyle.$.font){
-                    ret = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(leafStyle.$.font.getFontFamily(), printArea, appearance.$.id);
+                var leaf = textFlow.findLeaf(selection.$.absoluteStart),
+                    lastLeaf = textFlow.findLeaf(selection.$.absoluteEnd);
+
+                if(leaf){
+                    do {
+                        if(leaf.$.style && leaf.$.style.$.font){
+                        ret = ret.concat(ProductUtil.getPossiblePrintTypesForTextOnPrintArea(leaf.$.style.$.font.getFontFamily(), printArea, appearance.$.id));
+                        }
+                        leaf = leaf.getNextLeaf();
+                    } while(leaf !== null && leaf !== lastLeaf);
                 }
             }
 
