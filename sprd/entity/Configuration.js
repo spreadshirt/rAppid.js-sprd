@@ -216,6 +216,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return new Price();
         },
 
+        getSizeForPrintType: function(printType) {
+            return Size.empty;
+        },
+
         possiblePrintTypes: function (appearance) {
             var ret = [],
                 printArea = this.$.printArea;

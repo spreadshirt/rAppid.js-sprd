@@ -1,4 +1,4 @@
-define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow"], function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow) {
+define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager"], function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager) {
 
     var undef;
 
@@ -18,6 +18,10 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             configurations: List
         },
 
+        inject: {
+            manager: IProductManager
+        },
+
         ctor: function () {
             this.callBase();
 
@@ -30,7 +34,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             };
 
 
-            var configurationAdd = function(e) {
+            var configurationAdd = function (e) {
                 this._setUpConfiguration(e.$.item);
 
                 productChangeHandler.call(this);
@@ -58,7 +62,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
         },
 
-        _setUpConfiguration: function(configuration) {
+        _setUpConfiguration: function (configuration) {
 
             if (!this.$stage) {
                 return;
@@ -67,7 +71,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             this.$stage.$bus.setUp(configuration);
         },
 
-        _tearDownConfiguration: function(configuration) {
+        _tearDownConfiguration: function (configuration) {
 
             if (!this.$stage) {
                 return;
@@ -76,19 +80,19 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             this.$stage.$bus.tearDown(configuration);
         },
 
-        _postConstruct: function() {
+        _postConstruct: function () {
 
             var configurations = this.$.configurations,
                 self = this;
 
             if (configurations) {
-                configurations.each(function(configuration) {
+                configurations.each(function (configuration) {
                     self._setUpConfiguration(configuration);
                 });
             }
         },
 
-        _preDestroy: function() {
+        _preDestroy: function () {
             var configurations = this.$.configurations,
                 self = this;
 

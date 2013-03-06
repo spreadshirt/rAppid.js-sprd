@@ -1,4 +1,4 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/entity/PrintTypeColor", "sprd/util/ProductUtil",'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/type/Style'], function (Configuration, flow, Size, _, PrintType, PrintTypeColor, ProductUtil, Bus, UnitUtil, Style) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/entity/PrintTypeColor", "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/type/Style', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager"], function (Configuration, flow, Size, _, PrintType, PrintTypeColor, ProductUtil, Bus, UnitUtil, Style, ArrayUtil, ITextConfigurationManager) {
     return Configuration.inherit('sprd.entity.TextConfiguration', {
         defaults: {
             textArea: null,
@@ -10,7 +10,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
         inject: {
             composer: "composer",
             bus: Bus,
-            ApplyStyleToElementOperation: "ApplyStyleToElementOperation"
+            ApplyStyleToElementOperation: "ApplyStyleToElementOperation",
+            manager: ITextConfigurationManager
         },
 
         type: "text",
@@ -323,7 +324,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
         },
 
         setColor: function (layerIndex, color) {
-            if(this.$.ApplyStyleToElementOperation){
+            if (this.$.ApplyStyleToElementOperation) {
                 var selection = this.$.selection;
                 if (selection.$.anchorIndex === selection.$.activeIndex) {
                     selection = selection.clone();
@@ -364,6 +365,37 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             return ret;
         }.onChange("printArea", "design"),
 
+        getPossiblePrintTypesForPrintArea: function (printArea, appearanceId) {
+
+            var fontFamilies = [],
+                printTypes = [];
+
+            var textFlow = this.$.textFlow;
+            if (textFlow) {
+
+                var leaf = textFlow.getFirstLeaf();
+
+                do {
+                    var style = leaf.get("style");
+
+                    if (style && style.$.font && _.indexOf(fontFamilies, style.$.font.getFontFamily()) === -1) {
+                        fontFamilies.push(style.$.font.getFontFamily());
+                    }
+                } while ((leaf = leaf.getNextLeaf(textFlow)));
+            }
+
+            for (var i = 0; i < fontFamilies.length; i++) {
+                printTypes.push(ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamilies[i], printArea, appearanceId));
+            }
+
+            return ArrayUtil.average.apply(ArrayUtil, printTypes);
+
+        },
+
+        getSizeForPrintType: function (printType) {
+            return this.size();
+        },
+
         size: function () {
             return this.$.textArea || Size.empty;
         }.onChange("textArea").on("sizeChanged"),
@@ -376,6 +408,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             return this.callBase(options);
 
+        },
+
+        isAllowedOnPrintArea: function (printArea) {
+            return printArea && printArea.get("restrictions.textAllowed") == true;
         }
+
     });
 });
