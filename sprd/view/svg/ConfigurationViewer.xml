@@ -16,6 +16,19 @@
                   x="0" y="0"
                   width="{_configurationWidth}" height="{_configurationHeight}"/>
 
+        <svg:rect cid="_moveHandle" class="configuration-handle move"
+                  selected="{isMovable()}"
+                  x="{pixelToViewBox(_handle-Offset)}"
+                  y="{pixelToViewBox(_handle-Offset)}"
+                  width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
+
+        <svg:use class="configuration-handle-icon"
+                 selected="{isMovable()}"
+                 href="{baseUrl('sprd/css/library.svg#move')}" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
+                 translateX="{_moveHandle.x}"
+                 translateY="{_moveHandle.y}"
+                 style="pointer-events: none"/>
+
         <svg:rect cid="_scaleHandle" class="configuration-handle scale"
                   selected="{isScalable()}"
                   x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}" y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"

@@ -51,6 +51,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     y: 1
                 },
 
+                selected: "{isSelectedConfiguration()}",
+
                 _handleWidth: 15,
                 _handleOffset: 8,
                 "_handle-Offset": -8,
@@ -145,7 +147,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (productViewer && productViewer.$.editable === true) {
                     var assetContainer = this.$._assetContainer,
                         scaleHandle = this.$._scaleHandle,
-                        rotateHandle = this.$._rotateHandle;
+                        rotateHandle = this.$._rotateHandle,
+                        moveHandle = this.$._moveHandle;
 
                     assetContainer.bindDomEvent(this.$downEvent, function (e) {
                         self._down(e, self._isGesture(e) ? GESTURE : MOVE);
@@ -158,6 +161,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     rotateHandle && rotateHandle.bindDomEvent(this.$downEvent, function (e) {
                         self._down(e, self._isGesture(e) ? GESTURE : ROTATE);
                     });
+
+                    moveHandle && moveHandle.bindDomEvent(this.$downEvent, function(e){
+                         self._down(e, self._isGesture(e) ? GESTURE : MOVE);
+                    });
+
 
                     if (productViewer && this.$hasTouch) {
                         productViewer.bindDomEvent(this.$downEvent, function (e) {
@@ -174,6 +182,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     assetContainer.bindDomEvent(this.$clickEvent, preventDefault);
                     scaleHandle && scaleHandle.bindDomEvent(this.$clickEvent, preventDefault);
                     rotateHandle && rotateHandle.bindDomEvent(this.$clickEvent, preventDefault);
+                    moveHandle && moveHandle.bindDomEvent(this.$clickEvent, preventDefault);
 
                 }
 
@@ -661,15 +670,19 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             isScalable: function () {
                 return this.isSelectedConfiguration() && this.get("configuration.isScalable()");
-            }.on(["productViewer", "change:selectedConfiguration"]),
+            }.onChange("selected"),
 
             isRotatable: function () {
                 return this.isSelectedConfiguration() && this.get("configuration.isRotatable()");
-            }.on(["productViewer", "change:selectedConfiguration"]),
+            }.onChange("selected"),
+
+            isMovable: function () {
+                return this.isSelectedConfiguration();
+            }.onChange("selected"),
 
             isRemovable: function () {
                 return this.isSelectedConfiguration() && this.get("configuration.isRemovable()");
-            }.on(["productViewer", "change:selectedConfiguration"]),
+            }.onChange("selected"),
 
             isRotating: function() {
                 return this.$._mode === ROTATE;
