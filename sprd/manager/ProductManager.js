@@ -1,7 +1,12 @@
-define(["underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil'],
-    function (_, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil) {
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus'],
+    function (IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus) {
 
-        return {
+
+        return IProductManager.inherit("sprd.manager.ProductManager", {
+
+            inject: {
+                bus: Bus
+            },
 
             /***
              * set the product type and converts all configurations
@@ -195,6 +200,7 @@ define(["underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', '
                 });
 
                 var self = this,
+                    bus = this.$.bus,
                     design = params.design,
                     productType = product.$.productType,
                     printArea = params.printArea,
@@ -284,7 +290,9 @@ define(["underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', '
                         return entity;
                     })
                     .seq(function (cb) {
-                        this.vars["designConfiguration"].init(cb);
+                        var designConfiguration = this.vars["designConfiguration"];
+                        bus.setUp(designConfiguration);
+                        designConfiguration.init(cb);
                     })
                     .seq(function () {
                         // determinate position
@@ -440,7 +448,7 @@ define(["underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', '
                             lineHeight: 1.2,
                             printTypeColor: this.vars["printTypeColor"]
                         }), new
-                        Style({
+                            Style({
                             textAnchor: "middle"
                         }))).doOperation();
 
@@ -564,6 +572,6 @@ define(["underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', '
             }
 
 
-        };
+        });
 
     });
