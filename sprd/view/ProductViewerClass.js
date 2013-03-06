@@ -39,7 +39,7 @@ define(["js/ui/View"], function (View) {
             var position = null,
                 selectedConfiguration = this.$.selectedConfiguration;
 
-            if (this.$.editable && selectedConfiguration && selectedConfiguration.type === "text") {
+            if (this.$.editable && selectedConfiguration && selectedConfiguration.type === "text" && this.$.productViewerSvg && this.$.productViewerSvg.$currentProductTypeViewViewer) {
                 var factor = this.$.productViewerSvg.localToGlobalFactor(),
                     view = this.$.productViewerSvg.$currentProductTypeViewViewer.$._view,
                     viewMap;

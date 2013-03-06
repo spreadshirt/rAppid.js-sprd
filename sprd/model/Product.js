@@ -246,6 +246,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                 .seq(function (cb) {
                     flow()
                         .parEach(self.$.configurations.$items, function (configuration, cb) {
+                            self._setUpConfiguration(configuration);
                             configuration.init(cb);
                         })
                         .exec(cb);
@@ -269,7 +270,16 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             }
 
             return "";
-        }.onChange(["appearance"])
+        }.onChange(["appearance"]),
+
+        clone: function (options) {
+            options = options || {};
+            options.exclude = options.exclude || [];
+            options.exclude.push("context", "manager");
+
+            return this.callBase(options);
+
+        }
 
     });
 });

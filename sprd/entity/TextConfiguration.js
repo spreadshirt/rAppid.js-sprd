@@ -26,7 +26,9 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     productManager.initializeConfiguration(self, cb);
                 })
                 .seq(function() {
-                    self._composeText();
+                    if (self.$stageRendered) {
+                        self._composeText();
+                    }
                 })
                 .exec(callback);
         },
@@ -40,7 +42,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             this.unbind("textFlow", "operationComplete", this._composeText, this);
         },
 
+        bus_StageRendered: function() {
+            this.$stageRendered = true;
+            this._composeText();
+        }.bus("Stage.Rendered"),
+
         _composeText: function () {
+
+            if (!(this.$stage && this.$stage.rendered)) {
+                return;
+            }
 
             var textFlow = this.$.textFlow;
             if (!textFlow) {
@@ -376,6 +387,27 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             }
 
             return ArrayUtil.average.apply(ArrayUtil, printTypes);
+
+        },
+
+        parse: function(data) {
+
+            data = this.callBase();
+
+            this.$$ = this.$$ || {};
+
+            if (data.printArea) {
+                // remove printArea from payload since it is the wrong one
+                // it will be set within the initSchema methods
+                this.$$.printArea = data.printArea;
+                data.printArea = null;
+            }
+
+            if (data.content) {
+                this.$$.svg = data.content.svg;
+            }
+
+            return data;
 
         },
 

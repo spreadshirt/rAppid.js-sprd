@@ -1,9 +1,9 @@
-define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design"], function (Base, UnitUtil, Design) {
+define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow"], function (Base, UnitUtil, Design, flow) {
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
         initializeConfiguration: function (configuration, callback) {
 
-            var $$ = configuration.$$,
-                svg = $$.svg,
+            var content = configuration.$$ || {},
+                svg = content.svg,
                 printType = configuration.$.printType,
                 printArea,
                 design;
@@ -21,8 +21,8 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     printType.fetch(null, cb);
                 })
                 .seq(function () {
-                    if ($$.printArea) {
-                        printArea = configuration.$context.$contextModel.$.productType.getPrintAreaById($$.printArea.$.id);
+                    if (content.printArea) {
+                        printArea = configuration.$context.$contextModel.$.productType.getPrintAreaById(content.printArea.$.id);
                     } else {
                         printArea = configuration.$.printArea;
                     }
