@@ -19,32 +19,14 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
         init: function (callback) {
 
             var self = this,
-                $$ = self.$$,
-//                svg = $$.svg,
-                printType = this.$.printType,
-                printArea;
+                productManager = this.$.manager;
 
             flow()
-                .seq(function (cb) {
-                    printType.fetch(null, cb);
+                .seq(function(cb) {
+                    productManager.initializeConfiguration(self, cb);
                 })
-                .seq(function () {
-                    if ($$ && $$.printArea) {
-                        printArea = self.$context.$contextModel.$.productType.getPrintAreaById($$.printArea.$.id);
-                    } else {
-                        printArea = self.$.printArea;
-                    }
-                })
-                .seq(function () {
-                    if (!self.textArea) {
-
-                        var size = printArea.get("defaultBox") || printArea.get("boundary.size");
-
-                        self.set("textArea", new Size({
-                            width: self.get(size, "width"),
-                            height: self.get(size, "height")
-                        }));
-                    }
+                .seq(function() {
+                    self._composeText();
                 })
                 .exec(callback);
         },
@@ -64,10 +46,15 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             if (!textFlow) {
                 return;
             }
+            var textArea = this.$.textArea;
+
+            if (!textArea) {
+                return;
+            }
 
             var composer = this.$.composer,
                 self = this;
-            composer.compose(textFlow, this.$.textArea.$, function (err, composedTextFlow) {
+            composer.compose(textFlow, textArea.$, function (err, composedTextFlow) {
 
                 if (composedTextFlow) {
                     self.$.textArea.set('height', composedTextFlow.composed.getHeight());

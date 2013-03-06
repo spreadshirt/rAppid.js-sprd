@@ -321,6 +321,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var self = this,
                     context = product.$.context,
                     text = params.text,
+                    bus = this.$.bus,
                     productType = product.$.productType,
                     printArea = params.printArea,
                     view = params.view,
@@ -463,7 +464,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         return entity;
                     })
                     .seq(function (cb) {
-                        this.vars["configuration"].init(cb);
+                        var configuration = this.vars["configuration"];
+                        bus.setUp(configuration);
+                        configuration.init(cb);
                     })
                     .seq(function () {
                         // determinate position
