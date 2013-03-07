@@ -85,12 +85,12 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                         }
 
                         configuration.set({
+                            textFlow: textFlow,
+                            selection: TextRange.createTextRange(0, 0),
                             textArea: new Size({
                                 width: text.width,
                                 height: text.height
-                            }),
-                            textFlow: textFlow,
-                            selection: TextRange.createTextRange(0, 0)
+                            })
                         });
 
                     } else {

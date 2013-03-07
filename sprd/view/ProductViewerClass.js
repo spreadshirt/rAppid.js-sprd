@@ -8,6 +8,7 @@ define(["js/ui/View"], function (View) {
             height: 300,
             selectedConfiguration: null,
             editable: true,
+            focused: true,
 
             productViewerSvg: null,
             textArea: null,
@@ -73,9 +74,10 @@ define(["js/ui/View"], function (View) {
         },
 
         _clickHandler: function (e) {
-            if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent.target !== this.$.textArea.$el) {
+            if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.target !== this.$.textArea.$el) {
                 this.set('selectedConfiguration', null);
             }
+            this.set('focused', true);
 
             e.stopPropagation();
 
@@ -181,9 +183,11 @@ define(["js/ui/View"], function (View) {
                 var self = this;
 
                 this.bind("on:click", this._clickHandler, this);
-
-                this.bindDomEvent("keydown", function (e) {
-                    self._keyDownHandler(e);
+                this.$stage.bind('on:blur', function(){
+                    self.set('focused', false);
+                });
+                this.$stage.bind('on:focus', function () {
+                    self.set('focused', true);
                 });
 
                 this.callBase();
@@ -191,10 +195,12 @@ define(["js/ui/View"], function (View) {
         },
 
         textAreaFocused: function() {
+            this.set('focused', true);
             this.$.textArea.set('visibility', 'hidden');
         },
 
-        textAreaBlured: function(e) {
+        textAreaBlured: function() {
+            this.set('focused', false);
             this.$.textArea.set('visibility', 'visible');
         },
 

@@ -36,12 +36,12 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
         },
 
         _postConstruct: function () {
-            this.bind("textFlow", "operationComplete", this._composeText, this);
+            this.bind("textFlow", "operationComplete", this._onTextFlowChange, this);
             this._composeText();
         },
 
         _preDestroy: function () {
-            this.unbind("textFlow", "operationComplete", this._composeText, this);
+            this.unbind("textFlow", "operationComplete", this._onTextFlowChange, this);
         },
 
         bus_StageRendered: function() {
@@ -49,13 +49,20 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             this._composeText();
         }.bus("Stage.Rendered"),
 
-        _commitChangedAttributes: function($) {
+        _commitChangedAttributes: function ($) {
 
             if ($.hasOwnProperty("bound")) {
                 this._setError(this._validateTransform($));
             }
 
             this.callBase();
+        },
+        
+        _onTextFlowChange: function(){
+            this._composeText();
+
+            this.trigger("priceChanged");
+            this.trigger('configurationChanged');
         },
 
         _composeText: function () {
@@ -184,9 +191,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 } while ((leaf = leaf.getNextLeaf(textFlow)));
 
             }
-
+            if(this.$.composedTextFlow){
+                this.trigger('configurationChanged');
+            }
             this.trigger("priceChanged");
-            this.trigger('configurationChanged');
         },
 
         price: function () {
@@ -375,10 +383,6 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
                 new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new Style({printTypeColor: color})).doOperation();
             }
-
-
-            this.trigger('configurationChanged');
-            this.trigger("priceChanged");
         },
 
         getPossiblePrintTypes: function (appearance) {

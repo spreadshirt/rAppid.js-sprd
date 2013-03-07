@@ -3,6 +3,7 @@
     <!--<rect stroke="blue" x="{configuration.bound.x}" y="{configuration.bound.y}" width="{configuration.bound.width}" height="{configuration.bound.height}"/>-->
     <textUi:SvgTextArea cid="textArea" composedTextFlow="{configuration.composedTextFlow}"
                         selection="{configuration.selection}"
+                        focused="{focused}"
                         width="{configuration.textArea.width}" height="{configuration.textArea.height}"
             editable="{productViewer.editable}" selectable="{editable}" showSelection="{showSelection}"/>
 </sprdSvg:TextConfigurationRendererClass>
