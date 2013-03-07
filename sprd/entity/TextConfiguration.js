@@ -34,18 +34,25 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
         },
 
         _postConstruct: function () {
-            this.bind("textFlow", "operationComplete", this._composeText, this);
+            this.bind("textFlow", "operationComplete", this._onTextFlowChange, this);
             this._composeText();
         },
 
         _preDestroy: function () {
-            this.unbind("textFlow", "operationComplete", this._composeText, this);
+            this.unbind("textFlow", "operationComplete", this._onTextFlowChange, this);
         },
 
         bus_StageRendered: function() {
             this.$stageRendered = true;
             this._composeText();
         }.bus("Stage.Rendered"),
+
+        _onTextFlowChange: function(){
+            this._composeText();
+
+            this.trigger("priceChanged");
+            this.trigger('configurationChanged');
+        },
 
         _composeText: function () {
 
