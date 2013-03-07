@@ -150,9 +150,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 } while ((leaf = leaf.getNextLeaf(textFlow)));
 
             }
-
+            if(this.$.composedTextFlow){
+                this.trigger('configurationChanged');
+            }
             this.trigger("priceChanged");
-            this.trigger('configurationChanged');
         },
 
         price: function () {
@@ -341,10 +342,6 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
                 new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new Style({printTypeColor: color})).doOperation();
             }
-
-
-            this.trigger('configurationChanged');
-            this.trigger("priceChanged");
         },
 
         getPossiblePrintTypes: function (appearance) {
