@@ -319,7 +319,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 });
 
                 var self = this,
-                    context = product.$.context,
+                    context = product.$context.$contextModel,
                     text = params.text,
                     bus = this.$.bus,
                     productType = product.$.productType,
