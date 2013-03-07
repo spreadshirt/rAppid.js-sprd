@@ -26,7 +26,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     productManager.initializeConfiguration(self, cb);
                 })
                 .seq(function() {
-                    if (self.$stageRendered) {
+                    if (self.$stageRendered || (self.$stage && self.$stage.rendered)) {
                         self._composeText();
                     }
                 })
