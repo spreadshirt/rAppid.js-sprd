@@ -196,7 +196,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
         },
 
         hasChanges: function () {
-            return this.$originalProduct.isDeepEqual(this);
+            return !this.$originalProduct.isDeepEqual(this);
         },
 
         save: function (options, callback) {
@@ -270,16 +270,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             }
 
             return "";
-        }.onChange(["appearance"]),
-
-        clone: function (options) {
-            options = options || {};
-            options.exclude = options.exclude || [];
-            options.exclude.push("context", "manager");
-
-            return this.callBase(options);
-
-        }
+        }.onChange(["appearance"])
 
     });
 });
