@@ -50,7 +50,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     x: 1,
                     y: 1
                 },
-
+                focused: "{isFocused()}",
                 selected: "{isSelectedConfiguration()}",
 
                 _handleWidth: 15,
@@ -100,6 +100,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         "_handle-Offset": -10
                     });
                 }
+            },
+
+            _renderFocused: function(focused){
+                if(focused){
+                    this.addClass('focused');
+                } else {
+                    this.removeClass('focused');
+                }
+
             },
 
             _initializeRenderer: function () {
@@ -255,6 +264,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 this.$.productViewer.set("selectedConfiguration", this.$.configuration);
+                this.$stage.focus();
 
                 if (e.defaultPrevented) {
                     return;
@@ -655,6 +665,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             errorClass: function() {
                 return this.$._configurationValid ? "" : "error";
             }.onChange("_configurationValid"),
+
+            isFocused: function(){
+                return this.isSelectedConfiguration() && this.get('productViewer.focused');
+            }.on(["productViewer", "change:selectedConfiguration"],['productViewer', 'change:focused']),
 
             isSelectedConfiguration: function () {
                 return this.$.configuration !== null &&
