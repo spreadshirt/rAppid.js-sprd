@@ -195,10 +195,12 @@ define(["js/ui/View"], function (View) {
         },
 
         textAreaFocused: function() {
+            this.set('focused', true);
             this.$.textArea.set('visibility', 'hidden');
         },
 
-        textAreaBlured: function(e) {
+        textAreaBlured: function() {
+            this.set('focused', false);
             this.$.textArea.set('visibility', 'visible');
         },
 
