@@ -1,10 +1,12 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/entity/PrintTypeColor", "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/type/Style', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager"], function (Configuration, flow, Size, _, PrintType, PrintTypeColor, ProductUtil, Bus, UnitUtil, Style, ArrayUtil, ITextConfigurationManager) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/entity/PrintTypeColor", "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/type/Style', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager"],
+    function (Configuration, flow, Size, _, PrintType, PrintTypeColor, ProductUtil, Bus, UnitUtil, Style, ArrayUtil, ITextConfigurationManager) {
     return Configuration.inherit('sprd.entity.TextConfiguration', {
         defaults: {
             textArea: null,
             textFlow: null,
             composedTextFlow: null,
-            selection: null
+            selection: null,
+            bound: null
         },
 
         inject: {
@@ -47,6 +49,15 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             this._composeText();
         }.bus("Stage.Rendered"),
 
+        _commitChangedAttributes: function($) {
+
+            if ($.hasOwnProperty("bound")) {
+                this._setError(this._validateTransform($));
+            }
+
+            this.callBase();
+        },
+
         _composeText: function () {
 
             if (!(this.$stage && this.$stage.rendered)) {
@@ -72,14 +83,19 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     self.trigger("sizeChanged");
                 }
 
-                self.set('composedTextFlow', composedTextFlow);
+                self.set({
+                    composedTextFlow: composedTextFlow,
+                    bound: composedTextFlow ? composedTextFlow.measure : null
+                });
 
             });
         },
 
         _validatePrintTypeSize: function (printType, width, height, scale) {
 
-            var ret = this.callBase();
+            var bound = this.$.bound;
+
+            var ret = this.callBase(printType, bound ? bound.width * scale.x : width, bound ? bound.height * scale.height : scale);
 
             if (!printType || !scale) {
                 return ret;
@@ -110,6 +126,31 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             ret.minBound = fontToSmall;
 
             return ret;
+
+        },
+
+        _getBoundingBox: function (offset, width, height, rotation, scale) {
+
+            var bound = this.$.bound;
+
+            if (bound) {
+                offset = offset || this.$.offset;
+                offset = offset.clone();
+                scale = scale || this.$.scale;
+
+                width = bound.width * scale.x;
+                height = bound.height * scale.y;
+
+                offset.set({
+                    x: offset.$.x + bound.x * scale.x,
+                    y: offset.$.y + bound.y * scale.y
+                });
+
+                return this.callBase(offset, width, height, rotation, scale);
+            } else {
+                return this.callBase();
+            }
+
 
         },
 

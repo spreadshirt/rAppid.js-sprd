@@ -62,7 +62,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         _validateTransform: function ($) {
 
             var rotationChanged = this._hasSome($, ["rotation"]),
-                sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale", "offset"]),
+                sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale", "offset", "bound"]),
                 printTypeChanged = this._hasSome($, ["printType"]),
                 width, height,
                 printType = $.printType || this.$.printType,
@@ -108,7 +108,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 return;
             }
 
-            var boundingBox = this._getBoundingBox(offset, width, height, rotation);
+            var boundingBox = this._getBoundingBox(offset, width, height, rotation, scale);
 
             return !(boundingBox.x >= 0 && boundingBox.y >= 0 &&
                 (boundingBox.x + boundingBox.width) <= printArea.get("boundary.size.width") &&
@@ -116,7 +116,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         },
 
-        _getBoundingBox: function (offset, width, height, rotation) {
+        _getBoundingBox: function (offset, width, height, rotation, scale) {
 
             offset = offset || this.$.offset;
             width = width || this.width();
