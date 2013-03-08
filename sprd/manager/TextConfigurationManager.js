@@ -51,7 +51,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                                 // new paragraph
                                 paragraph = new ParagraphElement({
                                     style: new Style({
-                                        textAnchor: tspan.textAnchor
+                                        textAnchor: tspan.textAnchor || text.textAnchor
                                     })
                                 });
 
@@ -60,6 +60,15 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             }
 
                             lastTSpan = tspan;
+
+                            if (text.hasOwnProperty("printColorId")) {
+                                tspan.printColorId = tspan.printColorId || text.printColorId;
+                            }
+
+                            tspan.fill = tspan.fill || text.fill;
+                            tspan.fontFamilyId = tspan.fontFamilyId || text.fontFamilyId;
+                            tspan.fontId = tspan.fontId || text.fontId;
+                            tspan.fontSize = tspan.fontSize || text.fontSize;
 
                             var printTypeColor;
 
