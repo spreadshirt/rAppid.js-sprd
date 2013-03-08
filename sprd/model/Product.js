@@ -238,8 +238,16 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                 .seq(function () {
                     var productType = self.$.productType;
 
+                    var appearance;
+
+                    if (self.$.appearance) {
+                        appearance = productType.getAppearanceById(self.$.appearance.$.id);
+                    }
+
+                    appearance = appearance || productType.getDefaultAppearance();
+
                     self.set({
-                        appearance: productType.getAppearanceById(self.$.appearance.$.id),
+                        appearance: appearance,
                         view: self.$.view || productType.getViewById(self.get("defaultValues.defaultView.id")) || productType.getDefaultView()
                     });
                 })
