@@ -1,5 +1,5 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/entity/PrintTypeColor", "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/type/Style', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager"],
-    function (Configuration, flow, Size, _, PrintType, PrintTypeColor, ProductUtil, Bus, UnitUtil, Style, ArrayUtil, ITextConfigurationManager) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/entity/PrintTypeColor", "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager"],
+    function (Configuration, flow, Size, _, PrintType, PrintTypeColor, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager) {
     return Configuration.inherit('sprd.entity.TextConfiguration', {
         defaults: {
             textArea: null,
@@ -13,6 +13,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             composer: "composer",
             bus: Bus,
             ApplyStyleToElementOperation: "ApplyStyleToElementOperation",
+            Style: "Style",
             manager: ITextConfigurationManager
         },
 
@@ -371,7 +372,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
         },
 
         setColor: function (layerIndex, color) {
-            if (this.$.ApplyStyleToElementOperation) {
+            if (this.$.ApplyStyleToElementOperation && this.$.Style) {
                 var selection = this.$.selection;
                 if (selection.$.anchorIndex === selection.$.activeIndex) {
                     selection = selection.clone();
@@ -381,7 +382,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     })
 
                 }
-                new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new Style({printTypeColor: color})).doOperation();
+                new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new this.$.Style({printTypeColor: color})).doOperation();
             }
         },
 
