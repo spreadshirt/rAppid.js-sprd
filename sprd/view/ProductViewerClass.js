@@ -51,13 +51,14 @@ define(["js/ui/View"], function (View) {
                         break;
                     }
                 }
-
-                position = {
-                    x: (viewMap.get("offset.x")  + selectedConfiguration.get("offset.x")) * factor.x ,
-                    y: (viewMap.get("offset.y")  + selectedConfiguration.get("offset.y")) * factor.y ,
-                    width: selectedConfiguration.width() * factor.x - 10,
-                    height: selectedConfiguration.height() * factor.y - 10
-                };
+                if(viewMap){
+                    position = {
+                        x: (viewMap.get("offset.x")  + selectedConfiguration.get("offset.x")) * factor.x ,
+                        y: (viewMap.get("offset.y")  + selectedConfiguration.get("offset.y")) * factor.y ,
+                        width: selectedConfiguration.width() * factor.x - 10,
+                        height: selectedConfiguration.height() * factor.y - 10
+                    };
+                }
 
             }
 
