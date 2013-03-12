@@ -35,13 +35,27 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
 
                         var text = svg.text,
                             textFlow = new TextFlow(),
-                            content = text.content;
+                            content = text.content,
+                            configurationObject = {};
+
+                        var regExp = /^(\w+)\(([^(]+)\)/ig,
+                            match;
+                        if (match = regExp.exec(text.transform)) {
+                            var type = match[1];
+                            var values = match[2].split(",");
+                            if (type === "rotate") {
+                                configurationObject.rotation = parseFloat(values.shift());
+                            }
+                        }
 
                         var lastTSpan = null,
                             paragraph = null;
 
                         for (var i = 0; i < content.length; i++) {
                             var tspan = content[i];
+
+
+
 
                             if (!lastTSpan || tspan.hasOwnProperty("y")) {
                                 if (paragraph) {
@@ -93,14 +107,14 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
 
                         }
 
-                        configuration.set({
-                            textFlow: textFlow,
-                            selection: TextRange.createTextRange(0, 0),
-                            textArea: new Size({
-                                width: text.width,
-                                height: text.height
-                            })
+                        configurationObject.textFlow = textFlow;
+                        configurationObject.selection = TextRange.createTextRange(0, 0);
+                        configurationObject.textArea = new Size({
+                            width: text.width,
+                            height: text.height
                         });
+
+                        configuration.set(configurationObject);
 
                     } else {
                         if (!configuration.textArea) {
