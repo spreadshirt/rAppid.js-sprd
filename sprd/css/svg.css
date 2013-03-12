@@ -84,6 +84,14 @@ rect {
     fill-opacity: 0.01;
 }
 
+.dark .text-cursor {
+    fill: white;
+}
+
+.bright .text-cursor {
+    fill: black;
+}
+
 .text-cursor {
     visibility: hidden;
 }
