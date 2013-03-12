@@ -318,6 +318,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                                 };
 
                                 var style = lineElement.$.style.serialize();
+                                style.fontSize = (style.fontSize || 0) * scaleY;
+
 
                                 if (j === 0 && k === 0 && l === 0) {
                                     _.extend(text, style);
@@ -345,8 +347,6 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                                     style.y = y;
 
                                 }
-
-                                style.fontSize = (style.fontSize || 0) * scaleY;
 
                                 _.extend(tspan, style);
                                 text.content.push(tspan);
