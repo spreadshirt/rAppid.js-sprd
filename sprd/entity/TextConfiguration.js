@@ -137,11 +137,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
         },
 
-        _getBoundingBox: function (offset, width, height, rotation, scale) {
+        _getBoundingBox: function (offset, width, height, rotation, scale, onlyContent) {
 
             var bound = this.$.bound;
 
-            if (bound) {
+            if (bound && onlyContent) {
                 offset = offset || this.$.offset;
                 offset = offset.clone();
                 scale = scale || this.$.scale;

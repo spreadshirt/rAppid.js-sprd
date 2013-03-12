@@ -496,7 +496,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     offset = configuration.$.offset.clone(),
                     newScale;
 
-                boundingBox = configuration._getBoundingBox();
+                boundingBox = configuration._getBoundingBox(null, null, null, null, null, false);
 
                 // position centered within defaultBox
                 offset.set({

@@ -108,7 +108,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 return;
             }
 
-            var boundingBox = this._getBoundingBox(offset, width, height, rotation, scale);
+            var boundingBox = this._getBoundingBox(offset, width, height, rotation, scale, true);
 
             return !(boundingBox.x >= 0 && boundingBox.y >= 0 &&
                 (boundingBox.x + boundingBox.width) <= printArea.get("boundary.size.width") &&
@@ -116,7 +116,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         },
 
-        _getBoundingBox: function (offset, width, height, rotation, scale) {
+        _getBoundingBox: function (offset, width, height, rotation, scale, onlyContent) {
 
             offset = offset || this.$.offset;
             width = width || this.width();
