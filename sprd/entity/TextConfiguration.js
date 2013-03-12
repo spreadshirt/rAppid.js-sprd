@@ -103,7 +103,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             var bound = this.$.bound;
 
-            var ret = this.callBase(printType, bound ? bound.width * scale.x : width, bound ? bound.height * scale.height : scale);
+            var ret = this.callBase(printType, bound ? bound.width * scale.x : width, bound ? bound.height * scale.y : height, scale);
 
             if (!printType || !scale) {
                 return ret;
