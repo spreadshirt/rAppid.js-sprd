@@ -294,7 +294,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             text.transform = transform.join(" ");
 
-            var y = 0;
+            var y = 0,
+                extendedStyleToText = false;
 
             if (composedTextFlow) {
                 for (var i = 0; i < composedTextFlow.composed.children.length; i++) {
@@ -321,8 +322,9 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                                 style.fontSize = (style.fontSize || 0) * scaleY;
 
 
-                                if (j === 0 && k === 0 && l === 0) {
+                                if (!extendedStyleToText) {
                                     _.extend(text, style);
+                                    extendedStyleToText = true;
                                 }
 
                                 if (l === 0) {
