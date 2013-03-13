@@ -113,7 +113,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             var textFlow = this.$.textFlow;
 
-            if (textFlow) {
+            if (textFlow && !printType.isShrinkable()) {
 
                 var leaf = textFlow.getFirstLeaf();
                 do {
