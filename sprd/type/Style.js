@@ -62,7 +62,7 @@ define(["text/type/Style","underscore"], function(Style,_) {
                 fontFamilyId: fontFamily.$.id,
                 fontId: font.$.id,
                 printColorId: this._getPrintColorId(),
-                fill: "#" + this._getColor(),
+                fill: this._getColor(),
                 fontFamily: font.$.name,
                 fontWeight: font.$.weight,
                 fontStyle: font.$.style,
