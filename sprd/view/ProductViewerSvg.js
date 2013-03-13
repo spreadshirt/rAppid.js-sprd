@@ -93,7 +93,14 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
 
             _render_view: function (view) {
 
-                view && this.setViewBox(0, 0, view.get('size.width'), view.get('size.height'));
+                var width = view.get('size.width');
+                var height = view.get('size.height');
+
+                if (width < 0 || height < 0) {
+                    width = height = 500;
+                }
+
+                view && this.setViewBox(0, 0, width, height);
 
                 this._renderProductTypeView(this.$._productType, view);
             },
@@ -111,7 +118,14 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 if (productType && view && productType.containsView(view)) {
                     var cacheId = productType.$.id + "_" + view.$.id;
 
-                    view && this.setViewBox(0, 0, view.get('size.width'), view.get('size.height'));
+                    var width = view.get('size.width');
+                    var height = view.get('size.height');
+
+                    if (width < 0 || height < 0) {
+                        width = height = 500;
+                    }
+
+                    view && this.setViewBox(0, 0, width, height);
 
                     if (!this.$productTypeViewViewerCache[cacheId]) {
                         this.$productTypeViewViewerCache[cacheId] = this.createComponent(ProductTypeViewViewer, {
