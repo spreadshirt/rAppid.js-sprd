@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/type/Color'], function (Entity, Color) {
+define(['js/data/Entity', 'js/type/Color'], function (Entity, Color) {
     return Entity.inherit('sprd.entity.DesignColor', {
         schema: {
             "default": String,

@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor", "js/data/Entity", 'sprd/type/Color', 'sprd/entity/Price'], function (SprdModel, Size, PrintTypeColor, Entity, Color, Price) {
+define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor", "js/data/Entity", 'js/type/Color', 'sprd/entity/Price'], function (SprdModel, Size, PrintTypeColor, Entity, Color, Price) {
 
     var PrintType = SprdModel.inherit("sprd.model.PrintType", {
 
