@@ -219,7 +219,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
                 this.$.printColors.each(function (printColor) {
                     printColorIds.push(printColor.$.id);
-                    printColorRGBs.push(printColor.color().toString());
+                    printColorRGBs.push(printColor.color().toRGB().toString());
                 });
 
                 if (this.$.printType.isPrintColorColorSpace()) {
