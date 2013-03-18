@@ -96,6 +96,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     bound: composedTextFlow ? composedTextFlow.measure : null
                 });
 
+                self.trigger('configurationChanged');
             });
         },
 
@@ -360,6 +361,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         }
                     }
                 }
+            } else {
+                throw new Error("No composed text flow");
             }
 
             ret.content = {
