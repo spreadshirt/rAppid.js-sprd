@@ -76,6 +76,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                             printColors.push(printColor);
                             if (!printColor) {
                                 colorsSet = false;
+                                break;
                             }
                         }
                     } else if (designColorsRGBs && designColorsRGBs.length) {
@@ -86,6 +87,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                             printColors.push(printColor);
                             if (!printColor) {
                                 colorsSet = false;
+                                break;
                             }
                         }
                     }
