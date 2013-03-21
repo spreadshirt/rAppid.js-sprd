@@ -65,6 +65,10 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], functi
             this.$.textArea.handleKeyPress(e);
         },
 
+        addChar: function(c) {
+            this.$.textArea.addChar(c);
+        },
+
         handleKeyDown: function (e) {
             this.$.textArea.handleKeyDown(e);
         }

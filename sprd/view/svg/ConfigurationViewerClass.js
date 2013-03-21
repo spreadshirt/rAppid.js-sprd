@@ -569,6 +569,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$asset.handleKeyPress && this.$asset.handleKeyPress(e);
             },
 
+            addChar: function(c) {
+                this.$asset.addChar && this.$asset.addChar(c);
+            },
+
             _stopTransformation: function () {
 
                 this._unbindTransformationHandler();

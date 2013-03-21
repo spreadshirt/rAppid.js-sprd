@@ -26,13 +26,26 @@ define(["js/ui/View"], function (View) {
             this._positionTextArea();
         },
 
-        keypress: function(e) {
+        keyUp: function(e) {
+            // this is a work-a-round because keypress event isn't available on android
+            var value = this.$.textArea.$el.value;
+            if (this.$lastValue !== value && value && value.length !== 0) {
+                // input
+                var c = value.substr(-1),
+                    viewer = this.$.selectedConfigurationViewer;
+
+                if (c && viewer) {
+                    viewer.addChar(c);
+                }
+
+            }
+
+            this.$lastValue = value;
+
             this.$.textArea.$el.value = "";
-            this._keyPressHandler(e.domEvent);
         },
 
-        keydown: function(e) {
-            this.$.textArea.$el.value = "";
+        keyDown: function(e) {
             this._keyDownHandler(e.domEvent);
         },
 
@@ -75,7 +88,7 @@ define(["js/ui/View"], function (View) {
         },
 
         _clickHandler: function (e) {
-            if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.target !== this.$.textArea.$el) {
+            if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent.target !== this.$.textArea.$el) {
                 this.set('selectedConfiguration', null);
             }
             this.set('focused', true);
@@ -197,12 +210,12 @@ define(["js/ui/View"], function (View) {
 
         textAreaFocused: function() {
             this.set('focused', true);
-            this.$.textArea.set('visibility', 'hidden');
+//            this.$.textArea.set('visibility', 'hidden');
         },
 
         textAreaBlured: function() {
             this.set('focused', false);
-            this.$.textArea.set('visibility', 'visible');
+//            this.$.textArea.set('visibility', 'visible');
         },
 
         showTextAreaOverlay: function() {
