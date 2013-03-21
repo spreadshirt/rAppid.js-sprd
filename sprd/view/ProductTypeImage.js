@@ -3,7 +3,8 @@ define([
     "sprd/data/ImageService"
 ], function (Image, ImageService) {
 
-    var viewIdExtractor = /\/views\/(\d+)/;
+    var viewIdExtractor = /\/views\/(\d+)/,
+        appearanceIdExtractor = /\/appearances\/(\d+)/;
 
     return Image.inherit('app.view.ProductTypeImage', {
 
@@ -20,55 +21,67 @@ define([
         },
 
         imageUrl: function () {
-            var url = null;
+            var url = null,
+                imageService = this.$.imageService,
+                productType = this.$.productType,
+                productTypeId,
+                viewId,
+                appearanceId;
 
-            if (this.$.productType) {
-                var imageService = this.$.imageService;
-
-                var productType = this.$.productType;
-
-                if (this.$.type == "preview") {
-                    url = imageService.$.endPoint + "/productTypes/" + productType.$.id;
-                } else {
-                    url = imageService.$.endPoint + "/compositions/" + productType.$.id;
-                }
-
-
-                var viewId = this.$.view ? this.$.view.$.id : null;
-                if(!viewId){
+            if (productType) {
+                productTypeId = productType.$.id;
+                viewId = this.$.view ? this.$.view.$.id : null;
+                if (!viewId) {
                     var view = productType.getDefaultView();
-                    if(view){
+                    if (view) {
                         viewId = view.$.id;
                     }
                 }
 
                 var resources = productType.$.resources;
 
-                if (!viewId && resources instanceof Array) {
+                if (this.$.appearance) {
+                    appearanceId = this.$.appearance.$.id;
+                }
+
+                if (resources instanceof Array) {
                     // get view id from resource -> this is a hack, because image server
                     // can't generate an image without the view id -> should be implemented by image server
 
                     for (var i = 0; i < resources.length; i++) {
-                        viewId = viewIdExtractor.exec(resources[i].href);
-                        if (viewId) {
-                            viewId = viewId[1];
+
+                        if (viewId && appearanceId) {
                             break;
                         }
+
+                        var extracted;
+
+                        if (!viewId) {
+                            extracted = viewIdExtractor.exec(resources[i].href);
+                            if (extracted) {
+                                viewId = extracted[1];
+                            }
+                        }
+
+                        if (!appearanceId) {
+                            extracted = appearanceIdExtractor.exec(resources[i].href);
+                            if (extracted) {
+                                appearanceId = extracted[1];
+                            }
+                        }
+
                     }
 
                 }
 
-                url += '/views/' + viewId;
 
+                return imageService.productTypeImage(productTypeId, viewId, appearanceId, {
+                    width: this.$.width,
+                    height: this.$.height
+                });
 
-                if (this.$.appearance) {
-                    url += "/appearances/" + this.$.appearance.$.id;
-                }
-
-                url = this.extendUrlWithSizes(url);
-
-                return url;
             }
+
             return url;
         }.onChange('width', 'height', 'productType'),
 
