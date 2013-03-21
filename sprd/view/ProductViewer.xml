@@ -3,7 +3,7 @@
     <textarea cid="textArea" visible="{showTextAreaOverlay()}" position="absolute"
               left="{textAreaPosition.x}" top="{textAreaPosition.y}" width="{textAreaPosition.width}" height="{textAreaPosition.height}"
               class="text-configuration-overlay" heightUpdatePolicy="out" widthUpdatePolicy="out"
-              onkeydown="keyDown" onkeyup="keyUp" autocomplete="off" onfocus="textAreaFocused" onblur="textAreaBlured"/>
+              onkeydown="keyDown" onkeypress="keyPress" onkeyup="keyUp" autocomplete="off" onfocus="textAreaFocused" onblur="textAreaBlured"/>
 
     <sprdView:ProductViewerSvg view="{view}" product="{product}"
                                cid="productViewerSvg"

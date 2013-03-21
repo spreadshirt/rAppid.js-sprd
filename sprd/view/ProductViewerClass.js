@@ -15,18 +15,23 @@ define(["js/ui/View"], function (View) {
             textAreaPosition: null
         },
 
-        ctor: function(){
+        ctor: function () {
             this.callBase();
-            this.bind('productViewerSvg','add:configurationViewer', this._onConfigurationViewerAdded, this);
+            this.bind('productViewerSvg', 'add:configurationViewer', this._onConfigurationViewerAdded, this);
             this.bind('selectedConfiguration', 'change:scale', this._positionTextArea, this);
             this.bind('selectedConfiguration', 'change:offset', this._positionTextArea, this);
         },
 
-        _commitSelectedConfiguration: function(selectedConfiguration) {
+        _commitSelectedConfiguration: function (selectedConfiguration) {
             this._positionTextArea();
         },
 
-        keyUp: function(e) {
+        keyUp: function (e) {
+
+            if (this.$keyPressHandled) {
+                return;
+            }
+
             // this is a work-a-round because keypress event isn't available on android
             var value = this.$.textArea.$el.value;
             if (this.$lastValue !== value && value && value.length !== 0) {
@@ -41,15 +46,21 @@ define(["js/ui/View"], function (View) {
             }
 
             this.$lastValue = value;
-
             this.$.textArea.$el.value = "";
         },
 
-        keyDown: function(e) {
+        keyPress: function (e) {
+            this.$keyPressHandled = true;
+            this.$.textArea.$el.value = "";
+            this._keyPressHandler(e.domEvent);
+        },
+
+        keyDown: function (e) {
+            this.$keyPressHandled = false;
             this._keyDownHandler(e.domEvent);
         },
 
-        _positionTextArea: function() {
+        _positionTextArea: function () {
             var position = null,
                 selectedConfiguration = this.$.selectedConfiguration;
 
@@ -64,10 +75,10 @@ define(["js/ui/View"], function (View) {
                         break;
                     }
                 }
-                if(viewMap){
+                if (viewMap) {
                     position = {
-                        x: (viewMap.get("offset.x")  + selectedConfiguration.get("offset.x")) * factor.x ,
-                        y: (viewMap.get("offset.y")  + selectedConfiguration.get("offset.y")) * factor.y ,
+                        x: (viewMap.get("offset.x") + selectedConfiguration.get("offset.x")) * factor.x,
+                        y: (viewMap.get("offset.y") + selectedConfiguration.get("offset.y")) * factor.y,
                         width: selectedConfiguration.width() * factor.x - 10,
                         height: selectedConfiguration.height() * factor.y - 10
                     };
@@ -78,12 +89,12 @@ define(["js/ui/View"], function (View) {
             this.set("textAreaPosition", position);
         },
 
-        _onConfigurationViewerAdded: function(e){
+        _onConfigurationViewerAdded: function (e) {
             var viewer = e.$;
-            if(viewer.$.configuration === this.$.selectedConfiguration){
+            if (viewer.$.configuration === this.$.selectedConfiguration) {
                 this.set('selectedConfigurationViewer', viewer);
             }
-            this.trigger('add:configurationViewer',viewer);
+            this.trigger('add:configurationViewer', viewer);
 
         },
 
@@ -99,7 +110,7 @@ define(["js/ui/View"], function (View) {
 
         _commitChangedAttributes: function ($) {
             this.callBase();
-            if($.hasOwnProperty('selectedConfiguration')){
+            if ($.hasOwnProperty('selectedConfiguration')) {
                 var configuration = $['selectedConfiguration'],
                     viewer = null;
                 if (!configuration) {
@@ -113,7 +124,7 @@ define(["js/ui/View"], function (View) {
             }
         },
 
-        getViewerForConfiguration: function(configuration){
+        getViewerForConfiguration: function (configuration) {
             if (this.$.productViewerSvg) {
                 return this.$.productViewerSvg.getViewerForConfiguration(configuration);
             }
@@ -127,7 +138,7 @@ define(["js/ui/View"], function (View) {
             var viewer = this.$.selectedConfigurationViewer;
             if (viewer) {
                 viewer._keyDown(e);
-                if(e.defaultPrevented){
+                if (e.defaultPrevented) {
                     return;
                 }
             }
@@ -185,9 +196,9 @@ define(["js/ui/View"], function (View) {
 
         },
 
-        _keyPressHandler: function(e){
+        _keyPressHandler: function (e) {
             var viewer = this.$.selectedConfigurationViewer;
-            if(viewer){
+            if (viewer) {
                 viewer._keyPress(e);
             }
         },
@@ -197,7 +208,7 @@ define(["js/ui/View"], function (View) {
                 var self = this;
 
                 this.bind("on:click", this._clickHandler, this);
-                this.$stage.bind('on:blur', function(){
+                this.$stage.bind('on:blur', function () {
                     self.set('focused', false);
                 });
                 this.$stage.bind('on:focus', function () {
@@ -208,17 +219,23 @@ define(["js/ui/View"], function (View) {
             }
         },
 
-        textAreaFocused: function() {
+        textAreaFocused: function () {
             this.set('focused', true);
-//            this.$.textArea.set('visibility', 'hidden');
+
+            if (this.$stage.$browser.isIOS) {
+                this.$.textArea.set('visibility', 'hidden');
+            }
+
         },
 
-        textAreaBlured: function() {
+        textAreaBlured: function () {
             this.set('focused', false);
-//            this.$.textArea.set('visibility', 'visible');
+            if (this.$stage.$browser.isIOS) {
+                this.$.textArea.set('visibility', 'visible');
+            }
         },
 
-        showTextAreaOverlay: function() {
+        showTextAreaOverlay: function () {
             return this.$.editable &&
                 this.$.selectedConfiguration && this.$.selectedConfiguration.type === "text" &&
                 this.runsInBrowser() && ('ontouchstart' in window);
