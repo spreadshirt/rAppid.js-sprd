@@ -60,9 +60,6 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                         for (var i = 0; i < content.length; i++) {
                             var tspan = content[i];
 
-
-
-
                             if (!lastTSpan || tspan.hasOwnProperty("y")) {
                                 if (paragraph) {
                                     paragraph.mergeElements();
@@ -105,7 +102,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                                     fontSize: tspan.fontSize,
                                     printTypeColor: printTypeColor
                                 }),
-                                text: tspan.content[0]
+                                text: tspan.content[0] || ""
                             });
 
                             paragraph.addChild(span);
