@@ -77,9 +77,9 @@ define(["js/ui/View"], function (View) {
                 }
                 if (viewMap) {
                     position = {
-                        x: (viewMap.get("offset.x") + selectedConfiguration.get("offset.x")) * factor.x,
+                        x: (viewMap.get("offset.x") + selectedConfiguration.get("offset.x")) * factor.x + 10,
                         y: (viewMap.get("offset.y") + selectedConfiguration.get("offset.y")) * factor.y,
-                        width: selectedConfiguration.width() * factor.x - 10,
+                        width: selectedConfiguration.width() * factor.x - 25,
                         height: selectedConfiguration.height() * factor.y - 10
                     };
                 }
@@ -226,6 +226,8 @@ define(["js/ui/View"], function (View) {
                 this.$.textArea.set('visibility', 'hidden');
             }
 
+            this.addClass("text-area-active");
+
         },
 
         textAreaBlured: function () {
@@ -233,6 +235,8 @@ define(["js/ui/View"], function (View) {
             if (this.$stage.$browser.isIOS) {
                 this.$.textArea.set('visibility', 'visible');
             }
+
+            this.removeClass("text-area-active");
         },
 
         showTextAreaOverlay: function () {
