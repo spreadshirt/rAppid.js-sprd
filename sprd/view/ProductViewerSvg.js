@@ -93,6 +93,11 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
 
             _render_view: function (view) {
 
+
+                if (!view) {
+                    return
+                }
+
                 var width = view.get('size.width');
                 var height = view.get('size.height');
 
