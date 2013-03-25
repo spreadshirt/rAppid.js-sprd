@@ -83,7 +83,7 @@ define([
             }
 
             return url;
-        }.onChange('width', 'height', 'productType'),
+        }.onChange('width', 'height', 'productType', 'appearance'),
 
         alt: function () {
             if (this.$.productType) {
