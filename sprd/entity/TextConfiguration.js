@@ -63,7 +63,6 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             this._composeText();
 
             this.trigger("priceChanged");
-            this.trigger('configurationChanged');
         },
 
         _composeText: function () {
@@ -176,7 +175,6 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 var useThisColor = null;
 
                 var leaf = textFlow.getFirstLeaf();
-
                 do {
                     var style = leaf.get("style");
 
@@ -192,10 +190,9 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     }
                 } while ((leaf = leaf.getNextLeaf(textFlow)));
 
+                this._composeText();
             }
-            if(this.$.composedTextFlow){
-                this.trigger('configurationChanged');
-            }
+
             this.trigger("priceChanged");
         },
 
