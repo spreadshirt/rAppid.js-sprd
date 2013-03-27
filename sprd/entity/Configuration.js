@@ -244,6 +244,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         minimumScale: function () {
             return 0;
+        },
+
+        isReadyForCompose: function(){
+            return true;
         }
     });
 });

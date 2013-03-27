@@ -278,7 +278,19 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             }
 
             return "";
-        }.onChange(["appearance"])
+        }.onChange(["appearance"]),
+
+        isReadyForCompose: function(){
+            var ready = true;
+
+            if(this.$.configurations){
+                this.$.configurations.each(function(configuration){
+                    ready = ready && configuration.isReadyForCompose();
+                });
+            }
+
+            return ready;
+        }
 
     });
 });

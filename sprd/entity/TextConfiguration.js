@@ -479,6 +479,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
         isAllowedOnPrintArea: function (printArea) {
             return printArea && printArea.get("restrictions.textAllowed") == true;
+        },
+
+        isReadyForCompose: function(){
+            return !!this.$.composedTextFlow;
         }
 
     });
