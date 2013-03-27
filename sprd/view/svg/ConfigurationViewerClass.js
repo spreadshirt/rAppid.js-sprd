@@ -185,7 +185,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
 
                     var preventDefault = function (e) {
-                        e.preventDefault();
+                        e.preventDefault && e.preventDefault();
+                        return false;
                     };
 
                     assetContainer.bindDomEvent(this.$clickEvent, preventDefault);
@@ -270,7 +271,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return;
                 }
 
-                e.preventDefault();
+                e.preventDefault && e.preventDefault();
 
                 this.$moving = true;
                 this.set({
