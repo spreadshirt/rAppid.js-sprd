@@ -240,6 +240,10 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             parse: function (data) {
                 data = this.callBase();
 
+                if (data.designs) {
+                    this.$$.design = data.designs[0];
+                }
+
                 data.designs = undefined;
 
                 if (data.printArea) {

@@ -3,13 +3,21 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
         initializeConfiguration: function (configuration, callback) {
 
             var content = configuration.$$ || {},
+                designReference = content.design,
                 svg = content.svg,
                 printType = configuration.$.printType,
                 printArea,
                 design;
 
             if (svg) {
-                design = configuration.$context.$contextModel.$context.createEntity(Design, svg.image.designId);
+                var designId;
+
+                if (designReference && designReference.href) {
+                    designId = designReference.href.split("/").pop()
+                }
+
+                designId = designId || svg.image.designId;
+                design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
             } else {
                 design = configuration.$.design;
             }
