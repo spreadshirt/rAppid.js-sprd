@@ -1,0 +1,4 @@
+.sonar-project.properties
+node_modules
+test
+*.iml
