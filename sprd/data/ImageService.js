@@ -39,7 +39,7 @@ define(['js/core/Component','underscore'], function(Component, _) {
         },
 
         fontUrl: function(font) {
-            return this.baseUrl("fonts/svg/" + font.$.id + ".svg#font");
+            return this.buildUrl(['fontFamilies', font.getFontFamily().$.id, 'fonts', font.$.id + ".svg#font"]);
         },
 
         buildUrl: function(url, parameter) {
