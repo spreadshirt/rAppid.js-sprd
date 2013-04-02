@@ -32,6 +32,15 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService", "sprd/model/PrintType"
 
         },
 
+        _renderPrintColor: function(printColor) {
+
+            if (!printColor) {
+                return;
+            }
+
+            this._setAttribute("data-print-color-id", printColor.$.id);
+        },
+
         alt: function() {
             // TODO: translate colors
 

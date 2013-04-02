@@ -1,6 +1,6 @@
 define(['js/core/Component','underscore'], function(Component, _) {
 
-    var $exceptionSizes = [120, 178];
+    var exceptionSizes = [120, 178];
 
     var ImageService = Component.inherit('sprd.data.ImageService', {
 
@@ -38,6 +38,10 @@ define(['js/core/Component','underscore'], function(Component, _) {
             return "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
         },
 
+        fontUrl: function(font) {
+            return this.baseUrl("fonts/svg/" + font.$.id + ".svg#font");
+        },
+
         buildUrl: function(url, parameter) {
             url = url || [];
             url.unshift(this.$.endPoint);
@@ -50,7 +54,7 @@ define(['js/core/Component','underscore'], function(Component, _) {
 
     ImageService.normalizeImageSize = function (size) {
 
-        if (_.indexOf($exceptionSizes, size) === -1) {
+        if (_.indexOf(exceptionSizes, size) === -1) {
             // normalize size
             size = Math.ceil(size / 50) * 50;
         }

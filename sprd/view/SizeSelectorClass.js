@@ -9,19 +9,11 @@ define(['js/ui/SelectionView'], function (SelectionView) {
             items: "{productType.sizes}",
             multiSelect: false
         },
+
         _commitItems: function(){
             this.set('needsSelection', false);
         },
 
-        _commitChangedAttributes: function(attributes){
-            this.callBase();
-            if (this._hasSome(attributes, ["appearance"])) {
-                var self = this;
-                if (this.$lastSelectedSize) {
-
-                }
-            }
-        },
         _commitSelectedItem: function(item){
             if(item){
                 this.$lastSelectedSize = item;

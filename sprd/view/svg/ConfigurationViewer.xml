@@ -2,55 +2,101 @@
                                   xmlns:svg="js.svg"
                                   xmlns:sprdSvg="sprd.view.svg" class="{errorClass()}" cid="cv">
 
-    <svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{_rotationRadius}" visible="{isRotating()}"/>
+    <svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{_rotationRadius}"
+                visible="{isRotating()}"/>
 
     <svg:g cid="_assetContainer" scaleX="{_scale.x}" scaleY="{_scale.y}">
     </svg:g>
 
 
-    <svg:circle class="rotation-center" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{pixelToViewBox(2)}" visible="{isRotating()}"/>
+    <svg:circle class="rotation-center" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{pixelToViewBox(2)}"
+                visible="{isRotating()}"/>
 
     <svg:g translateX="{flipOffsetX()}" translateY="{flipOffsetY()}">
         <svg:rect class="configuration-boundary"
-                  visible="{isSelectedConfigurationOrConfigurationHasError()}"
+                  selected="{isSelectedConfigurationOrConfigurationHasError()}"
                   x="0" y="0"
                   width="{_configurationWidth}" height="{_configurationHeight}"/>
 
-        <svg:rect cid="_scaleHandle" class="configuration-handle scale"
-                  visible="{isScalable()}"
-                  x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}" y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
+        <svg:rect cid="_moveHandle" class="configuration-handle move"
+                  selected="{isMovable()}"
+                  x="{pixelToViewBox(_handle-Offset)}"
+                  y="{pixelToViewBox(_handle-Offset)}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
-        <svg:use visible="{isScalable()}"
-                 href="{baseUrl('sprd/css/library.svg#scale')}" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
-                 translateX="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}" translateY="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
-                 style="pointer-events: none"/>
+        <svg:g class="configuration-handle-icon"
+               selected="{isMovable()}" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
+               translateX="{_moveHandle.x}"
+               translateY="{_moveHandle.y}"
+               style="pointer-events: none">
+            <svg:g _transform="scale(0.14,0.14) translate(-210,-110)">
+                <svg:path
+                        d="m 262.15788,215.18241 -20,-20 14,0 0,-24 -24,0 0,14 -20,-20 20,-20 0,14 24,0 0,-24 -14,0 20,-20 20,20 -14,0 0,24 24,0 0,-14 20,20 -20,20 0,-14 -24,0 0,24 14,0 -20,20 z"
+                        style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"/>
+            </svg:g>
+        </svg:g>
+
+        <svg:rect cid="_scaleHandle" class="configuration-handle scale"
+                  selected="{isScalable()}"
+                  x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
+                  y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
+                  width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
+
+
+        <svg:g selected="{isScalable()}" class="configuration-handle-icon"
+               scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
+               translateX="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
+               translateY="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
+               style="pointer-events: none">
+            <svg:g _transform="scale(-0.15,0.15) translate(-115,-5)">
+                <svg:path
+                        _transform="matrix(0.8,0,0,-0.8,0,217)"
+                        d="M 34.90625 151.15625 L 34.90625 186.53125 L 47.1875 174.25 L 106.8125 233.84375 L 94.4375 246.21875 L 129.78125 246.21875 L 129.78125 210.875 L 117.40625 223.25 L 57.8125 163.625 L 70.28125 151.15625 L 34.90625 151.15625 z"
+                        style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"/>
+            </svg:g>
+        </svg:g>
 
         <svg:rect cid="_rotateHandle" class="configuration-handle rotate"
-                  visible="{isRotatable()}"
-                  x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}" y="{pixelToViewBox(_handle-Offset)}"
+                  selected="{isRotatable()}"
+                  x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
+                  y="{pixelToViewBox(_handle-Offset)}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
-        <svg:use visible="{isRotatable()}"
-                 href="{baseUrl('sprd/css/library.svg#rotate')}" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
-                 translateX="{_rotateHandle.x}" translateY="{_rotateHandle.y}"
-                 style="pointer-events: none"/>
+        <svg:g selected="{isRotatable()}" class="configuration-handle-icon"
+               scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
+               translateX="{_rotateHandle.x}" translateY="{_rotateHandle.y}"
+               style="pointer-events: none">
+            <svg:g _transform="scale(0.15,-0.15) translate(10,-215)">
+                <svg:path
+                        d="m 40.168705,203.17868 c -9.940214,0 -18.978182,-3.82724 -25.75,-10.075 l -11.225,8.475 3.95,-28.025 28,3.95 -10.9,8.2 c 4.401685,3.41947 9.919574,5.475 15.925,5.475 14.3594,0 26,-11.6406 26,-26 0,-14.3594 -11.6406,-26 -26,-26 -8.18798,0 -15.48418,3.7843 -20.25,9.7 l -8.525,-8.525 c 6.96843,-8.0726 17.27421,-13.175 28.775,-13.175 20.986816,0 38,17.0132 38,38 0,20.9868 -17.013184,38 -38,38 z"
+                        style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"/>
+            </svg:g>
+        </svg:g>
 
 
         <svg:rect cid="_deleteHandle" class="configuration-handle delete"
-                  visible="{isRemovable()}"
-                  onclick="deleteConfiguration"
-                  x="{pixelToViewBox(_handle-Offset)}" y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
+                  selected="{isRemovable()}"
+                  onpointerdown="deleteConfiguration"
+                  x="{pixelToViewBox(_handle-Offset)}"
+                  y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
-        <svg:use visible="{isRemovable()}"
-                 href="{baseUrl('sprd/css/library.svg#remove')}" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
-                 translateX="{_deleteHandle.x}" translateY="{_deleteHandle.y}"
-                 style="pointer-events: none"/>
+        <svg:g selected="{isRemovable()}" class="configuration-handle-icon"
+               scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
+               translateX="{_deleteHandle.x}" translateY="{_deleteHandle.y}"
+               style="pointer-events: none">
+            <svg:g _transform="scale(0.13,-0.13) translate(-105,-225)">
+                <svg:path
+                        d="m 203.40644,201.82612 q 0,1.83986 -1.34048,3.18032 -1.34046,1.34049 -3.18032,1.34049 l -22.39369,0 q 0,3.73226 -2.62837,6.33435 -2.62838,2.60209 -6.30808,2.60209 h -9.0416 q -3.67972,0 -6.30808,-2.60209 -2.62836,-2.60209 -2.62836,-6.33435 h -22.39372 q -1.83983,0 -3.18032,-1.34049 -1.34046,-1.34046 -1.34046,-3.18032 0,-1.83987 1.34046,-3.12776 1.34049,-1.2879 3.18032,-1.2879 h 71.7019 q 1.83986,0 3.18032,1.2879 1.34048,1.28789 1.34048,3.12776 z m -8.93646,-76.22268 v 67.28624 H 131.5994 v -67.28624 q 0,-3.67972 2.65466,-6.30809 2.65465,-2.62837 6.38693,-2.62837 h 44.78742 q 3.73227,0 6.38692,2.62837 2.65465,2.62837 2.65465,6.30809 z m -9.04157,2.26038 q 0,-0.99877 -0.63082,-1.62958 -0.6308,-0.6308 -1.52446,-0.6308 -0.99877,0 -1.62958,0.6308 -0.6308,0.63081 -0.6308,1.62958 v 53.82899 q 0,0.94621 0.65708,1.6033 0.65709,0.6571 1.6033,0.6571 0.89366,0 1.52446,-0.68336 0.63082,-0.6834 0.63082,-1.57704 v -53.82899 z m -13.45725,0 q 0,-0.99877 -0.63082,-1.62958 -0.6308,-0.6308 -1.52446,-0.6308 -0.99877,0 -1.62958,0.6308 -0.6308,0.63081 -0.6308,1.62958 v 53.82899 q 0,0.94621 0.6571,1.6033 0.65707,0.6571 1.60328,0.6571 0.89366,0 1.52446,-0.68336 0.63082,-0.6834 0.63082,-1.57704 v -53.82899 z m 0,78.48311 h -17.87291 q 0,1.83984 1.28789,3.18033 1.28791,1.34045 3.12776,1.34045 h 9.0416 q 1.83984,0 3.12776,-1.34045 1.2879,-1.34049 1.2879,-3.18033 z M 158.5139,127.86382 q 0,-0.99877 -0.6308,-1.62958 -0.63082,-0.6308 -1.52444,-0.6308 -0.9988,0 -1.6296,0.6308 -0.63081,0.63081 -0.63081,1.62958 v 53.82899 q 0,0.94621 0.65709,1.6033 0.6571,0.6571 1.60332,0.6571 0.89362,0 1.52444,-0.68336 0.6308,-0.6834 0.6308,-1.57704 v -53.82899 z m -13.45725,0 q 0,-0.99877 -0.6308,-1.62958 -0.6308,-0.6308 -1.52444,-0.6308 -0.99879,0 -1.62959,0.6308 -0.63083,0.63081 -0.63083,1.62958 v 53.82899 q 0,0.94621 0.6571,1.6033 0.6571,0.6571 1.60332,0.6571 0.89364,0 1.52444,-0.68336 0.6308,-0.6834 0.6308,-1.57704 v -53.82899 z"
+                        style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"/>
+            </svg:g>
+        </svg:g>
 
-        <svg:g visible="{hasError()}" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}" translateY="-{pixelToViewBox(_handleWidth)}" >
+
+        <svg:g selected="{hasError()}" class="configuration-handle-icon" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
+               translateY="-{pixelToViewBox(_handleWidth)}">
             <svg:title>{errorDescription()}</svg:title>
-            <svg:use href="{baseUrl('sprd/css/library.svg#info')}" />
+            <svg:use href="{baseUrl('sprd/css/library.svg#info')}"/>
         </svg:g>
 
 

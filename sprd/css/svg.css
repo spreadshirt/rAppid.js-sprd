@@ -10,7 +10,7 @@ rect {
 }
 
 .bright .print-area-border {
-    stroke : black;
+    stroke: black;
 }
 
 .configuration-handle {
@@ -18,6 +18,19 @@ rect {
     stroke-width: 1;
     stroke: black;
     vector-effect: non-scaling-stroke;
+    visibility: hidden;
+}
+
+.configuration-handle.active {
+    visibility: visible;
+}
+
+.configuration-handle-icon {
+    visibility: hidden;
+}
+
+.configuration-handle-icon.active {
+    visibility: visible;
 }
 
 .configuration-boundary {
@@ -27,12 +40,26 @@ rect {
     vector-effect: non-scaling-stroke;
 }
 
+.configuration-boundary {
+    visibility: hidden;
+}
+
+.configuration-boundary.active {
+    visibility: visible;
+}
+
 .bright .configuration-boundary {
     stroke: black;
 }
 
 .configuration-viewer.error {
     /*filter: url(library.svg#configurationError);*/
+}
+
+.text-selection {
+    pointer-events: none;
+    fill: #64b9e2;
+    fill-opacity: 0.7;
 }
 
 .configuration-viewer.error .configuration-boundary {
@@ -55,4 +82,20 @@ rect {
 .text-configuration-background {
     fill: red;
     fill-opacity: 0.01;
+}
+
+.dark .text-cursor {
+    fill: white;
+}
+
+.bright .text-cursor {
+    fill: black;
+}
+
+.text-cursor {
+    visibility: hidden;
+}
+
+.text-cursor.active {
+    visibility: visible;
 }

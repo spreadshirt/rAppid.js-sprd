@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Price', 'sprd/type/Color'], function (Entity, Price, Color) {
+define(['js/data/Entity', 'sprd/entity/Price', 'js/type/Color'], function (Entity, Price, Color) {
     return Entity.inherit('sprd.entity.PrintTypeColor', {
 
         defaults: {

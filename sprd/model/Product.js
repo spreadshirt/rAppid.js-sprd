@@ -1,4 +1,4 @@
-define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow"], function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow) {
+define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager"], function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager) {
 
     var undef;
 
@@ -18,6 +18,10 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             configurations: List
         },
 
+        inject: {
+            manager: IProductManager
+        },
+
         ctor: function () {
             this.callBase();
 
@@ -29,19 +33,74 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                 this.trigger("productChanged");
             };
 
-            this.bind("configurations", "add", priceChangeHandler, this);
-            this.bind("configurations", "remove", priceChangeHandler, this);
+
+            var configurationAdd = function (e) {
+                this._setUpConfiguration(e.$.item);
+
+                productChangeHandler.call(this);
+                priceChangeHandler.call(this);
+            };
+
+            var configurationRemove = function (e) {
+
+                this._tearDownConfiguration(e.$.item);
+
+                productChangeHandler.call(this);
+                priceChangeHandler.call(this);
+            };
+
+            this.bind("configurations", "add", configurationAdd, this);
+            this.bind("configurations", "remove", configurationRemove, this);
             this.bind("configurations", "reset", priceChangeHandler, this);
             this.bind("configurations", "item:priceChanged", priceChangeHandler, this);
 
             this.bind('change:productType', productChangeHandler, this);
             this.bind('change:appearance', productChangeHandler, this);
-            this.bind('configurations', 'add', productChangeHandler, this);
-            this.bind('configurations', 'remove', productChangeHandler, this);
             this.bind('configurations', 'reset', productChangeHandler, this);
             this.bind('configurations', 'item:configurationChanged', productChangeHandler, this);
             this.bind('configurations', 'item:change:printArea', productChangeHandler, this);
 
+        },
+
+        _setUpConfiguration: function (configuration) {
+
+            if (!this.$stage) {
+                return;
+            }
+
+            this.$stage.$bus.setUp(configuration);
+        },
+
+        _tearDownConfiguration: function (configuration) {
+
+            if (!this.$stage) {
+                return;
+            }
+
+            this.$stage.$bus.tearDown(configuration);
+        },
+
+        _postConstruct: function () {
+
+            var configurations = this.$.configurations,
+                self = this;
+
+            if (configurations) {
+                configurations.each(function (configuration) {
+                    self._setUpConfiguration(configuration);
+                });
+            }
+        },
+
+        _preDestroy: function () {
+            var configurations = this.$.configurations,
+                self = this;
+
+            if (configurations) {
+                configurations.each(function (configuration) {
+                    self._tearDownConfiguration(configuration);
+                });
+            }
         },
 
         price: function () {
@@ -137,7 +196,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
         },
 
         hasChanges: function () {
-            return this.$originalProduct.isDeepEqual(this);
+            return !this.$originalProduct.isDeepEqual(this);
         },
 
         save: function (options, callback) {
@@ -179,14 +238,23 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                 .seq(function () {
                     var productType = self.$.productType;
 
+                    var appearance;
+
+                    if (self.$.appearance) {
+                        appearance = productType.getAppearanceById(self.$.appearance.$.id);
+                    }
+
+                    appearance = appearance || productType.getDefaultAppearance();
+
                     self.set({
-                        appearance: productType.getAppearanceById(self.$.appearance.$.id),
-                        view: productType.getViewById(self.get("defaultValues.defaultView.id")) || productType.getDefaultView()
+                        appearance: appearance,
+                        view: self.$.view || productType.getViewById(self.get("defaultValues.defaultView.id")) || productType.getDefaultView()
                     });
                 })
                 .seq(function (cb) {
                     flow()
                         .parEach(self.$.configurations.$items, function (configuration, cb) {
+                            self._setUpConfiguration(configuration);
                             configuration.init(cb);
                         })
                         .exec(cb);
@@ -210,7 +278,19 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             }
 
             return "";
-        }.onChange(["appearance"])
+        }.onChange(["appearance"]),
+
+        isReadyForCompose: function(){
+            var ready = true;
+
+            if(this.$.configurations){
+                this.$.configurations.each(function(configuration){
+                    ready = ready && configuration.isReadyForCompose();
+                });
+            }
+
+            return ready;
+        }
 
     });
 });

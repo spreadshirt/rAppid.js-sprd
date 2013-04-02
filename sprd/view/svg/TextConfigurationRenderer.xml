@@ -1,4 +1,9 @@
 <sprdSvg:TextConfigurationRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:sprdSvg="sprd.view.svg" xmlns:textUi="text.ui">
-    <rect class="text-configuration-background" width="{width}" height="{height}" fill="red"/>
-    <textUi:SvgTextArea cid="textArea" textFlow="{configuration.textFlow}" width="{configuration.textArea.width}" height="{configuration.textArea.height}"/>
+    <rect class="text-configuration-background" width="{width}" height="{height}"/>
+    <!--<rect stroke="blue" x="{configuration.bound.x}" y="{configuration.bound.y}" width="{configuration.bound.width}" height="{configuration.bound.height}"/>-->
+    <textUi:SvgTextArea cid="textArea" composedTextFlow="{configuration.composedTextFlow}"
+                        selection="{configuration.selection}"
+                        focused="{focused}"
+                        width="{configuration.textArea.width}" height="{configuration.textArea.height}"
+            editable="{productViewer.editable}" selectable="{editable}" showSelection="{showSelection}"/>
 </sprdSvg:TextConfigurationRendererClass>

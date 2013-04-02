@@ -94,6 +94,10 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
                 return;
             }
 
+            if (!configuration.$.printArea) {
+                return;
+            }
+
             if (configuration.$.printArea.$.id !== this.get('_viewMap.printArea.id')) {
                 // not for this print area
                 return;
@@ -112,7 +116,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
 
                 this.addChild(viewer);
 
-                this.$.productViewer.trigger('configurationViewerAdded',viewer);
+                this.$.productViewer.trigger('add:configurationViewer',viewer);
 
             }
         },

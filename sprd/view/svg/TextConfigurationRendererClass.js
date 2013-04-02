@@ -1,29 +1,50 @@
-define(['sprd/view/svg/ConfigurationRenderer', 'underscore'], function(ConfigurationRenderer, _) {
+define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], function (ConfigurationRenderer, ImageService) {
 
     return ConfigurationRenderer.inherit("sprd.view.svg.TextConfigurationRendererClass", {
 
         defaults: {
             tagName: "g",
             componentClass: "text-configuration",
+            productViewer: null,
+            configurationViewer: null,
+            configuration: null,
+
+            showSelection: "{configurationViewer.isSelectedConfiguration()}",
             textArea: null
         },
 
-        ctor: function() {
-            this.callBase();
-
-            this.bind("configuration", "formatChanged", function() {
-                this._loadFonts();
-                var textArea = this.$.textArea;
-                textArea && textArea._renderTextFlow(textArea.$.textFlow);
-            }, this);
+        inject: {
+            imageService: ImageService
         },
 
-        _initialize: function() {
+        ctor: function () {
+            this.$firstSelection = true;
+            this.callBase();
+        },
+
+        _initialize: function () {
             this.callBase();
             this._loadFonts();
         },
 
-        _loadFonts: function() {
+        _commitShowSelection: function (showSelection) {
+
+            var configuration = this.$.configuration;
+            if (showSelection && this.$firstSelection && configuration && configuration.$.textFlow) {
+
+                var selection = configuration.$.selection;
+
+                if (selection) {
+                    this.$firstSelection = false;
+                    selection.set({
+                        activeIndex: configuration.$.textFlow.textLength() - 1,
+                        anchorIndex: 0
+                    });
+                }
+            }
+        },
+
+        _loadFonts: function () {
 
             var configuration = this.$.configuration;
 
@@ -36,15 +57,19 @@ define(['sprd/view/svg/ConfigurationRenderer', 'underscore'], function(Configura
 
             for (var i = 0; i < fonts.length; i++) {
                 var font = fonts[i];
-                svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), "fonts/svg/" + font.$.id + ".svg#font");
+                svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font));
             }
         },
 
-        handleKeyPress: function(e){
+        handleKeyPress: function (e) {
             this.$.textArea.handleKeyPress(e);
         },
 
-        handleKeyDown: function(e){
+        addChar: function(c) {
+            this.$.textArea.addChar(c);
+        },
+
+        handleKeyDown: function (e) {
             this.$.textArea.handleKeyDown(e);
         }
 

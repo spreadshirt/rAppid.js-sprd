@@ -1,6 +1,6 @@
 define(['js/data/Entity'], function(Entity) {
 
-    var normalSizes = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
+    var normalSizes = ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"];
 
     return Entity.inherit('sprd.entity.Size', {
         schema: {

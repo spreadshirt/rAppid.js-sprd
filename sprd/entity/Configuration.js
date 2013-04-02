@@ -1,7 +1,5 @@
 define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _) {
 
-    var undefined;
-
     return Entity.inherit('sprd.entity.Configuration', {
 
         schema: {
@@ -11,7 +9,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 isReference: true
             },
             printType: PrintType,
-            printColors: [PrintTypeColor]
+            printColors: [PrintTypeColor],
+
+            content: Object,
+            restrictions: Object,
+            type: String
         },
 
         defaults: {
@@ -60,7 +62,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         _validateTransform: function ($) {
 
             var rotationChanged = this._hasSome($, ["rotation"]),
-                sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale", "offset"]),
+                sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale", "offset", "bound"]),
                 printTypeChanged = this._hasSome($, ["printType"]),
                 width, height,
                 printType = $.printType || this.$.printType,
@@ -92,7 +94,6 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
             return {
                 printTypeScaling: !printType.isScalable() && (scale.x != 1 || scale.y != 1),
-                printTypeEnlarged: printType.isShrinkable() && Math.min(scale.x, scale.y) > 1,
                 maxBound: width > printType.get("size.width") || height > printType.get("size.height")
             };
 
@@ -106,7 +107,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 return;
             }
 
-            var boundingBox = this._getBoundingBox(offset, width, height, rotation);
+            var boundingBox = this._getBoundingBox(offset, width, height, rotation, scale, true);
 
             return !(boundingBox.x >= 0 && boundingBox.y >= 0 &&
                 (boundingBox.x + boundingBox.width) <= printArea.get("boundary.size.width") &&
@@ -114,7 +115,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         },
 
-        _getBoundingBox: function (offset, width, height, rotation) {
+        _getBoundingBox: function (offset, width, height, rotation, scale, onlyContent) {
 
             offset = offset || this.$.offset;
             width = width || this.width();
@@ -183,7 +184,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
             return Math.abs(this.size().$.height * scale);
-        }.onChange("scale", "size()"),
+        }.onChange("scale", "size()").on("sizeChanged"),
 
         width: function (scale) {
 
@@ -192,7 +193,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
             return Math.abs(this.size().$.width * scale);
-        }.onChange("scale", "size()"),
+        }.onChange("scale", "size()").on("sizeChanged"),
 
         isScalable: function () {
             return this.get("printType.isScalable()");
@@ -212,6 +213,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 return printTypePrice.clone();
             }
             return new Price();
+        },
+
+        getSizeForPrintType: function(printType) {
+            return Size.empty;
         },
 
         possiblePrintTypes: function (appearance) {
@@ -234,11 +239,15 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         allowScale: function () {
-            return true
+            return true;
         },
 
         minimumScale: function () {
-            return 0
+            return 0;
+        },
+
+        isReadyForCompose: function(){
+            return true;
         }
     });
 });

@@ -24,14 +24,14 @@ define(['js/svg/SvgElement', "sprd/data/ImageService", "sprd/view/svg/PrintAreaV
             imageService: ImageService
         },
 
-        ctor: function() {
+        ctor: function () {
             this.$printAreas = [];
 
             this.callBase();
         },
 
         url: function () {
-            if (this.$.imageService && this.$._productType && this.$._view && this.$._productType.containsAppearance(this.$._appearance) ) {
+            if (this.$.imageService && this.$._productType && this.$._view && this.$._productType.containsAppearance(this.$._appearance)) {
                 return this.$.imageService.productTypeImage(this.$._productType.$.id, this.$._view.$.id, this.$._appearance.$.id, {
                     width: this.$._width,
                     height: this.$._height
@@ -43,13 +43,20 @@ define(['js/svg/SvgElement', "sprd/data/ImageService", "sprd/view/svg/PrintAreaV
 
         _initializeRenderer: function () {
 
+            var width = this.get("_view.size.width");
+            var height = this.get("_view.size.height");
+
+            if (width < 0 || height < 0) {
+                width = height = 500;
+            }
+
             this.$productTypeImage = this.createComponent(SvgElement, {
                 tagName: "image",
                 href: "{url()}",
                 x: 0,
                 y: 0,
-                width: "{_view.size.width}",
-                height: "{_view.size.height}"
+                width: width,
+                height: height
             });
 
             this.addChild(this.$productTypeImage);
@@ -58,7 +65,7 @@ define(['js/svg/SvgElement', "sprd/data/ImageService", "sprd/view/svg/PrintAreaV
 
         },
 
-        _removePrintAreas: function() {
+        _removePrintAreas: function () {
             for (var i = 0; i < this.$printAreas.length; i++) {
                 var printArea = this.$printAreas[i];
                 printArea.remove();
@@ -68,7 +75,7 @@ define(['js/svg/SvgElement', "sprd/data/ImageService", "sprd/view/svg/PrintAreaV
             this.$printAreas = [];
         },
 
-        _render_view: function(view) {
+        _render_view: function (view) {
 
             this._removePrintAreas();
 
@@ -93,24 +100,24 @@ define(['js/svg/SvgElement', "sprd/data/ImageService", "sprd/view/svg/PrintAreaV
             }
         },
 
-        getViewerForConfiguration: function(configuration){
+        getViewerForConfiguration: function (configuration) {
             var viewer;
-            for(var i = 0; i < this.$printAreas.length; i++){
+            for (var i = 0; i < this.$printAreas.length; i++) {
                 viewer = this.$printAreas[i].getViewerForConfiguration(configuration);
-                if(viewer){
+                if (viewer) {
                     return viewer;
                 }
             }
             return null;
         },
 
-        _commitProduct: function(product) {
+        _commitProduct: function (product) {
             for (var i = 0; i < this.$printAreas.length; i++) {
                 this.$printAreas[i].set('product', product);
             }
         },
 
-        destroy: function() {
+        destroy: function () {
 
             this._removePrintAreas();
             this.callBase();

@@ -1,4 +1,4 @@
-define(["js/ui/View"], function (View) {
+define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
     return View.inherit('sprd.view.ProductViewerClass', {
 
         defaults: {
@@ -8,71 +8,105 @@ define(["js/ui/View"], function (View) {
             height: 300,
             selectedConfiguration: null,
             editable: true,
+            focused: true,
 
             productViewerSvg: null,
             textArea: null,
             textAreaPosition: null
         },
 
-        ctor: function(){
+        inject: {
+            bus: Bus
+        },
+
+        ctor: function () {
             this.callBase();
-            this.bind('productViewerSvg','configurationViewerAdded', this._onConfigurationViewerAdded, this);
+            this.bind('productViewerSvg', 'add:configurationViewer', this._onConfigurationViewerAdded, this);
             this.bind('selectedConfiguration', 'change:scale', this._positionTextArea, this);
             this.bind('selectedConfiguration', 'change:offset', this._positionTextArea, this);
         },
 
-        _commitSelectedConfiguration: function(selectedConfiguration) {
+        _commitSelectedConfiguration: function (selectedConfiguration) {
             this._positionTextArea();
-
-            if (selectedConfiguration && this.showTextAreaOverlay()){
-                this.$.textArea.$el.focus();
-            }
-
         },
 
-        keypress: function(e) {
+        keyUp: function (e) {
+
+            if (this.$keyPressHandled) {
+                return;
+            }
+
+            // this is a work-a-round because keypress event isn't available on android
+            var value = this.$.textArea.$el.value;
+            if (this.$lastValue !== value && value && value.length !== 0) {
+                // input
+                var c = value.substr(-1),
+                    viewer = this.$.selectedConfigurationViewer;
+
+                if (c && viewer) {
+                    viewer.addChar(c);
+                }
+
+            }
+
+            this.$lastValue = value;
+            this.$.textArea.$el.value = "";
+        },
+
+        keyPress: function (e) {
+            this.$keyPressHandled = true;
             this.$.textArea.$el.value = "";
             this._keyPressHandler(e.domEvent);
         },
 
-        keydown: function(e) {
-            this.$.textArea.$el.value = "";
+        keyDown: function (e) {
+            this.$keyPressHandled = false;
             this._keyDownHandler(e.domEvent);
         },
 
-        _positionTextArea: function() {
-            var position = null,
-                selectedConfiguration = this.$.selectedConfiguration;
+        _positionTextArea: function () {
+            try {
+                var position = null,
+                    selectedConfiguration = this.$.selectedConfiguration;
 
-            if (this.$.editable && selectedConfiguration && selectedConfiguration.type === "text") {
-                var factor = this.$.productViewerSvg.localToGlobalFactor(),
-                    view = this.$.productViewerSvg.$currentProductTypeViewViewer.$._view,
-                    viewMap;
+                if (this.$.editable && selectedConfiguration && selectedConfiguration.type === "text" && this.$.productViewerSvg && this.$.productViewerSvg.$currentProductTypeViewViewer) {
+                    var factor = this.$.productViewerSvg.localToGlobalFactor(),
+                        view = this.$.productViewerSvg.$currentProductTypeViewViewer.$._view,
+                        viewMap;
 
-                for (var i = 0; i < view.$.viewMaps.$items.length; i++) {
-                    if (view.$.viewMaps.$items[i].$.printArea === selectedConfiguration.$.printArea) {
-                        viewMap = view.$.viewMaps.$items[i];
-                        break;
+                    for (var i = 0; i < view.$.viewMaps.$items.length; i++) {
+                        if (view.$.viewMaps.$items[i].$.printArea === selectedConfiguration.$.printArea) {
+                            viewMap = view.$.viewMaps.$items[i];
+                            break;
+                        }
                     }
+                    if (viewMap) {
+                        position = {
+                            x: (viewMap.get("offset.x") + selectedConfiguration.get("offset.x")) * factor.x + 10,
+                            y: (viewMap.get("offset.y") + selectedConfiguration.get("offset.y")) * factor.y,
+                            width: selectedConfiguration.width() * factor.x - 25,
+                            height: selectedConfiguration.height() * factor.y - 10
+                        };
+                    }
+
                 }
 
-                position = {
-                    x: (viewMap.get("offset.x")  + selectedConfiguration.get("offset.x")) * factor.x ,
-                    y: (viewMap.get("offset.y")  + selectedConfiguration.get("offset.y")) * factor.y ,
-                    width: selectedConfiguration.width() * factor.x - 10,
-                    height: selectedConfiguration.height() * factor.y - 10
-                };
-
+                this.set("textAreaPosition", position);
+            } catch (e) {
+                if (this.$.bus) {
+                    this.$.bus.trigger("Application.Error", e);
+                } else {
+                    throw e;
+                }
             }
-
-            this.set("textAreaPosition", position);
         },
 
-        _onConfigurationViewerAdded: function(e){
+        _onConfigurationViewerAdded: function (e) {
             var viewer = e.$;
-            if(viewer.$.configuration === this.$.selectedConfiguration){
+            if (viewer.$.configuration === this.$.selectedConfiguration) {
                 this.set('selectedConfigurationViewer', viewer);
             }
+            this.trigger('add:configurationViewer', viewer);
 
         },
 
@@ -80,6 +114,7 @@ define(["js/ui/View"], function (View) {
             if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent.target !== this.$.textArea.$el) {
                 this.set('selectedConfiguration', null);
             }
+            this.set('focused', true);
 
             e.stopPropagation();
 
@@ -87,7 +122,7 @@ define(["js/ui/View"], function (View) {
 
         _commitChangedAttributes: function ($) {
             this.callBase();
-            if($.hasOwnProperty('selectedConfiguration')){
+            if ($ && $.hasOwnProperty('selectedConfiguration')) {
                 var configuration = $['selectedConfiguration'],
                     viewer = null;
                 if (!configuration) {
@@ -101,7 +136,7 @@ define(["js/ui/View"], function (View) {
             }
         },
 
-        getViewerForConfiguration: function(configuration){
+        getViewerForConfiguration: function (configuration) {
             if (this.$.productViewerSvg) {
                 return this.$.productViewerSvg.getViewerForConfiguration(configuration);
             }
@@ -115,7 +150,7 @@ define(["js/ui/View"], function (View) {
             var viewer = this.$.selectedConfigurationViewer;
             if (viewer) {
                 viewer._keyDown(e);
-                if(e.defaultPrevented){
+                if (e.defaultPrevented) {
                     return;
                 }
             }
@@ -173,9 +208,9 @@ define(["js/ui/View"], function (View) {
 
         },
 
-        _keyPressHandler: function(e){
+        _keyPressHandler: function (e) {
             var viewer = this.$.selectedConfigurationViewer;
-            if(viewer){
+            if (viewer) {
                 viewer._keyPress(e);
             }
         },
@@ -185,17 +220,41 @@ define(["js/ui/View"], function (View) {
                 var self = this;
 
                 this.bind("on:click", this._clickHandler, this);
-
-                this.bindDomEvent("keydown", function (e) {
-                    self._keyDownHandler(e);
+                this.$stage.bind('on:blur', function () {
+                    self.set('focused', false);
+                });
+                this.$stage.bind('on:focus', function () {
+                    self.set('focused', true);
                 });
 
                 this.callBase();
             }
         },
 
-        showTextAreaOverlay: function() {
-            return this.$.editable && this.$.selectedConfiguration && this.$.selectedConfiguration.type === "text";
-        }.onChange("selectedConfiguration")
+        textAreaFocused: function () {
+            this.set('focused', true);
+
+            if (this.$stage.$browser.isIOS) {
+                this.$.textArea.set('visibility', 'hidden');
+            }
+
+            this.addClass("text-area-active");
+
+        },
+
+        textAreaBlured: function () {
+            this.set('focused', false);
+            if (this.$stage.$browser.isIOS) {
+                this.$.textArea.set('visibility', 'visible');
+            }
+
+            this.removeClass("text-area-active");
+        },
+
+        showTextAreaOverlay: function () {
+            return this.$.editable &&
+                this.$.selectedConfiguration && this.$.selectedConfiguration.type === "text" &&
+                this.runsInBrowser() && ('ontouchstart' in window);
+        }.onChange("selectedConfiguration", "editable")
     });
 });

@@ -59,6 +59,19 @@ define(["sprd/data/SprdModel", "sprd/model/PrintType", "sprd/entity/Font"], func
             return this.$.fonts.at(0);
         },
 
+        getFontById: function(fontId) {
+
+            var fonts = this.$.fonts.$items;
+
+            for (var i = 0; i < fonts.length; i++) {
+                if (fonts[i].$.id == fontId) {
+                    return fonts[i];
+                }
+            }
+
+            return null;
+        },
+
         _supports: function(what) {
 
             if (!this.$.fonts) {

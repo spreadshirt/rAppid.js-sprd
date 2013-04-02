@@ -3,11 +3,11 @@
     <textarea cid="textArea" visible="{showTextAreaOverlay()}" position="absolute"
               left="{textAreaPosition.x}" top="{textAreaPosition.y}" width="{textAreaPosition.width}" height="{textAreaPosition.height}"
               class="text-configuration-overlay" heightUpdatePolicy="out" widthUpdatePolicy="out"
-              onkeypress="keypress" onkeydown="keydown" autocomplete="off"
-            />
+              onkeydown="keyDown" onkeypress="keyPress" onkeyup="keyUp" autocomplete="off" autocorrect="off" autocapitalize="off" onfocus="textAreaFocused" onblur="textAreaBlured"/>
 
     <sprdView:ProductViewerSvg view="{view}" product="{product}"
                                cid="productViewerSvg"
+                               focused="{focused}"
                                selectedConfiguration="{{selectedConfiguration}}"
                                width="{width}" height="{height}" editable="{editable}"/>
 </sprdView:ProductViewerClass>

@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance","sprd/collection/StockStates", 'js/core/List', 'sprd/entity/ProductTypeSize', 'sprd/entity/PrintArea', 'sprd/type/Color', 'sprd/entity/Price'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List, Size, PrintArea, Color, Price) {
+define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance","sprd/collection/StockStates", 'js/core/List', 'sprd/entity/ProductTypeSize', 'sprd/entity/PrintArea', 'js/type/Color', 'sprd/entity/Price'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List, Size, PrintArea, Color, Price) {
     return SprdModel.inherit("sprd.model.ProductType", {
 
         schema: {
@@ -14,7 +14,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             if(this.$.views){
                 for (var i = 0; i < this.$.views.$items.length; i++) {
                     var view = this.$.views.$items[i];
-                    if(view.$.id === id){
+                    if(view.$.id == id){
                         return view;
                     }
                 }
@@ -42,7 +42,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
         getSizeById: function(id){
             if(this.$.sizes){
                 return this.$.sizes.each(function(size){
-                    if(size.$.id === id){
+                    if(size.$.id == id){
                         this['return'](size);
                     }
                 });

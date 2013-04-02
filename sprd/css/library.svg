@@ -14,7 +14,7 @@
             </g>
         </symbol>
         <symbol id="move">
-            <g transform="matrix(1.25,0,0,-1.25,0,271.25)">
+            <g transform="scale(0.14,0.14) translate(-210,-110)">
                 <path
                         d="m 262.15788,215.18241 -20,-20 14,0 0,-24 -24,0 0,14 -20,-20 20,-20 0,14 24,0 0,-24 -14,0 20,-20 20,20 -14,0 0,24 24,0 0,-14 20,20 -20,20 0,-14 -24,0 0,24 14,0 -20,20 z"
                         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"/>
@@ -58,8 +58,8 @@
         </symbol>
     </defs>
 
-    <!--<rect x="0" y="0" width="10" height="10"/>-->
+    <rect x="0" y="0" width="10" height="10" fill="none" stroke="black"/>
 
-    <use xlink:href="#info"/>
-    <!--<use xlink:href="#rotateIcon"/>-->
+    <!--<use xlink:href="#info"/>-->
+    <use xlink:href="#move"/>
 </svg>
