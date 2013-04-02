@@ -1,4 +1,4 @@
-define(["js/ui/View"], function (View) {
+define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
     return View.inherit('sprd.view.ProductViewerClass', {
 
         defaults: {
@@ -13,6 +13,10 @@ define(["js/ui/View"], function (View) {
             productViewerSvg: null,
             textArea: null,
             textAreaPosition: null
+        },
+
+        inject: {
+            bus: Bus
         },
 
         ctor: function () {
@@ -61,32 +65,40 @@ define(["js/ui/View"], function (View) {
         },
 
         _positionTextArea: function () {
-            var position = null,
-                selectedConfiguration = this.$.selectedConfiguration;
+            try {
+                var position = null,
+                    selectedConfiguration = this.$.selectedConfiguration;
 
-            if (this.$.editable && selectedConfiguration && selectedConfiguration.type === "text" && this.$.productViewerSvg && this.$.productViewerSvg.$currentProductTypeViewViewer) {
-                var factor = this.$.productViewerSvg.localToGlobalFactor(),
-                    view = this.$.productViewerSvg.$currentProductTypeViewViewer.$._view,
-                    viewMap;
+                if (this.$.editable && selectedConfiguration && selectedConfiguration.type === "text" && this.$.productViewerSvg && this.$.productViewerSvg.$currentProductTypeViewViewer) {
+                    var factor = this.$.productViewerSvg.localToGlobalFactor(),
+                        view = this.$.productViewerSvg.$currentProductTypeViewViewer.$._view,
+                        viewMap;
 
-                for (var i = 0; i < view.$.viewMaps.$items.length; i++) {
-                    if (view.$.viewMaps.$items[i].$.printArea === selectedConfiguration.$.printArea) {
-                        viewMap = view.$.viewMaps.$items[i];
-                        break;
+                    for (var i = 0; i < view.$.viewMaps.$items.length; i++) {
+                        if (view.$.viewMaps.$items[i].$.printArea === selectedConfiguration.$.printArea) {
+                            viewMap = view.$.viewMaps.$items[i];
+                            break;
+                        }
                     }
-                }
-                if (viewMap) {
-                    position = {
-                        x: (viewMap.get("offset.x") + selectedConfiguration.get("offset.x")) * factor.x + 10,
-                        y: (viewMap.get("offset.y") + selectedConfiguration.get("offset.y")) * factor.y,
-                        width: selectedConfiguration.width() * factor.x - 25,
-                        height: selectedConfiguration.height() * factor.y - 10
-                    };
+                    if (viewMap) {
+                        position = {
+                            x: (viewMap.get("offset.x") + selectedConfiguration.get("offset.x")) * factor.x + 10,
+                            y: (viewMap.get("offset.y") + selectedConfiguration.get("offset.y")) * factor.y,
+                            width: selectedConfiguration.width() * factor.x - 25,
+                            height: selectedConfiguration.height() * factor.y - 10
+                        };
+                    }
+
                 }
 
+                this.set("textAreaPosition", position);
+            } catch (e) {
+                if (this.$.bus) {
+                    this.$.bus.trigger("Application.Error", e);
+                } else {
+                    throw e;
+                }
             }
-
-            this.set("textAreaPosition", position);
         },
 
         _onConfigurationViewerAdded: function (e) {
@@ -110,7 +122,7 @@ define(["js/ui/View"], function (View) {
 
         _commitChangedAttributes: function ($) {
             this.callBase();
-            if ($.hasOwnProperty('selectedConfiguration')) {
+            if ($ && $.hasOwnProperty('selectedConfiguration')) {
                 var configuration = $['selectedConfiguration'],
                     viewer = null;
                 if (!configuration) {
