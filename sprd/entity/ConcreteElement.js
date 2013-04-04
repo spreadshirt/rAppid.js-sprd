@@ -36,6 +36,20 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
             return null;
         },
 
+        getSize: function(){
+            if(this.$.size){
+                return this.getProduct().$.productType.getSizeById(this.$.size.$.id);
+            }
+            return null;
+        },
+
+        getAppearance: function(){
+            if(this.$.appearance){
+                return this.getProduct().$.productType.getAppearanceById(this.$.appearance.$.id);
+            }
+            return null;
+        },
+
         getType: function () {
             if (this.$.item instanceof Product) {
                 return TYPE_PRODUCT;
