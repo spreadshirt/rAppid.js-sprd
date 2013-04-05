@@ -19,6 +19,8 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
             bus: Bus
         },
 
+        events: ['on:configurationSelect'],
+
         ctor: function () {
             this.callBase();
             this.bind('productViewerSvg', 'add:configurationViewer', this._onConfigurationViewerAdded, this);
@@ -103,11 +105,12 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
 
         _onConfigurationViewerAdded: function (e) {
             var viewer = e.$;
-            if (viewer.$.configuration === this.$.selectedConfiguration) {
-                this.set('selectedConfigurationViewer', viewer);
+            if (viewer){
+                if(viewer.$.configuration === this.$.selectedConfiguration) {
+                    this.set('selectedConfigurationViewer', viewer);
+                }
+                this.trigger('add:configurationViewer', viewer);
             }
-            this.trigger('add:configurationViewer', viewer);
-
         },
 
         _clickHandler: function (e) {
@@ -130,7 +133,7 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
                 } else {
                     viewer = this.getViewerForConfiguration(configuration);
                 }
-
+                this.trigger('on:configurationSelect', configuration);
                 this.set('selectedConfigurationViewer', viewer);
 
             }
