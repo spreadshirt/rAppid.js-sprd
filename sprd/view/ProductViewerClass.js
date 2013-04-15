@@ -118,9 +118,6 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
                 this.set('selectedConfiguration', null);
             }
             this.set('focused', true);
-
-            e.stopPropagation();
-
         },
 
         _commitChangedAttributes: function ($) {

@@ -4,8 +4,10 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
 
         defaults: {
             enabled: true,
-            maxTries: 0
+            maxTries: 10
         },
+
+        events: ["on:trackingInitialized"],
 
         ctor: function () {
             this.$trackQueue = [];
@@ -29,8 +31,11 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
             }
 
             function initializeTracking() {
-                if (window.s && window.s instanceof Object) {
+                tries++;
+
+                if (window.s && _.isObject(window.s)) {
                     self.$tracker = window.s;
+                    self.trigger("on:trackingInitialized");
                     self._trackQueue();
                 } else {
                     if (self.$.maxTries <= 0 || tries < self.$.maxTries) {
@@ -93,7 +98,7 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
                 }
 
                 // https://microsite.omniture.com/t2/help/en_US/sc/implement/index.html#Variable_Overrides
-                this.t(events);
+                this.t(trackingData);
             });
         }
 
