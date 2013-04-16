@@ -18,7 +18,7 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
             this.callBase();
         },
 
-        initialize: function () {
+        _initializationComplete: function () {
 
             var tries = 0,
                 window = this.$stage.$window,
