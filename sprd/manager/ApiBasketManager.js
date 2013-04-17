@@ -21,7 +21,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             }
         },
 
-        initBasket: function (callback) {
+        _initBasket: function (callback) {
 
             var api = this.$.api,
                 localStorage = this.$.localStorage,
@@ -67,7 +67,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             this.$itemSaveTimeout && clearTimeout(this.$itemSaveTimeout);
 
             this.$itemSaveTimeout = setTimeout(function(){
-                basketItem.save()
+                basketItem.save();
             },300);
         },
 
