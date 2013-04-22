@@ -114,7 +114,7 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
         },
 
         _clickHandler: function (e) {
-            if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent.target !== this.$.textArea.$el) {
+            if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent && e.domEvent.target !== this.$.textArea.$el) {
                 this.set('selectedConfiguration', null);
             }
             this.set('focused', true);
