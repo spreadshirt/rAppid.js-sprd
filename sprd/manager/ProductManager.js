@@ -59,6 +59,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .exec(callback);
 
             },
+
+            setAppearance: function(product, appearance){
+                this.convertConfigurations(product, product.$.productType, appearance);
+                product.set({
+                    appearance: appearance
+                });
+            },
+
             /***
              * Converts the configurations of a product with the given productType and appearance
              * @param {sprd.model.Product} product

@@ -71,12 +71,6 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             this.$stage.$bus.setUp(configuration);
         },
 
-        _commitAppearance: function(appearance){
-            if(appearance && this.$.manager && this.$.productType){
-                this.$.manager.convertConfigurations(this,this.$.productType, appearance);
-            }
-        },
-
         _tearDownConfiguration: function (configuration) {
 
             if (!this.$stage) {
