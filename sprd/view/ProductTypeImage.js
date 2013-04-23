@@ -1,7 +1,4 @@
-define([
-    'xaml!sprd/view/Image',
-    "sprd/data/ImageService"
-], function (Image, ImageService) {
+define(['xaml!sprd/view/Image', 'sprd/data/ImageService'], function (Image, ImageService) {
 
     var viewIdExtractor = /\/views\/(\d+)/,
         appearanceIdExtractor = /\/appearances\/(\d+)/;
