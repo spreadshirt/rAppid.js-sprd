@@ -42,24 +42,29 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 this.trigger('configurationChanged');
             }
 
-
             this.bind('change:offset', function (e) {
                 if (e.$ && !e.$.isDeepEqual(this.$previousAttributes["offset"])) {
                     this.trigger('configurationChanged');
                 }
             }, this);
+
             this.bind('change:scale', triggerConfigurationChanged, this);
             this.bind('change:rotation', triggerConfigurationChanged, this);
             this.bind('change:printArea', triggerConfigurationChanged, this);
             this.bind('change:printColors', triggerConfigurationChanged, this);
         },
 
-        _commitChangedAttributes: function ($) {
-            this._setError(this._validateTransform($));
+        _commitChangedAttributes: function ($, options) {
+
+            var delay = options && options.userInteraction ? 300 : 0;
+            this._debounceFunctionCall(this._validateTransform, "validateTransform", delay, this, [$]);
+
             this.callBase();
         },
 
         _validateTransform: function ($) {
+
+            console.log("validate transform");
 
             var rotationChanged = this._hasSome($, ["rotation"]),
                 sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale", "offset", "bound"]),

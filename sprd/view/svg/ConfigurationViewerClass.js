@@ -207,13 +207,18 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             _offsetChanged: function() {
+
+
                 var configuration = this.$.configuration;
                 if (configuration) {
-                    configuration._setError(configuration._validateTransform({
-                        offset: this.$._offset,
-                        scale: this.$._scale,
-                        rotation: this.$._rotation
-                    }));
+
+                    this._debounceFunctionCall(function() {
+                        configuration._setError(configuration._validateTransform({
+                            offset: this.$._offset,
+                            scale: this.$._scale,
+                            rotation: this.$._rotation
+                        }));
+                    }, "offsetChanged");
                 }
             },
 
@@ -388,20 +393,23 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return;
                 }
 
-                var productViewer = this.$.productViewer,
-                    x = this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
+                var x = this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
                     y = this.$hasTouch ? e.changedTouches[0].pageY : e.pageY,
                     factor = this.globalToLocalFactor(),
                     deltaX = (this.$downPoint.x - x) ,
                     deltaY = (this.$downPoint.y - y);
 
-                var scaleFactor;
+                var scaleFactor,
+                    userInteractionOptions = {
+                        userInteraction: true
+                    };
 
                 if (mode === MOVE) {
                     this.$._offset.set({
                         x: configuration.$.offset.$.x - deltaX * factor.x,
                         y: configuration.$.offset.$.y - deltaY * factor.y
-                    });
+                    }, userInteractionOptions);
+
                 } else if (mode === SCALE) {
 
                     var downVector = new Vector([x, y]);
@@ -422,20 +430,17 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var configurationWidth = configuration.width();
                     var configurationHeight = configuration.height();
 
-                    this.set('_scale', scale);
+                    this.set('_scale', scale, userInteractionOptions);
 
                     this.$._offset.set({
                         x: offsetX + (configurationWidth - newConfigurationWidth) / 2,
                         y: offsetY + (configurationHeight - newConfigurationHeight) / 2
-                    });
-
+                    }, userInteractionOptions);
 
                     self.set({
                         _configurationWidth: newConfigurationWidth,
                         _configurationHeight: newConfigurationHeight
-                    });
-
-
+                    }, userInteractionOptions);
 
                 } else if (mode === ROTATE) {
                     var startVector = this.$startRotateVector;
@@ -467,7 +472,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     }
 
-                    this.set("_rotation", rotateAngle);
+                    this.set("_rotation", rotateAngle, userInteractionOptions);
 
                 } else if (mode === GESTURE) {
 
