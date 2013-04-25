@@ -64,8 +64,6 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         _validateTransform: function ($) {
 
-            console.log("validate transform");
-
             var rotationChanged = this._hasSome($, ["rotation"]),
                 sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale", "offset", "bound"]),
                 printTypeChanged = this._hasSome($, ["printType"]),
