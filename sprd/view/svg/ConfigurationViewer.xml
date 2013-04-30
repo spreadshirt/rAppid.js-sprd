@@ -5,9 +5,14 @@
     <svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{_rotationRadius}"
                 visible="{isRotating()}"/>
 
-    <svg:g cid="_assetContainer" scaleX="{_scale.x}" scaleY="{_scale.y}">
-    </svg:g>
+    <svg:clipPath cid="clipPath" id="{id()}"
+                  translateX="{invert(cv.translateX)}" translateY="{invert(cv.translateY)}"
+                  rotation="{invert(cv.rotation)}" rotationX="{cv.rotationX}" rotationY="{cv.rotationY}">
+    </svg:clipPath>
 
+    <svg:g clip-path="url(#{cv.id()})">
+        <svg:g cid="_assetContainer" scaleX="{_scale.x}" scaleY="{_scale.y}" />
+    </svg:g>
 
     <svg:circle class="rotation-center" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{pixelToViewBox(2)}"
                 visible="{isRotating()}"/>
