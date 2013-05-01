@@ -2,15 +2,22 @@ rect {
     fill: none;
 }
 
-.print-area-border {
+.print-area-border,
+.soft-boundary-border {
     stroke-width: 1;
     stroke: white;
     vector-effect: non-scaling-stroke;
     shape-rendering: crispEdges;
 }
 
-.bright .print-area-border {
+.bright .print-area-border,
+.bright .soft-boundary-border {
     stroke: black;
+}
+
+.soft-boundary-border {
+    stroke-dasharray: 5, 5;
+    fill: none;
 }
 
 .configuration-handle {

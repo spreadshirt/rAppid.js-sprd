@@ -65,7 +65,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 i18n: I18n
             },
 
-            $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer"],
+            $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer", "clipPath"],
 
             ctor: function () {
 
@@ -81,6 +81,24 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (validateConfigurationOnTransform) {
                     this.bind("_offset", "change", this._offsetChanged, this);
                 }
+            },
+
+            _initializationComplete: function() {
+
+                var clipPath = this.$.clipPath;
+                var transformations = clipPath.$.transformations;
+
+                transformations.unshift(transformations.removeAt(1));
+
+                this.callBase();
+            },
+
+            id: function() {
+                return "c" + this.$cid;
+            },
+
+            invert: function(value) {
+                return value * -1;
             },
 
             _initializeCapabilities: function (window) {
@@ -129,6 +147,20 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         productViewer: this.$.productViewer,
                         configurationViewer: this
                     });
+
+                    var softBoundary = this.get("_viewMap.printArea.boundary.soft.content.svg.path.d");
+
+                    if (softBoundary) {
+                        softBoundary = this.createComponent(SvgElement, {
+                            tagName: "path",
+                            d: softBoundary
+                        });
+
+                        this.$.clipPath.addChild(softBoundary);
+
+                    } else {
+                        this.$.clipPath.set("visible", false);
+                    }
 
                     if (assetContainer) {
                         assetContainer.addChild(this.$asset);

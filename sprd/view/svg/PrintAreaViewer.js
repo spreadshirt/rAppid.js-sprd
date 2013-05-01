@@ -41,6 +41,16 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
                 height: this.get('_viewMap.printArea.boundary.size.height')
             });
 
+            var softBoundary = this.get("_viewMap.printArea.boundary.soft.content.svg.path.d");
+
+            if (softBoundary) {
+                softBoundary = this.createComponent(SvgElement, {
+                    tagName: "path",
+                    componentClass: "soft-boundary-border",
+                    d: softBoundary
+                });
+            }
+
             var defaultBox = this.get("_viewMap.printArea.defaultBox");
             if (defaultBox) {
                 defaultBox = this.createComponent(SvgElement, {
@@ -56,6 +66,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
             this.addChild(border);
 
             defaultBox && this.addChild(defaultBox);
+            softBoundary && this.addChild(softBoundary);
 
             this.callBase();
         },
@@ -109,6 +120,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
                 var viewer = this.$configurationViewerCache[configurationId] = this.createComponent(ConfigurationViewer, {
                     product: this.$.product,
                     printAreaViewer: this,
+                    _viewMap: this.get("_viewMap"),
                     productViewer: this.$.productViewer,
 
                     configuration: configuration
