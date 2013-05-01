@@ -16,7 +16,11 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
 
     var productTypeToColorMap = {},
         colorMap = {},
-        colors = [];
+        colors = [],
+        productTypeDepartmentToSizeMap = {},
+        categoryToSizeMap = {},
+        departmentProductTypeMap = {},
+        productTypeToDepartmentsMap = {};
 
     return {
         /***
@@ -32,7 +36,7 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                 tmpProductType,
                 colorKey;
             colors = [];
-            for(var i = 1; i <= colorArray.length; i = i+2){
+            for (var i = 1; i <= colorArray.length; i = i + 2) {
                 color = Color.parse(colorArray[i]);
                 colors.push(color);
                 colorMap[color.toString()] = color;
@@ -55,7 +59,7 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                         }
                     }
                     colorKey = bestColor.toString();
-                    if(!tmpProductType[colorKey]){
+                    if (!tmpProductType[colorKey]) {
                         tmpProductType[colorKey] = [];
                     }
                     tmpProductType[colorKey].push(appearance);
@@ -63,13 +67,126 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
             });
         },
         /***
+         *
+         * @param {js.core.List} productTypeDepartments
+         */
+        initProductTypeSizeCache: function (productTypeDepartments) {
+
+            var categories,
+                departmentSizes,
+                categorySizes,
+                sizes;
+
+            productTypeDepartments.each(function (productTypeDepartment) {
+                if (productTypeDepartment.isRealDepartment()) {
+                    departmentSizes = productTypeDepartmentToSizeMap[productTypeDepartment.$.name] = {};
+                    productTypeDepartment.$.categories.each(function (category) {
+                        categorySizes = categoryToSizeMap[category.identifier()] = {};
+                        category.$.productTypes.each(function (productType) {
+                            productType.$.sizes.each(function (size) {
+                                if (!departmentSizes[size.$.name]) {
+                                    departmentSizes[size.$.name] = {
+                                        productTypes: []
+                                    };
+                                }
+                                departmentSizes[size.$.name].productTypes.push(productType);
+                                if (!categorySizes[size.$.name]) {
+                                    categorySizes[size.$.name] = {
+                                        productTypes: []
+                                    };
+                                }
+                                categorySizes[size.$.name].productTypes.push(productType);
+                            });
+
+                            departmentProductTypeMap[productTypeDepartment.$.name] = departmentProductTypeMap[productTypeDepartment.$.name] || {};
+                            departmentProductTypeMap[productTypeDepartment.$.name][productType.$.id] = productTypeDepartment.$.name;
+                            if (!productTypeToDepartmentsMap[productType.$.id]) {
+                                productTypeToDepartmentsMap[productType.$.id] = [];
+                            }
+                            productTypeToDepartmentsMap[productType.$.id].push(productTypeDepartment);
+                        });
+                    });
+                }
+            });
+
+        },
+        /***
+         *
+         * @param {sprd.model.ProductTypeDepartment} productTypeDepartment
+         * @param {sprd.entity.DepartmentCategory} category
+         * @returns {Array}
+         */
+        getGroupedSizes: function (productTypes, department) {
+
+            function sizeMapToArray(sizeMap, departmentName) {
+                var ret = [];
+                for (var sizeName in sizeMap) {
+                    if (sizeMap.hasOwnProperty(sizeName)) {
+                        ret.push({
+                            name: sizeName,
+                            departmentName: departmentName,
+                            productTypes: sizeMap[sizeName].productTypes
+                        });
+                    }
+                }
+                return ret;
+            }
+
+            var departmentSizeMap = productTypeDepartmentToSizeMap;
+
+            if (productTypes) {
+                var departmentHash,
+                    key, departments;
+
+                departmentSizeMap = {};
+                productTypes.each(function (productType) {
+                    if (department) {
+                        departments = [department];
+                    } else {
+                        departments = productTypeToDepartmentsMap[productType.$.id];
+                    }
+                    for (var i = 0; i < departments.length; i++) {
+                        key = departments[i].$.name;
+                        departmentHash = departmentSizeMap[key] = departmentSizeMap[key] || {};
+                        productType.$.sizes.each(function (size) {
+                            if (!departmentHash[size.$.name]) {
+                                departmentHash[size.$.name] = {
+                                    productTypes: []
+                                };
+                            }
+                            departmentHash[size.$.name].productTypes.push(productType);
+                        });
+                    }
+                });
+            }
+            var groups = [],
+                group;
+            for (var departmentName in departmentSizeMap) {
+                if (departmentSizeMap.hasOwnProperty(departmentName)) {
+                    group = {
+                        name: departmentName,
+                        items: sizeMapToArray(departmentSizeMap[departmentName], departmentName)
+                    };
+                    groups.push(group);
+                }
+            }
+
+            return groups;
+
+        },
+
+        /***
          * Returns true of the productType has the given color
          * @param {sprd.model.ProductType} productType
          * @param {js.type.Color} color
          * @returns {*|boolean}
          */
-        hasProductTypeColor: function(productType, color){
+        hasProductTypeColor: function (productType, color) {
             return color && productTypeToColorMap[productType.$.id] && productTypeToColorMap[productType.$.id].hasOwnProperty(color.toString());
+        },
+
+        hasProductTypeSize: function (productType, sizeItem) {
+            return sizeItem && departmentProductTypeMap[sizeItem.departmentName] && departmentProductTypeMap[sizeItem.departmentName][productType.$.id] === sizeItem.departmentName && productType.getSizeByName(sizeItem.name);
         },
         /***
          *
@@ -77,12 +194,12 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
          * @param {js.type.Color} color
          * @returns {*}
          */
-        getAppearanceForProductTypeAndColor: function(productType, color){
-            if(color && productType){
+        getAppearanceForProductTypeAndColor: function (productType, color) {
+            if (color && productType) {
                 var colorHash = productTypeToColorMap[productType.$.id],
                     appearances = colorHash[color.toString()];
 
-                if(appearances && appearances.length){
+                if (appearances && appearances.length) {
                     return appearances[0];
                 }
             }
@@ -93,15 +210,15 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
          * @param {js.core.List} productTypes
          * @returns {Array}
          */
-        getColorsForProductTypes: function(productTypes){
+        getColorsForProductTypes: function (productTypes) {
 
             var colorHash,
                 ret = [];
-            productTypes.each(function(productType){
+            productTypes.each(function (productType) {
                 colorHash = productTypeToColorMap[productType.$.id];
-                for(var color in colorHash){
-                    if(colorHash.hasOwnProperty(color)){
-                        if(ret.indexOf(colorMap[color]) === -1){
+                for (var color in colorHash) {
+                    if (colorHash.hasOwnProperty(color)) {
+                        if (ret.indexOf(colorMap[color]) === -1) {
                             ret.push(colorMap[color]);
                         }
                     }
