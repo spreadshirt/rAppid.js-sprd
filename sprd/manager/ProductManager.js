@@ -11,13 +11,17 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             /***
              * set the product type and converts all configurations
              *
+             * @param {sprd.model.Product} product
              * @param {sprd.model.ProductType} productType
+             * @param {sprd.entity.Appearance} appearance
              * @param callback
              */
-            setProductType: function (product, productType, callback) {
-
+            setProductType: function (product, productType, appearance, callback) {
+                if(appearance instanceof Function){
+                    callback = appearance;
+                    appearance = null;
+                }
                 var self = this,
-                    appearance,
                     view;
 
                 flow()
@@ -25,10 +29,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         productType.fetch(null, cb);
                     })
                     .seq(function () {
-                        if (product.$.appearance) {
-                            appearance = productType.getClosestAppearance(product.$.appearance.getMainColor());
-                        } else {
-                            appearance = productType.getDefaultAppearance();
+                        if(!appearance){
+                            if (product.$.appearance) {
+                                appearance = productType.getClosestAppearance(product.$.appearance.getMainColor());
+                            } else {
+                                appearance = productType.getDefaultAppearance();
+                            }
                         }
                     })
                     .seq(function () {
