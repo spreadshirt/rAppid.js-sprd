@@ -20,7 +20,7 @@ define(["sprd/data/SprdModel","sprd/entity/DepartmentCategory", "underscore"], f
             // FIXME: do it per configuration
             // TODO:
 
-            var platform = 'US',
+            var platform = 'EU',
                 excludedDepartmentIds = platform === 'EU' ?  ["10", "8"] : ["7", "6"];
 
             return _.indexOf(excludedDepartmentIds, this.$.id) === -1;
