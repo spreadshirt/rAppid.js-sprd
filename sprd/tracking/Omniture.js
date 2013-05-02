@@ -3,11 +3,26 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
     return Component.inherit('sprd.tracking.Omniture', {
 
         defaults: {
+            /***
+             * enables or disables adobe omniture tracking
+             * @type Boolean
+             */
             enabled: true,
+
+            /***
+             * the number of tries to find the s object on the window
+             * @type Number
+             */
             maxTries: 10
         },
 
-        events: ["on:trackingInitialized"],
+        events: [
+        /***
+         * the trackingInitialized event is dispatched after the s object has been found on
+         * the window object
+         */
+            "on:trackingInitialized"
+        ],
 
         ctor: function () {
             this.$trackQueue = [];
