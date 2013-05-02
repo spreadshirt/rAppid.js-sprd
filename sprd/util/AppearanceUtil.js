@@ -46,24 +46,26 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
             productTypes.each(function (productType) {
                 bestColor = null;
                 productTypeToColorMap[productType.$.id] = tmpProductType = {};
-                productType.$.appearances.each(function (appearance) {
-                    distance = Number.MAX_VALUE;
-                    bestColor = null;
-                    for (var i = 0; i < colors.length; i++) {
-                        color = colors[i];
-                        bestAppearance = null;
-                        tmpDistance = color.distanceTo(appearance.getMainColor());
-                        if (tmpDistance < distance) {
-                            distance = tmpDistance;
-                            bestColor = color;
+                if(productType.$.appearances){
+                    productType.$.appearances.each(function (appearance) {
+                        distance = Number.MAX_VALUE;
+                        bestColor = null;
+                        for (var i = 0; i < colors.length; i++) {
+                            color = colors[i];
+                            bestAppearance = null;
+                            tmpDistance = color.distanceTo(appearance.getMainColor());
+                            if (tmpDistance < distance) {
+                                distance = tmpDistance;
+                                bestColor = color;
+                            }
                         }
-                    }
-                    colorKey = bestColor.toString();
-                    if (!tmpProductType[colorKey]) {
-                        tmpProductType[colorKey] = [];
-                    }
-                    tmpProductType[colorKey].push(appearance);
-                });
+                        colorKey = bestColor.toString();
+                        if (!tmpProductType[colorKey]) {
+                            tmpProductType[colorKey] = [];
+                        }
+                        tmpProductType[colorKey].push(appearance);
+                    });
+                }
             });
         },
         /***
@@ -83,27 +85,29 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                     productTypeDepartment.$.categories.each(function (category) {
                         categorySizes = categoryToSizeMap[category.identifier()] = {};
                         category.$.productTypes.each(function (productType) {
-                            productType.$.sizes.each(function (size) {
-                                if (!departmentSizes[size.$.name]) {
-                                    departmentSizes[size.$.name] = {
-                                        productTypes: []
-                                    };
-                                }
-                                departmentSizes[size.$.name].productTypes.push(productType);
-                                if (!categorySizes[size.$.name]) {
-                                    categorySizes[size.$.name] = {
-                                        productTypes: []
-                                    };
-                                }
-                                categorySizes[size.$.name].productTypes.push(productType);
-                            });
+                            if(productType.$.sizes){
+                                productType.$.sizes.each(function (size) {
+                                    if (!departmentSizes[size.$.name]) {
+                                        departmentSizes[size.$.name] = {
+                                            productTypes: []
+                                        };
+                                    }
+                                    departmentSizes[size.$.name].productTypes.push(productType);
+                                    if (!categorySizes[size.$.name]) {
+                                        categorySizes[size.$.name] = {
+                                            productTypes: []
+                                        };
+                                    }
+                                    categorySizes[size.$.name].productTypes.push(productType);
+                                });
 
-                            departmentProductTypeMap[productTypeDepartment.$.name] = departmentProductTypeMap[productTypeDepartment.$.name] || {};
-                            departmentProductTypeMap[productTypeDepartment.$.name][productType.$.id] = productTypeDepartment.$.name;
-                            if (!productTypeToDepartmentsMap[productType.$.id]) {
-                                productTypeToDepartmentsMap[productType.$.id] = [];
+                                departmentProductTypeMap[productTypeDepartment.$.name] = departmentProductTypeMap[productTypeDepartment.$.name] || {};
+                                departmentProductTypeMap[productTypeDepartment.$.name][productType.$.id] = productTypeDepartment.$.name;
+                                if (!productTypeToDepartmentsMap[productType.$.id]) {
+                                    productTypeToDepartmentsMap[productType.$.id] = [];
+                                }
+                                productTypeToDepartmentsMap[productType.$.id].push(productTypeDepartment);
                             }
-                            productTypeToDepartmentsMap[productType.$.id].push(productTypeDepartment);
                         });
                     });
                 }
@@ -145,17 +149,19 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                     } else {
                         departments = productTypeToDepartmentsMap[productType.$.id];
                     }
-                    for (var i = 0; i < departments.length; i++) {
-                        key = departments[i].$.name;
-                        departmentHash = departmentSizeMap[key] = departmentSizeMap[key] || {};
-                        productType.$.sizes.each(function (size) {
-                            if (!departmentHash[size.$.name]) {
-                                departmentHash[size.$.name] = {
-                                    productTypes: []
-                                };
-                            }
-                            departmentHash[size.$.name].productTypes.push(productType);
-                        });
+                    if(departments){
+                        for (var i = 0; i < departments.length; i++) {
+                            key = departments[i].$.name;
+                            departmentHash = departmentSizeMap[key] = departmentSizeMap[key] || {};
+                            productType.$.sizes.each(function (size) {
+                                if (!departmentHash[size.$.name]) {
+                                    departmentHash[size.$.name] = {
+                                        productTypes: []
+                                    };
+                                }
+                                departmentHash[size.$.name].productTypes.push(productType);
+                            });
+                        }
                     }
                 });
             }
