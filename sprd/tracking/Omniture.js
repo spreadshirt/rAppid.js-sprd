@@ -1,6 +1,6 @@
 define(["js/core/Component", "underscore", "flow"], function (Component, _, flow) {
 
-    return Component.inherit('sprd.adobe.Omniture', {
+    return Component.inherit('sprd.tracking.Omniture', {
 
         defaults: {
             enabled: true,
