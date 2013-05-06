@@ -39,6 +39,9 @@ define(['xaml!sprd/view/Image', 'sprd/data/ImageService'], function (Image, Imag
 
                 if (this.$.appearance) {
                     appearanceId = this.$.appearance.$.id;
+                    if(!productType.getAppearanceById(appearanceId)){
+                        return url;
+                    }
                 }
 
                 if (resources instanceof Array) {
