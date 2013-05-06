@@ -83,7 +83,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _initializationComplete: function() {
+            _initializationComplete: function () {
 
                 var clipPath = this.$.clipPath;
                 var transformations = clipPath.$.transformations;
@@ -93,11 +93,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.callBase();
             },
 
-            id: function() {
+            id: function () {
                 return "c" + this.$cid;
             },
 
-            invert: function(value) {
+            invert: function (value) {
                 return value * -1;
             },
 
@@ -120,8 +120,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _renderFocused: function(focused){
-                if(focused){
+            _renderFocused: function (focused) {
+                if (focused) {
                     this.addClass('focused');
                 } else {
                     this.removeClass('focused');
@@ -203,8 +203,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         self._down(e, self._isGesture(e) ? GESTURE : ROTATE);
                     });
 
-                    moveHandle && moveHandle.bindDomEvent(this.$downEvent, function(e){
-                         self._down(e, self._isGesture(e) ? GESTURE : MOVE);
+                    moveHandle && moveHandle.bindDomEvent(this.$downEvent, function (e) {
+                        self._down(e, self._isGesture(e) ? GESTURE : MOVE);
                     });
 
 
@@ -234,17 +234,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return this.$hasTouch && e.touches.length > 1;
             },
 
-            unbindDomEvent: function (type, cb) {
-                this.callBase();
-            },
-
-            _offsetChanged: function() {
+            _offsetChanged: function () {
 
 
                 var configuration = this.$.configuration;
                 if (configuration) {
 
-                    this._debounceFunctionCall(function() {
+                    this._debounceFunctionCall(function () {
                         configuration._setError(configuration._validateTransform({
                             offset: this.$._offset,
                             scale: this.$._scale,
@@ -254,7 +250,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _commitChangedAttributes: function($) {
+            _commitChangedAttributes: function ($) {
                 this.callBase();
 
                 var configuration = this.$.configuration;
@@ -561,7 +557,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var configuration = this.$.configuration;
                 if (configuration) {
                     if (mode === MOVE) {
-                        if(configuration.$.offset && configuration.$.offset !== this.$._offset){
+                        if (configuration.$.offset && configuration.$.offset !== this.$._offset) {
                             configuration.set('offset', this.$._offset);
                         }
                     } else if (mode === SCALE) {
@@ -603,11 +599,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _keyPress: function(e){
+            _keyPress: function (e) {
                 this.$asset.handleKeyPress && this.$asset.handleKeyPress(e);
             },
 
-            addChar: function(c) {
+            addChar: function (c) {
                 this.$asset.addChar && this.$asset.addChar(c);
             },
 
@@ -657,11 +653,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 };
             },
 
-            pixelToViewBox: function(pixel) {
+            pixelToViewBox: function (pixel) {
                 return pixel * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
-            scaleIconToViewBox: function() {
+            scaleIconToViewBox: function () {
                 return 0.1 * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
@@ -704,13 +700,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return 0;
             }.onChange("_scale"),
 
-            errorClass: function() {
+            errorClass: function () {
                 return this.$._configurationValid ? "" : "error";
             }.onChange("_configurationValid"),
 
-            isFocused: function(){
+            isFocused: function () {
                 return this.isSelectedConfiguration() && this.get('productViewer.focused');
-            }.on(["productViewer", "change:selectedConfiguration"],['productViewer', 'change:focused']),
+            }.on(["productViewer", "change:selectedConfiguration"], ['productViewer', 'change:focused']),
 
             isSelectedConfiguration: function () {
                 return this.$.configuration !== null &&
@@ -740,15 +736,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return this.isSelectedConfiguration() && this.get("configuration.isRemovable()");
             }.onChange("selected"),
 
-            isRotating: function() {
+            isRotating: function () {
                 return this.$._mode === ROTATE;
             }.onChange("_mode"),
 
-            hasError: function() {
+            hasError: function () {
                 return !this.$.configuration.isValid() && this.get('productViewer.editable') === true;
             }.on(["configuration", "isValidChanged"]),
 
-            errorDescription: function() {
+            errorDescription: function () {
 
                 var error = null,
                     configuration = this.$.configuration;

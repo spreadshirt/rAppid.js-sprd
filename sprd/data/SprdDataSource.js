@@ -1,4 +1,4 @@
-define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "underscore"], function(RestDataSource, Model, Collection, _) {
+define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "underscore"], function (RestDataSource, Model, Collection, _) {
 
     var SprdDataSource = RestDataSource.inherit('sprd.data.SprdDataSource', {
         defaults: {
@@ -76,12 +76,13 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
         }
     });
 
-    SprdDataSource.SHA1 = function SHA1(msg) {
-        function rotate_left(n, s) {
+    SprdDataSource.SHA1 = function (msg) {
+
+        function rotateLeft(n, s) {
             return ( n << s ) | (n >>> (32 - s));
         }
 
-        function cvt_hex(val) {
+        function cvtHex(val) {
             var str = "";
             var i;
             var v;
@@ -93,7 +94,7 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
             return str;
         }
 
-        function Utf8Encode(string) {
+        function utf8Encode(string) {
             string = string.replace(/\r\n/g, "\n");
             var utfText = "";
 
@@ -130,11 +131,11 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
         var A, B, C, D, E;
         var temp;
 
-        msg = Utf8Encode(msg);
+        msg = utf8Encode(msg);
 
         var msg_len = msg.length;
 
-        var word_array = new Array();
+        var word_array = [];
         for (i = 0; i < msg_len - 3; i += 4) {
             j = msg.charCodeAt(i) << 24 | msg.charCodeAt(i + 1) << 16 |
                 msg.charCodeAt(i + 2) << 8 | msg.charCodeAt(i + 3);
@@ -160,7 +161,9 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
 
         word_array.push(i);
 
-        while ((word_array.length % 16) != 14) word_array.push(0);
+        while ((word_array.length % 16) != 14) {
+            word_array.push(0);
+        }
 
         word_array.push(msg_len >>> 29);
         word_array.push((msg_len << 3) & 0x0ffffffff);
@@ -168,8 +171,13 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
 
         for (blockStart = 0; blockStart < word_array.length; blockStart += 16) {
 
-            for (i = 0; i < 16; i++) W[i] = word_array[blockStart + i];
-            for (i = 16; i <= 79; i++) W[i] = rotate_left(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
+            for (i = 0; i < 16; i++) {
+                W[i] = word_array[blockStart + i];
+            }
+
+            for (i = 16; i <= 79; i++) {
+                W[i] = rotateLeft(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
+            }
 
             A = H0;
             B = H1;
@@ -178,37 +186,37 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
             E = H4;
 
             for (i = 0; i <= 19; i++) {
-                temp = (rotate_left(A, 5) + ((B & C) | (~B & D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
+                temp = (rotateLeft(A, 5) + ((B & C) | (~B & D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
                 E = D;
                 D = C;
-                C = rotate_left(B, 30);
+                C = rotateLeft(B, 30);
                 B = A;
                 A = temp;
             }
 
             for (i = 20; i <= 39; i++) {
-                temp = (rotate_left(A, 5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
+                temp = (rotateLeft(A, 5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
                 E = D;
                 D = C;
-                C = rotate_left(B, 30);
+                C = rotateLeft(B, 30);
                 B = A;
                 A = temp;
             }
 
             for (i = 40; i <= 59; i++) {
-                temp = (rotate_left(A, 5) + ((B & C) | (B & D) | (C & D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
+                temp = (rotateLeft(A, 5) + ((B & C) | (B & D) | (C & D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
                 E = D;
                 D = C;
-                C = rotate_left(B, 30);
+                C = rotateLeft(B, 30);
                 B = A;
                 A = temp;
             }
 
             for (i = 60; i <= 79; i++) {
-                temp = (rotate_left(A, 5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
+                temp = (rotateLeft(A, 5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
                 E = D;
                 D = C;
-                C = rotate_left(B, 30);
+                C = rotateLeft(B, 30);
                 B = A;
                 A = temp;
             }
@@ -221,7 +229,7 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
 
         }
 
-        temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
+        temp = cvtHex(H0) + cvtHex(H1) + cvtHex(H2) + cvtHex(H3) + cvtHex(H4);
         return temp.toLowerCase();
     };
 

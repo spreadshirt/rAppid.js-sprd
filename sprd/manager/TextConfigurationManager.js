@@ -10,7 +10,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 fontFamilies = product.$context.$contextModel.getCollection("fontFamilies");
 
             flow()
-                .seq(function() {
+                .seq(function () {
                     var navigation = window.navigator;
                     if (!/webkit/i.test(navigation.userAgent || navigation.appVersion)) {
                         throw new Error("Text is only supported in webkit");
@@ -18,7 +18,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 })
                 .par(function (cb) {
                     printType.fetch(null, cb);
-                }, function(cb) {
+                }, function (cb) {
                     fontFamilies.fetch({
                         fullData: true
                     }, cb);
@@ -46,7 +46,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
 
                         var regExp = /^(\w+)\(([^(]+)\)/ig,
                             match;
-                        if (match = regExp.exec(text.transform)) {
+                        if ((match = regExp.exec(text.transform))) {
                             var type = match[1];
                             var values = match[2].split(",");
                             if (type === "rotate") {

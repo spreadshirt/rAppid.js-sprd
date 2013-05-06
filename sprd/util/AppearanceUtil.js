@@ -46,7 +46,7 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
             productTypes.each(function (productType) {
                 bestColor = null;
                 productTypeToColorMap[productType.$.id] = tmpProductType = {};
-                if(productType.$.appearances){
+                if (productType.$.appearances) {
                     productType.$.appearances.each(function (appearance) {
                         distance = Number.MAX_VALUE;
                         bestColor = null;
@@ -74,10 +74,8 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
          */
         initProductTypeSizeCache: function (productTypeDepartments) {
 
-            var categories,
-                departmentSizes,
-                categorySizes,
-                sizes;
+            var departmentSizes,
+                categorySizes;
 
             productTypeDepartments.each(function (productTypeDepartment) {
                 if (productTypeDepartment.isRealDepartment()) {
@@ -85,7 +83,7 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                     productTypeDepartment.$.categories.each(function (category) {
                         categorySizes = categoryToSizeMap[category.identifier()] = {};
                         category.$.productTypes.each(function (productType) {
-                            if(productType.$.sizes){
+                            if (productType.$.sizes) {
                                 productType.$.sizes.each(function (size) {
                                     if (!departmentSizes[size.$.name]) {
                                         departmentSizes[size.$.name] = {
@@ -149,7 +147,7 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                     } else {
                         departments = productTypeToDepartmentsMap[productType.$.id];
                     }
-                    if(departments){
+                    if (departments) {
                         for (var i = 0; i < departments.length; i++) {
                             key = departments[i].$.name;
                             departmentHash = departmentSizeMap[key] = departmentSizeMap[key] || {};

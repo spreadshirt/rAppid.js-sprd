@@ -1,5 +1,5 @@
-define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', 'sprd/data/ImageService', 'sprd/view/svg/PrintAreaViewer', 'sprd/view/svg/ProductTypeViewViewer'],
-    function (Svg, SvgElement, Product, _, ImageService, PrintAreaViewer, ProductTypeViewViewer) {
+define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewViewer'],
+    function (Svg, ImageService, ProductTypeViewViewer) {
 
         return Svg.inherit('sprd.view.ProductViewer', {
             defaults: {
@@ -157,8 +157,8 @@ define(['js/svg/Svg', 'js/svg/SvgElement', 'sprd/model/Product', 'underscore', '
                 this.callBase();
             },
 
-            getViewerForConfiguration: function(configuration){
-                if(this.$currentProductTypeViewViewer){
+            getViewerForConfiguration: function (configuration) {
+                if (this.$currentProductTypeViewViewer) {
                     return this.$currentProductTypeViewViewer.getViewerForConfiguration(configuration);
                 }
                 return null;

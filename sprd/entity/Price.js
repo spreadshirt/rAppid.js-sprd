@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/model/Currency'], function(Entity, Currency) {
+define(['js/data/Entity', 'sprd/model/Currency'], function (Entity, Currency) {
     return Entity.inherit('sprd.entity.Price', {
 
         defaults: {
@@ -25,13 +25,14 @@ define(['js/data/Entity', 'sprd/model/Currency'], function(Entity, Currency) {
             return null;
         },
 
-        add: function(price){
-            if(price){
+        add: function (price) {
+            if (price) {
                 this.set({
                     vatIncluded: this.$.vatIncluded + price.$.vatIncluded,
                     vatExcluded: this.$.vatExcluded + price.$.vatExcluded
-                })
+                });
             }
         }
-    })
+    });
+
 });

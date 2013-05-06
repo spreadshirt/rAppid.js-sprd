@@ -38,7 +38,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         ctor: function () {
             this.callBase();
 
-            function triggerConfigurationChanged(e) {
+            function triggerConfigurationChanged() {
                 this.trigger('configurationChanged');
             }
 
@@ -212,13 +212,18 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         price: function () {
             var printTypePrice = this.get('printType.price');
-            if(printTypePrice){
+            if (printTypePrice) {
                 return printTypePrice.clone();
             }
             return new Price();
         },
 
-        getSizeForPrintType: function(printType) {
+        /***
+         *
+         * @param {sprd.model.PrintType} printType
+         * @return {sprd.entity.Size}
+         */
+        getSizeForPrintType: function (printType) {
             return Size.empty;
         },
 
@@ -249,7 +254,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return 0;
         },
 
-        isReadyForCompose: function(){
+        isReadyForCompose: function () {
             return true;
         }
     });

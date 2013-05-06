@@ -1,5 +1,19 @@
 define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor", "js/data/Entity", 'js/type/Color', 'sprd/entity/Price'], function (SprdModel, Size, PrintTypeColor, Entity, Color, Price) {
 
+    var SCALEABILITY = {
+        ENLARGEABLE: "enlargeable",
+        SHRINKABLE: "shrinkable",
+        UNUSABLE: "unusable",
+        UNSCALABLE: "unscalable"
+    };
+
+    var COLOR_SPACE = {
+        PrintColors: "print_colors",
+        CMYK: "cmyk",
+        RGB: "rgb"
+    };
+
+
     var PrintType = SprdModel.inherit("sprd.model.PrintType", {
 
         defaults: {
@@ -16,7 +30,7 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
 
         printColorCache: {},
 
-        getClosestPrintColor: function(color) {
+        getClosestPrintColor: function (color) {
             color = Color.parse(color);
 
             if (this.isPrintColorColorSpace()) {
@@ -24,13 +38,13 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
                 var minDistance = null,
                     ret = null;
 
-                    this.$.colors.each(function (printColor) {
-                        var distance = color.distanceTo(printColor.color());
-                        if (minDistance === null || distance < minDistance) {
-                            minDistance = distance;
-                            ret = printColor;
-                        }
-                    });
+                this.$.colors.each(function (printColor) {
+                    var distance = color.distanceTo(printColor.color());
+                    if (minDistance === null || distance < minDistance) {
+                        minDistance = distance;
+                        ret = printColor;
+                    }
+                });
 
                 return ret;
             } else {
@@ -51,7 +65,7 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
             }
         },
 
-        getPrintColorById: function(id) {
+        getPrintColorById: function (id) {
 
             if (this.$.colors) {
                 for (var i = 0; i < this.$.colors.$items.length; i++) {
@@ -65,11 +79,11 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
             return null;
         },
 
-        isPrintColorColorSpace: function() {
+        isPrintColorColorSpace: function () {
             return this.get("restrictions.colorSpace") === COLOR_SPACE.PrintColors;
         },
 
-        _getDigitalPrintColorPrice: function() {
+        _getDigitalPrintColorPrice: function () {
 
             if (!this.$digitalPrintColorPrice) {
                 this.$digitalPrintColorPrice = new Price();
@@ -78,13 +92,13 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
             return this.$digitalPrintColorPrice;
         },
 
-        isScalable: function() {
+        isScalable: function () {
             var scaleability = this.get("restrictions.scaleability");
             return scaleability !== SCALEABILITY.UNUSABLE && scaleability !== SCALEABILITY.UNSCALABLE;
 
         },
 
-        isEnlargeable: function() {
+        isEnlargeable: function () {
             return this.get("restrictions.scaleability") === SCALEABILITY.ENLARGEABLE;
         },
 
@@ -92,7 +106,7 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
             return this.get("restrictions.scaleability") === SCALEABILITY.SHRINKABLE;
         },
 
-        containsPrintTypeColor: function(printTypeColor) {
+        containsPrintTypeColor: function (printTypeColor) {
 
             if (!printTypeColor) {
                 return false;
@@ -100,8 +114,8 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
 
             if (this.isPrintColorColorSpace()) {
                 var includes = false;
-                this.$.colors.each(function(color){
-                    if(color.$.id == printTypeColor.$.id && color.$.name == printTypeColor.$.name){
+                this.$.colors.each(function (color) {
+                    if (color.$.id == printTypeColor.$.id && color.$.name == printTypeColor.$.name) {
                         includes = true;
                     }
 
@@ -112,19 +126,6 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
             }
         }
     });
-
-    var SCALEABILITY = {
-        ENLARGEABLE: "enlargeable",
-        SHRINKABLE: "shrinkable",
-        UNUSABLE: "unusable",
-        UNSCALABLE: "unscalable"
-    };
-
-    var COLOR_SPACE = {
-        PrintColors: "print_colors",
-        CMYK: "cmyk",
-        RGB: "rgb"
-    };
 
     PrintType.Restrictions = Entity.inherit("sprd.model.PrintType.Restrictions", {
 
