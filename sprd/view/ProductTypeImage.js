@@ -8,7 +8,7 @@ define(['xaml!sprd/view/Image', 'sprd/data/ImageService'], function (Image, Imag
         defaults: {
             type: "preview",
             productType: null,
-
+            componentClass: "sprd-image product-type-image product-type-{productType.id}",
             appearance: null,
             view: null
         },
