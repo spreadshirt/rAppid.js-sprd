@@ -10,9 +10,16 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
             for (var i = 0; i < properties.length; i++) {
                 prop = properties[i];
                 if (prop.key === "size" || prop.key === "appearance") {
-                    elementPayload[prop.key] = {
-                        id: prop.value
+                    if(!elementPayload[prop.key]){
+                        elementPayload[prop.key] = {};
                     }
+                    elementPayload[prop.key]["id"] = prop.value
+                }
+                if(prop.key === "sizeLabel"){
+                    if(!elementPayload["size"]){
+                        elementPayload["size"] = {};
+                    }
+                    elementPayload["size"]["name"] = prop.value;
                 }
             }
 
@@ -20,14 +27,8 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
 
             if (element.type === TYPE_ARTICLE) {
                 elementPayload.item = this.$dataSource.getContextForChild(Article,shop).createEntity(Article, element.id);
-                elementPayload.item.fetch({
-                    fetchSubModels: ['product/productType']
-                });
             } else if (element.type === TYPE_PRODUCT) {
                 elementPayload.item = this.$dataSource.getContextForChild(Product, shop).createEntity(Product, element.id);
-                elementPayload.item.fetch({
-                    fetchSubModels: ['productType']
-                });
             } else {
                 throw "Element type '" + element.type + "' not supported";
             }
