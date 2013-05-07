@@ -1,6 +1,6 @@
 define(['js/svg/SvgElement', "sprd/data/ImageService", "sprd/view/svg/PrintAreaViewer"], function (SvgElement, ImageService, PrintAreaViewer) {
 
-    return SvgElement.inherit('sprd/view/svg/ProductTypeViewViewer', {
+    return SvgElement.inherit('sprd.view.svg.ProductTypeViewViewer', {
 
         defaults: {
             tagName: "g",

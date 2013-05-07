@@ -1,7 +1,7 @@
 define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewViewer'],
     function (Svg, ImageService, ProductTypeViewViewer) {
 
-        return Svg.inherit('sprd.view.ProductViewer', {
+        return Svg.inherit('sprd.view.ProductViewerSvg', {
             defaults: {
 
                 height: 300,

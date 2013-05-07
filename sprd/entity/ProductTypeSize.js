@@ -2,7 +2,7 @@ define(['js/data/Entity'], function(Entity) {
 
     var normalSizes = ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"];
 
-    return Entity.inherit('sprd.entity.Size', {
+    return Entity.inherit('sprd.entity.ProductTypeSize', {
         schema: {
             measures: [Entity]
         },

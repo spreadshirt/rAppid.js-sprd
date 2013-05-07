@@ -1,6 +1,6 @@
 define(['sprd/entity/Image', 'underscore'], function(Image, _) {
 
-    return Image.inherit('sprd/entity/RemoteImage', {
+    return Image.inherit('sprd.entity.RemoteImage', {
 
         schema: {
             src: Object

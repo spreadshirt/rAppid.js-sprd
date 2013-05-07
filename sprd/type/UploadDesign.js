@@ -6,7 +6,7 @@ define(["js/core/Bindable"], function (Bindable) {
         LOADED: "loaded"
     };
 
-    var UploadDesign = Bindable.inherit("sprd/type/UploadDesign", {
+    var UploadDesign = Bindable.inherit("sprd.type.UploadDesign", {
 
         defaults: {
             design: null,

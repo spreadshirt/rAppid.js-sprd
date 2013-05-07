@@ -4,7 +4,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
         COMPOSITION = "composition",
         viewIdExtractor = /\/views\/(\d+)/;
 
-    var ProductImage = Image.inherit({
+    var ProductImage = Image.inherit("sprd.view.ProductImage", {
 
         defaults: {
             // if null use default view
