@@ -1,0 +1,80 @@
+<schema targetNamespace="sprd.tracking" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="js.core" xmlns:ns="sprd.tracking">
+    <import namespace="js.core"/>
+    <element name="Omniture" type="ns:Omniture"/>
+    <element name="Optimizely" type="ns:Optimizely"/>
+    <complexType name="Omniture">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.tracking.Omniture">
+
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="enabled" default="true">
+                    <annotation>
+                        <documentation>
+                            enables or disables adobe omniture tracking
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="maxTries" default="10">
+                    <annotation>
+                        <documentation>
+                            the number of tries to find the s object on the window
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="ontrackingInitialized" default="_onTrackingInitializedHandler" type="string">
+                    <annotation>
+                        <documentation>
+                            the trackingInitialized event is dispatched after the s object
+                            has been found on
+                            the window object
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="Optimizely">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.tracking.Optimizely">
+
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="enabled" default="true">
+                    <annotation>
+                        <documentation>
+                            indicated if optimizely tracking is enabled
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="maxTries" default="10">
+                    <annotation>
+                        <documentation>
+                            the number of tries to find the 'optimizely' object on the
+                            window object
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="ontrackingInitialized" default="_onTrackingInitializedHandler" type="string">
+                    <annotation>
+                        <documentation>
+                            the trackingInitialized event is dispatched after the
+                            'optimizely' object has been found on
+                            the window object
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>

@@ -1,0 +1,403 @@
+<schema targetNamespace="sprd.view.svg" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="js.svg" xmlns:ns="sprd.view.svg">
+    <import namespace="js.svg"/>
+    <element name="ConfigurationRenderer" type="ns:ConfigurationRenderer"/>
+    <element name="ConfigurationViewer" type="ns:ConfigurationViewer"/>
+    <element name="ConfigurationViewerClass" type="ns:ConfigurationViewerClass"/>
+    <element name="DesignConfigurationRenderer" type="ns:DesignConfigurationRenderer"/>
+    <element name="PrintAreaViewer" type="ns:PrintAreaViewer"/>
+    <element name="ProductTypeViewViewer" type="ns:ProductTypeViewViewer"/>
+    <element name="TextConfigurationRenderer" type="ns:TextConfigurationRenderer"/>
+    <element name="TextConfigurationRendererClass" type="ns:TextConfigurationRendererClass"/>
+    <complexType name="ConfigurationRenderer">
+        <complexContent>
+            <extension base="ns1:SvgElement">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.ConfigurationRenderer">
+
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="x">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="y">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="width" default="{configuration.size().width}">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="height" default="{configuration.size().height}">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="focused" default="{configurationViewer.focused}">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ConfigurationViewer">
+        <complexContent>
+            <extension base="ns:ConfigurationViewerClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.ConfigurationViewer">
+
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="g">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="configuration">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="productViewer">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="printAreaViewer">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="product">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="focused" default="{isFocused()}">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="selected" default="{isSelectedConfiguration()}">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ConfigurationViewerClass">
+        <complexContent>
+            <extension base="ns1:SvgElement">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.ConfigurationViewerClass">
+
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="g">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="configuration">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="productViewer">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="printAreaViewer">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="product">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="focused" default="{isFocused()}">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="selected" default="{isSelectedConfiguration()}">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="DesignConfigurationRenderer">
+        <complexContent>
+            <extension base="ns:ConfigurationRenderer">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.DesignConfigurationRenderer">
+
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="image">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="href" default="{url()}">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="PrintAreaViewer">
+        <complexContent>
+            <extension base="ns1:SvgElement">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.PrintAreaViewer">
+
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="g">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="productTypeViewViewer">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="product">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="productViewer">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ProductTypeViewViewer">
+        <complexContent>
+            <extension base="ns1:SvgElement">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.ProductTypeViewViewer">
+
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="g">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="product">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="productViewer">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="TextConfigurationRenderer">
+        <complexContent>
+            <extension base="ns:TextConfigurationRendererClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.TextConfigurationRenderer">
+
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="g">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="productViewer">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="configurationViewer">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="configuration">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="showSelection" default="{configurationViewer.isSelectedConfiguration()}">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="textArea">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="TextConfigurationRendererClass">
+        <complexContent>
+            <extension base="ns:ConfigurationRenderer">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.TextConfigurationRendererClass">
+
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="g">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="productViewer">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="configurationViewer">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="configuration">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="showSelection" default="{configurationViewer.isSelectedConfiguration()}">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="textArea">
+                    <annotation>
+                        <documentation>
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>
