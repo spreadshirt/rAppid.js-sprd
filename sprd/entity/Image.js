@@ -1,6 +1,6 @@
 define(['js/data/Entity'], function (Entity) {
 
-    var Image = Entity.inherit('app.entity.Image', {
+    var Image = Entity.inherit('sprd.entity.Image', {
         defaults: {
             name: null,
             size: null,

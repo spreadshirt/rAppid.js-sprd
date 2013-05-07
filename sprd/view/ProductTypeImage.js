@@ -3,7 +3,7 @@ define(['xaml!sprd/view/Image', 'sprd/data/ImageService'], function (Image, Imag
     var viewIdExtractor = /\/views\/(\d+)/,
         appearanceIdExtractor = /\/appearances\/(\d+)/;
 
-    return Image.inherit('app.view.ProductTypeImage', {
+    return Image.inherit('sprd.view.ProductTypeImage', {
 
         defaults: {
             type: "preview",
