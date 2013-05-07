@@ -1,0 +1,33 @@
+{
+    "methods": [
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/data/SprdApiDataSourceClass.js",
+            "lineNumbers": [
+                93,
+                104
+            ],
+            "name": "getQueryParameters",
+            "visibility": "public"
+        }
+    ],
+    "staticMethods": [],
+    "defaults": {},
+    "properties": {},
+    "fqClassName": "sprd.data.SprdApiDataSourceClass.SprdApiContext",
+    "dependencies": [
+        "js.data.RestDataSource",
+        "sprd.data.SprdApiQueryComposer",
+        "sprd.data.SprdDataSource",
+        "sprd.data.SprdModel",
+        "sprd.model.processor.BasketItemProcessor",
+        "sprd.model.processor.BasketProcessor",
+        "sprd.model.processor.DefaultProcessor",
+        "underscore"
+    ],
+    "type": "js",
+    "file": "sprd/data/SprdApiDataSourceClass.js",
+    "package": "sprd.data"
+}

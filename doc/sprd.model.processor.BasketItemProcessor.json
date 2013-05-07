@@ -1,0 +1,85 @@
+{
+    "methods": [
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "model"
+                },
+                {
+                    "name": "action"
+                },
+                {
+                    "name": "options"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/model/processor/DefaultProcessor.js",
+            "lineNumbers": [
+                4,
+                9
+            ],
+            "definedBy": "sprd.model.processor.DefaultProcessor",
+            "name": "_composeSubModel",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "model"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/model/processor/BasketItemProcessor.js",
+            "lineNumbers": [
+                42,
+                68
+            ],
+            "name": "compose",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "model"
+                },
+                {
+                    "name": "payload"
+                },
+                {
+                    "name": "action"
+                },
+                {
+                    "name": "options"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/model/processor/BasketItemProcessor.js",
+            "lineNumbers": [
+                6,
+                41
+            ],
+            "name": "parse",
+            "visibility": "public"
+        }
+    ],
+    "staticMethods": [],
+    "defaults": {},
+    "properties": {},
+    "fqClassName": "sprd.model.processor.BasketItemProcessor",
+    "inherit": "sprd.model.processor.DefaultProcessor",
+    "dependencies": [
+        "sprd.model.Article",
+        "sprd.model.Product",
+        "sprd.model.Shop",
+        "sprd.model.processor.DefaultProcessor"
+    ],
+    "type": "js",
+    "file": "sprd/model/processor/BasketItemProcessor.js",
+    "package": "sprd.model.processor",
+    "inheritancePath": [
+        "sprd.model.processor.DefaultProcessor"
+    ]
+}

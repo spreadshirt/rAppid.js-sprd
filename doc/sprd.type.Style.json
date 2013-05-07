@@ -1,0 +1,91 @@
+{
+    "methods": [
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/type/Style.js",
+            "lineNumbers": [
+                14,
+                21
+            ],
+            "name": "_getColor",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/type/Style.js",
+            "lineNumbers": [
+                23,
+                30
+            ],
+            "name": "_getPrintColorId",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/type/Style.js",
+            "lineNumbers": [
+                5,
+                12
+            ],
+            "name": "_getUniqueFontName",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/type/Style.js",
+            "lineNumbers": [
+                73,
+                75
+            ],
+            "name": "clone",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/type/Style.js",
+            "lineNumbers": [
+                32,
+                55
+            ],
+            "name": "compose",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/type/Style.js",
+            "lineNumbers": [
+                57,
+                71
+            ],
+            "name": "serialize",
+            "visibility": "public"
+        }
+    ],
+    "staticMethods": [],
+    "defaults": {},
+    "properties": {},
+    "fqClassName": "sprd.type.Style",
+    "inherit": "text.type.Style",
+    "dependencies": [
+        "text.type.Style",
+        "underscore"
+    ],
+    "type": "js",
+    "file": "sprd/type/Style.js",
+    "package": "sprd.type",
+    "inheritancePath": [
+        "text.type.Style"
+    ]
+}

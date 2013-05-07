@@ -1,0 +1,70 @@
+{
+    "methods": [
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "svg"
+                },
+                {
+                    "name": "imageService"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/manager/SprdSvgMeasurer.js",
+            "lineNumbers": [
+                5,
+                8
+            ],
+            "name": "ctor",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "font"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/manager/SprdSvgMeasurer.js",
+            "lineNumbers": [
+                10,
+                15
+            ],
+            "name": "getFontInformation",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "compositionResult"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/manager/SprdSvgMeasurer.js",
+            "lineNumbers": [
+                17,
+                46
+            ],
+            "name": "measureComposedTextFlow",
+            "visibility": "public"
+        }
+    ],
+    "staticMethods": [],
+    "defaults": {},
+    "properties": {},
+    "fqClassName": "sprd.manager.SprdSvgMeasurer",
+    "inherit": "text.composer.SvgMeasurer",
+    "dependencies": [
+        "text.composer.SvgMeasurer",
+        "xaml!text.ui.SvgTextArea"
+    ],
+    "type": "js",
+    "file": "sprd/manager/SprdSvgMeasurer.js",
+    "package": "sprd.manager",
+    "inheritancePath": [
+        "text.composer.SvgMeasurer"
+    ]
+}

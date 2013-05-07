@@ -1,0 +1,417 @@
+{
+    "methods": [
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "product"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                113,
+                120
+            ],
+            "name": "_commitProduct",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                64,
+                66
+            ],
+            "name": "_commitView",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                68,
+                81
+            ],
+            "name": "_determinateInternalView",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                60,
+                62
+            ],
+            "name": "_onViewsChanged",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                48,
+                58
+            ],
+            "name": "_removeProductTypeViewViewers",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "productType"
+                },
+                {
+                    "name": "view"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                122,
+                153
+            ],
+            "name": "_renderProductTypeView",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "productType"
+                },
+                {
+                    "name": "oldProductType"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                83,
+                92
+            ],
+            "name": "_render_productType",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "view"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                94,
+                111
+            ],
+            "name": "_render_view",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                33,
+                38
+            ],
+            "definedBy": "js.svg.Svg",
+            "overwritesMethod": true,
+            "name": "ctor",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                155,
+                158
+            ],
+            "name": "destroy",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "configuration"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                160,
+                165
+            ],
+            "name": "getViewerForConfiguration",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "js/svg/Svg.js",
+            "lineNumbers": [
+                39,
+                44
+            ],
+            "definedBy": "js.svg.Svg",
+            "name": "globalToLocalFactor",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                41,
+                46
+            ],
+            "name": "initialize",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "js/svg/Svg.js",
+            "lineNumbers": [
+                32,
+                37
+            ],
+            "definedBy": "js.svg.Svg",
+            "name": "localToGlobalFactor",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "js/svg/Svg.js",
+            "lineNumbers": [
+                46,
+                64
+            ],
+            "definedBy": "js.svg.Svg",
+            "name": "save",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "x"
+                },
+                {
+                    "name": "y"
+                },
+                {
+                    "name": "width"
+                },
+                {
+                    "name": "height"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "js/svg/Svg.js",
+            "lineNumbers": [
+                22,
+                30
+            ],
+            "definedBy": "js.svg.Svg",
+            "name": "setViewBox",
+            "visibility": "public"
+        }
+    ],
+    "staticMethods": [],
+    "defaults": {
+        "height": {
+            "name": "height",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": 300,
+            "lineNumbers": [
+                7,
+                7
+            ]
+        },
+        "width": {
+            "name": "width",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": 300,
+            "lineNumbers": [
+                8,
+                8
+            ]
+        },
+        "view": {
+            "name": "view",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                11,
+                11
+            ],
+            "description": " the view to show"
+        },
+        "product": {
+            "name": "product",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                14,
+                14
+            ],
+            "description": " the product which is rendered"
+        },
+        "_productType": {
+            "name": "_productType",
+            "defaultType": "value",
+            "visibility": "private",
+            "value": "{product.productType}",
+            "lineNumbers": [
+                17,
+                17
+            ],
+            "description": " private defaults"
+        },
+        "_appearance": {
+            "name": "_appearance",
+            "defaultType": "value",
+            "visibility": "private",
+            "value": null,
+            "lineNumbers": [
+                18,
+                18
+            ]
+        },
+        "_view": {
+            "name": "_view",
+            "defaultType": "value",
+            "visibility": "private",
+            "value": null,
+            "lineNumbers": [
+                19,
+                19
+            ]
+        },
+        "selectedConfiguration": {
+            "name": "selectedConfiguration",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                20,
+                20
+            ]
+        },
+        "componentClass": {
+            "name": "componentClass",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": "product-viewer {product.appearanceBrightness()}",
+            "lineNumbers": [
+                22,
+                22
+            ]
+        },
+        "editable": {
+            "name": "editable",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": true,
+            "lineNumbers": [
+                24,
+                24
+            ]
+        },
+        "tagName": {
+            "name": "tagName",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": "svg",
+            "lineNumbers": [
+                6,
+                6
+            ],
+            "definedBy": "js.svg.Svg"
+        },
+        "viewBox": {
+            "name": "viewBox",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": "0 0 100 100",
+            "lineNumbers": [
+                7,
+                7
+            ],
+            "definedBy": "js.svg.Svg"
+        },
+        "hidden": {
+            "name": "hidden",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                9,
+                9
+            ],
+            "definedBy": "js.svg.Svg"
+        },
+        "version": {
+            "name": "version",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": "1.2",
+            "definedBy": "js.svg.SvgDescriptor"
+        }
+    },
+    "properties": {
+        "$classAttributes": {
+            "name": "$classAttributes",
+            "visibility": "private",
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                27,
+                27
+            ],
+            "propertyType": "complex",
+            "value": " [\"product\", \"view\", \"editable\", \"selectedConfiguration\"]",
+            "definedBy": "js.svg.Svg",
+            "overwrites": true
+        }
+    },
+    "fqClassName": "sprd.view.ProductViewerSvg",
+    "inherit": "js.svg.Svg",
+    "dependencies": [
+        "js.svg.Svg",
+        "sprd.data.ImageService",
+        "sprd.view.svg.ProductTypeViewViewer"
+    ],
+    "type": "js",
+    "file": "sprd/view/ProductViewerSvg.js",
+    "package": "sprd.view",
+    "inheritancePath": [
+        "js.svg.Svg",
+        "js.svg.SvgDescriptor",
+        "js.svg.SvgClass"
+    ]
+}

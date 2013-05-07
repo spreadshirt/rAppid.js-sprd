@@ -1,0 +1,62 @@
+{
+    "methods": [
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "type"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/data/ImageServerDataSourceClass.js",
+            "lineNumbers": [
+                67,
+                70
+            ],
+            "name": "ctor",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/data/ImageServerDataSourceClass.js",
+            "lineNumbers": [
+                76,
+                78
+            ],
+            "name": "getContentType",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "data"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/data/ImageServerDataSourceClass.js",
+            "lineNumbers": [
+                72,
+                74
+            ],
+            "name": "serialize",
+            "visibility": "public"
+        }
+    ],
+    "staticMethods": [],
+    "defaults": {},
+    "properties": {},
+    "fqClassName": "sprd.data.ImageServerDataSourceClass.RemoteImageFormatProcessor",
+    "dependencies": [
+        "js.data.DataSource",
+        "js.data.Model",
+        "js.data.RestDataSource",
+        "sprd.data.SprdDataSource",
+        "sprd.model.processor.UploadDesignProcessor"
+    ],
+    "type": "js",
+    "file": "sprd/data/ImageServerDataSourceClass.js",
+    "package": "sprd.data"
+}
