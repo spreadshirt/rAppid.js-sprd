@@ -7,8 +7,26 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
     var ProductImage = Image.inherit("sprd.view.ProductImage", {
 
         defaults: {
-            // if null use default view
+            /***
+             * the view of the corresponding product type. If the view isn't set
+             * the default view will be used.
+             */
             view: null,
+
+            /***
+             * the product to show
+             *
+             * @type {sprd.model.Product}
+             * @required
+             */
+            product: null,
+
+            /***
+             * the appearance of the corresponding product type. If the appearance isn't
+             * set the default appearance of the product is used.
+             */
+            appearance: null,
+
             type: PRODUCT
         },
 
@@ -16,9 +34,9 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
             imageService: ImageService
         },
 
-        _commitChangedAttributes: function(attributes){
+        _commitChangedAttributes: function (attributes) {
             this.callBase();
-            if(attributes.hasOwnProperty('product') || attributes.hasOwnProperty('type') || attributes.hasOwnProperty('appearance') || attributes.hasOwnProperty('view')){
+            if (attributes.hasOwnProperty('product') || attributes.hasOwnProperty('type') || attributes.hasOwnProperty('appearance') || attributes.hasOwnProperty('view')) {
                 this.set('loaded', false);
             }
         },
@@ -55,11 +73,11 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
 
                 }
 
-                url += '/views/' +  viewId;
+                url += '/views/' + viewId;
 
                 url = this.extendUrlWithSizes(url);
 
-                if(this.$.appearance) {
+                if (this.$.appearance) {
                     url += ",appearanceId=" + this.$.appearance.$.id;
                 }
 
