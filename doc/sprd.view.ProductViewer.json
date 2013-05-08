@@ -469,8 +469,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                116,
-                121
+                121,
+                126
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_clickHandler",
@@ -558,8 +558,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                31,
-                33
+                32,
+                34
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_commitSelectedConfiguration",
@@ -1347,8 +1347,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                146,
-                209
+                151,
+                214
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_keyDownHandler",
@@ -1364,8 +1364,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                211,
-                216
+                216,
+                221
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_keyPressHandler",
@@ -1418,11 +1418,24 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                106,
-                114
+                111,
+                119
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_onConfigurationViewerAdded",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerClass.js",
+            "lineNumbers": [
+                107,
+                109
+            ],
+            "definedBy": "sprd.view.ProductViewerClass",
+            "name": "_onConfigurationsReset",
             "visibility": "protected"
         },
         {
@@ -1446,8 +1459,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                69,
-                104
+                70,
+                105
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_positionTextArea",
@@ -2509,8 +2522,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                139,
-                144
+                144,
+                149
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "getViewerForConfiguration",
@@ -2687,8 +2700,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                64,
-                67
+                65,
+                68
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "keyDown",
@@ -2704,8 +2717,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                58,
-                62
+                59,
+                63
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "keyPress",
@@ -2721,8 +2734,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                35,
-                56
+                36,
+                57
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "keyUp",
@@ -3039,8 +3052,8 @@
             },
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                254,
-                258
+                259,
+                263
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "showTextAreaOverlay",
@@ -3066,8 +3079,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                245,
-                252
+                250,
+                257
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "textAreaBlured",
@@ -3079,8 +3092,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                234,
-                243
+                239,
+                248
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "textAreaFocused",

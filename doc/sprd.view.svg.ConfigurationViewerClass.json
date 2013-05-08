@@ -104,8 +104,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                178,
-                231
+                182,
+                235
             ],
             "definedBy": "js.core.DomElement",
             "overwritesMethod": true,
@@ -118,8 +118,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                640,
-                645
+                648,
+                653
             ],
             "name": "_cancelTransformation",
             "visibility": "protected"
@@ -204,8 +204,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                253,
-                268
+                261,
+                276
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -420,8 +420,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                270,
-                409
+                278,
+                417
             ],
             "name": "_down",
             "visibility": "protected"
@@ -672,8 +672,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                86,
-                94
+                89,
+                97
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -749,8 +749,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                104,
-                121
+                107,
+                125
             ],
             "name": "_initializeCapabilities",
             "visibility": "protected"
@@ -823,8 +823,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                132,
-                176
+                136,
+                180
             ],
             "definedBy": "js.core.DomElement",
             "overwritesMethod": true,
@@ -989,8 +989,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                233,
-                235
+                237,
+                239
             ],
             "name": "_isGesture",
             "visibility": "protected"
@@ -1025,8 +1025,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                581,
-                594
+                589,
+                602
             ],
             "name": "_keyDown",
             "visibility": "protected"
@@ -1041,8 +1041,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                602,
-                604
+                610,
+                612
             ],
             "name": "_keyPress",
             "visibility": "protected"
@@ -1060,8 +1060,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                596,
-                600
+                604,
+                608
             ],
             "name": "_keyUp",
             "visibility": "protected"
@@ -1116,8 +1116,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                411,
-                550
+                419,
+                558
             ],
             "name": "_move",
             "visibility": "protected"
@@ -1128,8 +1128,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                237,
-                251
+                245,
+                259
             ],
             "name": "_offsetChanged",
             "visibility": "protected"
@@ -1186,6 +1186,18 @@
             ],
             "definedBy": "js.core.Element",
             "name": "_preinitialize",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
+            "lineNumbers": [
+                241,
+                243
+            ],
+            "name": "_productViewerSizeChanged",
             "visibility": "protected"
         },
         {
@@ -1379,8 +1391,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                123,
-                130
+                127,
+                134
             ],
             "name": "_renderFocused",
             "visibility": "protected"
@@ -1494,8 +1506,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                626,
-                638
+                634,
+                646
             ],
             "name": "_resetTransformation",
             "visibility": "protected"
@@ -1564,8 +1576,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                610,
-                616
+                618,
+                624
             ],
             "name": "_stopTransformation",
             "visibility": "protected"
@@ -1607,8 +1619,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                618,
-                624
+                626,
+                632
             ],
             "name": "_unbindTransformationHandler",
             "visibility": "protected"
@@ -1626,8 +1638,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                552,
-                579
+                560,
+                587
             ],
             "name": "_up",
             "visibility": "protected"
@@ -1642,8 +1654,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                606,
-                608
+                614,
+                616
             ],
             "name": "addChar",
             "visibility": "public"
@@ -1918,8 +1930,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                70,
-                84
+                71,
+                87
             ],
             "definedBy": "js.core.Base",
             "overwritesMethod": true,
@@ -1932,8 +1944,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                664,
-                676
+                672,
+                684
             ],
             "name": "deleteConfiguration",
             "visibility": "public"
@@ -1999,8 +2011,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                703,
-                705
+                711,
+                713
             ],
             "name": "errorClass",
             "visibility": "public"
@@ -2018,8 +2030,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                747,
-                772
+                755,
+                780
             ],
             "name": "errorDescription",
             "visibility": "public"
@@ -2068,8 +2080,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                687,
-                693
+                695,
+                701
             ],
             "name": "flipOffsetX",
             "visibility": "public"
@@ -2084,8 +2096,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                695,
-                701
+                703,
+                709
             ],
             "name": "flipOffsetY",
             "visibility": "public"
@@ -2149,8 +2161,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                647,
-                654
+                655,
+                662
             ],
             "name": "getButtonSize",
             "visibility": "public"
@@ -2316,8 +2328,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                683,
-                685
+                691,
+                693
             ],
             "name": "half",
             "visibility": "public"
@@ -2381,8 +2393,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                743,
-                745
+                751,
+                753
             ],
             "name": "hasError",
             "visibility": "public"
@@ -2413,8 +2425,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                96,
-                98
+                99,
+                101
             ],
             "name": "id",
             "visibility": "public"
@@ -2443,8 +2455,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                100,
-                102
+                103,
+                105
             ],
             "name": "invert",
             "visibility": "public"
@@ -2517,8 +2529,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                707,
-                709
+                715,
+                717
             ],
             "name": "isFocused",
             "visibility": "public"
@@ -2533,8 +2545,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                731,
-                733
+                739,
+                741
             ],
             "name": "isMovable",
             "visibility": "public"
@@ -2549,8 +2561,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                735,
-                737
+                743,
+                745
             ],
             "name": "isRemovable",
             "visibility": "public"
@@ -2578,8 +2590,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                727,
-                729
+                735,
+                737
             ],
             "name": "isRotatable",
             "visibility": "public"
@@ -2594,8 +2606,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                739,
-                741
+                747,
+                749
             ],
             "name": "isRotating",
             "visibility": "public"
@@ -2610,8 +2622,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                723,
-                725
+                731,
+                733
             ],
             "name": "isScalable",
             "visibility": "public"
@@ -2629,8 +2641,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                711,
-                714
+                719,
+                722
             ],
             "name": "isSelectedConfiguration",
             "visibility": "public"
@@ -2652,8 +2664,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                716,
-                721
+                724,
+                729
             ],
             "name": "isSelectedConfigurationOrConfigurationHasError",
             "visibility": "public"
@@ -2777,8 +2789,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                656,
-                658
+                664,
+                666
             ],
             "name": "pixelToViewBox",
             "visibility": "public"
@@ -2929,8 +2941,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                660,
-                662
+                668,
+                670
             ],
             "name": "scaleIconToViewBox",
             "visibility": "public"
@@ -3080,8 +3092,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                679,
-                681
+                687,
+                689
             ],
             "name": "substract",
             "visibility": "public"
@@ -3545,14 +3557,24 @@
                 58
             ]
         },
+        "_handleIconScale": {
+            "name": "_handleIconScale",
+            "defaultType": "value",
+            "visibility": "private",
+            "value": 1,
+            "lineNumbers": [
+                59,
+                59
+            ]
+        },
         "_mode": {
             "name": "_mode",
             "defaultType": "value",
             "visibility": "private",
             "value": null,
             "lineNumbers": [
-                60,
-                60
+                61,
+                61
             ]
         },
         "_rotationRadius": {
@@ -3561,8 +3583,8 @@
             "visibility": "private",
             "value": null,
             "lineNumbers": [
-                61,
-                61
+                62,
+                62
             ]
         },
         "transformations": {
@@ -3672,8 +3694,8 @@
             "visibility": "private",
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                68,
-                68
+                69,
+                69
             ],
             "propertyType": "complex",
             "value": " [\"configuration\", \"product\", \"printAreaViewer\", \"assetContainer\", \"productViewer\", \"clipPath\"]",
