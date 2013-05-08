@@ -56,6 +56,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _handleWidth: 15,
                 _handleOffset: 8,
                 "_handle-Offset": -8,
+                _handleIconScale: 1,
 
                 _mode: null,
                 _rotationRadius: null
@@ -81,6 +82,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (validateConfigurationOnTransform) {
                     this.bind("_offset", "change", this._offsetChanged, this);
                 }
+
+                this.bind('productViewer', 'change:width', this._productViewerSizeChanged, this);
             },
 
             _initializationComplete: function () {
@@ -113,9 +116,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 if (hasTouch) {
                     this.set({
-                        _handleWidth: 20,
-                        _handleOffset: 10,
-                        "_handle-Offset": -10
+                        _handleWidth: 28,
+                        _handleOffset: 14,
+                        "_handle-Offset": -14,
+                        _handleIconScale: 1.6
                     });
                 }
             },
@@ -232,6 +236,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             _isGesture: function (e) {
                 return this.$hasTouch && e.touches.length > 1;
+            },
+
+            _productViewerSizeChanged: function(){
+                this.set('_globalToLocalFactor', this.$.productViewer.globalToLocalFactor());
             },
 
             _offsetChanged: function () {
