@@ -24,6 +24,7 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
         ctor: function () {
             this.callBase();
             this.bind('productViewerSvg', 'add:configurationViewer', this._onConfigurationViewerAdded, this);
+            this.bind('product.configurations', 'reset', this._onConfigurationsReset, this);
             this.bind('selectedConfiguration', 'change:scale', this._positionTextArea, this);
             this.bind('selectedConfiguration', 'change:offset', this._positionTextArea, this);
         },
@@ -101,6 +102,10 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
                     throw e;
                 }
             }
+        },
+
+        _onConfigurationsReset: function(){
+            this.set('selectedConfiguration', null);
         },
 
         _onConfigurationViewerAdded: function (e) {
