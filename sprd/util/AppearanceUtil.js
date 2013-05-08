@@ -77,9 +77,11 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
             var departmentSizes,
                 categorySizes;
 
-            productTypeDepartments.each(function (productTypeDepartment) {
+            productTypeDepartments.each(function (productTypeDepartment, index) {
                 if (productTypeDepartment.isRealDepartment()) {
-                    departmentSizes = productTypeDepartmentToSizeMap[productTypeDepartment.$.name] = {};
+                    departmentSizes = productTypeDepartmentToSizeMap[productTypeDepartment.$.name] = {
+                        order: index
+                    };
                     productTypeDepartment.$.categories.each(function (category) {
                         categorySizes = categoryToSizeMap[category.identifier()] = {};
                         category.$.productTypes.each(function (productType) {
@@ -131,6 +133,7 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                         });
                     }
                 }
+
                 return ret;
             }
 
