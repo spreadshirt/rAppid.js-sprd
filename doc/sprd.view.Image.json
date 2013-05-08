@@ -1,16 +1,106 @@
 {
     "fqClassName": "sprd.view.Image",
     "dependencies": [
-        "js.ui.View"
+        "sprd.view.ImageClass"
     ],
     "type": "xml",
-    "inherit": "js.ui.View",
+    "inherit": "sprd.view.ImageClass",
     "defaults": {
         "display": {
             "name": "display",
             "defaultType": "value",
             "visibility": "public",
             "value": "inline-block"
+        },
+        "componentClass": {
+            "name": "componentClass",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                62,
+                62
+            ],
+            "description": "sets the componentClass for the Component.\nThe resulting class attributes is the union from class and componentClass of the Element.\n",
+            "types": [
+                "String"
+            ],
+            "definedBy": "js.core.DomElement"
+        },
+        "loaded": {
+            "name": "loaded",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": false,
+            "lineNumbers": [
+                11,
+                11
+            ],
+            "description": "the loading state",
+            "types": [
+                "Boolean"
+            ],
+            "definedBy": "sprd.view.ImageClass"
+        },
+        "width": {
+            "name": "width",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                17,
+                17
+            ],
+            "description": "the width of the Image",
+            "types": [
+                "Number"
+            ],
+            "definedBy": "sprd.view.ImageClass"
+        },
+        "height": {
+            "name": "height",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                23,
+                23
+            ],
+            "description": "the height of the Image",
+            "types": [
+                "Number"
+            ],
+            "definedBy": "sprd.view.ImageClass"
+        },
+        "src": {
+            "name": "src",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                29,
+                29
+            ],
+            "description": "the source of the Image",
+            "types": [
+                "String"
+            ],
+            "definedBy": "sprd.view.ImageClass"
+        },
+        "title": {
+            "name": "title",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                35,
+                35
+            ],
+            "description": "the title of the Image",
+            "types": [
+                "String"
+            ],
+            "definedBy": "sprd.view.ImageClass"
         },
         "tagName": {
             "name": "tagName",
@@ -130,21 +220,6 @@
                 54
             ],
             "description": "sets the class for the Component.\nThe resulting class attributes is the union from class and componentClass of the Element.\n",
-            "types": [
-                "String"
-            ],
-            "definedBy": "js.core.DomElement"
-        },
-        "componentClass": {
-            "name": "componentClass",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": null,
-            "lineNumbers": [
-                62,
-                62
-            ],
-            "description": "sets the componentClass for the Component.\nThe resulting class attributes is the union from class and componentClass of the Element.\n",
             "types": [
                 "String"
             ],
@@ -1255,6 +1330,20 @@
             "type": "Method",
             "parameter": [],
             "annotations": {},
+            "definedInFile": "sprd/view/ImageClass.js",
+            "lineNumbers": [
+                41,
+                43
+            ],
+            "description": "event handler dispatched after the image has been loaded",
+            "definedBy": "sprd.view.ImageClass",
+            "name": "_onLoad",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
                 381,
@@ -1559,6 +1648,23 @@
             "type": "Method",
             "parameter": [
                 {
+                    "name": "loaded"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/view/ImageClass.js",
+            "lineNumbers": [
+                72,
+                78
+            ],
+            "definedBy": "sprd.view.ImageClass",
+            "name": "_renderLoaded",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
                     "types": null,
                     "name": "name",
                     "optional": false
@@ -1835,6 +1941,25 @@
             ],
             "definedBy": "js.core.DomElement",
             "name": "addClass",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/view/ImageClass.js",
+            "lineNumbers": [
+                84,
+                86
+            ],
+            "description": "returns the alternative description of the image if the image cannot be loaded",
+            "returns": {
+                "types": [
+                    "String"
+                ]
+            },
+            "definedBy": "sprd.view.ImageClass",
+            "name": "alt",
             "visibility": "public"
         },
         {
@@ -2127,6 +2252,35 @@
             "type": "Method",
             "parameter": [
                 {
+                    "types": [
+                        "String"
+                    ],
+                    "name": "url",
+                    "optional": false,
+                    "description": "the url of the image"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/view/ImageClass.js",
+            "lineNumbers": [
+                52,
+                62
+            ],
+            "description": "the spreadshirt image server provides images in normalized sizes between\n50px and 1200px within 50px steps.\n",
+            "returns": {
+                "types": [
+                    "String"
+                ],
+                "description": "the url extended with normalized sizes"
+            },
+            "definedBy": "sprd.view.ImageClass",
+            "name": "extendUrlWithSizes",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
                     "name": "key"
                 }
             ],
@@ -2378,6 +2532,29 @@
             ],
             "definedBy": "js.core.DomElement",
             "name": "html",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {
+                "onChange": [
+                    "src"
+                ]
+            },
+            "definedInFile": "sprd/view/ImageClass.js",
+            "lineNumbers": [
+                68,
+                70
+            ],
+            "description": "returns the `src`",
+            "returns": {
+                "types": [
+                    "String"
+                ]
+            },
+            "definedBy": "sprd.view.ImageClass",
+            "name": "imageUrl",
             "visibility": "public"
         },
         {
@@ -2900,6 +3077,7 @@
     "file": "sprd/view/Image.xml",
     "package": "sprd.view",
     "inheritancePath": [
+        "sprd.view.ImageClass",
         "js.ui.View",
         "js.html.HtmlElement",
         "js.core.DomElement",

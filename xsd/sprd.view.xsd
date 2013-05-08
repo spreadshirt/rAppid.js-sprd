@@ -7,6 +7,7 @@
     <element name="DesignImage" type="ns:DesignImage"/>
     <element name="DropDownSizeSelector" type="ns:DropDownSizeSelector"/>
     <element name="Image" type="ns:Image"/>
+    <element name="ImageClass" type="ns:ImageClass"/>
     <element name="ImageUpload" type="ns:ImageUpload"/>
     <element name="ImageUploadClass" type="ns:ImageUploadClass"/>
     <element name="PrintColorImage" type="ns:PrintColorImage"/>
@@ -169,7 +170,7 @@
     </complexType>
     <complexType name="Image">
         <complexContent>
-            <extension base="ns1:View">
+            <extension base="ns:ImageClass">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.view.Image">
 
@@ -182,6 +183,90 @@
                     <annotation>
                         <documentation>
 
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="loaded">
+                    <annotation>
+                        <documentation>
+                            the loading state
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="width">
+                    <annotation>
+                        <documentation>
+                            the width of the Image
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="height">
+                    <annotation>
+                        <documentation>
+                            the height of the Image
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="src">
+                    <annotation>
+                        <documentation>
+                            the source of the Image
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="title">
+                    <annotation>
+                        <documentation>
+                            the title of the Image
+                        </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ImageClass">
+        <complexContent>
+            <extension base="ns1:View">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ImageClass">
+
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="loaded">
+                    <annotation>
+                        <documentation>
+                            the loading state
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="width">
+                    <annotation>
+                        <documentation>
+                            the width of the Image
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="height">
+                    <annotation>
+                        <documentation>
+                            the height of the Image
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="src">
+                    <annotation>
+                        <documentation>
+                            the source of the Image
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="title">
+                    <annotation>
+                        <documentation>
+                            the title of the Image
                         </documentation>
                     </annotation>
                 </attribute>
@@ -342,7 +427,26 @@
                 <attribute name="view">
                     <annotation>
                         <documentation>
-                            if null use default view
+                            the view of the corresponding product type. If the view isn't
+                            set
+                            the default view will be used.
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="product" use="required">
+                    <annotation>
+                        <documentation>
+                            the product to show
+
+                        </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="appearance">
+                    <annotation>
+                        <documentation>
+                            the appearance of the corresponding product type. If the
+                            appearance isn't
+                            set the default appearance of the product is used.
                         </documentation>
                     </annotation>
                 </attribute>

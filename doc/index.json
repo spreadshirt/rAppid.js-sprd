@@ -88,6 +88,7 @@
         "sprd.view.DesignImage",
         "sprd.view.DropDownSizeSelector",
         "sprd.view.Image",
+        "sprd.view.ImageClass",
         "sprd.view.ImageUpload",
         "sprd.view.ImageUploadClass",
         "sprd.view.PrintColorImage",
