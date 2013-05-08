@@ -1,4 +1,8 @@
-<schema targetNamespace="sprd.data" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="js.core" xmlns:ns2="js.data" xmlns:ns="sprd.data">
+<schema targetNamespace="sprd.data"
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:ns1="js.core"
+    xmlns:ns2="js.data"
+    xmlns:ns="sprd.data">
     <import namespace="js.core"/>
     <import namespace="js.data"/>
     <element name="ImageServerDataSource" type="ns:ImageServerDataSource"/>
@@ -12,9 +16,7 @@
         <complexContent>
             <extension base="ns:ImageServerDataSourceClass">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageServerDataSource">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageServerDataSource"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -26,9 +28,7 @@
         <complexContent>
             <extension base="ns:SprdDataSource">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageServerDataSourceClass">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageServerDataSourceClass"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -40,18 +40,14 @@
         <complexContent>
             <extension base="ns1:Component">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageService">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageService"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="endPoint" default="//image.spreadshirt.net/image-server/v1">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -61,18 +57,14 @@
         <complexContent>
             <extension base="ns1:Component">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageUploadService">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageUploadService"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="uploadContext">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -82,18 +74,14 @@
         <complexContent>
             <extension base="ns:SprdApiDataSourceClass">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.SprdApiDataSource">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.SprdApiDataSource"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="locale" default="en_EU">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -103,18 +91,14 @@
         <complexContent>
             <extension base="ns:SprdDataSource">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.SprdApiDataSourceClass">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.SprdApiDataSourceClass"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="locale" default="en_EU">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -124,32 +108,24 @@
         <complexContent>
             <extension base="ns2:RestDataSource">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.SprdDataSource">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.SprdDataSource"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="apiKey">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="secret">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="session">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>

@@ -1,4 +1,7 @@
-<schema targetNamespace="sprd.view" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="js.ui" xmlns:ns="sprd.view">
+<schema targetNamespace="sprd.view"
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:ns1="js.ui"
+    xmlns:ns="sprd.view">
     <import namespace="js.ui"/>
     <element name="AppearanceImage" type="ns:AppearanceImage"/>
     <element name="ArticleImage" type="ns:ArticleImage"/>
@@ -25,18 +28,14 @@
         <complexContent>
             <extension base="ns:Image">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.AppearanceImage">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.AppearanceImage"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="appearance">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -46,9 +45,7 @@
         <complexContent>
             <extension base="ns:ProductImage">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ArticleImage">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ArticleImage"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -60,25 +57,19 @@
         <complexContent>
             <extension base="ns:ColorSelectorClass">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ColorSelector">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ColorSelector"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="colorWidth" default="25">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="productType">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -88,32 +79,24 @@
         <complexContent>
             <extension base="ns1:SelectionView">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ColorSelectorClass">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ColorSelectorClass"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="colorWidth" default="25">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="productType">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="onappearanceSelect" default="_onAppearanceSelectHandler" type="string">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -123,25 +106,21 @@
         <complexContent>
             <extension base="ns:Image">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.DesignImage">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.DesignImage"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="design">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="view">
                     <annotation>
                         <documentation>
-                            if null use default view
-                        </documentation>
+                         if null use default view
+                    </documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -151,18 +130,14 @@
         <complexContent>
             <extension base="ns1:MenuButton">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.DropDownSizeSelector">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.DropDownSizeSelector"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="type" default="{btnType()}">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -172,53 +147,49 @@
         <complexContent>
             <extension base="ns:ImageClass">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.Image">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.Image"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="display" default="inline-block">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="loaded">
                     <annotation>
                         <documentation>
-                            the loading state
-                        </documentation>
+                        the loading state
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="width">
                     <annotation>
                         <documentation>
-                            the width of the Image
-                        </documentation>
+                        the width of the Image
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="height">
                     <annotation>
                         <documentation>
-                            the height of the Image
-                        </documentation>
+                        the height of the Image
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="src">
                     <annotation>
                         <documentation>
-                            the source of the Image
-                        </documentation>
+                        the source of the Image
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="title">
                     <annotation>
                         <documentation>
-                            the title of the Image
-                        </documentation>
+                        the title of the Image
+                    </documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -228,9 +199,7 @@
         <complexContent>
             <extension base="ns1:View">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ImageClass">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ImageClass"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -238,36 +207,36 @@
                 <attribute name="loaded">
                     <annotation>
                         <documentation>
-                            the loading state
-                        </documentation>
+                        the loading state
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="width">
                     <annotation>
                         <documentation>
-                            the width of the Image
-                        </documentation>
+                        the width of the Image
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="height">
                     <annotation>
                         <documentation>
-                            the height of the Image
-                        </documentation>
+                        the height of the Image
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="src">
                     <annotation>
                         <documentation>
-                            the source of the Image
-                        </documentation>
+                        the source of the Image
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="title">
                     <annotation>
                         <documentation>
-                            the title of the Image
-                        </documentation>
+                        the title of the Image
+                    </documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -277,74 +246,54 @@
         <complexContent>
             <extension base="ns:ImageUploadClass">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ImageUpload">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ImageUpload"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="ondragenter" default="dragEnter">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="ondragexit" default="dragExit">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="ondrop" default="dropImage">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="ondragover" default="dragOver">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="notice" default="Drop your files here.">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="items">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="imageWidth" default="100">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="displayNotice" default="true">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="uploadContext">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -354,39 +303,29 @@
         <complexContent>
             <extension base="ns1:View">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ImageUploadClass">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ImageUploadClass"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="items">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="imageWidth" default="100">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="displayNotice" default="true">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="uploadContext">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -396,18 +335,14 @@
         <complexContent>
             <extension base="ns:Image">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.PrintColorImage">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.PrintColorImage"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="printColor">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -417,9 +352,7 @@
         <complexContent>
             <extension base="ns:Image">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductImage">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductImage"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -427,34 +360,30 @@
                 <attribute name="view">
                     <annotation>
                         <documentation>
-                            the view of the corresponding product type. If the view isn't
-                            set
-                            the default view will be used.
-                        </documentation>
+                        the view of the corresponding product type. If the view isn't set
+the default view will be used.
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="product" use="required">
                     <annotation>
                         <documentation>
-                            the product to show
+                        the product to show
 
-                        </documentation>
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="appearance">
                     <annotation>
                         <documentation>
-                            the appearance of the corresponding product type. If the
-                            appearance isn't
-                            set the default appearance of the product is used.
-                        </documentation>
+                        the appearance of the corresponding product type. If the appearance isn't
+set the default appearance of the product is used.
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="type">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -464,39 +393,29 @@
         <complexContent>
             <extension base="ns:Image">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductTypeImage">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductTypeImage"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="type" default="preview">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="productType">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="appearance">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="view">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -506,9 +425,7 @@
         <complexContent>
             <extension base="ns1:SelectionView">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductTypeViewSelector">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductTypeViewSelector"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -520,81 +437,59 @@
         <complexContent>
             <extension base="ns:ProductViewerClass">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductViewer">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductViewer"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="view">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="product">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="width" default="300">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="height" default="300">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="selectedConfiguration">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="editable" default="true">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="focused" default="true">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="productViewerSvg">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="textArea">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="textAreaPosition">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -604,88 +499,64 @@
         <complexContent>
             <extension base="ns1:View">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductViewerClass">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductViewerClass"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="view">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="product">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="width" default="300">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="height" default="300">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="selectedConfiguration">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="editable" default="true">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="focused" default="true">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="productViewerSvg">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="textArea">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="textAreaPosition">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="onconfigurationSelect" default="_onConfigurationSelectHandler" type="string">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -695,32 +566,24 @@
         <complexContent>
             <extension base="ns1:SelectionView">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductViewSelector">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductViewSelector"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="product" default="null">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="viewHeight" default="50">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="viewWidth" default="50">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -730,32 +593,24 @@
         <complexContent>
             <extension base="ns1:SelectionView">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.SimpleProductViewSelector">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.SimpleProductViewSelector"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="product">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="viewHeight" default="50">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
                 <attribute name="viewWidth" default="50">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -765,9 +620,7 @@
         <complexContent>
             <extension base="ns:SizeSelectorClass">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.SizeSelector">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.SizeSelector"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -775,15 +628,13 @@
                 <attribute name="productType">
                     <annotation>
                         <documentation>
-                            if null use default view
-                        </documentation>
+                         if null use default view
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="appearance">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -793,9 +644,7 @@
         <complexContent>
             <extension base="ns1:SelectionView">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.SizeSelectorClass">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.SizeSelectorClass"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -803,15 +652,13 @@
                 <attribute name="productType">
                     <annotation>
                         <documentation>
-                            if null use default view
-                        </documentation>
+                         if null use default view
+                    </documentation>
                     </annotation>
                 </attribute>
                 <attribute name="appearance">
                     <annotation>
-                        <documentation>
-
-                        </documentation>
+                        <documentation></documentation>
                     </annotation>
                 </attribute>
             </extension>
@@ -821,9 +668,7 @@
         <complexContent>
             <extension base="ns:Image">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.UserImage">
-
-                    </documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.UserImage"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -831,8 +676,8 @@
                 <attribute name="user">
                     <annotation>
                         <documentation>
-                            if null use default view
-                        </documentation>
+                         if null use default view
+                    </documentation>
                     </annotation>
                 </attribute>
             </extension>
