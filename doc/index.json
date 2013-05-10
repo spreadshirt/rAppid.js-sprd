@@ -111,5 +111,7 @@
         "sprd.view.svg.ProductTypeViewViewer",
         "sprd.view.svg.TextConfigurationRenderer",
         "sprd.view.svg.TextConfigurationRendererClass"
-    ]
+    ],
+    "firstClass": "sprd.data.SprdApiDataSource",
+    "title": "Spreadshirt component library"
 }
