@@ -102,7 +102,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 basket.save(null, basketSaveCallback);
             } else {
                 basket.fetch({
-                    noCache: true
+                    noCache: true,
+                    fetchSubModels: ["currency"]
                 }, function (err) {
                     if (err) {
                         // something went wrong
