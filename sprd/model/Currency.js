@@ -39,7 +39,7 @@ define(["sprd/data/SprdModel", "underscore"], function (Model, _) {
             } else {
                 return val;
             }
-        }
+        }.on("change")
     });
 
 });
