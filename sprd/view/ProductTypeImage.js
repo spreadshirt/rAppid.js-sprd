@@ -40,7 +40,7 @@ define(['xaml!sprd/view/Image', 'sprd/data/ImageService'], function (Image, Imag
                 if (this.$.appearance) {
                     appearanceId = this.$.appearance.$.id;
                     if(!productType.getAppearanceById(appearanceId)){
-                        return url;
+                        appearanceId = null;
                     }
                 }
 
@@ -71,9 +71,15 @@ define(['xaml!sprd/view/Image', 'sprd/data/ImageService'], function (Image, Imag
                         }
 
                     }
-
                 }
 
+                if (!appearanceId) {
+                    appearanceId = productType.getDefaultAppearanceId();
+                }
+
+                if(!viewId){
+                    viewId = productType.getDefaultViewId();
+                }
 
                 return imageService.productTypeImage(productTypeId, viewId, appearanceId, {
                     width: this.$.width,
