@@ -27,64 +27,74 @@ define(['xaml!sprd/view/Image', 'sprd/data/ImageService'], function (Image, Imag
 
             if (productType) {
                 productTypeId = productType.$.id;
-                viewId = this.$.view ? this.$.view.$.id : null;
-                if (!viewId) {
-                    var view = productType.getDefaultView();
-                    if (view) {
-                        viewId = view.$.id;
-                    }
-                }
 
-                var resources = productType.$.resources;
-
-                if (this.$.appearance) {
-                    appearanceId = this.$.appearance.$.id;
-                    if(!productType.getAppearanceById(appearanceId)){
-                        appearanceId = null;
-                    }
-                }
-
-                if (resources instanceof Array) {
-                    // get view id from resource -> this is a hack, because image server
-                    // can't generate an image without the view id -> should be implemented by image server
-
-                    for (var i = 0; i < resources.length; i++) {
-
-                        if (viewId && appearanceId) {
-                            break;
+                if (this.$.type === "preview") {
+                    viewId = this.$.view ? this.$.view.$.id : null;
+                    if (!viewId) {
+                        var view = productType.getDefaultView();
+                        if (view) {
+                            viewId = view.$.id;
                         }
+                    }
 
-                        var extracted;
+                    var resources = productType.$.resources;
 
-                        if (!viewId) {
-                            extracted = viewIdExtractor.exec(resources[i].href);
-                            if (extracted) {
-                                viewId = extracted[1];
+                    if (this.$.appearance) {
+                        appearanceId = this.$.appearance.$.id;
+                        if (!productType.getAppearanceById(appearanceId)) {
+                            appearanceId = null;
+                        }
+                    }
+
+                    if (resources instanceof Array) {
+                        // get view id from resource -> this is a hack, because image server
+                        // can't generate an image without the view id -> should be implemented by image server
+
+                        for (var i = 0; i < resources.length; i++) {
+
+                            if (viewId && appearanceId) {
+                                break;
                             }
-                        }
 
-                        if (!appearanceId) {
-                            extracted = appearanceIdExtractor.exec(resources[i].href);
-                            if (extracted) {
-                                appearanceId = extracted[1];
+                            var extracted;
+
+                            if (!viewId) {
+                                extracted = viewIdExtractor.exec(resources[i].href);
+                                if (extracted) {
+                                    viewId = extracted[1];
+                                }
                             }
+
+                            if (!appearanceId) {
+                                extracted = appearanceIdExtractor.exec(resources[i].href);
+                                if (extracted) {
+                                    appearanceId = extracted[1];
+                                }
+                            }
+
                         }
-
                     }
-                }
 
-                if (!appearanceId) {
-                    appearanceId = productType.getDefaultAppearanceId();
-                }
+                    if (!appearanceId) {
+                        appearanceId = productType.getDefaultAppearanceId();
+                    }
 
-                if(!viewId){
-                    viewId = productType.getDefaultViewId();
-                }
+                    if (!viewId) {
+                        viewId = productType.getDefaultViewId();
+                    }
 
-                return imageService.productTypeImage(productTypeId, viewId, appearanceId, {
-                    width: this.$.width,
-                    height: this.$.height
-                });
+                    return imageService.productTypeImage(productTypeId, viewId, appearanceId, {
+                        width: this.$.width,
+                        height: this.$.height
+                    });
+
+                } else if (this.$.type === "size") {
+                    return imageService.productTypeSizeImage(productTypeId, {
+                        width: this.$.width,
+                        height: this.$.height
+                    });
+
+                }
 
             }
 

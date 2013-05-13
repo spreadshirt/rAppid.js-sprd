@@ -13,6 +13,10 @@ define(['js/core/Component','underscore'], function(Component, _) {
                 ImageService.getImageSizeParameter(options));
         },
 
+        productTypeSizeImage: function(productTypeId, options){
+            return this.buildUrl(["productTypes", productTypeId, "variants","size"], ImageService.getImageSizeParameter(options))
+        },
+
         designImage: function(designId, options) {
             var parameter = ImageService.getImageSizeParameter(options) || {};
 
