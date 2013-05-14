@@ -10,8 +10,8 @@ rect {
     shape-rendering: crispEdges;
 }
 
-.bright .print-area-border,
-.bright .soft-boundary-border {
+.product-viewer.active.bright .print-area-border,
+.product-viewer.active.bright .soft-boundary-border {
     stroke: black;
 }
 
