@@ -2,8 +2,8 @@ rect {
     fill: none;
 }
 
-.print-area-border,
-.soft-boundary-border {
+.product-viewer.active .print-area-border,
+.product-viewer.active .soft-boundary-border {
     stroke-width: 1;
     stroke: white;
     vector-effect: non-scaling-stroke;
