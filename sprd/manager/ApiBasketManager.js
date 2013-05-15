@@ -77,7 +77,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
                 var editBasketItemLinkTemplate = this.$.editBasketItemLinkTemplate;
                 if (editBasketItemLinkTemplate) {
-                    element.set("editLink", editBasketItemLinkTemplate.replace("${productId}", element.get("item.id")))
+                    element.set("editLink", editBasketItemLinkTemplate.replace("$productId", element.get("item.id")))
                 }
 
                 basketItem.save({
