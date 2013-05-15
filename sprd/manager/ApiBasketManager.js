@@ -25,7 +25,26 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
              * the shop used for creating a new basket
              * @type {sprd.model.Shop}
              */
-            shop: null
+            shop: null,
+
+            /***
+             * continueShopping link is used in checkout as link for continue shopping button.
+             * It will be automatically added to the element added to basket
+             * @type String
+             */
+            continueShoppingLink: null,
+
+            /***
+             * edit link is the link displayed in checkout for editing the basket item.
+             * It will be automatically added to the element added to the basked.
+             *
+             * The following values are replaced
+             *
+             *  + ${productId} - with the current productId
+             *
+             * @type String
+             */
+            editBasketItemLinkTemplate: null
         },
 
         events: [
@@ -47,6 +66,20 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
             if (this.$.basket) {
                 var basketItem = this.$.basket.addElement(element, quantity);
+                element = basketItem.$.element;
+
+
+                var continueShoppingLink = this.$.continueShoppingLink;
+
+                if (continueShoppingLink) {
+                    element.set("continueShoppingLink", continueShoppingLink)
+                }
+
+                var editBasketItemLinkTemplate = this.$.editBasketItemLinkTemplate;
+                if (editBasketItemLinkTemplate) {
+                    element.set("editLink", editBasketItemLinkTemplate.replace("${productId}", element.get("item.id")))
+                }
+
                 basketItem.save({
                     invalidatePageCache: false
                 }, function(err) {
