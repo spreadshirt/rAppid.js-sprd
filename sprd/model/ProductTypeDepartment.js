@@ -15,6 +15,9 @@ define(["sprd/data/SprdModel","sprd/entity/DepartmentCategory", "underscore"], f
             return null;
         },
 
+        /***
+         * @deprecated
+         */
         isRealDepartment: function() {
 
             // FIXME: do it per configuration

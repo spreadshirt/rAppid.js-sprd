@@ -1,18 +1,17 @@
 define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color) {
 
-    var colorArray = [
-        "universal.COLOR_WHITE", 0xFFFFFF,
-        "universal.COLOR_BLACK", 0x000000,
-        "universal.COLOR_BLUE", 0x2244AA,
-        "universal.COLOR_RED", 0xB91816,
-        "universal.COLOR_GREY", 0xCCCCCC,
-        "universal.COLOR_BROWN", 0x664B2F,
-        "universal.COLOR_GREEN", 0x669933,
-        "universal.COLOR_YELLOW", 0xFFF500,
-        "universal.COLOR_TURQUOISE", 0x0AC7DF,
-        "universal.COLOR_PINK", 0xFB4E81
-    ];
-
+    var COLOR_MAP = {
+        WHITE: 0xFFFFFF,
+        BLACK: 0x000000,
+        BLUE: 0x2244AA,
+        RED: 0xB91816,
+        GREY: 0xCCCCCC,
+        BROWN: 0x664B2F,
+        GREEN: 0x669933,
+        YELLOW: 0xFFF500,
+        TURQUOISE: 0x0AC7DF,
+        PINK: 0xFB4E81
+    };
 
     var productTypeToColorMap = {},
         colorMap = {},
@@ -36,12 +35,15 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                 tmpProductType,
                 colorKey;
             colors = [];
-            for (var i = 1; i <= colorArray.length; i = i + 2) {
-                color = Color.parse(colorArray[i]);
-                colors.push(color);
-                colorMap[color.toString()] = color;
-            }
 
+            for (var key in COLOR_MAP) {
+
+                if (COLOR_MAP.hasOwnProperty(key)) {
+                    color = Color.parse(COLOR_MAP[key]);
+                    colors.push(color);
+                    colorMap[color.toString()] = color;
+                }
+            }
 
             productTypes.each(function (productType) {
                 bestColor = null;
@@ -78,39 +80,37 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                 categorySizes;
 
             productTypeDepartments.each(function (productTypeDepartment, index) {
-                if (productTypeDepartment.isRealDepartment()) {
-                    departmentSizes = productTypeDepartmentToSizeMap[productTypeDepartment.$.name] = {
-                        order: index
-                    };
-                    productTypeDepartment.$.categories.each(function (category) {
-                        categorySizes = categoryToSizeMap[category.identifier()] = {};
-                        category.$.productTypes.each(function (productType) {
-                            if (productType.$.sizes) {
-                                productType.$.sizes.each(function (size) {
-                                    if (!departmentSizes[size.$.name]) {
-                                        departmentSizes[size.$.name] = {
-                                            productTypes: []
-                                        };
-                                    }
-                                    departmentSizes[size.$.name].productTypes.push(productType);
-                                    if (!categorySizes[size.$.name]) {
-                                        categorySizes[size.$.name] = {
-                                            productTypes: []
-                                        };
-                                    }
-                                    categorySizes[size.$.name].productTypes.push(productType);
-                                });
-
-                                departmentProductTypeMap[productTypeDepartment.$.name] = departmentProductTypeMap[productTypeDepartment.$.name] || {};
-                                departmentProductTypeMap[productTypeDepartment.$.name][productType.$.id] = productTypeDepartment.$.name;
-                                if (!productTypeToDepartmentsMap[productType.$.id]) {
-                                    productTypeToDepartmentsMap[productType.$.id] = [];
+                departmentSizes = productTypeDepartmentToSizeMap[productTypeDepartment.$.name] = {
+                    order: index
+                };
+                productTypeDepartment.$.categories.each(function (category) {
+                    categorySizes = categoryToSizeMap[category.identifier()] = {};
+                    category.$.productTypes.each(function (productType) {
+                        if (productType.$.sizes) {
+                            productType.$.sizes.each(function (size) {
+                                if (!departmentSizes[size.$.name]) {
+                                    departmentSizes[size.$.name] = {
+                                        productTypes: []
+                                    };
                                 }
-                                productTypeToDepartmentsMap[productType.$.id].push(productTypeDepartment);
+                                departmentSizes[size.$.name].productTypes.push(productType);
+                                if (!categorySizes[size.$.name]) {
+                                    categorySizes[size.$.name] = {
+                                        productTypes: []
+                                    };
+                                }
+                                categorySizes[size.$.name].productTypes.push(productType);
+                            });
+
+                            departmentProductTypeMap[productTypeDepartment.$.name] = departmentProductTypeMap[productTypeDepartment.$.name] || {};
+                            departmentProductTypeMap[productTypeDepartment.$.name][productType.$.id] = productTypeDepartment.$.name;
+                            if (!productTypeToDepartmentsMap[productType.$.id]) {
+                                productTypeToDepartmentsMap[productType.$.id] = [];
                             }
-                        });
+                            productTypeToDepartmentsMap[productType.$.id].push(productTypeDepartment);
+                        }
                     });
-                }
+                });
             });
 
         },
