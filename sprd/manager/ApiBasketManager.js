@@ -1,4 +1,4 @@
-define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/data/SprdApiDataSource", "js/data/LocalStorage"], function (IBasketManager, flow, Basket, SprdApiDataSource, LocalStorage) {
+define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/data/SprdApiDataSource", "js/data/LocalStorage", "js/data/Entity"], function (IBasketManager, flow, Basket, SprdApiDataSource, LocalStorage, Entity) {
 
     /***
      * @summary A BasketManager to interact with the Spreadshirt Basket API
@@ -44,7 +44,13 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
              *
              * @type String
              */
-            editBasketItemLinkTemplate: null
+            editBasketItemLinkTemplate: null,
+
+            /***
+             * the origin id used for basked items
+             * @type {Number|String}
+             */
+            originId: null
         },
 
         events: [
@@ -68,6 +74,12 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 var basketItem = this.$.basket.addElement(element, quantity);
                 element = basketItem.$.element;
 
+                var originId = this.$.originId;
+                if (originId) {
+                    basketItem.set('origin', new Entity({
+                        id: originId
+                    }));
+                }
 
                 var continueShoppingLink = this.$.continueShoppingLink;
 
