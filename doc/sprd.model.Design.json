@@ -6,8 +6,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                197,
-                199
+                198,
+                200
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_beforeDestroy",
@@ -185,8 +185,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                205,
-                211
+                206,
+                212
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_destroyCompleted",
@@ -396,8 +396,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                201,
-                203
+                202,
+                204
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_innerDestroy",
@@ -576,8 +576,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                77,
-                89
+                75,
+                87
             ],
             "description": "Binds a callback and a scope to a given eventType\n",
             "definedBy": "js.core.EventDispatcher",
@@ -764,8 +764,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                184,
-                195
+                185,
+                196
             ],
             "description": "Clears up the instance",
             "definedBy": "js.core.EventDispatcher",
@@ -1417,8 +1417,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                97,
-                158
+                96,
+                157
             ],
             "description": "Triggers a specific event and the * event\n",
             "definedBy": "js.core.EventDispatcher",

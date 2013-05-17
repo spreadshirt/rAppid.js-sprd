@@ -6,8 +6,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                197,
-                199
+                198,
+                200
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_beforeDestroy",
@@ -185,8 +185,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                205,
-                211
+                206,
+                212
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_destroyCompleted",
@@ -396,8 +396,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                201,
-                203
+                202,
+                204
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_innerDestroy",
@@ -576,8 +576,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                77,
-                89
+                75,
+                87
             ],
             "description": "Binds a callback and a scope to a given eventType\n",
             "definedBy": "js.core.EventDispatcher",
@@ -796,8 +796,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                184,
-                195
+                185,
+                196
             ],
             "description": "Clears up the instance",
             "definedBy": "js.core.EventDispatcher",
@@ -964,8 +964,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                90,
-                101
+                102,
+                113
             ],
             "name": "getAppearanceById",
             "visibility": "public"
@@ -987,8 +987,8 @@
             },
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                148,
-                165
+                160,
+                177
             ],
             "name": "getAvailableSizesForAppearance",
             "visibility": "public"
@@ -1008,8 +1008,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                107,
-                126
+                119,
+                138
             ],
             "description": "Returns closest appearance for Color",
             "returns": {
@@ -1070,8 +1070,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                83,
-                88
+                90,
+                93
             ],
             "name": "getDefaultAppearance",
             "visibility": "public"
@@ -1082,8 +1082,20 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                140,
-                146
+                95,
+                100
+            ],
+            "name": "getDefaultAppearanceId",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/model/ProductType.js",
+            "lineNumbers": [
+                152,
+                158
             ],
             "name": "getDefaultPrintArea",
             "visibility": "public"
@@ -1103,6 +1115,18 @@
         {
             "type": "Method",
             "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/model/ProductType.js",
+            "lineNumbers": [
+                71,
+                76
+            ],
+            "name": "getDefaultViewId",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
             "annotations": {
                 "onChange": [
                     "sizes"
@@ -1110,8 +1134,8 @@
             },
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                175,
-                180
+                187,
+                192
             ],
             "name": "getMeasures",
             "visibility": "public"
@@ -1126,8 +1150,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                71,
-                81
+                78,
+                88
             ],
             "name": "getPrintAreaById",
             "visibility": "public"
@@ -1224,8 +1248,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                128,
-                138
+                140,
+                150
             ],
             "name": "getViewByPerspective",
             "visibility": "public"
@@ -1391,8 +1415,8 @@
             },
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                167,
-                172
+                179,
+                184
             ],
             "name": "isSizeAndAppearanceAvailable",
             "visibility": "public"
@@ -1683,8 +1707,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                97,
-                158
+                96,
+                157
             ],
             "description": "Triggers a specific event and the * event\n",
             "definedBy": "js.core.EventDispatcher",

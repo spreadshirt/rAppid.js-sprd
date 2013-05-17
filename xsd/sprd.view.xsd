@@ -33,11 +33,7 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="appearance">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="appearance"/>
             </extension>
         </complexContent>
     </complexType>
@@ -62,16 +58,8 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="colorWidth" default="25">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="productType">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="colorWidth" default="25"/>
+                <attribute name="productType"/>
             </extension>
         </complexContent>
     </complexType>
@@ -84,21 +72,9 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="colorWidth" default="25">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="productType">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="onappearanceSelect" default="_onAppearanceSelectHandler" type="string">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="colorWidth" default="25"/>
+                <attribute name="productType"/>
+                <attribute name="onappearanceSelect" default="_onAppearanceSelectHandler" type="string"/>
             </extension>
         </complexContent>
     </complexType>
@@ -111,11 +87,7 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="design">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="design"/>
                 <attribute name="view">
                     <annotation>
                         <documentation>
@@ -135,11 +107,7 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="type" default="{btnType()}">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="type" default="{btnType()}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -152,11 +120,7 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="display" default="inline-block">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="display" default="inline-block"/>
                 <attribute name="loaded">
                     <annotation>
                         <documentation>
@@ -251,51 +215,15 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="ondragenter" default="dragEnter">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="ondragexit" default="dragExit">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="ondrop" default="dropImage">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="ondragover" default="dragOver">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="notice" default="Drop your files here.">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="items">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="imageWidth" default="100">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="displayNotice" default="true">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="uploadContext">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="ondragenter" default="dragEnter"/>
+                <attribute name="ondragexit" default="dragExit"/>
+                <attribute name="ondrop" default="dropImage"/>
+                <attribute name="ondragover" default="dragOver"/>
+                <attribute name="notice" default="Drop your files here."/>
+                <attribute name="items"/>
+                <attribute name="imageWidth" default="100"/>
+                <attribute name="displayNotice" default="true"/>
+                <attribute name="uploadContext"/>
             </extension>
         </complexContent>
     </complexType>
@@ -308,26 +236,10 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="items">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="imageWidth" default="100">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="displayNotice" default="true">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="uploadContext">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="items"/>
+                <attribute name="imageWidth" default="100"/>
+                <attribute name="displayNotice" default="true"/>
+                <attribute name="uploadContext"/>
             </extension>
         </complexContent>
     </complexType>
@@ -340,11 +252,7 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="printColor">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="printColor"/>
             </extension>
         </complexContent>
     </complexType>
@@ -381,11 +289,7 @@ set the default appearance of the product is used.
                     </documentation>
                     </annotation>
                 </attribute>
-                <attribute name="type">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="type"/>
             </extension>
         </complexContent>
     </complexType>
@@ -398,26 +302,10 @@ set the default appearance of the product is used.
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="type" default="preview">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="productType">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="appearance">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="view">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="type" default="preview"/>
+                <attribute name="productType"/>
+                <attribute name="appearance"/>
+                <attribute name="view"/>
             </extension>
         </complexContent>
     </complexType>
@@ -442,56 +330,16 @@ set the default appearance of the product is used.
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="view">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="product">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="width" default="300">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="height" default="300">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="selectedConfiguration">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="editable" default="true">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="focused" default="true">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="productViewerSvg">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="textArea">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="textAreaPosition">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="view"/>
+                <attribute name="product"/>
+                <attribute name="width" default="300"/>
+                <attribute name="height" default="300"/>
+                <attribute name="selectedConfiguration"/>
+                <attribute name="editable" default="true"/>
+                <attribute name="focused" default="true"/>
+                <attribute name="productViewerSvg"/>
+                <attribute name="textArea"/>
+                <attribute name="textAreaPosition"/>
             </extension>
         </complexContent>
     </complexType>
@@ -504,61 +352,17 @@ set the default appearance of the product is used.
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="view">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="product">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="width" default="300">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="height" default="300">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="selectedConfiguration">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="editable" default="true">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="focused" default="true">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="productViewerSvg">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="textArea">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="textAreaPosition">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="onconfigurationSelect" default="_onConfigurationSelectHandler" type="string">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="view"/>
+                <attribute name="product"/>
+                <attribute name="width" default="300"/>
+                <attribute name="height" default="300"/>
+                <attribute name="selectedConfiguration"/>
+                <attribute name="editable" default="true"/>
+                <attribute name="focused" default="true"/>
+                <attribute name="productViewerSvg"/>
+                <attribute name="textArea"/>
+                <attribute name="textAreaPosition"/>
+                <attribute name="onconfigurationSelect" default="_onConfigurationSelectHandler" type="string"/>
             </extension>
         </complexContent>
     </complexType>
@@ -571,21 +375,9 @@ set the default appearance of the product is used.
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="product" default="null">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="viewHeight" default="50">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="viewWidth" default="50">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="product" default="null"/>
+                <attribute name="viewHeight" default="50"/>
+                <attribute name="viewWidth" default="50"/>
             </extension>
         </complexContent>
     </complexType>
@@ -598,21 +390,9 @@ set the default appearance of the product is used.
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="product">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="viewHeight" default="50">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="viewWidth" default="50">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="product"/>
+                <attribute name="viewHeight" default="50"/>
+                <attribute name="viewWidth" default="50"/>
             </extension>
         </complexContent>
     </complexType>
@@ -632,11 +412,7 @@ set the default appearance of the product is used.
                     </documentation>
                     </annotation>
                 </attribute>
-                <attribute name="appearance">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="appearance"/>
             </extension>
         </complexContent>
     </complexType>
@@ -656,11 +432,7 @@ set the default appearance of the product is used.
                     </documentation>
                     </annotation>
                 </attribute>
-                <attribute name="appearance">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="appearance"/>
             </extension>
         </complexContent>
     </complexType>

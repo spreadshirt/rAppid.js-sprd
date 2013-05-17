@@ -10,8 +10,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                113,
-                120
+                115,
+                122
             ],
             "name": "_commitProduct",
             "visibility": "protected"
@@ -22,8 +22,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                64,
-                66
+                66,
+                68
             ],
             "name": "_commitView",
             "visibility": "protected"
@@ -34,8 +34,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                68,
-                81
+                70,
+                83
             ],
             "name": "_determinateInternalView",
             "visibility": "protected"
@@ -46,8 +46,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                60,
-                62
+                62,
+                64
             ],
             "name": "_onViewsChanged",
             "visibility": "protected"
@@ -58,8 +58,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                48,
-                58
+                50,
+                60
             ],
             "name": "_removeProductTypeViewViewers",
             "visibility": "protected"
@@ -77,8 +77,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                122,
-                153
+                124,
+                155
             ],
             "name": "_renderProductTypeView",
             "visibility": "protected"
@@ -96,8 +96,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                83,
-                92
+                85,
+                94
             ],
             "name": "_render_productType",
             "visibility": "protected"
@@ -112,8 +112,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                94,
-                111
+                96,
+                113
             ],
             "name": "_render_view",
             "visibility": "protected"
@@ -124,8 +124,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                33,
-                38
+                35,
+                40
             ],
             "definedBy": "js.svg.Svg",
             "overwritesMethod": true,
@@ -138,8 +138,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                155,
-                158
+                157,
+                160
             ],
             "name": "destroy",
             "visibility": "public"
@@ -154,8 +154,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                160,
-                165
+                162,
+                167
             ],
             "name": "getViewerForConfiguration",
             "visibility": "public"
@@ -179,8 +179,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                41,
-                46
+                43,
+                48
             ],
             "name": "initialize",
             "visibility": "public"
@@ -323,14 +323,24 @@
                 20
             ]
         },
+        "selected": {
+            "name": "selected",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": "{selectedConfiguration}",
+            "lineNumbers": [
+                22,
+                22
+            ]
+        },
         "componentClass": {
             "name": "componentClass",
             "defaultType": "value",
             "visibility": "public",
             "value": "product-viewer {product.appearanceBrightness()}",
             "lineNumbers": [
-                22,
-                22
+                24,
+                24
             ]
         },
         "editable": {
@@ -339,8 +349,8 @@
             "visibility": "public",
             "value": true,
             "lineNumbers": [
-                24,
-                24
+                26,
+                26
             ]
         },
         "tagName": {
@@ -390,8 +400,8 @@
             "visibility": "private",
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                27,
-                27
+                29,
+                29
             ],
             "propertyType": "complex",
             "value": " [\"product\", \"view\", \"editable\", \"selectedConfiguration\"]",

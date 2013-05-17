@@ -78,8 +78,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                197,
-                199
+                198,
+                200
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_beforeDestroy",
@@ -339,8 +339,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                205,
-                211
+                206,
+                212
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_destroyCompleted",
@@ -492,8 +492,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                170,
-                183
+                171,
+                184
             ],
             "definedBy": "js.core.Element",
             "name": "_getTextContentFromDescriptor",
@@ -577,8 +577,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                116,
-                117
+                117,
+                118
             ],
             "definedBy": "js.core.Element",
             "name": "_initializeAttributes",
@@ -634,8 +634,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                119,
-                120
+                120,
+                121
             ],
             "definedBy": "js.core.Element",
             "name": "_initializeDescriptors",
@@ -651,8 +651,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                113,
-                115
+                114,
+                116
             ],
             "definedBy": "js.core.Element",
             "name": "_initializeEventAttributes",
@@ -732,8 +732,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                201,
-                203
+                202,
+                204
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_innerDestroy",
@@ -862,8 +862,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                166,
-                168
+                167,
+                169
             ],
             "definedBy": "js.core.Element",
             "name": "_preinitialize",
@@ -956,8 +956,8 @@
             "annotations": {},
             "definedInFile": "sprd/data/ImageService.js",
             "lineNumbers": [
-                29,
-                31
+                33,
+                35
             ],
             "name": "appearanceImage",
             "visibility": "public"
@@ -1005,8 +1005,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                77,
-                89
+                75,
+                87
             ],
             "description": "Binds a callback and a scope to a given eventType\n",
             "definedBy": "js.core.EventDispatcher",
@@ -1026,8 +1026,8 @@
             "annotations": {},
             "definedInFile": "sprd/data/ImageService.js",
             "lineNumbers": [
-                45,
-                50
+                49,
+                54
             ],
             "name": "buildUrl",
             "visibility": "public"
@@ -1196,8 +1196,8 @@
             "annotations": {},
             "definedInFile": "sprd/data/ImageService.js",
             "lineNumbers": [
-                16,
-                27
+                20,
+                31
             ],
             "name": "designImage",
             "visibility": "public"
@@ -1208,8 +1208,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                184,
-                195
+                185,
+                196
             ],
             "description": "Clears up the instance",
             "definedBy": "js.core.EventDispatcher",
@@ -1242,8 +1242,8 @@
             "annotations": {},
             "definedInFile": "sprd/data/ImageService.js",
             "lineNumbers": [
-                37,
-                39
+                41,
+                43
             ],
             "name": "emptyImage",
             "visibility": "public"
@@ -1258,8 +1258,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                155,
-                164
+                156,
+                165
             ],
             "definedBy": "js.core.Element",
             "name": "find",
@@ -1275,8 +1275,8 @@
             "annotations": {},
             "definedInFile": "sprd/data/ImageService.js",
             "lineNumbers": [
-                41,
-                43
+                45,
+                47
             ],
             "name": "fontUrl",
             "visibility": "public"
@@ -1448,8 +1448,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                192,
-                194
+                193,
+                195
             ],
             "definedBy": "js.core.Element",
             "name": "isDefined",
@@ -1517,8 +1517,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                189,
-                191
+                190,
+                192
             ],
             "description": "Binding helper to negate a Boolean value",
             "returns": {
@@ -1543,8 +1543,8 @@
             "annotations": {},
             "definedInFile": "sprd/data/ImageService.js",
             "lineNumbers": [
-                33,
-                35
+                37,
+                39
             ],
             "name": "printColorImage",
             "visibility": "public"
@@ -1572,6 +1572,25 @@
                 14
             ],
             "name": "productTypeImage",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "productTypeId"
+                },
+                {
+                    "name": "options"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/data/ImageService.js",
+            "lineNumbers": [
+                16,
+                18
+            ],
+            "name": "productTypeSizeImage",
             "visibility": "public"
         },
         {
@@ -1731,8 +1750,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                97,
-                158
+                96,
+                157
             ],
             "description": "Triggers a specific event and the * event\n",
             "definedBy": "js.core.EventDispatcher",
@@ -1840,8 +1859,8 @@
             "visibility": "public",
             "value": "auto",
             "lineNumbers": [
-                111,
-                111
+                112,
+                112
             ],
             "description": "Decides if the initialization of the component is started automatically or manually by the application",
             "types": [

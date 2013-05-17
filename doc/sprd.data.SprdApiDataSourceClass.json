@@ -101,8 +101,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                197,
-                199
+                198,
+                200
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_beforeDestroy",
@@ -157,8 +157,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                227,
-                248
+                233,
+                254
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "_buildUriForResource",
@@ -308,8 +308,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                676,
-                691
+                682,
+                697
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "_createSortParameter",
@@ -422,8 +422,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                205,
-                211
+                206,
+                212
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_destroyCompleted",
@@ -614,8 +614,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                169,
-                178
+                175,
+                184
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "_getHttpMethod",
@@ -648,8 +648,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                693,
-                703
+                699,
+                709
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "_getPagingParameterForCollectionPage",
@@ -665,8 +665,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                170,
-                183
+                171,
+                184
             ],
             "definedBy": "js.core.Element",
             "name": "_getTextContentFromDescriptor",
@@ -750,8 +750,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                116,
-                117
+                117,
+                118
             ],
             "definedBy": "js.core.Element",
             "name": "_initializeAttributes",
@@ -807,8 +807,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                119,
-                120
+                120,
+                121
             ],
             "definedBy": "js.core.Element",
             "name": "_initializeDescriptors",
@@ -824,8 +824,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                113,
-                115
+                114,
+                116
             ],
             "definedBy": "js.core.Element",
             "name": "_initializeEventAttributes",
@@ -905,8 +905,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                201,
-                203
+                202,
+                204
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_innerDestroy",
@@ -1019,8 +1019,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                304,
-                327
+                310,
+                333
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "_parseModelPayload",
@@ -1058,8 +1058,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                166,
-                168
+                167,
+                169
             ],
             "definedBy": "js.core.Element",
             "name": "_preinitialize",
@@ -1078,8 +1078,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                250,
-                252
+                256,
+                258
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "_resourcePathToUri",
@@ -1255,8 +1255,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                77,
-                89
+                75,
+                87
             ],
             "description": "Binds a callback and a scope to a given eventType\n",
             "definedBy": "js.core.EventDispatcher",
@@ -1575,8 +1575,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                184,
-                195
+                185,
+                196
             ],
             "description": "Clears up the instance",
             "definedBy": "js.core.EventDispatcher",
@@ -1616,8 +1616,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                496,
-                504
+                502,
+                510
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "extractIdFromLocation",
@@ -1642,8 +1642,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                580,
-                588
+                586,
+                594
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "extractListData",
@@ -1668,8 +1668,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                576,
-                578
+                582,
+                584
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "extractListMetaData",
@@ -1685,8 +1685,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                155,
-                164
+                156,
+                165
             ],
             "definedBy": "js.core.Element",
             "name": "find",
@@ -1883,8 +1883,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                734,
-                743
+                740,
+                749
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "getFormatProcessorForContentType",
@@ -1900,8 +1900,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                192,
-                208
+                198,
+                214
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "getPathComponentsForModel",
@@ -1917,8 +1917,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                210,
-                225
+                216,
+                231
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "getPathComponentsForModelClass",
@@ -1934,8 +1934,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                181,
-                190
+                187,
+                196
             ],
             "definedBy": "js.data.RestDataSource",
             "name": "getPathComponentsForResource",
@@ -2161,8 +2161,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                358,
-                414
+                364,
+                420
             ],
             "description": "",
             "definedBy": "js.data.RestDataSource",
@@ -2189,8 +2189,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                338,
-                347
+                344,
+                353
             ],
             "description": "",
             "definedBy": "js.data.RestDataSource",
@@ -2217,8 +2217,8 @@
             "annotations": {},
             "definedInFile": "js/data/RestDataSource.js",
             "lineNumbers": [
-                483,
-                494
+                489,
+                500
             ],
             "description": "",
             "definedBy": "js.data.RestDataSource",
@@ -2321,8 +2321,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                192,
-                194
+                193,
+                195
             ],
             "definedBy": "js.core.Element",
             "name": "isDefined",
@@ -2462,8 +2462,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                189,
-                191
+                190,
+                192
             ],
             "description": "Binding helper to negate a Boolean value",
             "returns": {
@@ -2823,8 +2823,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                97,
-                158
+                96,
+                157
             ],
             "description": "Triggers a specific event and the * event\n",
             "definedBy": "js.core.EventDispatcher",
@@ -3073,6 +3073,21 @@
             ],
             "definedBy": "js.data.RestDataSource"
         },
+        "suffix": {
+            "name": "suffix",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                95,
+                95
+            ],
+            "description": "a suffix like `.json` to add to each request",
+            "types": [
+                "String"
+            ],
+            "definedBy": "js.data.RestDataSource"
+        },
         "dateFormat": {
             "name": "dateFormat",
             "defaultType": "value",
@@ -3104,8 +3119,8 @@
             "visibility": "public",
             "value": "auto",
             "lineNumbers": [
-                111,
-                111
+                112,
+                112
             ],
             "description": "Decides if the initialization of the component is started automatically or manually by the application",
             "types": [

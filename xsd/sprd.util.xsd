@@ -13,26 +13,10 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="fallbackLanguage" default="en">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="fallbackCountry" default="EU">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="supportedLanguages">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="supportedCountries">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="fallbackLanguage" default="en"/>
+                <attribute name="fallbackCountry" default="EU"/>
+                <attribute name="supportedLanguages"/>
+                <attribute name="supportedCountries"/>
             </extension>
         </complexContent>
     </complexType>

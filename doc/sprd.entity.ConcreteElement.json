@@ -6,8 +6,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                197,
-                199
+                198,
+                200
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_beforeDestroy",
@@ -185,8 +185,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                205,
-                211
+                206,
+                212
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_destroyCompleted",
@@ -396,8 +396,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                201,
-                203
+                202,
+                204
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_innerDestroy",
@@ -559,8 +559,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                77,
-                89
+                75,
+                87
             ],
             "description": "Binds a callback and a scope to a given eventType\n",
             "definedBy": "js.core.EventDispatcher",
@@ -722,8 +722,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                184,
-                195
+                185,
+                196
             ],
             "description": "Clears up the instance",
             "definedBy": "js.core.EventDispatcher",
@@ -859,8 +859,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/ConcreteElement.js",
             "lineNumbers": [
-                46,
-                51
+                71,
+                76
             ],
             "name": "getAppearance",
             "visibility": "public"
@@ -871,8 +871,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/ConcreteElement.js",
             "lineNumbers": [
-                32,
-                37
+                57,
+                62
             ],
             "name": "getArticle",
             "visibility": "public"
@@ -920,8 +920,8 @@
             },
             "definedInFile": "sprd/entity/ConcreteElement.js",
             "lineNumbers": [
-                23,
-                30
+                48,
+                55
             ],
             "name": "getProduct",
             "visibility": "public"
@@ -966,8 +966,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/ConcreteElement.js",
             "lineNumbers": [
-                39,
-                44
+                64,
+                69
             ],
             "name": "getSize",
             "visibility": "public"
@@ -978,8 +978,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/ConcreteElement.js",
             "lineNumbers": [
-                53,
-                60
+                78,
+                85
             ],
             "name": "getType",
             "visibility": "public"
@@ -1084,8 +1084,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/ConcreteElement.js",
             "lineNumbers": [
-                17,
-                21
+                42,
+                46
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -1277,8 +1277,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/ConcreteElement.js",
             "lineNumbers": [
-                66,
-                70
+                91,
+                95
             ],
             "name": "sku",
             "visibility": "public"
@@ -1325,8 +1325,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                97,
-                158
+                96,
+                157
             ],
             "description": "Triggers a specific event and the * event\n",
             "definedBy": "js.core.EventDispatcher",
@@ -1371,8 +1371,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/ConcreteElement.js",
             "lineNumbers": [
-                62,
-                64
+                87,
+                89
             ],
             "name": "uniqueId",
             "visibility": "public"
@@ -1471,8 +1471,12 @@
             "visibility": "public",
             "value": null,
             "lineNumbers": [
-                12,
-                12
+                16,
+                16
+            ],
+            "description": "the appearance of the basket item",
+            "types": [
+                "sprd.entity.Appearance"
             ]
         },
         "size": {
@@ -1481,8 +1485,12 @@
             "visibility": "public",
             "value": null,
             "lineNumbers": [
-                13,
-                13
+                21,
+                21
+            ],
+            "description": "the size of the basket item",
+            "types": [
+                "sprd.entity.ProductTypeSize"
             ]
         },
         "item": {
@@ -1491,8 +1499,41 @@
             "visibility": "public",
             "value": null,
             "lineNumbers": [
-                14,
-                14
+                27,
+                27
+            ],
+            "description": "the basket item",
+            "types": [
+                "sprd.model.Product",
+                "sprd.model.Article"
+            ]
+        },
+        "continueShoppingLink": {
+            "name": "continueShoppingLink",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                33,
+                33
+            ],
+            "description": "continueShopping link is used in checkout as link for continue shopping button.",
+            "types": [
+                "String"
+            ]
+        },
+        "editLink": {
+            "name": "editLink",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                39,
+                39
+            ],
+            "description": "edit link is the link displayed in checkout for editing the basket item",
+            "types": [
+                "String"
             ]
         }
     },

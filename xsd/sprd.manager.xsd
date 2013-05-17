@@ -42,6 +42,34 @@ after the basket has been created successfully. The id is written back to this p
                     </documentation>
                     </annotation>
                 </attribute>
+                <attribute name="continueShoppingLink">
+                    <annotation>
+                        <documentation>
+                        continueShopping link is used in checkout as link for continue shopping button.
+It will be automatically added to the element added to basket
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="editBasketItemLinkTemplate">
+                    <annotation>
+                        <documentation>
+                        edit link is the link displayed in checkout for editing the basket item.
+It will be automatically added to the element added to the basked.
+
+The following values are replaced
+
++ ${productId} - with the current productId
+
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="originId">
+                    <annotation>
+                        <documentation>
+                        the origin id used for basked items
+                    </documentation>
+                    </annotation>
+                </attribute>
                 <attribute name="onbasketChanged" default="_onBasketChangedHandler" type="string">
                     <annotation>
                         <documentation>
@@ -62,11 +90,7 @@ BasketItem
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="externalBasket">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="externalBasket"/>
             </extension>
         </complexContent>
     </complexType>

@@ -181,8 +181,9 @@
         },
         "selected": {
             "name": "selected",
-            "defaultType": "factory",
+            "defaultType": "value",
             "visibility": "public",
+            "value": null,
             "lineNumbers": [
                 60,
                 60
@@ -195,11 +196,12 @@
         },
         "selectable": {
             "name": "selectable",
-            "defaultType": "factory",
+            "defaultType": "value",
             "visibility": "public",
+            "value": null,
             "lineNumbers": [
-                65,
-                65
+                66,
+                66
             ],
             "description": "If not null, false or undefined a click will set the element to selected",
             "types": [
@@ -212,8 +214,12 @@
             "defaultType": "factory",
             "visibility": "public",
             "lineNumbers": [
-                66,
-                66
+                72,
+                72
+            ],
+            "description": "the target namespace for the HTMLElement",
+            "types": [
+                "String"
             ],
             "definedBy": "js.html.HtmlElement"
         },
@@ -223,8 +229,8 @@
             "visibility": "public",
             "value": true,
             "lineNumbers": [
-                70,
-                70
+                77,
+                77
             ],
             "types": [
                 "Boolean"
@@ -237,8 +243,8 @@
             "visibility": "public",
             "value": null,
             "lineNumbers": [
-                75,
-                75
+                83,
+                83
             ],
             "description": "Possible values: \"absolute\", \"relative\"",
             "types": [
@@ -252,8 +258,8 @@
             "visibility": "public",
             "value": "out",
             "lineNumbers": [
-                91,
-                91
+                99,
+                99
             ],
             "description": "\nThe heightUpdatePolicy configures whether the height of the component is\nupdated when the DOM node height changes or if the DOM node height is updated\nwhen the component height changes.\n\n**Possible values:**\n\n+  **in** - \"height\" attribute is determined by DOM nodes offsetHeight\n+  **out** - DOM node height is determined by the \"height\" attribute\n+  **both** - both directions\n",
             "types": [
@@ -267,8 +273,8 @@
             "visibility": "public",
             "value": "out",
             "lineNumbers": [
-                107,
-                107
+                115,
+                115
             ],
             "description": "\nThe widthUpdatePolicy configures whether the width of the component is\nupdated when the DOM node width changes or if the DOM node width is updated\nwhen the component width changes.\n\n**Possible values:**\n\n+  **in** - \"width\" attribute is determined by DOM nodes offsetWidth\n+  **out** - DOM node width is determined by the \"width\" attribute\n+  **both** - both directions\n",
             "types": [
@@ -326,8 +332,8 @@
             "visibility": "public",
             "value": "auto",
             "lineNumbers": [
-                111,
-                111
+                112,
+                112
             ],
             "description": "Decides if the initialization of the component is started automatically or manually by the application",
             "types": [
@@ -435,8 +441,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                197,
-                199
+                198,
+                200
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_beforeDestroy",
@@ -865,8 +871,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                205,
-                211
+                206,
+                212
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_destroyCompleted",
@@ -1148,8 +1154,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                170,
-                183
+                171,
+                184
             ],
             "definedBy": "js.core.Element",
             "name": "_getTextContentFromDescriptor",
@@ -1233,8 +1239,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                116,
-                117
+                117,
+                118
             ],
             "definedBy": "js.core.Element",
             "name": "_initializeAttributes",
@@ -1290,8 +1296,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                119,
-                120
+                120,
+                121
             ],
             "definedBy": "js.core.Element",
             "name": "_initializeDescriptors",
@@ -1307,8 +1313,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                113,
-                115
+                114,
+                116
             ],
             "definedBy": "js.core.Element",
             "name": "_initializeEventAttributes",
@@ -1422,8 +1428,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                201,
-                203
+                202,
+                204
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_innerDestroy",
@@ -1575,8 +1581,8 @@
             "annotations": {},
             "definedInFile": "js/html/HtmlElement.js",
             "lineNumbers": [
-                285,
-                309
+                331,
+                355
             ],
             "definedBy": "js.html.HtmlElement",
             "name": "_isStyleAttribute",
@@ -1817,8 +1823,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                166,
-                168
+                167,
+                169
             ],
             "definedBy": "js.core.Element",
             "name": "_preinitialize",
@@ -2025,8 +2031,8 @@
             "annotations": {},
             "definedInFile": "js/html/HtmlElement.js",
             "lineNumbers": [
-                188,
-                201
+                202,
+                215
             ],
             "definedBy": "js.html.HtmlElement",
             "name": "_renderEnabled",
@@ -2045,8 +2051,8 @@
             "annotations": {},
             "definedInFile": "js/html/HtmlElement.js",
             "lineNumbers": [
-                222,
-                231
+                236,
+                245
             ],
             "description": "renders the height of the element if the update-policy allows out-going",
             "private": "",
@@ -2066,8 +2072,8 @@
             "annotations": {},
             "definedInFile": "js/html/HtmlElement.js",
             "lineNumbers": [
-                138,
-                140
+                149,
+                151
             ],
             "description": "",
             "private": "",
@@ -2150,8 +2156,8 @@
             "annotations": {},
             "definedInFile": "js/html/HtmlElement.js",
             "lineNumbers": [
-                239,
-                248
+                253,
+                262
             ],
             "description": "",
             "private": "",
@@ -2171,8 +2177,8 @@
             "annotations": {},
             "definedInFile": "js/html/HtmlElement.js",
             "lineNumbers": [
-                171,
-                187
+                184,
+                200
             ],
             "description": "",
             "private": "",
@@ -2308,8 +2314,8 @@
             "annotations": {},
             "definedInFile": "js/html/HtmlElement.js",
             "lineNumbers": [
-                208,
-                215
+                222,
+                229
             ],
             "description": "renders the width of the element if the update-policy allows out-going",
             "private": "",
@@ -2329,8 +2335,8 @@
             "annotations": {},
             "definedInFile": "js/html/HtmlElement.js",
             "lineNumbers": [
-                146,
-                148
+                158,
+                160
             ],
             "description": "",
             "private": "",
@@ -2529,8 +2535,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                77,
-                89
+                75,
+                87
             ],
             "description": "Binds a callback and a scope to a given eventType\n",
             "definedBy": "js.core.EventDispatcher",
@@ -2727,8 +2733,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                184,
-                195
+                185,
+                196
             ],
             "description": "Clears up the instance",
             "definedBy": "js.core.EventDispatcher",
@@ -2782,8 +2788,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                155,
-                164
+                156,
+                165
             ],
             "definedBy": "js.core.Element",
             "name": "find",
@@ -3126,8 +3132,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                192,
-                194
+                193,
+                195
             ],
             "definedBy": "js.core.Element",
             "name": "isDefined",
@@ -3243,8 +3249,8 @@
             "annotations": {},
             "definedInFile": "js/core/Element.js",
             "lineNumbers": [
-                189,
-                191
+                190,
+                192
             ],
             "description": "Binding helper to negate a Boolean value",
             "returns": {
@@ -3523,8 +3529,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                97,
-                158
+                96,
+                157
             ],
             "description": "Triggers a specific event and the * event\n",
             "definedBy": "js.core.EventDispatcher",

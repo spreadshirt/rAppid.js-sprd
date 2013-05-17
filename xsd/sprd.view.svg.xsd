@@ -20,31 +20,11 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="x">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="y">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="width" default="{configuration.size().width}">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="height" default="{configuration.size().height}">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="focused" default="{configurationViewer.focused}">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="x"/>
+                <attribute name="y"/>
+                <attribute name="width" default="{configuration.size().width}"/>
+                <attribute name="height" default="{configuration.size().height}"/>
+                <attribute name="focused" default="{configurationViewer.focused}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -57,41 +37,13 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="tagName" default="g">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="configuration">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="productViewer">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="printAreaViewer">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="product">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="focused" default="{isFocused()}">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="selected" default="{isSelectedConfiguration()}">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="tagName" default="g"/>
+                <attribute name="configuration"/>
+                <attribute name="productViewer"/>
+                <attribute name="printAreaViewer"/>
+                <attribute name="product"/>
+                <attribute name="focused" default="{isFocused()}"/>
+                <attribute name="selected" default="{isSelectedConfiguration()}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -104,41 +56,13 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="tagName" default="g">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="configuration">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="productViewer">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="printAreaViewer">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="product">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="focused" default="{isFocused()}">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="selected" default="{isSelectedConfiguration()}">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="tagName" default="g"/>
+                <attribute name="configuration"/>
+                <attribute name="productViewer"/>
+                <attribute name="printAreaViewer"/>
+                <attribute name="product"/>
+                <attribute name="focused" default="{isFocused()}"/>
+                <attribute name="selected" default="{isSelectedConfiguration()}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -151,16 +75,8 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="tagName" default="image">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="href" default="{url()}">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="tagName" default="image"/>
+                <attribute name="href" default="{url()}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -173,26 +89,10 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="tagName" default="g">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="productTypeViewViewer">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="product">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="productViewer">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="tagName" default="g"/>
+                <attribute name="productTypeViewViewer"/>
+                <attribute name="product"/>
+                <attribute name="productViewer"/>
             </extension>
         </complexContent>
     </complexType>
@@ -205,21 +105,9 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="tagName" default="g">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="product">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="productViewer">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="tagName" default="g"/>
+                <attribute name="product"/>
+                <attribute name="productViewer"/>
             </extension>
         </complexContent>
     </complexType>
@@ -232,36 +120,12 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="tagName" default="g">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="productViewer">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="configurationViewer">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="configuration">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="showSelection" default="{configurationViewer.isSelectedConfiguration()}">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="textArea">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="tagName" default="g"/>
+                <attribute name="productViewer"/>
+                <attribute name="configurationViewer"/>
+                <attribute name="configuration"/>
+                <attribute name="showSelection" default="{configurationViewer.isSelectedConfiguration()}"/>
+                <attribute name="textArea"/>
             </extension>
         </complexContent>
     </complexType>
@@ -274,36 +138,12 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="tagName" default="g">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="productViewer">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="configurationViewer">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="configuration">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="showSelection" default="{configurationViewer.isSelectedConfiguration()}">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="textArea">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="tagName" default="g"/>
+                <attribute name="productViewer"/>
+                <attribute name="configurationViewer"/>
+                <attribute name="configuration"/>
+                <attribute name="showSelection" default="{configurationViewer.isSelectedConfiguration()}"/>
+                <attribute name="textArea"/>
             </extension>
         </complexContent>
     </complexType>

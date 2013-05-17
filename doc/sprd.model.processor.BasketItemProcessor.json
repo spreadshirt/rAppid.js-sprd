@@ -33,8 +33,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/processor/BasketItemProcessor.js",
             "lineNumbers": [
-                42,
-                68
+                45,
+                92
             ],
             "name": "compose",
             "visibility": "public"
@@ -58,8 +58,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/processor/BasketItemProcessor.js",
             "lineNumbers": [
-                6,
-                41
+                8,
+                43
             ],
             "name": "parse",
             "visibility": "public"

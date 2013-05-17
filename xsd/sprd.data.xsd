@@ -45,11 +45,7 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="endPoint" default="//image.spreadshirt.net/image-server/v1">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="endPoint" default="//image.spreadshirt.net/image-server/v1"/>
             </extension>
         </complexContent>
     </complexType>
@@ -62,11 +58,7 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="uploadContext">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="uploadContext"/>
             </extension>
         </complexContent>
     </complexType>
@@ -79,11 +71,7 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="locale" default="en_EU">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="locale" default="en_EU"/>
             </extension>
         </complexContent>
     </complexType>
@@ -96,11 +84,7 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="locale" default="en_EU">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="locale" default="en_EU"/>
             </extension>
         </complexContent>
     </complexType>
@@ -113,21 +97,9 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="apiKey">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="secret">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="session">
-                    <annotation>
-                        <documentation></documentation>
-                    </annotation>
-                </attribute>
+                <attribute name="apiKey"/>
+                <attribute name="secret"/>
+                <attribute name="session"/>
             </extension>
         </complexContent>
     </complexType>
