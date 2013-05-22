@@ -224,7 +224,7 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
             if (this.runsInBrowser() && this.$.editable) {
                 var self = this;
 
-                this.$stage.bind("on:click", this._clickHandler, this);
+                this.bind("on:click", this._clickHandler, this);
                 this.$stage.bind('on:blur', function () {
                     self.set('focused', false);
                 });
