@@ -4,9 +4,7 @@
                        xmlns:ui="js.ui" xmlns:view="sprd.view"
 
                        ondragenter="dragEnter" ondragexit="dragExit" ondrop="dropImage" ondragover="dragOver"
-                       componentClass="image-upload"
-
-                        notice="Drop your files here.">
+                       componentClass="image-upload">
 
     <div class="upload-notice" visible="{displayNotice()}">{notice}</div>
 

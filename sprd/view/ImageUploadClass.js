@@ -9,7 +9,9 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 displayNotice: true,
                 _displayNotice: false,
 
-                uploadContext: null
+                uploadContext: null,
+
+                notice: "Drop your files here."
             },
 
             inject: {
