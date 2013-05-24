@@ -1,4 +1,3 @@
 <view:ImageClass xmlns="http://www.w3.org/1999/xhtml" display="inline-block" xmlns:view="sprd.view">
-    <img cid="$img" src="{imageUrl()}" width="{width}" height="{height}" alt="{alt()}" onload="_onLoad"
-            style="max-height: {height}px; max-width: {width}px"/>
+    <img cid="$img" src="{imageUrl()}" width="{width}" height="{height}" alt="{alt()}" maxWidth="{width}" maxHeight="{height}" onload="_onLoad"/>
 </view:ImageClass>
