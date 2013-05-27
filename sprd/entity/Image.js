@@ -13,6 +13,8 @@ define(['js/data/Entity'], function (Entity) {
         },
 
         getDimension: function(callback) {
+            var self = this;
+
             Image.getDimension(this.src, function (err, dimension) {
                 if (!err && dimension) {
                     // set width and height
