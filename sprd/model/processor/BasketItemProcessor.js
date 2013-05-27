@@ -23,6 +23,13 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                     }
                     elementPayload["size"]["name"] = prop.value;
                 }
+                if (prop.key === "appearanceLabel") {
+                    if (!elementPayload["appearance"]) {
+                        elementPayload["appearance"] = {};
+                    }
+                    elementPayload["appearance"]["name"] = prop.value;
+                }
+
             }
 
             var shop = this.$dataSource.createEntity(Shop, payload.shop.id);
