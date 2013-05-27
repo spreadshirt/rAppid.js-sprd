@@ -23,7 +23,10 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
                 basketItem.increaseQuantity(quantity);
             } else {
                 basketItem =  this.$.basketItems.createItem();
-                basketItem.set('element', element);
+                basketItem.set({
+                    element: element,
+                    quantity: quantity
+                });
                 this.$.basketItems.add(basketItem);
             }
 
