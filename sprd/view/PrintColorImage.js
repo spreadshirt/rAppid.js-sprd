@@ -28,7 +28,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService", "sprd/model/PrintType"
                 this.set('loaded', true);
             }
 
-            img.set('background-color', backgroundColor);
+            img.set('backgroundColor', backgroundColor);
 
         },
 
