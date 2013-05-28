@@ -39,6 +39,15 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             return false;
         },
 
+        containsSize: function(size) {
+
+            if (this.$.sizes) {
+                return this.$.sizes.includes(size);
+            }
+
+            return false;
+        },
+
         getSizeById: function (id) {
             if (this.$.sizes) {
                 return this.$.sizes.each(function (size) {
