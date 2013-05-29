@@ -11,7 +11,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
         },
 
         defaults: {
-            availableApperances: List,
+            availableAppearances: List,
             outOfStock: false
         },
 
@@ -212,10 +212,10 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
         _commitStockStates: function (stockStates) {
             if (stockStates) {
                 var self = this;
-                this.$.availableApperances.clear();
+                this.$.availableAppearances.clear();
                 this.$.appearances.each(function (appearance) {
                     if (self.getAvailableSizesForAppearance(appearance).size() > 0) {
-                        self.$.availableApperances.add(appearance);
+                        self.$.availableAppearances.add(appearance);
                     }
                 });
                 if(this.$.availableApperances.isEmpty()){
