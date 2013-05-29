@@ -206,21 +206,39 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
         }.onChange('sizes'),
 
         getFirstAvailableAppearance: function () {
-            return this.$.availableAppearances.at(0);
+            var appearances = this.getAvailableAppearances();
+            if(appearances){
+                return appearances.at(0);
+            }
+            return null;
+        }.onChange("stockStates"),
+
+        isOutOfStock: function () {
+            var availableAppearances = this.getAvailableAppearances();
+            return availableAppearances && availableAppearances.size() > 0;
+        },
+
+        getAvailableAppearances: function () {
+            if (this._cachedAvailableAppearances) {
+                return this._cachedAvailableAppearances;
+            }
+            if (this.$.stockStates) {
+                this._cachedAvailableAppearances = new List();
+                var self = this;
+                this.$.appearances.each(function (appearance) {
+                    if (self.getAvailableSizesForAppearance(appearance).size() > 0) {
+                        self._cachedAvailableAppearances.add(appearance);
+                    }
+                });
+                return this._cachedAvailableAppearances;
+            }
+
+            return null;
         }.onChange("stockStates"),
 
         _commitStockStates: function (stockStates) {
             if (stockStates) {
-                var self = this;
-                this.$.availableAppearances.clear();
-                this.$.appearances.each(function (appearance) {
-                    if (self.getAvailableSizesForAppearance(appearance).size() > 0) {
-                        self.$.availableAppearances.add(appearance);
-                    }
-                });
-                if(this.$.availableAppearances.isEmpty()){
-                    this.set('outOfStock', true);
-                }
+                this._cachedAvailableAppearances = null;
             }
         }
     })
