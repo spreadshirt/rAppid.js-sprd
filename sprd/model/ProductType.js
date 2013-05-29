@@ -206,7 +206,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
         }.onChange('sizes'),
 
         getFirstAvailableAppearance: function () {
-            return this.$.availableApperances.at(0);
+            return this.$.availableAppearances.at(0);
         }.onChange("stockStates"),
 
         _commitStockStates: function (stockStates) {
@@ -218,7 +218,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
                         self.$.availableAppearances.add(appearance);
                     }
                 });
-                if(this.$.availableApperances.isEmpty()){
+                if(this.$.availableAppearances.isEmpty()){
                     this.set('outOfStock', true);
                 }
             }
