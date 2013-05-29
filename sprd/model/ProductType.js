@@ -10,6 +10,11 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             stockStates: StockStates
         },
 
+        defaults: {
+            availableApperances: List,
+            outOfStock: false
+        },
+
         getViewById: function (id) {
             if (this.$.views) {
                 for (var i = 0; i < this.$.views.$items.length; i++) {
@@ -39,7 +44,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             return false;
         },
 
-        containsSize: function(size) {
+        containsSize: function (size) {
 
             if (this.$.sizes) {
                 return this.$.sizes.includes(size);
@@ -77,8 +82,8 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             return null;
         },
 
-        getDefaultViewId: function(){
-            if(this.$.defaultValues){
+        getDefaultViewId: function () {
+            if (this.$.defaultValues) {
                 return this.$.defaultValues.defaultView.id;
             }
             return null;
@@ -198,6 +203,25 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
                 return this.$.sizes.at(0).$.measures;
             }
             return [];
-        }.onChange('sizes')
+        }.onChange('sizes'),
+
+        getFirstAvailableAppearance: function () {
+            return this.$.availableApperances.at(0);
+        }.onChange("stockStates"),
+
+        _commitStockStates: function (stockStates) {
+            if (stockStates) {
+                var self = this;
+                this.$.availableApperances.clear();
+                this.$.appearances.each(function (appearance) {
+                    if (self.getAvailableSizesForAppearance(appearance).size() > 0) {
+                        self.$.availableApperances.add(appearance);
+                    }
+                });
+                if(this.$.availableApperances.isEmpty()){
+                    this.set('outOfStock', true);
+                }
+            }
+        }
     })
 });
