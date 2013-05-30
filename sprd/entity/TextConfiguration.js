@@ -391,6 +391,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             getPossiblePrintTypes: function (appearance) {
                 var ret = [],
+                    tmp,
                     printArea = this.$.printArea,
                     textFlow = this.$.textFlow,
                     selection = this.$.selection;
@@ -402,7 +403,12 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     if (leaf) {
                         do {
                             if (leaf.$.style && leaf.$.style.$.font) {
-                                ret = ret.concat(ProductUtil.getPossiblePrintTypesForTextOnPrintArea(leaf.$.style.$.font.getFontFamily(), printArea, appearance.$.id));
+                                tmp = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(leaf.$.style.$.font.getFontFamily(), printArea, appearance.$.id);
+                                _.each(tmp, function (element) {
+                                    if (ret.indexOf(element) === -1) {
+                                        ret.push(element);
+                                    }
+                                });
                             }
                             leaf = leaf.getNextLeaf();
                         } while (leaf !== null && leaf !== lastLeaf);
