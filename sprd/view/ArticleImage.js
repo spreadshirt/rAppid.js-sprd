@@ -1,6 +1,6 @@
 define(["sprd/view/ProductImage"], function (ProductImage) {
 
-    return ProductImage.inherit("sprd.view.ProductImage", {
+    return ProductImage.inherit("sprd.view.ArticleImage", {
 
         _commitChangedAttributes: function(attributes){
             this.callBase();

@@ -1,0 +1,59 @@
+{
+    "methods": [
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "message"
+                },
+                {
+                    "name": "statusCode"
+                },
+                {
+                    "name": "baseError"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "js/core/Error.js",
+            "lineNumbers": [
+                7,
+                13
+            ],
+            "definedBy": "js.core.Error",
+            "name": "ctor",
+            "visibility": "public"
+        }
+    ],
+    "staticMethods": [
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "err"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/error/ProductCreationError.js",
+            "lineNumbers": [
+                6,
+                25
+            ],
+            "name": "createFromResponse",
+            "visibility": "public"
+        }
+    ],
+    "defaults": {},
+    "properties": {},
+    "fqClassName": "sprd.error.ProductCreationError",
+    "inherit": "js.core.Error",
+    "dependencies": [
+        "js.core.Error"
+    ],
+    "type": "js",
+    "file": "sprd/error/ProductCreationError.js",
+    "package": "sprd.error",
+    "inheritancePath": [
+        "js.core.Error",
+        "Error"
+    ]
+}

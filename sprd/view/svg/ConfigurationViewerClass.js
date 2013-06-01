@@ -56,6 +56,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _handleWidth: 15,
                 _handleOffset: 8,
                 "_handle-Offset": -8,
+                _handleIconScale: 1,
 
                 _mode: null,
                 _rotationRadius: null
@@ -65,7 +66,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 i18n: I18n
             },
 
-            $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer"],
+            $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer", "clipPath"],
 
             ctor: function () {
 
@@ -81,6 +82,26 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (validateConfigurationOnTransform) {
                     this.bind("_offset", "change", this._offsetChanged, this);
                 }
+
+                this.bind('productViewer', 'change:width', this._productViewerSizeChanged, this);
+            },
+
+            _initializationComplete: function () {
+
+                var clipPath = this.$.clipPath;
+                var transformations = clipPath.$.transformations;
+
+                transformations.unshift(transformations.removeAt(1));
+
+                this.callBase();
+            },
+
+            id: function () {
+                return "c" + this.$cid;
+            },
+
+            invert: function (value) {
+                return value * -1;
             },
 
             _initializeCapabilities: function (window) {
@@ -95,15 +116,16 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 if (hasTouch) {
                     this.set({
-                        _handleWidth: 20,
-                        _handleOffset: 10,
-                        "_handle-Offset": -10
+                        _handleWidth: 28,
+                        _handleOffset: 14,
+                        "_handle-Offset": -14,
+                        _handleIconScale: 1.6
                     });
                 }
             },
 
-            _renderFocused: function(focused){
-                if(focused){
+            _renderFocused: function (focused) {
+                if (focused) {
                     this.addClass('focused');
                 } else {
                     this.removeClass('focused');
@@ -129,6 +151,20 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         productViewer: this.$.productViewer,
                         configurationViewer: this
                     });
+
+                    var softBoundary = this.get("_viewMap.printArea.boundary.soft.content.svg.path.d");
+
+                    if (softBoundary) {
+                        softBoundary = this.createComponent(SvgElement, {
+                            tagName: "path",
+                            d: softBoundary
+                        });
+
+                        this.$.clipPath.addChild(softBoundary);
+
+                    } else {
+                        this.$.clipPath.set("visible", false);
+                    }
 
                     if (assetContainer) {
                         assetContainer.addChild(this.$asset);
@@ -171,8 +207,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         self._down(e, self._isGesture(e) ? GESTURE : ROTATE);
                     });
 
-                    moveHandle && moveHandle.bindDomEvent(this.$downEvent, function(e){
-                         self._down(e, self._isGesture(e) ? GESTURE : MOVE);
+                    moveHandle && moveHandle.bindDomEvent(this.$downEvent, function (e) {
+                        self._down(e, self._isGesture(e) ? GESTURE : MOVE);
                     });
 
 
@@ -202,22 +238,27 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return this.$hasTouch && e.touches.length > 1;
             },
 
-            unbindDomEvent: function (type, cb) {
-                this.callBase();
+            _productViewerSizeChanged: function(){
+                this.set('_globalToLocalFactor', this.$.productViewer.globalToLocalFactor());
             },
 
-            _offsetChanged: function() {
+            _offsetChanged: function () {
+
+
                 var configuration = this.$.configuration;
                 if (configuration) {
-                    configuration._setError(configuration._validateTransform({
-                        offset: this.$._offset,
-                        scale: this.$._scale,
-                        rotation: this.$._rotation
-                    }));
+
+                    this._debounceFunctionCall(function () {
+                        configuration._setError(configuration._validateTransform({
+                            offset: this.$._offset,
+                            scale: this.$._scale,
+                            rotation: this.$._rotation
+                        }));
+                    }, "offsetChanged");
                 }
             },
 
-            _commitChangedAttributes: function($) {
+            _commitChangedAttributes: function ($) {
                 this.callBase();
 
                 var configuration = this.$.configuration;
@@ -388,20 +429,23 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return;
                 }
 
-                var productViewer = this.$.productViewer,
-                    x = this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
+                var x = this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
                     y = this.$hasTouch ? e.changedTouches[0].pageY : e.pageY,
                     factor = this.globalToLocalFactor(),
                     deltaX = (this.$downPoint.x - x) ,
                     deltaY = (this.$downPoint.y - y);
 
-                var scaleFactor;
+                var scaleFactor,
+                    userInteractionOptions = {
+                        userInteraction: true
+                    };
 
                 if (mode === MOVE) {
                     this.$._offset.set({
                         x: configuration.$.offset.$.x - deltaX * factor.x,
                         y: configuration.$.offset.$.y - deltaY * factor.y
-                    });
+                    }, userInteractionOptions);
+
                 } else if (mode === SCALE) {
 
                     var downVector = new Vector([x, y]);
@@ -422,20 +466,17 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var configurationWidth = configuration.width();
                     var configurationHeight = configuration.height();
 
-                    this.set('_scale', scale);
+                    this.set('_scale', scale, userInteractionOptions);
 
                     this.$._offset.set({
                         x: offsetX + (configurationWidth - newConfigurationWidth) / 2,
                         y: offsetY + (configurationHeight - newConfigurationHeight) / 2
-                    });
-
+                    }, userInteractionOptions);
 
                     self.set({
                         _configurationWidth: newConfigurationWidth,
                         _configurationHeight: newConfigurationHeight
-                    });
-
-
+                    }, userInteractionOptions);
 
                 } else if (mode === ROTATE) {
                     var startVector = this.$startRotateVector;
@@ -467,7 +508,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     }
 
-                    this.set("_rotation", rotateAngle);
+                    this.set("_rotation", rotateAngle, userInteractionOptions);
 
                 } else if (mode === GESTURE) {
 
@@ -524,7 +565,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var configuration = this.$.configuration;
                 if (configuration) {
                     if (mode === MOVE) {
-                        if(configuration.$.offset && configuration.$.offset !== this.$._offset){
+                        if (configuration.$.offset && configuration.$.offset !== this.$._offset) {
                             configuration.set('offset', this.$._offset);
                         }
                     } else if (mode === SCALE) {
@@ -566,11 +607,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _keyPress: function(e){
+            _keyPress: function (e) {
                 this.$asset.handleKeyPress && this.$asset.handleKeyPress(e);
             },
 
-            addChar: function(c) {
+            addChar: function (c) {
                 this.$asset.addChar && this.$asset.addChar(c);
             },
 
@@ -620,11 +661,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 };
             },
 
-            pixelToViewBox: function(pixel) {
+            pixelToViewBox: function (pixel) {
                 return pixel * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
-            scaleIconToViewBox: function() {
+            scaleIconToViewBox: function () {
                 return 0.1 * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
@@ -667,13 +708,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return 0;
             }.onChange("_scale"),
 
-            errorClass: function() {
+            errorClass: function () {
                 return this.$._configurationValid ? "" : "error";
             }.onChange("_configurationValid"),
 
-            isFocused: function(){
+            isFocused: function () {
                 return this.isSelectedConfiguration() && this.get('productViewer.focused');
-            }.on(["productViewer", "change:selectedConfiguration"],['productViewer', 'change:focused']),
+            }.on(["productViewer", "change:selectedConfiguration"], ['productViewer', 'change:focused']),
 
             isSelectedConfiguration: function () {
                 return this.$.configuration !== null &&
@@ -703,15 +744,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return this.isSelectedConfiguration() && this.get("configuration.isRemovable()");
             }.onChange("selected"),
 
-            isRotating: function() {
+            isRotating: function () {
                 return this.$._mode === ROTATE;
             }.onChange("_mode"),
 
-            hasError: function() {
+            hasError: function () {
                 return !this.$.configuration.isValid() && this.get('productViewer.editable') === true;
             }.on(["configuration", "isValidChanged"]),
 
-            errorDescription: function() {
+            errorDescription: function () {
 
                 var error = null,
                     configuration = this.$.configuration;

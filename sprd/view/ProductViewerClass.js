@@ -19,9 +19,12 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
             bus: Bus
         },
 
+        events: ['on:configurationSelect'],
+
         ctor: function () {
             this.callBase();
             this.bind('productViewerSvg', 'add:configurationViewer', this._onConfigurationViewerAdded, this);
+            this.bind('product.configurations', 'reset', this._onConfigurationsReset, this);
             this.bind('selectedConfiguration', 'change:scale', this._positionTextArea, this);
             this.bind('selectedConfiguration', 'change:offset', this._positionTextArea, this);
         },
@@ -101,23 +104,25 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
             }
         },
 
+        _onConfigurationsReset: function(){
+            this.set('selectedConfiguration', null);
+        },
+
         _onConfigurationViewerAdded: function (e) {
             var viewer = e.$;
-            if (viewer.$.configuration === this.$.selectedConfiguration) {
-                this.set('selectedConfigurationViewer', viewer);
+            if (viewer){
+                if(viewer.$.configuration === this.$.selectedConfiguration) {
+                    this.set('selectedConfigurationViewer', viewer);
+                }
+                this.trigger('add:configurationViewer', viewer);
             }
-            this.trigger('add:configurationViewer', viewer);
-
         },
 
         _clickHandler: function (e) {
-            if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent.target !== this.$.textArea.$el) {
+            if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent && e.domEvent.target !== this.$.textArea.$el) {
                 this.set('selectedConfiguration', null);
             }
             this.set('focused', true);
-
-            e.stopPropagation();
-
         },
 
         _commitChangedAttributes: function ($) {
@@ -130,7 +135,7 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
                 } else {
                     viewer = this.getViewerForConfiguration(configuration);
                 }
-
+                this.trigger('on:configurationSelect', configuration);
                 this.set('selectedConfigurationViewer', viewer);
 
             }

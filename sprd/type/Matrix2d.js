@@ -15,21 +15,21 @@ define(["js/core/Base"], function (Base) {
                 0, 0, 1]);
         },
 
-        scale: function(x, y) {
+        scale: function (x, y) {
             return this.multiply([
                 x, 0, 0,
                 0, y, 0,
                 0, 0, 1]);
         },
 
-        rotate: function(rad) {
+        rotate: function (rad) {
             return this.multiply([
                 Math.cos(rad), -Math.sin(rad), 0,
                 Math.sin(rad), Math.cos(rad), 0,
                 0, 0, 1]);
         },
 
-        rotateDeg: function(deg) {
+        rotateDeg: function (deg) {
             return this.rotate(Math.PI * deg / 180);
         },
 
@@ -37,13 +37,13 @@ define(["js/core/Base"], function (Base) {
             return Matrix2d.multiply(this, matrix);
         },
 
-        transformPoint: function(point) {
+        transformPoint: function (point) {
 
             var args = Array.prototype.slice.call(arguments);
             if (args.length > 1) {
                 point = [args[0], args[1], args[2] || 1];
             } else if (point instanceof Array) {
-                point = [point[0], point[1], point[2] || 1]
+                point = [point[0], point[1], point[2] || 1];
             } else if (point instanceof Object) {
                 point = [point.x, point.y, 1];
             } else {
@@ -68,7 +68,7 @@ define(["js/core/Base"], function (Base) {
         }
     }, {
 
-        getComponents: function(matrix) {
+        getComponents: function (matrix) {
             return matrix instanceof Matrix2d ? matrix.components : matrix;
         },
 
@@ -100,6 +100,5 @@ define(["js/core/Base"], function (Base) {
         }
     });
 
-
-    return Matrix2d
+    return Matrix2d;
 });

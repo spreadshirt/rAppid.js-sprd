@@ -14,12 +14,14 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement"], function (SprdMod
             price: null
         },
 
-        _commitElement: function(){
-            this.set('price', this.get('element.item.price'), {silent: true});
+        increaseQuantity: function(quantity) {
+            quantity = quantity || 1;
+            this.set('quantity', this.$.quantity + quantity);
         },
 
-        increaseQuantity: function(quantity) {
-            this.set('quantity', quantity + this.$.quantity);
+        decreaseQuantity: function(quantity){
+            quantity = quantity || 1;
+            this.set('quantity', this.$.quantity - quantity);
         },
 
         _updatePrices: function(){
@@ -28,11 +30,11 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement"], function (SprdMod
         },
 
         vatIncluded: function(){
-            return this.get('price.vatIncluded') || 0;
+            return this.get('element.item.price().vatIncluded') || 0;
         },
 
         vatExcluded: function(){
-            return this.get('price.vatExcluded') || 0;
+            return this.get('element.item.price().vatExcluded') || 0;
         },
 
         totalVatIncluded: function(){

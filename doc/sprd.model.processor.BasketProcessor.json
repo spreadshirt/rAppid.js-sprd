@@ -1,0 +1,13 @@
+{
+    "methods": [],
+    "staticMethods": [],
+    "defaults": {},
+    "properties": {},
+    "fqClassName": "sprd.model.processor.BasketProcessor",
+    "dependencies": [
+        "js.data.DataSource"
+    ],
+    "type": "js",
+    "file": "sprd/model/processor/BasketProcessor.js",
+    "package": "sprd.model.processor"
+}

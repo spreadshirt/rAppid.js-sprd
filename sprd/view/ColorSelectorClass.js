@@ -12,9 +12,17 @@ define(['js/ui/SelectionView'], function (SelectionView) {
             items: "{productType.appearances}"
         },
 
+        events: ["on:appearanceSelect"],
+
         initialize: function () {
             this.bind('change:productType', this._onProductTypeChange, this);
             this.callBase();
+        },
+
+        _handleAppearanceSelect: function(e){
+            var appearance = e.target.find("appearance");
+            this.set('selectedItem', appearance);
+            this.trigger("on:appearanceSelect", appearance);
         },
 
         _onProductTypeChange: function () {

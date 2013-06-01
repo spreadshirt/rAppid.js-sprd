@@ -4,9 +4,7 @@
                        xmlns:ui="js.ui" xmlns:view="sprd.view"
 
                        ondragenter="dragEnter" ondragexit="dragExit" ondrop="dropImage" ondragover="dragOver"
-                       componentClass="image-upload"
-
-                        notice="Drop your files here.">
+                       componentClass="image-upload">
 
     <div class="upload-notice" visible="{displayNotice()}">{notice}</div>
 
@@ -14,9 +12,9 @@
         <ui:ListView tagName="ul" items="{items}">
             <js:Template name="item">
                 <div class="image-container">
-                    <img src="${item.url}" alt="${item.name}"/>
+                    <img src="{item.image.url}" alt="{item.image.name}"/>
                 </div>
-                <input type="text" value="{{item.name}}"/>
+                <input type="text" value="{{item.image.name}}"/>
                 <ui:ProgressBar value="{item.uploadProgress}"/>
             </js:Template>
         </ui:ListView>

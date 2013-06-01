@@ -9,9 +9,34 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
         },
 
         defaults: {
+            /***
+             * the appearance of the basket item
+             * @type sprd.entity.Appearance
+             */
             appearance: null,
+            /***
+             * the size of the basket item
+             * @type sprd.entity.ProductTypeSize
+             */
             size: null,
-            item: null
+
+            /***
+             * the basket item
+             * @type {sprd.model.Product|sprd.model.Article}
+             */
+            item: null,
+
+            /***
+             * continueShopping link is used in checkout as link for continue shopping button.
+             * @type String
+             */
+            continueShoppingLink: null,
+
+            /***
+             * edit link is the link displayed in checkout for editing the basket item
+             * @type String
+             */
+            editLink: null
         },
 
         isEqual: function (concreteElement) {
@@ -32,6 +57,20 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
         getArticle: function () {
             if (this.$.item instanceof Article) {
                 return this.$.item;
+            }
+            return null;
+        },
+
+        getSize: function(){
+            if(this.$.size){
+                return this.getProduct().$.productType.getSizeById(this.$.size.$.id);
+            }
+            return null;
+        },
+
+        getAppearance: function(){
+            if(this.$.appearance){
+                return this.getProduct().$.productType.getAppearanceById(this.$.appearance.$.id);
             }
             return null;
         },

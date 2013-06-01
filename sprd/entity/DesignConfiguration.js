@@ -140,6 +140,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 ret.minBound = !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale"));
+                ret.maxBound= printType.isShrinkable() && Math.max(Math.abs(scale.x), Math.abs(scale.y)) > 1;
 
                 return ret;
 

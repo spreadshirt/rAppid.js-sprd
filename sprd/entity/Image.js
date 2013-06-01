@@ -1,6 +1,6 @@
 define(['js/data/Entity'], function (Entity) {
 
-    var Image = Entity.inherit('app.entity.Image', {
+    var Image = Entity.inherit('sprd.entity.Image', {
         defaults: {
             name: null,
             size: null,
@@ -13,6 +13,8 @@ define(['js/data/Entity'], function (Entity) {
         },
 
         getDimension: function(callback) {
+            var self = this;
+
             Image.getDimension(this.src, function (err, dimension) {
                 if (!err && dimension) {
                     // set width and height

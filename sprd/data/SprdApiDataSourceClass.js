@@ -1,7 +1,7 @@
 define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/model/processor/DefaultProcessor", "sprd/model/processor/BasketProcessor", "sprd/model/processor/BasketItemProcessor", "sprd/data/SprdApiQueryComposer"],
     function (SprdDataSource, RestDataSource, _, SprdModel, DefaultProcessor, BasketProcessor, BasketItemProcessor, SprdApiQueryComposer) {
 
-        var SprdApiDataSource = SprdDataSource.inherit('sprd.data.SprdApiDataSource', {
+        var SprdApiDataSource = SprdDataSource.inherit('sprd.data.SprdApiDataSourceClass', {
 
             defaults: {
                 locale: "en_EU",

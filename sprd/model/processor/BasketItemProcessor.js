@@ -1,44 +1,55 @@
-define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Article','sprd/model/Product'], function(DefaultProcessor, Shop, Article, Product) {
-    var TYPE_PRODUCT = "sprd:product";
-    var TYPE_ARTICLE = "sprd:article";
+define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/Article', 'sprd/model/Product'], function (DefaultProcessor, Shop, Article, Product) {
+
+    var TYPE_PRODUCT = "sprd:product",
+        TYPE_ARTICLE = "sprd:article";
 
     return DefaultProcessor.inherit("sprd.model.processor.BasketItemProcessor", {
-        parse: function(model, payload, action, options){
+
+        parse: function (model, payload, action, options) {
             var element = payload.element;
 
             var properties = element.properties, prop, elementPayload = {};
             for (var i = 0; i < properties.length; i++) {
                 prop = properties[i];
                 if (prop.key === "size" || prop.key === "appearance") {
-                    elementPayload[prop.key] = {
-                        id: prop.value
+                    if (!elementPayload[prop.key]) {
+                        elementPayload[prop.key] = {};
                     }
+                    elementPayload[prop.key]["id"] = prop.value
                 }
+                if (prop.key === "sizeLabel") {
+                    if (!elementPayload["size"]) {
+                        elementPayload["size"] = {};
+                    }
+                    elementPayload["size"]["name"] = prop.value;
+                }
+                if (prop.key === "appearanceLabel") {
+                    if (!elementPayload["appearance"]) {
+                        elementPayload["appearance"] = {};
+                    }
+                    elementPayload["appearance"]["name"] = prop.value;
+                }
+
             }
 
             var shop = this.$dataSource.createEntity(Shop, payload.shop.id);
 
             if (element.type === TYPE_ARTICLE) {
-                elementPayload.item = this.$dataSource.getContextForChild(Article,shop).createEntity(Article, element.id);
-                elementPayload.item.fetch({
-                    fetchSubModels: ['product/productType']
-                });
+                elementPayload.item = this.$dataSource.getContextForChild(Article, shop).createEntity(Article, element.id);
             } else if (element.type === TYPE_PRODUCT) {
                 elementPayload.item = this.$dataSource.getContextForChild(Product, shop).createEntity(Product, element.id);
-                elementPayload.item.fetch({
-                    fetchSubModels: ['productType']
-                });
             } else {
                 throw "Element type '" + element.type + "' not supported";
             }
-            elementPayload.item.set('price',payload.price);
+            elementPayload.item.set('price', payload.price);
 
 
             payload['element'] = elementPayload;
 
             return this.callBase(model, payload, action, options);
         },
-        compose: function(model){
+
+        compose: function (model) {
             var payload = this.callBase();
 
             var element = payload.element;
@@ -48,7 +59,28 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
                 {key: "size", value: element.size.id}
             ];
 
+            var links = [];
 
+            var continueShoppingLink = model.get("element.continueShoppingLink");
+
+            if (continueShoppingLink) {
+                links.push({
+                    type: "continueShopping",
+                    href: continueShoppingLink
+                });
+            }
+
+            var editLink = model.get("element.editLink");
+            if (editLink) {
+                links.push({
+                    type: "edit",
+                    href: editLink
+                });
+            }
+
+            if (links.length > 0) {
+                elementPayload['links'] = links;
+            }
 
             elementPayload["type"] = model.$.element.getType();
             elementPayload["href"] = model.get('element.item.href');
@@ -59,7 +91,7 @@ define(['sprd/model/processor/DefaultProcessor','sprd/model/Shop','sprd/model/Ar
                 quantity: payload.quantity
             };
 
-            if(payload.origin){
+            if (payload.origin) {
                 ret['origin'] = payload.origin;
             }
 

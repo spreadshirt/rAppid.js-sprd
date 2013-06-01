@@ -1,0 +1,36 @@
+{
+    "methods": [
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "model"
+                },
+                {
+                    "name": "action"
+                },
+                {
+                    "name": "options"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/model/processor/DefaultProcessor.js",
+            "lineNumbers": [
+                4,
+                9
+            ],
+            "name": "_composeSubModel",
+            "visibility": "protected"
+        }
+    ],
+    "staticMethods": [],
+    "defaults": {},
+    "properties": {},
+    "fqClassName": "sprd.model.processor.DefaultProcessor",
+    "dependencies": [
+        "js.data.DataSource"
+    ],
+    "type": "js",
+    "file": "sprd/model/processor/DefaultProcessor.js",
+    "package": "sprd.model.processor"
+}

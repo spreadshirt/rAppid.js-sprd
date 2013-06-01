@@ -11,7 +11,7 @@ define([
     'sprd/model/Article', 'sprd/model/Country', 'sprd/model/PrintType', 'sprd/model/FontFamily', "sprd/model/Product"],
     function (SprdModel, Collection, Basket, Currency, Design, ProductType, ProductTypeDepartment, ArticleCategory, DesignCategory, Article, Country, PrintType, FontFamily, Product) {
 
-        return SprdModel.inherit("sprd.model.Shop", {
+        return SprdModel.inherit("sprd.model.AbstractShop", {
             schema: {
 
 

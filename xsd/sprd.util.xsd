@@ -1,0 +1,23 @@
+<schema targetNamespace="sprd.util"
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:ns1="js.core"
+    xmlns:ns="sprd.util">
+    <import namespace="js.core"/>
+    <element name="LocaleService" type="ns:LocaleService"/>
+    <complexType name="LocaleService">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.util.LocaleService"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="fallbackLanguage" default="en"/>
+                <attribute name="fallbackCountry" default="EU"/>
+                <attribute name="supportedLanguages"/>
+                <attribute name="supportedCountries"/>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>

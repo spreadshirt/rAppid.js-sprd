@@ -4,7 +4,7 @@ define(["underscore", "js/core/List"], function (_, List) {
 
         getAsArray: function (listOrArray) {
             if (listOrArray instanceof List) {
-                return listOrArray.$items
+                return listOrArray.$items;
             }
 
             return listOrArray;
@@ -35,7 +35,7 @@ define(["underscore", "js/core/List"], function (_, List) {
                     for (var j = 1; j < quantities.length; j++) {
                         if (!_.contains(quantities[j], item)) {
                             found = false;
-                            break
+                            break;
                         }
                     }
 

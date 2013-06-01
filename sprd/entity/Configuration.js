@@ -38,24 +38,27 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         ctor: function () {
             this.callBase();
 
-            function triggerConfigurationChanged(e) {
+            function triggerConfigurationChanged() {
                 this.trigger('configurationChanged');
             }
-
 
             this.bind('change:offset', function (e) {
                 if (e.$ && !e.$.isDeepEqual(this.$previousAttributes["offset"])) {
                     this.trigger('configurationChanged');
                 }
             }, this);
+
             this.bind('change:scale', triggerConfigurationChanged, this);
             this.bind('change:rotation', triggerConfigurationChanged, this);
             this.bind('change:printArea', triggerConfigurationChanged, this);
             this.bind('change:printColors', triggerConfigurationChanged, this);
         },
 
-        _commitChangedAttributes: function ($) {
-            this._setError(this._validateTransform($));
+        _commitChangedAttributes: function ($, options) {
+
+            var delay = options && options.userInteraction ? 300 : 0;
+            this._debounceFunctionCall(this._validateTransform, "validateTransform", delay, this, [$]);
+
             this.callBase();
         },
 
@@ -209,13 +212,18 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         price: function () {
             var printTypePrice = this.get('printType.price');
-            if(printTypePrice){
+            if (printTypePrice) {
                 return printTypePrice.clone();
             }
             return new Price();
         },
 
-        getSizeForPrintType: function(printType) {
+        /***
+         *
+         * @param {sprd.model.PrintType} printType
+         * @return {sprd.entity.Size}
+         */
+        getSizeForPrintType: function (printType) {
             return Size.empty;
         },
 
@@ -246,7 +254,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return 0;
         },
 
-        isReadyForCompose: function(){
+        isReadyForCompose: function () {
             return true;
         }
     });

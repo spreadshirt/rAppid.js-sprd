@@ -2,15 +2,22 @@ rect {
     fill: none;
 }
 
-.print-area-border {
+.product-viewer.active .print-area-border,
+.product-viewer.active .soft-boundary-border {
     stroke-width: 1;
     stroke: white;
     vector-effect: non-scaling-stroke;
     shape-rendering: crispEdges;
 }
 
-.bright .print-area-border {
+.product-viewer.active.bright .print-area-border,
+.product-viewer.active.bright .soft-boundary-border {
     stroke: black;
+}
+
+.soft-boundary-border {
+    stroke-dasharray: 5, 5;
+    fill: none;
 }
 
 .configuration-handle {

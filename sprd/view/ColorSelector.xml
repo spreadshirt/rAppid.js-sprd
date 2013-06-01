@@ -1,6 +1,6 @@
 <view:ColorSelectorClass xmlns:js="js.core" xmlns="http://www.w3.org/1999/xhtml" xmlns:view="sprd.view">
     <js:Template name="item">
-        <li class="appearance-{appearance.id}">
+        <li class="appearance-{appearance.id}" onpointer="_handleAppearanceSelect">
             <view:AppearanceImage appearance="{appearance}" width="{colorWidth}"/>
         </li>
     </js:Template>

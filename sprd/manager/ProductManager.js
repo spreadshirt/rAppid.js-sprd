@@ -11,13 +11,17 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             /***
              * set the product type and converts all configurations
              *
+             * @param {sprd.model.Product} product
              * @param {sprd.model.ProductType} productType
+             * @param {sprd.entity.Appearance} appearance
              * @param callback
              */
-            setProductType: function (product, productType, callback) {
-
+            setProductType: function (product, productType, appearance, callback) {
+                if(appearance instanceof Function){
+                    callback = appearance;
+                    appearance = null;
+                }
                 var self = this,
-                    appearance,
                     view;
 
                 flow()
@@ -25,10 +29,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         productType.fetch(null, cb);
                     })
                     .seq(function () {
-                        if (product.$.appearance) {
-                            appearance = productType.getClosestAppearance(product.$.appearance.getMainColor());
-                        } else {
-                            appearance = productType.getDefaultAppearance();
+                        if(!appearance){
+                            if (product.$.appearance) {
+                                appearance = productType.getClosestAppearance(product.$.appearance.getMainColor());
+                            } else {
+                                appearance = productType.getDefaultAppearance();
+                            }
                         }
                     })
                     .seq(function () {
@@ -45,135 +51,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     })
                     .seq(function () {
-                        // TODO: convert all configurations: size, position, print type
-
-                        var configurations = product.$.configurations.$items,
-                            removeConfigurations = [];
-
-                        for (var i = 0; i < configurations.length; i++) {
-                            var configuration = configurations[i],
-                                currentPrintArea = configuration.$.printArea,
-                                currentView = currentPrintArea.getDefaultView(),
-                                targetView = null,
-                                targetPrintArea = null;
-
-                            if (currentView) {
-                                targetView = productType.getViewByPerspective(currentView.$.perspective);
-                            }
-
-                            if (targetView) {
-                                targetPrintArea = targetView.getDefaultPrintArea();
-                            }
-
-                            if (targetPrintArea && configuration.isAllowedOnPrintArea(targetPrintArea)) {
-                                configuration.set('printArea', targetPrintArea);
-
-                                var currentPrintAreaWidth = currentPrintArea.get("boundary.size.width");
-                                var currentPrintAreaHeight = currentPrintArea.get("boundary.size.height");
-                                var targetPrintAreaWidth = targetPrintArea.get("boundary.size.width");
-                                var targetPrintAreaHeight = targetPrintArea.get("boundary.size.height");
-
-                                var preferredPrintType = null;
-                                var preferredScale;
-                                var preferredOffset;
-
-                                var currentConfigurationWidth = configuration.width();
-                                var currentConfigurationHeight = configuration.height();
-
-                                // find new print type
-                                var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(targetPrintArea, appearance.$.id);
-                                var printType = configuration.$.printType;
-
-                                var center = {
-                                    x: configuration.$.offset.$.x + currentConfigurationWidth / 2,
-                                    y: configuration.$.offset.$.y + currentConfigurationHeight / 2
-                                };
-
-                                if (printType && !_.contains(possiblePrintTypes, printType)) {
-                                    // print type not possible any more
-                                    printType = null;
-                                }
-
-                                if (printType) {
-                                    var index = _.indexOf(possiblePrintTypes, printType);
-                                    if (index >= 0) {
-                                        // remove print type from original position
-                                        possiblePrintTypes.splice(index, 1);
-                                    }
-
-                                    // and add it to first position
-                                    possiblePrintTypes.unshift(printType);
-                                }
-
-                                var optimalScale = Math.min(
-                                    targetPrintAreaWidth / currentPrintAreaWidth,
-                                    targetPrintAreaHeight / currentPrintAreaHeight
-                                ) * Math.abs(configuration.$.scale.x);
-
-                                var allowScale = configuration.allowScale();
-
-                                for (var j = 0; j < possiblePrintTypes.length; j++) {
-                                    printType = possiblePrintTypes[j];
-
-                                    var factor = optimalScale;
-                                    var minimumScale = optimalScale;
-
-                                    if (printType.isEnlargeable()) {
-                                        minimumScale = configuration.minimumScale();
-                                    }
-
-                                    var configurationPrintTypeSize = configuration.getSizeForPrintType(printType);
-
-                                    var maximumScale = Math.min(
-                                        printType.get("size.width") / configurationPrintTypeSize.$.width,
-                                        printType.get("size.height") / configurationPrintTypeSize.$.height);
-
-                                    if (!allowScale && (maximumScale < 1 || minimumScale > 1)) {
-                                        continue;
-                                    }
-                                    if (minimumScale > maximumScale) {
-                                        continue;
-                                    }
-
-                                    factor = Math.max(factor, minimumScale);
-                                    factor = Math.min(factor, maximumScale);
-
-                                    preferredScale = {
-                                        x: factor,
-                                        y: factor
-                                    };
-
-                                    preferredPrintType = printType;
-                                    break;
-                                }
-
-                                if (preferredPrintType) {
-
-                                    configuration.set({
-                                        printType: preferredPrintType,
-                                        scale: preferredScale
-                                    });
-
-                                    preferredOffset = {
-                                        x: targetPrintAreaWidth * center.x / currentPrintAreaWidth - configuration.width() / 2,
-                                        y: targetPrintAreaHeight * center.y / currentPrintAreaHeight - configuration.height() / 2
-                                    };
-
-                                    configuration.$.offset.set(preferredOffset);
-
-                                } else {
-                                    // remove configuration
-                                    removeConfigurations.push(configuration);
-                                }
-
-                            } else {
-                                // no print area found, remove configuration
-                                removeConfigurations.push(configuration);
-                            }
-                        }
-
-                        product.$.configurations.remove(removeConfigurations);
-
+                        self.convertConfigurations(product, productType, appearance);
                     })
                     .seq(function () {
                         // first set product type
@@ -188,6 +66,153 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
+            setAppearance: function(product, appearance){
+                this.convertConfigurations(product, product.$.productType, appearance);
+                product.set({
+                    appearance: appearance
+                });
+            },
+
+            /***
+             * Converts the configurations of a product with the given productType and appearance
+             * @param {sprd.model.Product} product
+             * @param {sprd.model.ProductType} productType
+             * @param {sprd.entity.Appearance} appearance
+             */
+            convertConfigurations: function(product, productType, appearance){
+                var configurations = product.$.configurations.$items,
+                    removeConfigurations = [];
+
+                for (var i = 0; i < configurations.length; i++) {
+                    var configuration = configurations[i],
+                        currentPrintArea = configuration.$.printArea,
+                        currentView = currentPrintArea.getDefaultView(),
+                        targetView = null,
+                        targetPrintArea = null;
+
+                    if (currentView) {
+                        targetView = productType.getViewByPerspective(currentView.$.perspective);
+                    }
+
+                    if (targetView) {
+                        targetPrintArea = targetView.getDefaultPrintArea();
+                    }
+
+                    if (targetPrintArea && configuration.isAllowedOnPrintArea(targetPrintArea)) {
+                        configuration.set('printArea', targetPrintArea);
+
+                        var currentPrintAreaWidth = currentPrintArea.get("boundary.size.width");
+                        var currentPrintAreaHeight = currentPrintArea.get("boundary.size.height");
+                        var targetPrintAreaWidth = targetPrintArea.get("boundary.size.width");
+                        var targetPrintAreaHeight = targetPrintArea.get("boundary.size.height");
+
+                        var preferredPrintType = null;
+                        var preferredScale;
+                        var preferredOffset;
+
+                        var currentConfigurationWidth = configuration.width();
+                        var currentConfigurationHeight = configuration.height();
+
+                        // find new print type
+                        var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(targetPrintArea, appearance.$.id);
+                        var printType = configuration.$.printType;
+
+                        var center = {
+                            x: configuration.$.offset.$.x + currentConfigurationWidth / 2,
+                            y: configuration.$.offset.$.y + currentConfigurationHeight / 2
+                        };
+
+                        if (printType && !_.contains(possiblePrintTypes, printType)) {
+                            // print type not possible any more
+                            printType = null;
+                        }
+
+                        if (printType) {
+                            var index = _.indexOf(possiblePrintTypes, printType);
+                            if (index >= 0) {
+                                // remove print type from original position
+                                possiblePrintTypes.splice(index, 1);
+                            }
+
+                            // and add it to first position
+                            possiblePrintTypes.unshift(printType);
+                        }
+
+                        var optimalScale = Math.min(
+                            targetPrintAreaWidth / currentPrintAreaWidth,
+                            targetPrintAreaHeight / currentPrintAreaHeight
+                        ) * Math.abs(configuration.$.scale.x);
+
+                        var allowScale = configuration.allowScale();
+
+                        for (var j = 0; j < possiblePrintTypes.length; j++) {
+                            printType = possiblePrintTypes[j];
+
+                            var factor = optimalScale;
+                            var minimumScale = optimalScale;
+
+                            if (printType.isEnlargeable()) {
+                                minimumScale = configuration.minimumScale();
+                            }
+
+                            var configurationPrintTypeSize = configuration.getSizeForPrintType(printType);
+
+                            var maximumScale = Math.min(
+                                printType.get("size.width") / configurationPrintTypeSize.$.width,
+                                printType.get("size.height") / configurationPrintTypeSize.$.height);
+
+                            if (!allowScale && (maximumScale < 1 || minimumScale > 1)) {
+                                continue;
+                            }
+                            if (minimumScale > maximumScale) {
+                                continue;
+                            }
+
+                            factor = Math.max(factor, minimumScale);
+                            factor = Math.min(factor, maximumScale);
+
+                            preferredScale = {
+                                x: factor,
+                                y: factor
+                            };
+
+                            preferredPrintType = printType;
+                            break;
+                        }
+
+                        if (preferredPrintType) {
+
+                            configuration.set({
+                                printType: preferredPrintType,
+                                scale: preferredScale
+                            });
+
+                            preferredOffset = {
+                                x: targetPrintAreaWidth * center.x / currentPrintAreaWidth - configuration.width() / 2,
+                                y: targetPrintAreaHeight * center.y / currentPrintAreaHeight - configuration.height() / 2
+                            };
+
+                            configuration.$.offset.set(preferredOffset);
+
+                        } else {
+                            // remove configuration
+                            removeConfigurations.push(configuration);
+                        }
+
+                    } else {
+                        // no print area found, remove configuration
+                        removeConfigurations.push(configuration);
+                    }
+                }
+
+                product.$.configurations.remove(removeConfigurations);
+            },
+            /**
+             * Adds a design to a given Product
+             * @param {sprd.model.Product} product
+             * @param {Object} params
+             * @param {Function} callback
+             */
             addDesign: function (product, params, callback) {
                 params = _.defaults({}, params, {
                     design: null,

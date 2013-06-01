@@ -1,5 +1,5 @@
-define(["sprd/data/SprdModel", "sprd/model/Product", "sprd/model/Currency", "sprd/entity/Price"],
-    function (SprdModel, Product, Currency, Price) {
+define(["sprd/data/SprdModel", "sprd/model/Product", "sprd/entity/Price"],
+    function (SprdModel, Product, Price) {
 
     var rProductIdExtractor = /^http.*products\/(\d+).*$/;
 
@@ -11,8 +11,7 @@ define(["sprd/data/SprdModel", "sprd/model/Product", "sprd/model/Currency", "spr
         },
 
         price: function() {
-            var currency = this.$context.$parent.createEntity(Currency, this.$.price.$.currency.$.id);
-            return currency.formatPrice(this.$.price);
+            return this.$.price;
         },
 
         product: function(callback) {

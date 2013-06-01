@@ -1,0 +1,39 @@
+{
+    "methods": [
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "value"
+                },
+                {
+                    "name": "key"
+                },
+                {
+                    "name": "action"
+                },
+                {
+                    "name": "options"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/model/processor/UploadDesignProcessor.js",
+            "lineNumbers": [
+                5,
+                11
+            ],
+            "name": "_getCompositionValue",
+            "visibility": "protected"
+        }
+    ],
+    "staticMethods": [],
+    "defaults": {},
+    "properties": {},
+    "fqClassName": "sprd.model.processor.UploadDesignProcessor",
+    "dependencies": [
+        "js.data.DataSource"
+    ],
+    "type": "js",
+    "file": "sprd/model/processor/UploadDesignProcessor.js",
+    "package": "sprd.model.processor"
+}

@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance","sprd/collection/StockStates", 'js/core/List', 'sprd/entity/ProductTypeSize', 'sprd/entity/PrintArea', 'js/type/Color', 'sprd/entity/Price'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List, Size, PrintArea, Color, Price) {
+define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", "sprd/entity/Appearance", "sprd/collection/StockStates", 'js/core/List', 'sprd/entity/ProductTypeSize', 'sprd/entity/PrintArea', 'js/type/Color', 'sprd/entity/Price'], function (SprdModel, ProductTypeView, Entity, Appearance, StockStates, List, Size, PrintArea, Color, Price) {
     return SprdModel.inherit("sprd.model.ProductType", {
 
         schema: {
@@ -10,11 +10,16 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             stockStates: StockStates
         },
 
-        getViewById: function(id){
-            if(this.$.views){
+        defaults: {
+            availableAppearances: List,
+            outOfStock: false
+        },
+
+        getViewById: function (id) {
+            if (this.$.views) {
                 for (var i = 0; i < this.$.views.$items.length; i++) {
                     var view = this.$.views.$items[i];
-                    if(view.$.id == id){
+                    if (view.$.id == id) {
                         return view;
                     }
                 }
@@ -22,7 +27,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             return null;
         },
 
-        containsView: function(view) {
+        containsView: function (view) {
 
             if (this.$.views) {
                 return this.$.views.includes(view);
@@ -31,7 +36,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             return false;
         },
 
-        containsAppearance: function(appearance) {
+        containsAppearance: function (appearance) {
 
             if (this.$.appearances) {
                 return this.$.appearances.includes(appearance);
@@ -39,10 +44,19 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             return false;
         },
 
-        getSizeById: function(id){
-            if(this.$.sizes){
-                return this.$.sizes.each(function(size){
-                    if(size.$.id == id){
+        containsSize: function (size) {
+
+            if (this.$.sizes) {
+                return this.$.sizes.includes(size);
+            }
+
+            return false;
+        },
+
+        getSizeById: function (id) {
+            if (this.$.sizes) {
+                return this.$.sizes.each(function (size) {
+                    if (size.$.id == id) {
                         this['return'](size);
                     }
                 });
@@ -63,13 +77,20 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
 
         getDefaultView: function () {
             if (this.$.defaultValues) {
-                return this.getViewById(this.$.defaultValues.defaultView.id);
+                return this.getViewById(this.getDefaultViewId());
             }
             return null;
         },
 
-        getPrintAreaById: function(printAreaId) {
-            if(this.$.printAreas){
+        getDefaultViewId: function () {
+            if (this.$.defaultValues) {
+                return this.$.defaultValues.defaultView.id;
+            }
+            return null;
+        },
+
+        getPrintAreaById: function (printAreaId) {
+            if (this.$.printAreas) {
                 for (var i = 0; i < this.$.printAreas.$items.length; i++) {
                     var printArea = this.$.printAreas.$items[i];
                     if (printArea.$.id == printAreaId) {
@@ -81,14 +102,19 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
         },
 
         getDefaultAppearance: function () {
+            return this.getAppearanceById(this.getDefaultAppearanceId());
+
+        },
+
+        getDefaultAppearanceId: function () {
             if (this.$.defaultValues) {
-                return this.getAppearanceById(this.$.defaultValues.defaultAppearance.id);
+                return this.$.defaultValues.defaultAppearance.id;
             }
             return null;
         },
 
-        getAppearanceById: function(id){
-            if(this.$.appearances){
+        getAppearanceById: function (id) {
+            if (this.$.appearances) {
                 var app;
                 for (var i = 0; i < this.$.appearances.$items.length; i++) {
                     app = this.$.appearances.$items[i];
@@ -104,7 +130,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
          * @param {String|Color} color
          * @return {*}
          */
-        getClosestAppearance: function(color) {
+        getClosestAppearance: function (color) {
             color = Color.parse(color);
 
             var ret = null,
@@ -112,7 +138,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
                 appearances = this.$.appearances;
 
             if (appearances) {
-                appearances.each(function(appearance) {
+                appearances.each(function (appearance) {
                     var distance = color.distanceTo(appearance.getMainColor());
                     if (minDistance === null || distance < minDistance) {
                         minDistance = distance;
@@ -125,7 +151,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
 
         },
 
-        getViewByPerspective: function(perspective){
+        getViewByPerspective: function (perspective) {
             if (this.$.views) {
                 for (var i = 0; i < this.$.views.$items.length; i++) {
                     var view = this.$.views.$items[i];
@@ -137,7 +163,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             return null;
         },
 
-        getDefaultPrintArea: function() {
+        getDefaultPrintArea: function () {
             if (this.$.printAreas) {
                 return this.$.printAreas.at(0);
             }
@@ -145,38 +171,75 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             return null;
         },
 
-        getAvailableSizesForAppearance: function(appearance){
-            if(!appearance){
+        getAvailableSizesForAppearance: function (appearance) {
+            if (!appearance) {
                 return null;
             }
             var sizes = new List();
             if (this.$.sizes && this.$.stockStates) {
                 var size;
-                for(var i = 0; i < this.$.sizes.length; i++){
+                for (var i = 0; i < this.$.sizes.length; i++) {
                     size = this.$.sizes.at(i);
-                    if(this.$.stockStates.isSizeAndAppearanceAvailable(size, appearance)){
+                    if (this.$.stockStates.isSizeAndAppearanceAvailable(size, appearance)) {
                         sizes.add(size);
                     }
                 }
-            }else{
+            } else {
                 return this.$.sizes;
             }
             return sizes;
-        }.on(['stockStates','add']),
+        }.on(['stockStates', 'add']),
 
-        isSizeAndAppearanceAvailable: function(size, appearance){
-            if(this.$.stockStates){
+        isSizeAndAppearanceAvailable: function (size, appearance) {
+            if (this.$.stockStates) {
                 return this.$.stockStates.isSizeAndAppearanceAvailable(size, appearance);
             }
             return false;
         }.on(['stockStates', 'add']),
 
 
-        getMeasures: function(){
-            if(this.$.sizes && this.$.sizes.size() > 0){
+        getMeasures: function () {
+            if (this.$.sizes && this.$.sizes.size() > 0) {
                 return this.$.sizes.at(0).$.measures;
             }
             return [];
-        }.onChange('sizes')
+        }.onChange('sizes'),
+
+        getFirstAvailableAppearance: function () {
+            var appearances = this.getAvailableAppearances();
+            if(appearances){
+                return appearances.at(0);
+            }
+            return null;
+        }.onChange("stockStates"),
+
+        isOutOfStock: function () {
+            var availableAppearances = this.getAvailableAppearances();
+            return availableAppearances && availableAppearances.size() > 0;
+        },
+
+        getAvailableAppearances: function () {
+            if (this._cachedAvailableAppearances) {
+                return this._cachedAvailableAppearances;
+            }
+            if (this.$.stockStates) {
+                this._cachedAvailableAppearances = new List();
+                var self = this;
+                this.$.appearances.each(function (appearance) {
+                    if (self.getAvailableSizesForAppearance(appearance).size() > 0) {
+                        self._cachedAvailableAppearances.add(appearance);
+                    }
+                });
+                return this._cachedAvailableAppearances;
+            }
+
+            return null;
+        }.onChange("stockStates"),
+
+        _commitStockStates: function (stockStates) {
+            if (stockStates) {
+                this._cachedAvailableAppearances = null;
+            }
+        }
     })
 });

@@ -54,15 +54,15 @@ define(['js/core/Component'], function (Component) {
             return this.determinateLanguage(this.getHost(), browserLanguage, this.$.supportedLanguages, this.$.fallbackLanguage);
         },
 
-        getCountry: function() {
+        getCountry: function () {
             return this.determinateCountry(this.getHost(), this.$.supportedCountries, this.$.fallbackCountry);
         },
 
-        getHost: function() {
+        getHost: function () {
             return this.runsInBrowser() ? this.$stage.$window.location.host : null;
         },
 
-        getLocale: function() {
+        getLocale: function () {
             return this.getLanguage() + '_' + this.getCountry();
         },
 
@@ -70,7 +70,7 @@ define(['js/core/Component'], function (Component) {
             fallbackLanguage = fallbackLanguage || 'en';
 
             if (supportedLanguages && !(supportedLanguages instanceof Array)) {
-                supportedLanguages = (supportedLanguages || "").split(";")
+                supportedLanguages = (supportedLanguages || "").split(";");
             }
 
             var language;
@@ -86,7 +86,7 @@ define(['js/core/Component'], function (Component) {
 
             }
 
-            language = language ||browserLanguage;
+            language = language || browserLanguage;
 
             for (var key in this.$languageMap) {
                 if (this.$languageMap.hasOwnProperty(key)) {
@@ -103,7 +103,7 @@ define(['js/core/Component'], function (Component) {
             fallbackCountry = fallbackCountry || 'EU';
 
             if (supportedCountries && !(supportedCountries instanceof Array)) {
-                supportedCountries = (supportedCountries || "").split(";")
+                supportedCountries = (supportedCountries || "").split(";");
             }
 
             var country;

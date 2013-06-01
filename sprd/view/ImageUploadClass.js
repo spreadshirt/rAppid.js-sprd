@@ -7,8 +7,11 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 items: List,
                 imageWidth: 100,
                 displayNotice: true,
+                _displayNotice: false,
 
-                uploadContext: null
+                uploadContext: null,
+
+                notice: "Drop your files here."
             },
 
             inject: {
@@ -21,7 +24,7 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
 
                 var self = this,
                     eventHandler = function () {
-                        self.set('displayNotice', self.$.items.size() === 0);
+                        self.set('_displayNotice', self.$.items.size() === 0);
                     };
 
                 this.$.items.bind('add', eventHandler);
@@ -37,9 +40,9 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 return false;
             },
 
-            displayNotice: function() {
-                return this.$.enabled && this.$.displayNotice;
-            }.onChange("displayNotice", "enabled"),
+            displayNotice: function () {
+                return this.$.enabled && this.$._displayNotice && this.$.displayNotice;
+            }.onChange("displayNotice", "_displayNotice", "enabled"),
 
             dragOver: function (e) {
                 e.preventDefault();
@@ -54,7 +57,7 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
             },
 
             dropImage: function (e) {
-                if(this.$.enabled){
+                if (this.$.enabled) {
                     this.removeClass('drag-over');
                     if (e && e.$) {
                         e = e.$;
@@ -77,7 +80,7 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 this._addUploadDesign(uploadDesign);
             },
 
-            uploadFile: function(file, callback) {
+            uploadFile: function (file, callback) {
 
                 var self = this,
                     reader = new FileReader();
@@ -95,7 +98,7 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 };
 
                 reader.readAsDataURL(file);
-                this.$.imageUploadService._uploadDesign(uploadDesign, function(err) {
+                this.$.imageUploadService._uploadDesign(uploadDesign, function (err) {
                     if (!err) {
                         uploadDesign.set('state', UploadDesign.State.LOADED);
                         self.trigger("uploadComplete", {

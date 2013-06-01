@@ -1,0 +1,62 @@
+{
+    "methods": [
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "type"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/data/ImageServerDataSourceClass.js",
+            "lineNumbers": [
+                49,
+                52
+            ],
+            "name": "ctor",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/data/ImageServerDataSourceClass.js",
+            "lineNumbers": [
+                60,
+                62
+            ],
+            "name": "getContentType",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "data"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/data/ImageServerDataSourceClass.js",
+            "lineNumbers": [
+                54,
+                58
+            ],
+            "name": "serialize",
+            "visibility": "public"
+        }
+    ],
+    "staticMethods": [],
+    "defaults": {},
+    "properties": {},
+    "fqClassName": "sprd.data.ImageServerDataSourceClass.FileSystemImageFormatProcessor",
+    "dependencies": [
+        "js.data.DataSource",
+        "js.data.Model",
+        "js.data.RestDataSource",
+        "sprd.data.SprdDataSource",
+        "sprd.model.processor.UploadDesignProcessor"
+    ],
+    "type": "js",
+    "file": "sprd/data/ImageServerDataSourceClass.js",
+    "package": "sprd.data"
+}
