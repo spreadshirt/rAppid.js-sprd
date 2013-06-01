@@ -75,8 +75,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                764,
-                766
+                763,
+                765
             ],
             "description": "called after attributes has set and some of the has been changed\n",
             "abstract": "",
@@ -308,8 +308,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                768,
-                777
+                767,
+                776
             ],
             "definedBy": "js.core.Bindable",
             "name": "_hasAll",
@@ -357,8 +357,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                779,
-                788
+                778,
+                787
             ],
             "definedBy": "js.core.Bindable",
             "name": "_hasSome",
@@ -630,7 +630,7 @@
             "definedInFile": "sprd/entity/DesignConfiguration.js",
             "lineNumbers": [
                 135,
-                146
+                147
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -708,8 +708,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                805,
-                807
+                804,
+                806
             ],
             "description": "Clears all attributes",
             "returns": {
@@ -765,8 +765,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/DesignConfiguration.js",
             "lineNumbers": [
-                183,
-                238
+                184,
+                239
             ],
             "definedBy": "js.data.Entity",
             "overwritesMethod": true,
@@ -961,7 +961,7 @@
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
                 680,
-                744
+                743
             ],
             "description": "evaluates a path to retrieve a value\n",
             "returns": {
@@ -1014,8 +1014,8 @@
             },
             "definedInFile": "sprd/entity/DesignConfiguration.js",
             "lineNumbers": [
-                171,
-                181
+                172,
+                182
             ],
             "name": "getPossiblePrintTypes",
             "visibility": "public"
@@ -1033,8 +1033,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/DesignConfiguration.js",
             "lineNumbers": [
-                271,
-                273
+                272,
+                274
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1124,8 +1124,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                752,
-                754
+                751,
+                753
             ],
             "description": "determinate if a attribute is available\n",
             "returns": {
@@ -1189,8 +1189,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/DesignConfiguration.js",
             "lineNumbers": [
-                263,
-                265
+                264,
+                266
             ],
             "definedBy": "js.data.Entity",
             "overwritesMethod": true,
@@ -1221,8 +1221,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/DesignConfiguration.js",
             "lineNumbers": [
-                267,
-                269
+                268,
+                270
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1239,8 +1239,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                880,
-                897
+                879,
+                896
             ],
             "definedBy": "js.core.Bindable",
             "name": "isDeepEqual",
@@ -1256,8 +1256,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                898,
-                900
+                897,
+                899
             ],
             "definedBy": "js.core.Bindable",
             "name": "isEqual",
@@ -1392,8 +1392,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/DesignConfiguration.js",
             "lineNumbers": [
-                275,
-                277
+                276,
+                278
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1412,8 +1412,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/DesignConfiguration.js",
             "lineNumbers": [
-                240,
-                261
+                241,
+                262
             ],
             "definedBy": "js.data.Entity",
             "overwritesMethod": true,
@@ -1458,8 +1458,8 @@
             },
             "definedInFile": "sprd/entity/DesignConfiguration.js",
             "lineNumbers": [
-                148,
-                169
+                149,
+                170
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1694,8 +1694,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                796,
-                799
+                795,
+                798
             ],
             "description": "Unset attribute on $",
             "returns": {

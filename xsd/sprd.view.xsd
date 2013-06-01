@@ -219,11 +219,11 @@
                 <attribute name="ondragexit" default="dragExit"/>
                 <attribute name="ondrop" default="dropImage"/>
                 <attribute name="ondragover" default="dragOver"/>
-                <attribute name="notice" default="Drop your files here."/>
                 <attribute name="items"/>
                 <attribute name="imageWidth" default="100"/>
                 <attribute name="displayNotice" default="true"/>
                 <attribute name="uploadContext"/>
+                <attribute name="notice" default="Drop your files here."/>
             </extension>
         </complexContent>
     </complexType>
@@ -240,6 +240,7 @@
                 <attribute name="imageWidth" default="100"/>
                 <attribute name="displayNotice" default="true"/>
                 <attribute name="uploadContext"/>
+                <attribute name="notice" default="Drop your files here."/>
             </extension>
         </complexContent>
     </complexType>

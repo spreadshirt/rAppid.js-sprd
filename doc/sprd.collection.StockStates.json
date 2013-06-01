@@ -75,8 +75,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                764,
-                766
+                763,
+                765
             ],
             "description": "called after attributes has set and some of the has been changed\n",
             "abstract": "",
@@ -287,8 +287,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                768,
-                777
+                767,
+                776
             ],
             "definedBy": "js.core.Bindable",
             "name": "_hasAll",
@@ -307,8 +307,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                779,
-                788
+                778,
+                787
             ],
             "definedBy": "js.core.Bindable",
             "name": "_hasSome",
@@ -604,8 +604,8 @@
             },
             "definedInFile": "js/core/List.js",
             "lineNumbers": [
-                223,
-                228
+                224,
+                229
             ],
             "description": "Returns item at a specific index",
             "returns": {
@@ -657,8 +657,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                805,
-                807
+                804,
+                806
             ],
             "description": "Clears all attributes",
             "returns": {
@@ -707,8 +707,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                244,
-                252
+                272,
+                280
             ],
             "definedBy": "js.data.Collection",
             "name": "count",
@@ -724,8 +724,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                205,
-                212
+                233,
+                240
             ],
             "definedBy": "js.data.Collection",
             "name": "createItem",
@@ -781,8 +781,8 @@
             "annotations": {},
             "definedInFile": "js/core/List.js",
             "lineNumbers": [
-                234,
-                279
+                235,
+                280
             ],
             "description": "Iterates over all items with given callback",
             "definedBy": "js.core.List",
@@ -813,19 +813,27 @@
             "type": "Method",
             "parameter": [
                 {
-                    "name": "options"
+                    "types": [
+                        "Object"
+                    ],
+                    "name": "options",
+                    "optional": false
                 },
                 {
-                    "name": "callback"
+                    "types": [
+                        "Function"
+                    ],
+                    "name": "callback",
+                    "optional": false
                 }
             ],
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                124,
-                186
+                133,
+                214
             ],
-            "description": " fetches the complete list",
+            "description": "\nWith no options it fetches all pages of the collection. So be careful.\n\nIf you want to fetch a specific page, provide limit and/or offset in the options object.\nThe callback will then return the err object and a page with the size of the provided limit and offset\n",
             "definedBy": "js.data.Collection",
             "name": "fetch",
             "visibility": "public"
@@ -846,8 +854,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                214,
-                242
+                242,
+                270
             ],
             "definedBy": "js.data.Collection",
             "name": "fetchPage",
@@ -905,7 +913,7 @@
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
                 680,
-                744
+                743
             ],
             "description": "evaluates a path to retrieve a value\n",
             "returns": {
@@ -926,8 +934,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                197,
-                199
+                225,
+                227
             ],
             "definedBy": "js.data.Collection",
             "name": "getContextForChild",
@@ -943,8 +951,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                285,
-                287
+                313,
+                315
             ],
             "definedBy": "js.data.Collection",
             "name": "getQueryParameters",
@@ -1007,8 +1015,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                288,
-                290
+                316,
+                318
             ],
             "definedBy": "js.data.Collection",
             "name": "getSortParameters",
@@ -1029,8 +1037,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                752,
-                754
+                751,
+                753
             ],
             "description": "determinate if a attribute is available\n",
             "returns": {
@@ -1060,8 +1068,8 @@
             },
             "definedInFile": "js/core/List.js",
             "lineNumbers": [
-                284,
-                295
+                285,
+                296
             ],
             "description": "Checks if item is included in List",
             "returns": {
@@ -1121,8 +1129,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                254,
-                271
+                282,
+                299
             ],
             "definedBy": "js.data.Collection",
             "name": "invalidatePageCache",
@@ -1138,8 +1146,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                880,
-                897
+                879,
+                896
             ],
             "definedBy": "js.core.Bindable",
             "name": "isDeepEqual",
@@ -1182,8 +1190,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                898,
-                900
+                897,
+                899
             ],
             "definedBy": "js.core.Bindable",
             "name": "isEqual",
@@ -1247,8 +1255,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                188,
-                195
+                216,
+                223
             ],
             "definedBy": "js.data.Collection",
             "name": "pageCount",
@@ -1264,8 +1272,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                201,
-                203
+                229,
+                231
             ],
             "definedBy": "js.data.Collection",
             "name": "parse",
@@ -1414,7 +1422,7 @@
             "definedInFile": "js/core/List.js",
             "lineNumbers": [
                 180,
-                202
+                203
             ],
             "description": "Resets the list with the given items and triggers reset event",
             "definedBy": "js.core.List",
@@ -1538,8 +1546,8 @@
             },
             "definedInFile": "js/core/List.js",
             "lineNumbers": [
-                214,
-                216
+                215,
+                217
             ],
             "description": "Returns the size of the list",
             "definedBy": "js.core.List",
@@ -1560,8 +1568,8 @@
             "annotations": {},
             "definedInFile": "js/core/List.js",
             "lineNumbers": [
-                388,
-                394
+                389,
+                395
             ],
             "description": "Sorts the list by the given function and triggers sort event",
             "definedBy": "js.core.List",
@@ -1596,8 +1604,8 @@
             "annotations": {},
             "definedInFile": "js/core/List.js",
             "lineNumbers": [
-                370,
-                382
+                371,
+                383
             ],
             "description": "Transforms List to an array\nYou can specify a transform fnc",
             "returns": {
@@ -1700,8 +1708,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                796,
-                799
+                795,
+                798
             ],
             "description": "Unset attribute on $",
             "returns": {

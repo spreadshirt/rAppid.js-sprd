@@ -75,8 +75,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                764,
-                766
+                763,
+                765
             ],
             "description": "called after attributes has set and some of the has been changed\n",
             "abstract": "",
@@ -96,6 +96,22 @@
             ],
             "definedBy": "js.core.Bindable",
             "name": "_commitInvalidatedAttributes",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "stockStates"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/model/ProductType.js",
+            "lineNumbers": [
+                239,
+                243
+            ],
+            "name": "_commitStockStates",
             "visibility": "protected"
         },
         {
@@ -260,8 +276,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                768,
-                777
+                767,
+                776
             ],
             "definedBy": "js.core.Bindable",
             "name": "_hasAll",
@@ -280,8 +296,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                779,
-                788
+                778,
+                787
             ],
             "definedBy": "js.core.Bindable",
             "name": "_hasSome",
@@ -512,8 +528,8 @@
             },
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                235,
-                241
+                259,
+                265
             ],
             "definedBy": "js.data.Model",
             "name": "_status",
@@ -590,8 +606,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                805,
-                807
+                804,
+                806
             ],
             "description": "Clears all attributes",
             "returns": {
@@ -682,10 +698,26 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                34,
-                40
+                39,
+                45
             ],
             "name": "containsAppearance",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "size"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/model/ProductType.js",
+            "lineNumbers": [
+                47,
+                54
+            ],
+            "name": "containsSize",
             "visibility": "public"
         },
         {
@@ -698,8 +730,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                25,
-                32
+                30,
+                37
             ],
             "name": "containsView",
             "visibility": "public"
@@ -729,8 +761,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                256,
-                265
+                280,
+                289
             ],
             "description": "Converts the identifier to the given type in the schema",
             "returns": {
@@ -887,8 +919,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                172,
-                201
+                196,
+                225
             ],
             "definedBy": "js.data.Model",
             "name": "fetch",
@@ -943,7 +975,7 @@
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
                 680,
-                744
+                743
             ],
             "description": "evaluates a path to retrieve a value\n",
             "returns": {
@@ -964,10 +996,26 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                102,
-                113
+                116,
+                127
             ],
             "name": "getAppearanceById",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {
+                "onChange": [
+                    "stockStates"
+                ]
+            },
+            "definedInFile": "sprd/model/ProductType.js",
+            "lineNumbers": [
+                221,
+                237
+            ],
+            "name": "getAvailableAppearances",
             "visibility": "public"
         },
         {
@@ -987,8 +1035,8 @@
             },
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                160,
-                177
+                174,
+                191
             ],
             "name": "getAvailableSizesForAppearance",
             "visibility": "public"
@@ -1008,8 +1056,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                119,
-                138
+                133,
+                152
             ],
             "description": "Returns closest appearance for Color",
             "returns": {
@@ -1030,8 +1078,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                124,
-                143
+                148,
+                167
             ],
             "definedBy": "js.data.Model",
             "name": "getCollection",
@@ -1070,8 +1118,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                90,
-                93
+                104,
+                107
             ],
             "name": "getDefaultAppearance",
             "visibility": "public"
@@ -1082,8 +1130,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                95,
-                100
+                109,
+                114
             ],
             "name": "getDefaultAppearanceId",
             "visibility": "public"
@@ -1094,8 +1142,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                152,
-                158
+                166,
+                172
             ],
             "name": "getDefaultPrintArea",
             "visibility": "public"
@@ -1106,8 +1154,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                64,
-                69
+                78,
+                83
             ],
             "name": "getDefaultView",
             "visibility": "public"
@@ -1118,10 +1166,26 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                71,
-                76
+                85,
+                90
             ],
             "name": "getDefaultViewId",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {
+                "onChange": [
+                    "stockStates"
+                ]
+            },
+            "definedInFile": "sprd/model/ProductType.js",
+            "lineNumbers": [
+                208,
+                214
+            ],
+            "name": "getFirstAvailableAppearance",
             "visibility": "public"
         },
         {
@@ -1134,8 +1198,8 @@
             },
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                187,
-                192
+                201,
+                206
             ],
             "name": "getMeasures",
             "visibility": "public"
@@ -1150,8 +1214,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                78,
-                88
+                92,
+                102
             ],
             "name": "getPrintAreaById",
             "visibility": "public"
@@ -1200,8 +1264,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                42,
-                51
+                56,
+                65
             ],
             "name": "getSizeById",
             "visibility": "public"
@@ -1216,8 +1280,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                53,
-                62
+                67,
+                76
             ],
             "name": "getSizeByName",
             "visibility": "public"
@@ -1232,8 +1296,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                13,
-                23
+                18,
+                28
             ],
             "name": "getViewById",
             "visibility": "public"
@@ -1248,8 +1312,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                140,
-                150
+                154,
+                164
             ],
             "name": "getViewByPerspective",
             "visibility": "public"
@@ -1269,8 +1333,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                752,
-                754
+                751,
+                753
             ],
             "description": "determinate if a attribute is available\n",
             "returns": {
@@ -1337,8 +1401,8 @@
             },
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                247,
-                249
+                271,
+                273
             ],
             "definedBy": "js.data.Model",
             "name": "isCreated",
@@ -1354,8 +1418,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                880,
-                897
+                879,
+                896
             ],
             "definedBy": "js.core.Bindable",
             "name": "isDeepEqual",
@@ -1371,8 +1435,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                898,
-                900
+                897,
+                899
             ],
             "definedBy": "js.core.Bindable",
             "name": "isEqual",
@@ -1388,11 +1452,23 @@
             },
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                243,
-                245
+                267,
+                269
             ],
             "definedBy": "js.data.Model",
             "name": "isNew",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/model/ProductType.js",
+            "lineNumbers": [
+                216,
+                219
+            ],
+            "name": "isOutOfStock",
             "visibility": "public"
         },
         {
@@ -1415,8 +1491,8 @@
             },
             "definedInFile": "sprd/model/ProductType.js",
             "lineNumbers": [
-                179,
-                184
+                193,
+                198
             ],
             "name": "isSizeAndAppearanceAvailable",
             "visibility": "public"
@@ -1528,8 +1604,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                145,
-                155
+                169,
+                179
             ],
             "definedBy": "js.data.Model",
             "name": "prepare",
@@ -1548,8 +1624,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                203,
-                224
+                227,
+                248
             ],
             "definedBy": "js.data.Model",
             "name": "remove",
@@ -1592,8 +1668,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                72,
-                99
+                82,
+                123
             ],
             "description": "\npersistent the model over the data-source in which it was created\n",
             "definedBy": "js.data.Model",
@@ -1770,8 +1846,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                796,
-                799
+                795,
+                798
             ],
             "description": "Unset attribute on $",
             "returns": {
@@ -1829,8 +1905,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                105,
-                122
+                129,
+                146
             ],
             "description": "",
             "definedBy": "js.data.Model",
@@ -1859,15 +1935,35 @@
         }
     ],
     "staticMethods": [],
-    "defaults": {},
+    "defaults": {
+        "availableAppearances": {
+            "name": "availableAppearances",
+            "defaultType": "factory",
+            "visibility": "public",
+            "lineNumbers": [
+                14,
+                14
+            ]
+        },
+        "outOfStock": {
+            "name": "outOfStock",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": false,
+            "lineNumbers": [
+                15,
+                15
+            ]
+        }
+    },
     "properties": {
         "hrefField": {
             "name": "hrefField",
             "visibility": "public",
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                42,
-                42
+                52,
+                52
             ],
             "propertyType": "value",
             "description": "The field which will contain the href",
