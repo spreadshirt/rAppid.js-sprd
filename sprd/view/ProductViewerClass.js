@@ -12,7 +12,9 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
 
             productViewerSvg: null,
             textArea: null,
-            textAreaPosition: null
+            textAreaPosition: null,
+
+            removeEmptyTextConfiguration: true
         },
 
         inject: {
@@ -29,7 +31,19 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
             this.bind('selectedConfiguration', 'change:offset', this._positionTextArea, this);
         },
 
-        _commitSelectedConfiguration: function (selectedConfiguration) {
+        _commitSelectedConfiguration: function (selectedConfiguration, oldSelectedConfiguration) {
+
+            if (this.$.removeEmptyTextConfiguration && !selectedConfiguration && oldSelectedConfiguration &&
+                oldSelectedConfiguration.type === "text" && oldSelectedConfiguration.$.textFlow &&
+                this.$.product) {
+
+                var text = oldSelectedConfiguration.$.textFlow.text(0, -1);
+                if (/^[\s\n\r]*$/.test(text)) {
+                    this.$.product.$.configurations.remove(oldSelectedConfiguration);
+                }
+
+            }
+
             this._positionTextArea();
         },
 
