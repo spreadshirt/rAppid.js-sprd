@@ -106,3 +106,12 @@ rect {
 .text-cursor.active {
     visibility: visible;
 }
+
+
+.configuration-viewer .text-selection {
+    visibility: hidden;
+}
+
+.configuration-viewer.active .text-selection {
+    visibility: visible;
+}
