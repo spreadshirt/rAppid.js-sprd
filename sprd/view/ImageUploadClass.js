@@ -11,6 +11,8 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
 
                 uploadContext: null,
 
+                enabled: true,
+
                 notice: "Drop your files here."
             },
 
@@ -30,6 +32,8 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 this.$.items.bind('add', eventHandler);
                 this.$.items.bind('remove', eventHandler);
                 this.$.items.bind('reset', eventHandler);
+
+                eventHandler();
 
             },
 
