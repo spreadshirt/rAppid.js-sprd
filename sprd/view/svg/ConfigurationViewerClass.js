@@ -238,7 +238,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return this.$hasTouch && e.touches.length > 1;
             },
 
-            _productViewerSizeChanged: function(){
+            _productViewerSizeChanged: function () {
                 this.set('_globalToLocalFactor', this.$.productViewer.globalToLocalFactor());
             },
 
@@ -781,5 +781,4 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
 
         });
-    })
-;
+    });
