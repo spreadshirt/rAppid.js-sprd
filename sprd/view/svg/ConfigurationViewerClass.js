@@ -196,19 +196,19 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         moveHandle = this.$._moveHandle;
 
                     assetContainer.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : MOVE);
+                        self._down(e, self._isGesture(e) ? GESTURE : MOVE, assetContainer);
                     });
 
                     scaleHandle && scaleHandle.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : SCALE);
+                        self._down(e, self._isGesture(e) ? GESTURE : SCALE, scaleHandle);
                     });
 
                     rotateHandle && rotateHandle.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : ROTATE);
+                        self._down(e, self._isGesture(e) ? GESTURE : ROTATE, rotateHandle);
                     });
 
                     moveHandle && moveHandle.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : MOVE);
+                        self._down(e, self._isGesture(e) ? GESTURE : MOVE, moveHandle);
                     });
 
 
@@ -258,10 +258,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _commitSelected: function (selected) {
-                if (selected) {
-                    this.$wasSelected = false;
-                }
+            _commitSelected: function () {
+                this.$wasSelected = false;
             },
 
             _commitChangedAttributes: function ($) {
@@ -281,7 +279,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _down: function (e, mode) {
+            _down: function (e, mode, initiatior) {
 
                 var self = this,
                     configuration = this.$.configuration,
@@ -349,11 +347,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var parent = this.$.productViewer.$parent;
 
                     if (parent) {
-                        if (this.$wasSelected) {
+                        if (this.$wasSelected && initiatior === this.$._assetContainer) {
                             var textArea = parent.$.textArea;
                             if (textArea && textArea.$el) {
                                 // bring up the keyboard in ios
                                 textArea.$el.focus();
+
                             }
                         } else {
                             this.$wasSelected = true;
