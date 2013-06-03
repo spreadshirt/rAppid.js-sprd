@@ -31,23 +31,6 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], functi
             return !this.$stage.$browser.isMobile;
         },
 
-        _commitShowSelection: function (showSelection) {
-
-            var configuration = this.$.configuration;
-            if (showSelection && this.$firstSelection && configuration && configuration.$.textFlow) {
-
-                var selection = configuration.$.selection;
-
-                if (selection) {
-                    this.$firstSelection = false;
-                    selection.set({
-                        activeIndex: configuration.$.textFlow.textLength() - 1,
-                        anchorIndex: 0
-                    });
-                }
-            }
-        },
-
         _loadFonts: function () {
 
             var configuration = this.$.configuration;
