@@ -758,7 +758,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     configuration = this.$.configuration;
 
                 if (!(configuration && configuration.$errors)) {
-                    return;
+                    return null;
                 }
 
                 for (var key in configuration.$errors.$) {
