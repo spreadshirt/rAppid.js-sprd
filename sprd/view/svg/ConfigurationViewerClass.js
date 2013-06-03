@@ -238,7 +238,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return this.$hasTouch && e.touches.length > 1;
             },
 
-            _productViewerSizeChanged: function(){
+            _productViewerSizeChanged: function () {
                 this.set('_globalToLocalFactor', this.$.productViewer.globalToLocalFactor());
             },
 
@@ -255,6 +255,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             rotation: this.$._rotation
                         }));
                     }, "offsetChanged");
+                }
+            },
+
+            _commitSelected: function (selected) {
+                if (selected) {
+                    this.$wasSelected = false;
                 }
             },
 
@@ -335,10 +341,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var parent = this.$.productViewer.$parent;
 
                     if (parent) {
-                        var textArea = parent.$.textArea;
-                        if (textArea && textArea.$el) {
-                            // bring up the keyboard in ios
-                            textArea.$el.focus();
+                        if (this.$wasSelected) {
+                            var textArea = parent.$.textArea;
+                            if (textArea && textArea.$el) {
+                                // bring up the keyboard in ios
+                                textArea.$el.focus();
+                            }
+                        } else {
+                            this.$wasSelected = true;
                         }
                     }
 
