@@ -311,6 +311,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this._unbindTransformationHandler();
                 }
 
+                if (this.$stage.$browser.isMobile && configuration instanceof TextConfiguration) {
+                    var cursorIndex = configuration.$.textFlow.textLength() - 1;
+                    configuration.$.selection.set({
+                        activeIndex: cursorIndex,
+                        anchorIndex: cursorIndex
+                    });
+                }
+
                 this.$.productViewer.set("selectedConfiguration", this.$.configuration);
                 this.$stage.focus();
 

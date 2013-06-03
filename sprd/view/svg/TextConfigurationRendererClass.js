@@ -27,6 +27,10 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], functi
             this._loadFonts();
         },
 
+        isNotMobile: function(){
+            return !this.$stage.$browser.isMobile;
+        },
+
         _commitShowSelection: function (showSelection) {
 
             var configuration = this.$.configuration;
