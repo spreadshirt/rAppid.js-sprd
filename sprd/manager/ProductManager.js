@@ -494,8 +494,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         configuration.init(cb);
                     })
                     .seq(function () {
+                        var configuration = this.vars["configuration"];
+                        configuration.$.selection.set({
+                            activeIndex: configuration.$.textFlow.textLength() - 1,
+                            anchorIndex: 0
+                        });
                         // determinate position
-                        self._positionConfiguration(this.vars["configuration"]);
+                        self._positionConfiguration(configuration);
                     })
                     .exec(function (err, results) {
                         !err && product._addConfiguration(results.configuration);
