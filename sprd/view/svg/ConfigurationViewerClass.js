@@ -279,7 +279,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _down: function (e, mode, initiatior) {
+            _down: function (e, mode, initiator) {
 
                 var self = this,
                     configuration = this.$.configuration,
@@ -347,7 +347,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var parent = this.$.productViewer.$parent;
 
                     if (parent) {
-                        if (this.$wasSelected && initiatior === this.$._assetContainer) {
+                        if (this.$wasSelected && initiator === this.$._assetContainer) {
                             var textArea = parent.$.textArea;
                             if (textArea && textArea.$el) {
                                 // bring up the keyboard in ios
