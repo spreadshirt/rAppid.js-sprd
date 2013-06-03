@@ -66,7 +66,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.trigger("priceChanged");
             },
 
-            _composeText: function () {
+            _debouncedComposeText: function() {
+                this._debounceFunctionCall(this._composeText, "composeText", 300, this, [true])
+            },
+
+            _composeText: function (skipHeight) {
 
                 if (!(this.$stage && this.$stage.rendered)) {
                     return;
@@ -84,9 +88,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 var composer = this.$.composer,
                     self = this;
+
                 composer.compose(textFlow, textArea.$, function (err, composedTextFlow) {
 
-                    if (composedTextFlow) {
+                    if (composedTextFlow && !skipHeight) {
                         self.$.textArea.set('height', composedTextFlow.composed.getHeight());
                         self.trigger("sizeChanged");
                     }

@@ -61,6 +61,23 @@
             </svg:g>
         </svg:g>
 
+        <svg:rect cid="_resizeHandle" class="configuration-handle resize" selected="{isResizeable()}"
+                  x="{substract(_configurationWidth,pixelToViewBox(mul(_handleOffset,3)))}"
+                  y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
+                  width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}" />
+
+        <svg:g class="configuration-handle-icon"
+               selected="{isResizeable()}" scaleX="{pixelToViewBox(_handleIconScale)}" scaleY="{scaleX}"
+               translateX="{_resizeHandle.x}"
+               translateY="{_resizeHandle.y}"
+               style="pointer-events: none">
+            <svg:g _transform="scale(0.17,0.17) translate(-230,-105)">
+                <svg:path
+                        d="m 256.15788,171.18241 c 0,-12 0,-24 0,-36 l -14,0 20,-20 20,20 -14,0 0,24 24,0 0,-14 20,20 -20,20 0,-14 c -12,0 -24,0 -36,0 z"
+                        style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"/>
+            </svg:g>
+        </svg:g>
+
         <svg:rect cid="_rotateHandle" class="configuration-handle rotate"
                   selected="{isRotatable()}"
                   x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
