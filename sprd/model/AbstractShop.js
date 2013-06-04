@@ -8,8 +8,8 @@ define([
     'sprd/model/ProductTypeDepartment',
     'sprd/model/ArticleCategory',
     'sprd/model/DesignCategory',
-    'sprd/model/Article', 'sprd/model/Country', 'sprd/model/PrintType', 'sprd/model/FontFamily', "sprd/model/Product"],
-    function (SprdModel, Collection, Basket, Currency, Design, ProductType, ProductTypeDepartment, ArticleCategory, DesignCategory, Article, Country, PrintType, FontFamily, Product) {
+    'sprd/model/Article', 'sprd/model/Country', 'sprd/model/PrintType', 'sprd/model/FontFamily', "sprd/model/Product", "sprd/model/DiscountScale"],
+    function (SprdModel, Collection, Basket, Currency, Design, ProductType, ProductTypeDepartment, ArticleCategory, DesignCategory, Article, Country, PrintType, FontFamily, Product, DiscountScale) {
 
         return SprdModel.inherit("sprd.model.AbstractShop", {
             schema: {
@@ -29,6 +29,8 @@ define([
                 designs: Collection.of(Design),
                 articleCategories: Collection.of(ArticleCategory),
                 articles: Collection.of(Article),
+                discountSupported: Boolean,
+                discountScale: DiscountScale,
                 products: Collection.of(Product),
 //            applications: Collection,
                 currencies: Collection.of(Currency),
