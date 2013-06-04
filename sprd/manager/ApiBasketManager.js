@@ -94,8 +94,9 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
                 basketItem.save({
                     invalidatePageCache: false
-                }, function(err) {
+                }, function (err) {
                     if (!err) {
+                        self.$.basket.fetch({noCache: true});
                         self._triggerBasketChanged();
                     }
 
@@ -104,7 +105,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             }
         },
 
-        _triggerBasketChanged: function() {
+        _triggerBasketChanged: function () {
             this.trigger("on:basketChanged", this.$.basket, this);
         },
 
@@ -182,7 +183,9 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             this.$itemSaveTimeout && clearTimeout(this.$itemSaveTimeout);
 
             this.$itemSaveTimeout = setTimeout(function () {
-                basketItem.save();
+                basketItem.save(null, function () {
+                    self.$.basket.fetch({noCache: true});
+                });
                 self._triggerBasketChanged();
             }, 300);
         },
@@ -192,7 +195,10 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
          * @param {sprd.model.BasketItem} basketItem
          */
         removeBasketItem: function (basketItem) {
-            basketItem.remove();
+            var self = this;
+            basketItem.remove(null, function () {
+                self.$.basket.fetch({noCache: true});
+            });
             this.$.basket.$.basketItems.remove(basketItem);
             this._triggerBasketChanged();
         }

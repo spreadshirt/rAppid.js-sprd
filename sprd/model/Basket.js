@@ -1,18 +1,27 @@
-define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "sprd/model/Currency"], function (SprdModel, BasketItem, Collection, Currency) {
+define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "sprd/model/Currency", "js/data/Entity", "sprd/entity/Price", "sprd/model/DiscountScale"], function (SprdModel, BasketItem, Collection, Currency, Entity, Price, DiscountScale) {
+
+    var Discount = Entity.inherit('sprd.entity.BasketDiscount', {
+        schema: {
+            discountScale: DiscountScale
+        }
+    });
+
     return SprdModel.inherit("sprd.model.Basket", {
 
         schema: {
             basketItems: Collection.of(BasketItem),
+            priceItems: Price,
             shop: "sprd/model/Shop",
-            currency: Currency
+            currency: Currency,
+            discounts: [Discount]
         },
 
-        ctor: function(){
+        ctor: function () {
             this.callBase();
 
-            this.bind('basketItems','change', this._triggerFunctions, this);
-            this.bind('basketItems','add', this._triggerFunctions, this);
-            this.bind('basketItems','remove', this._triggerFunctions, this);
+            this.bind('basketItems', 'change', this._triggerFunctions, this);
+            this.bind('basketItems', 'add', this._triggerFunctions, this);
+            this.bind('basketItems', 'remove', this._triggerFunctions, this);
         },
 
         addElement: function (element, quantity) {
@@ -22,7 +31,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             if (basketItem) {
                 basketItem.increaseQuantity(quantity);
             } else {
-                basketItem =  this.$.basketItems.createItem();
+                basketItem = this.$.basketItems.createItem();
                 basketItem.set({
                     element: element,
                     quantity: quantity
@@ -69,7 +78,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
 
         totalItemsCount: function () {
             var total = 0;
-            if(this.$.basketItems){
+            if (this.$.basketItems) {
                 this.$.basketItems.each(function (item) {
                     total += item.$.quantity;
                 });
@@ -79,7 +88,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
 
         vatIncluded: function () {
             var total = 0;
-            if(this.$.basketItems){
+            if (this.$.basketItems) {
                 this.$.basketItems.each(function (item) {
                     total += item.totalVatIncluded();
                 });
@@ -89,7 +98,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
 
         vatExcluded: function () {
             var total = 0;
-            if(this.$.basketItems){
+            if (this.$.basketItems) {
                 this.$.basketItems.each(function (item) {
                     total += item.totalVatExcluded();
                 });
@@ -97,18 +106,53 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return total;
         }.on('change'),
 
-        platformCheckoutLink: function(){
-            if(this.$.links){
+        discountVatIncluded: function () {
+            if (this.$.discounts && this.$.discounts.size()) {
+                return this.$.discounts.at(0).get('price.vatIncluded');
+            }
+
+            return 0;
+        }.onChange("discounts"),
+
+        currentDiscount: function () {
+            if (this.$.discounts && this.$.discounts.size()) {
+                var discount = this.$.discounts.at(0);
+                var currentDiscountId = discount.$.currentDiscount.id,
+                    currentDiscount = null;
+
+                discount.$.discountScale.$.discounts.each(function (discountItem) {
+                    if (discountItem.$.id === currentDiscountId) {
+                        currentDiscount = discountItem;
+                        this["break"]();
+                    }
+                });
+
+                return currentDiscount;
+            }
+            return null;
+
+        }.onChange("discounts"),
+
+        totalVatIncluded: function () {
+            if (this.$.priceItems) {
+                return this.$.priceItems.$.vatIncluded - this.discountVatIncluded();
+            }
+            return null;
+        }.onChange('priceItems', 'discounts'),
+
+        platformCheckoutLink: function () {
+            if (this.$.links) {
                 return this.$.links[2].href;
             }
             return null;
         }.onChange('links'),
 
-        shopCheckoutLink: function(){
+        shopCheckoutLink: function () {
             if (this.$.links) {
                 return this.$.links[1].href;
             }
             return null;
         }.onChange('links')
+
     });
 });
