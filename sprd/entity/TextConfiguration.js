@@ -343,10 +343,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                                         switch (style.textAnchor) {
                                             case "middle":
-                                                x = this.$.textArea.$.width / 2;
+                                                x = text.width / 2;
                                                 break;
                                             case "end":
-                                                x = this.$.textArea.$.width;
+                                                x = text.width;
                                         }
 
                                         style.x = x;
