@@ -96,7 +96,7 @@ rect {
 }
 
 .bright .text-cursor {
-    fill: black;
+    fill: blue;
 }
 
 .text-cursor {
@@ -104,5 +104,14 @@ rect {
 }
 
 .text-cursor.active {
+    visibility: visible;
+}
+
+
+.configuration-viewer .text-selection {
+    visibility: hidden;
+}
+
+.configuration-viewer.active .text-selection {
     visibility: visible;
 }

@@ -199,11 +199,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         moveHandle = this.$._moveHandle;
 
                     assetContainer.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : MOVE);
+                        self._down(e, self._isGesture(e) ? GESTURE : MOVE, assetContainer);
                     });
 
                     scaleHandle && scaleHandle.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : SCALE);
+                        self._down(e, self._isGesture(e) ? GESTURE : SCALE, scaleHandle);
                     });
 
                     resizeHandle && resizeHandle.bindDomEvent(this.$downEvent, function (e) {
@@ -211,11 +211,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     });
 
                     rotateHandle && rotateHandle.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : ROTATE);
+                        self._down(e, self._isGesture(e) ? GESTURE : ROTATE, rotateHandle);
                     });
 
                     moveHandle && moveHandle.bindDomEvent(this.$downEvent, function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : MOVE);
+                        self._down(e, self._isGesture(e) ? GESTURE : MOVE, moveHandle);
                     });
 
 
@@ -265,6 +265,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
+            _commitSelected: function () {
+                this.$wasSelected = false;
+            },
+
             _commitChangedAttributes: function ($) {
                 this.callBase();
 
@@ -282,7 +286,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _down: function (e, mode) {
+            _down: function (e, mode, initiator) {
 
                 var self = this,
                     configuration = this.$.configuration,
@@ -310,6 +314,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (this.$._mode !== null) {
                     // unbind the current handler
                     this._unbindTransformationHandler();
+                }
+
+                if (this.$stage.$browser.isMobile && configuration instanceof TextConfiguration) {
+                    var cursorIndex = configuration.$.textFlow.textLength() - 1;
+                    configuration.$.selection.set({
+                        activeIndex: cursorIndex,
+                        anchorIndex: cursorIndex
+                    });
                 }
 
                 this.$.productViewer.set("selectedConfiguration", this.$.configuration);
@@ -353,10 +365,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var parent = this.$.productViewer.$parent;
 
                     if (parent) {
-                        var textArea = parent.$.textArea;
-                        if (textArea && textArea.$el) {
-                            // bring up the keyboard in ios
-                            textArea.$el.focus();
+                        if (this.$wasSelected && initiator === this.$._assetContainer) {
+                            var textArea = parent.$.textArea;
+                            if (textArea && textArea.$el) {
+                                // bring up the keyboard in ios
+                                textArea.$el.focus();
+
+                            }
+                        } else {
+                            this.$wasSelected = true;
                         }
                     }
 
@@ -813,7 +830,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     configuration = this.$.configuration;
 
                 if (!(configuration && configuration.$errors)) {
-                    return;
+                    return null;
                 }
 
                 for (var key in configuration.$errors.$) {

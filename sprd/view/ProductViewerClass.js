@@ -97,10 +97,11 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
                             break;
                         }
                     }
+
                     if (viewMap) {
                         position = {
-                            x: (viewMap.get("offset.x") + selectedConfiguration.get("offset.x")) * factor.x + 10,
-                            y: (viewMap.get("offset.y") + selectedConfiguration.get("offset.y")) * factor.y,
+                            x: (viewMap.get("offset.x") + selectedConfiguration.get("offset.x")) * factor.x + 14,
+                            y: (viewMap.get("offset.y") + selectedConfiguration.get("offset.y")) * factor.y - 2,
                             width: selectedConfiguration.width() * factor.x - 25,
                             height: selectedConfiguration.height() * factor.y - 10
                         };
@@ -118,14 +119,14 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
             }
         },
 
-        _onConfigurationsReset: function(){
+        _onConfigurationsReset: function () {
             this.set('selectedConfiguration', null);
         },
 
         _onConfigurationViewerAdded: function (e) {
             var viewer = e.$;
-            if (viewer){
-                if(viewer.$.configuration === this.$.selectedConfiguration) {
+            if (viewer) {
+                if (viewer.$.configuration === this.$.selectedConfiguration) {
                     this.set('selectedConfigurationViewer', viewer);
                 }
                 this.trigger('add:configurationViewer', viewer);
