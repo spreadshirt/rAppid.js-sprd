@@ -198,6 +198,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         rotateHandle = this.$._rotateHandle,
                         moveHandle = this.$._moveHandle;
 
+
+                    assetContainer.bindDomEvent("click", function () {
+                        self._showKeyBoard();
+                    });
+
                     assetContainer.bindDomEvent(this.$downEvent, function (e) {
                         self._down(e, self._isGesture(e) ? GESTURE : MOVE, assetContainer);
                     });
@@ -233,6 +238,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     };
 
                     assetContainer.bindDomEvent(this.$clickEvent, preventDefault);
+
                     scaleHandle && scaleHandle.bindDomEvent(this.$clickEvent, preventDefault);
                     rotateHandle && rotateHandle.bindDomEvent(this.$clickEvent, preventDefault);
                     moveHandle && moveHandle.bindDomEvent(this.$clickEvent, preventDefault);
@@ -247,6 +253,24 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             _productViewerSizeChanged: function () {
                 this.set('_globalToLocalFactor', this.$.productViewer.globalToLocalFactor());
+            },
+
+            _showKeyBoard: function () {
+
+                var parent = this.$.productViewer.$parent;
+
+                if (parent) {
+                    if (this.$wasSelected) {
+                        var textArea = parent.$.textArea;
+                        if (textArea && textArea.$el) {
+                            // bring up the keyboard in ios
+                            textArea.$el.focus();
+
+                        }
+                    } else {
+                        this.$wasSelected = true;
+                    }
+                }
             },
 
             _offsetChanged: function () {
@@ -362,21 +386,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$centerPoint = new Vector([svgPoint.x, svgPoint.y]);
 
                 if (mode === MOVE) {
-                    var parent = this.$.productViewer.$parent;
-
-                    if (parent) {
-                        if (this.$wasSelected && initiator === this.$._assetContainer) {
-                            var textArea = parent.$.textArea;
-                            if (textArea && textArea.$el) {
-                                // bring up the keyboard in ios
-                                textArea.$el.focus();
-
-                            }
-                        } else {
-                            this.$wasSelected = true;
-                        }
-                    }
-
                     this.set('_offset', configuration.$.offset.clone());
                 } else if (mode === RESIZE) {
 
@@ -752,7 +761,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return value - minuend;
             },
 
-            mul: function(value, multiplicator) {
+            mul: function (value, multiplicator) {
                 return value * multiplicator;
             },
 
@@ -800,7 +809,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return this.isSelectedConfiguration() && this.get("configuration.isScalable()");
             }.onChange("selected"),
 
-            isResizeable: function() {
+            isResizeable: function () {
                 return this.isSelectedConfiguration() && this.get("configuration.type") === "text";
             }.onChange("selected"),
 
