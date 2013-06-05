@@ -21,6 +21,7 @@ define(['js/data/Entity', 'sprd/model/PrintType', 'sprd/entity/Size'], function 
             restrictions: PrintAreaRestriction,
             boundary: null,
             _size: "{boundary.size}",
+            _softBoundary: "{boundary.soft}",
             defaultBox: null
         },
 
@@ -31,6 +32,10 @@ define(['js/data/Entity', 'sprd/model/PrintType', 'sprd/entity/Size'], function 
         getProductType: function () {
             return this.$parent;
         },
+
+        hasSoftBoundary: function() {
+            return !!(this.$._softBoundary && this.$._softBoundary.content);
+        }.onChange("_softBoundary"),
 
         _commit_size: function(size) {
             if (size) {

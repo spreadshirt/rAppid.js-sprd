@@ -71,13 +71,22 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 printType = $.printType || this.$.printType,
                 scale = $.scale || this.$.scale,
                 rotation = $.rotation || this.$.rotation,
-                ret = {};
+                ret = {},
+                printArea = this.$.printArea;
 
             if (sizeChanged || rotationChanged) {
                 width = this.width(scale.x);
                 height = this.height(scale.y);
 
-                ret.hardBoundary = this._hasHardBoundaryError($.offset || this.$.offset, width, height, rotation, scale);
+                if (printArea) {
+
+                    if (printArea.hasSoftBoundary()) {
+                        ret.hardBoundary = false;
+                    } else {
+                        ret.hardBoundary = this._hasHardBoundaryError($.offset || this.$.offset, width, height, rotation, scale);
+                    }
+                }
+
             }
 
             if (sizeChanged || printTypeChanged) {
