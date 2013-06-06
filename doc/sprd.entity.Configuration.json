@@ -265,8 +265,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                121,
-                176
+                130,
+                185
             ],
             "name": "_getBoundingBox",
             "visibility": "protected"
@@ -313,8 +313,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                105,
-                119
+                114,
+                128
             ],
             "name": "_hasHardBoundaryError",
             "visibility": "protected"
@@ -604,8 +604,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                93,
-                103
+                102,
+                112
             ],
             "name": "_validatePrintTypeSize",
             "visibility": "protected"
@@ -621,7 +621,7 @@
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
                 65,
-                91
+                100
             ],
             "name": "_validateTransform",
             "visibility": "protected"
@@ -632,8 +632,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                249,
-                251
+                258,
+                260
             ],
             "name": "allowScale",
             "visibility": "public"
@@ -992,8 +992,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                245,
-                247
+                254,
+                256
             ],
             "name": "getPossiblePrintTypesForPrintArea",
             "visibility": "public"
@@ -1046,8 +1046,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                226,
-                228
+                235,
+                237
             ],
             "description": "",
             "returns": {
@@ -1108,8 +1108,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                183,
-                190
+                192,
+                199
             ],
             "name": "height",
             "visibility": "public"
@@ -1168,8 +1168,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                241,
-                243
+                250,
+                252
             ],
             "name": "isAllowedOnPrintArea",
             "visibility": "public"
@@ -1214,8 +1214,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                257,
-                259
+                266,
+                268
             ],
             "name": "isReadyForCompose",
             "visibility": "public"
@@ -1226,8 +1226,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                209,
-                211
+                218,
+                220
             ],
             "name": "isRemovable",
             "visibility": "public"
@@ -1238,8 +1238,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                205,
-                207
+                214,
+                216
             ],
             "name": "isRotatable",
             "visibility": "public"
@@ -1254,8 +1254,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                201,
-                203
+                210,
+                212
             ],
             "name": "isScalable",
             "visibility": "public"
@@ -1330,8 +1330,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                253,
-                255
+                262,
+                264
             ],
             "name": "minimumScale",
             "visibility": "public"
@@ -1380,8 +1380,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                230,
-                239
+                239,
+                248
             ],
             "name": "possiblePrintTypes",
             "visibility": "public"
@@ -1392,8 +1392,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                213,
-                219
+                222,
+                228
             ],
             "name": "price",
             "visibility": "public"
@@ -1489,8 +1489,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                178,
-                181
+                187,
+                190
             ],
             "name": "size",
             "visibility": "public"
@@ -1683,8 +1683,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                192,
-                199
+                201,
+                208
             ],
             "name": "width",
             "visibility": "public"

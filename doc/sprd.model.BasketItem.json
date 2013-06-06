@@ -556,8 +556,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/BasketItem.js",
             "lineNumbers": [
-                27,
-                30
+                28,
+                31
             ],
             "name": "_updatePrices",
             "visibility": "protected"
@@ -780,8 +780,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/BasketItem.js",
             "lineNumbers": [
-                22,
-                25
+                23,
+                26
             ],
             "name": "decreaseQuantity",
             "visibility": "public"
@@ -798,6 +798,22 @@
             "description": "Clears up the instance",
             "definedBy": "js.core.EventDispatcher",
             "name": "destroy",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {
+                "onChange": [
+                    "price"
+                ]
+            },
+            "definedInFile": "sprd/model/BasketItem.js",
+            "lineNumbers": [
+                47,
+                52
+            ],
+            "name": "discountPriceVatIncluded",
             "visibility": "public"
         },
         {
@@ -1080,8 +1096,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/BasketItem.js",
             "lineNumbers": [
-                17,
-                20
+                18,
+                21
             ],
             "name": "increaseQuantity",
             "visibility": "public"
@@ -1447,6 +1463,23 @@
             "type": "Method",
             "parameter": [],
             "annotations": {
+                "onChange": [
+                    "price",
+                    "quantity"
+                ]
+            },
+            "definedInFile": "sprd/model/BasketItem.js",
+            "lineNumbers": [
+                62,
+                64
+            ],
+            "name": "totalDiscountVatIncluded",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {
                 "on": [
                     [
                         "this",
@@ -1456,8 +1489,8 @@
             },
             "definedInFile": "sprd/model/BasketItem.js",
             "lineNumbers": [
-                44,
-                46
+                58,
+                60
             ],
             "name": "totalVatExcluded",
             "visibility": "public"
@@ -1475,8 +1508,8 @@
             },
             "definedInFile": "sprd/model/BasketItem.js",
             "lineNumbers": [
-                40,
-                42
+                54,
+                56
             ],
             "name": "totalVatIncluded",
             "visibility": "public"
@@ -1665,8 +1698,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/BasketItem.js",
             "lineNumbers": [
-                36,
-                38
+                40,
+                45
             ],
             "name": "vatExcluded",
             "visibility": "public"
@@ -1677,8 +1710,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/BasketItem.js",
             "lineNumbers": [
-                32,
-                34
+                33,
+                38
             ],
             "name": "vatIncluded",
             "visibility": "public"
@@ -1692,8 +1725,8 @@
             "visibility": "public",
             "value": 1,
             "lineNumbers": [
-                12,
-                12
+                13,
+                13
             ]
         },
         "element": {
@@ -1702,8 +1735,8 @@
             "visibility": "public",
             "value": null,
             "lineNumbers": [
-                13,
-                13
+                14,
+                14
             ]
         },
         "price": {
@@ -1712,8 +1745,8 @@
             "visibility": "public",
             "value": null,
             "lineNumbers": [
-                14,
-                14
+                15,
+                15
             ]
         }
     },
@@ -1828,7 +1861,8 @@
     "inherit": "sprd.data.SprdModel",
     "dependencies": [
         "sprd.data.SprdModel",
-        "sprd.entity.ConcreteElement"
+        "sprd.entity.ConcreteElement",
+        "sprd.entity.Price"
     ],
     "type": "js",
     "file": "sprd/model/BasketItem.js",

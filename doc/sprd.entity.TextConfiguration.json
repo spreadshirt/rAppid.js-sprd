@@ -93,20 +93,24 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                166,
-                198
+                171,
+                203
             ],
             "name": "_commitPrintType",
             "visibility": "protected"
         },
         {
             "type": "Method",
-            "parameter": [],
+            "parameter": [
+                {
+                    "name": "skipHeight"
+                }
+            ],
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                69,
-                101
+                73,
+                106
             ],
             "name": "_composeText",
             "visibility": "protected"
@@ -169,6 +173,18 @@
             "private": "",
             "definedBy": "js.core.Base",
             "name": "_debounceFunctionCall",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/entity/TextConfiguration.js",
+            "lineNumbers": [
+                69,
+                71
+            ],
+            "name": "_debouncedComposeText",
             "visibility": "protected"
         },
         {
@@ -285,8 +301,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                141,
-                164
+                146,
+                169
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -335,8 +351,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                105,
-                119
+                114,
+                128
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "_hasHardBoundaryError",
@@ -641,8 +657,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                103,
-                139
+                108,
+                144
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -660,7 +676,7 @@
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
                 65,
-                91
+                100
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "_validateTransform",
@@ -672,8 +688,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                249,
-                251
+                258,
+                260
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "allowScale",
@@ -772,8 +788,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                477,
-                485
+                482,
+                490
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -786,8 +802,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                259,
-                375
+                264,
+                380
             ],
             "definedBy": "js.data.Entity",
             "overwritesMethod": true,
@@ -1034,8 +1050,8 @@
             },
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                392,
-                419
+                397,
+                424
             ],
             "name": "getPossiblePrintTypes",
             "visibility": "public"
@@ -1053,8 +1069,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                421,
-                446
+                426,
+                451
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1109,8 +1125,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                469,
-                471
+                474,
+                476
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1123,8 +1139,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                233,
-                257
+                238,
+                262
             ],
             "name": "getUsedFonts",
             "visibility": "public"
@@ -1179,8 +1195,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                183,
-                190
+                192,
+                199
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "height",
@@ -1241,8 +1257,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                487,
-                489
+                492,
+                494
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1289,8 +1305,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                491,
-                493
+                496,
+                498
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1303,8 +1319,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                209,
-                211
+                218,
+                220
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "isRemovable",
@@ -1316,8 +1332,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                205,
-                207
+                214,
+                216
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "isRotatable",
@@ -1333,8 +1349,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                201,
-                203
+                210,
+                212
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "isScalable",
@@ -1410,8 +1426,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                253,
-                255
+                262,
+                264
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "minimumScale",
@@ -1429,8 +1445,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                448,
-                467
+                453,
+                472
             ],
             "definedBy": "js.data.Entity",
             "overwritesMethod": true,
@@ -1451,8 +1467,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                230,
-                239
+                239,
+                248
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "possiblePrintTypes",
@@ -1474,8 +1490,8 @@
             },
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                200,
-                231
+                205,
+                236
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1560,8 +1576,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                377,
-                390
+                382,
+                395
             ],
             "name": "setColor",
             "visibility": "public"
@@ -1602,8 +1618,8 @@
             },
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                473,
-                475
+                478,
+                480
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1798,8 +1814,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                192,
-                199
+                201,
+                208
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "width",

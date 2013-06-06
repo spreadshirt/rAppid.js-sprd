@@ -549,8 +549,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ApiBasketManager.js",
             "lineNumbers": [
-                111,
-                172
+                112,
+                173
             ],
             "definedBy": "sprd.manager.IBasketManager",
             "overwritesMethod": true,
@@ -929,8 +929,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ApiBasketManager.js",
             "lineNumbers": [
-                107,
-                109
+                108,
+                110
             ],
             "name": "_triggerBasketChanged",
             "visibility": "protected"
@@ -990,7 +990,7 @@
             "definedInFile": "sprd/manager/ApiBasketManager.js",
             "lineNumbers": [
                 69,
-                105
+                106
             ],
             "definedBy": "sprd.manager.IBasketManager",
             "overwritesMethod": true,
@@ -1543,8 +1543,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ApiBasketManager.js",
             "lineNumbers": [
-                194,
-                198
+                197,
+                204
             ],
             "description": "",
             "name": "removeBasketItem",
@@ -1601,8 +1601,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ApiBasketManager.js",
             "lineNumbers": [
-                178,
-                188
+                179,
+                191
             ],
             "description": "",
             "name": "saveBasketItem",

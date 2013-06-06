@@ -111,8 +111,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                77,
-                84
+                81,
+                88
             ],
             "definedBy": "js.data.Collection",
             "name": "_createFilteredCollection",
@@ -131,8 +131,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                86,
-                92
+                90,
+                96
             ],
             "definedBy": "js.data.Collection",
             "name": "_createSortedCollection",
@@ -707,8 +707,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                272,
-                280
+                276,
+                284
             ],
             "definedBy": "js.data.Collection",
             "name": "count",
@@ -724,8 +724,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                233,
-                240
+                237,
+                244
             ],
             "definedBy": "js.data.Collection",
             "name": "createItem",
@@ -830,8 +830,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                133,
-                214
+                137,
+                218
             ],
             "description": "\nWith no options it fetches all pages of the collection. So be careful.\n\nIf you want to fetch a specific page, provide limit and/or offset in the options object.\nThe callback will then return the err object and a page with the size of the provided limit and offset\n",
             "definedBy": "js.data.Collection",
@@ -854,8 +854,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                242,
-                270
+                246,
+                274
             ],
             "definedBy": "js.data.Collection",
             "name": "fetchPage",
@@ -876,7 +876,7 @@
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
                 58,
-                75
+                79
             ],
             "description": "",
             "returns": {
@@ -934,8 +934,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                225,
-                227
+                229,
+                231
             ],
             "definedBy": "js.data.Collection",
             "name": "getContextForChild",
@@ -951,8 +951,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                313,
-                315
+                317,
+                319
             ],
             "definedBy": "js.data.Collection",
             "name": "getQueryParameters",
@@ -964,8 +964,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                119,
-                121
+                123,
+                125
             ],
             "definedBy": "js.data.Collection",
             "name": "getRoot",
@@ -1015,8 +1015,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                316,
-                318
+                320,
+                322
             ],
             "definedBy": "js.data.Collection",
             "name": "getSortParameters",
@@ -1129,8 +1129,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                282,
-                299
+                286,
+                303
             ],
             "definedBy": "js.data.Collection",
             "name": "invalidatePageCache",
@@ -1255,8 +1255,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                216,
-                223
+                220,
+                227
             ],
             "definedBy": "js.data.Collection",
             "name": "pageCount",
@@ -1272,8 +1272,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                229,
-                231
+                233,
+                235
             ],
             "definedBy": "js.data.Collection",
             "name": "parse",
@@ -1328,8 +1328,8 @@
             "annotations": {},
             "definedInFile": "js/data/Collection.js",
             "lineNumbers": [
-                115,
-                117
+                119,
+                121
             ],
             "definedBy": "js.data.Collection",
             "name": "query",

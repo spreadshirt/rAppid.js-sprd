@@ -108,8 +108,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/PrintArea.js",
             "lineNumbers": [
-                35,
-                44
+                40,
+                49
             ],
             "name": "_commit_size",
             "visibility": "protected"
@@ -902,8 +902,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/PrintArea.js",
             "lineNumbers": [
-                46,
-                53
+                51,
+                58
             ],
             "name": "getDefaultView",
             "visibility": "public"
@@ -914,8 +914,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/PrintArea.js",
             "lineNumbers": [
-                31,
-                33
+                32,
+                34
             ],
             "name": "getProductType",
             "visibility": "public"
@@ -981,6 +981,38 @@
             },
             "definedBy": "js.core.Bindable",
             "name": "has",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {
+                "onChange": [
+                    "_softBoundary"
+                ]
+            },
+            "definedInFile": "sprd/entity/PrintArea.js",
+            "lineNumbers": [
+                36,
+                38
+            ],
+            "name": "hasSoftBoundary",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {
+                "onChange": [
+                    "_size"
+                ]
+            },
+            "definedInFile": "sprd/entity/PrintArea.js",
+            "lineNumbers": [
+                60,
+                62
+            ],
+            "name": "height",
             "visibility": "public"
         },
         {
@@ -1406,6 +1438,22 @@
             "definedBy": "js.data.Entity",
             "name": "validateSubEntity",
             "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {
+                "onChange": [
+                    "_size"
+                ]
+            },
+            "definedInFile": "sprd/entity/PrintArea.js",
+            "lineNumbers": [
+                64,
+                66
+            ],
+            "name": "width",
+            "visibility": "public"
         }
     ],
     "staticMethods": [],
@@ -1439,14 +1487,24 @@
                 23
             ]
         },
+        "_softBoundary": {
+            "name": "_softBoundary",
+            "defaultType": "value",
+            "visibility": "private",
+            "value": "{boundary.soft}",
+            "lineNumbers": [
+                24,
+                24
+            ]
+        },
         "defaultBox": {
             "name": "defaultBox",
             "defaultType": "value",
             "visibility": "public",
             "value": null,
             "lineNumbers": [
-                24,
-                24
+                25,
+                25
             ]
         }
     },

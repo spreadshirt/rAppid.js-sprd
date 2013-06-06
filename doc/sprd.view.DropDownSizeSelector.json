@@ -102,6 +102,36 @@
             ],
             "definedBy": "js.ui.MenuButtonClass"
         },
+        "iconClass": {
+            "name": "iconClass",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                42,
+                42
+            ],
+            "description": "the class name for the icon",
+            "types": [
+                "String"
+            ],
+            "definedBy": "js.ui.MenuButtonClass"
+        },
+        "iconLabel": {
+            "name": "iconLabel",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": "",
+            "lineNumbers": [
+                49,
+                49
+            ],
+            "description": "The inner label for the icon\n",
+            "types": [
+                "String"
+            ],
+            "definedBy": "js.ui.MenuButtonClass"
+        },
         "tagName": {
             "name": "tagName",
             "defaultType": "value",
@@ -429,8 +459,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                401,
-                412
+                403,
+                414
             ],
             "definedBy": "js.core.DomElement",
             "name": "_clearRenderedChildren",
@@ -472,8 +502,8 @@
             "annotations": {},
             "definedInFile": "js/ui/MenuButtonClass.js",
             "lineNumbers": [
-                50,
-                53
+                63,
+                66
             ],
             "definedBy": "js.ui.MenuButtonClass",
             "name": "_collectButton",
@@ -535,8 +565,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                347,
-                355
+                349,
+                357
             ],
             "definedBy": "js.core.DomElement",
             "name": "_commitVisible",
@@ -583,8 +613,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                621,
-                626
+                623,
+                628
             ],
             "definedBy": "js.core.DomElement",
             "name": "_createDOMEventHandler",
@@ -849,8 +879,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                800,
-                808
+                802,
+                810
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getHtmlTag",
@@ -866,8 +896,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                414,
-                425
+                416,
+                427
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getIndexOfPlaceHolder",
@@ -900,8 +930,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                606,
-                620
+                608,
+                622
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getNextVisibleChild",
@@ -1232,8 +1262,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                478,
-                494
+                480,
+                496
             ],
             "description": "Returns wether a attribute key is a dom attribute or not\nTherefor it looks in the $classAttributes array.",
             "returns": {
@@ -1344,8 +1374,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                740,
-                751
+                742,
+                753
             ],
             "definedBy": "js.core.DomElement",
             "name": "_mapDOMEventType",
@@ -1415,8 +1445,8 @@
             "annotations": {},
             "definedInFile": "js/ui/MenuButtonClass.js",
             "lineNumbers": [
-                112,
-                114
+                125,
+                127
             ],
             "definedBy": "js.ui.MenuButtonClass",
             "name": "_preventDefault",
@@ -1432,8 +1462,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                385,
-                399
+                387,
+                401
             ],
             "definedBy": "js.core.DomElement",
             "name": "_removeRenderedChild",
@@ -1452,8 +1482,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                441,
-                463
+                443,
+                465
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttribute",
@@ -1472,8 +1502,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                465,
-                469
+                467,
+                471
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttributeInternal",
@@ -1489,8 +1519,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                431,
-                439
+                433,
+                441
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttributes",
@@ -1510,7 +1540,7 @@
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
                 308,
-                333
+                335
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderChild",
@@ -1546,8 +1576,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                375,
-                383
+                377,
+                385
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderClass",
@@ -1566,8 +1596,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                366,
-                373
+                368,
+                375
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderComponentClass",
@@ -1660,8 +1690,8 @@
             "annotations": {},
             "definedInFile": "js/ui/MenuButtonClass.js",
             "lineNumbers": [
-                59,
-                61
+                72,
+                74
             ],
             "definedBy": "js.ui.MenuButtonClass",
             "name": "_renderIconClass",
@@ -1694,8 +1724,8 @@
             "annotations": {},
             "definedInFile": "js/ui/MenuButtonClass.js",
             "lineNumbers": [
-                63,
-                68
+                76,
+                81
             ],
             "definedBy": "js.ui.MenuButtonClass",
             "name": "_renderLabel",
@@ -1731,8 +1761,8 @@
             "annotations": {},
             "definedInFile": "js/ui/MenuButtonClass.js",
             "lineNumbers": [
-                70,
-                82
+                83,
+                95
             ],
             "definedBy": "js.ui.MenuButtonClass",
             "name": "_renderMenuVisible",
@@ -1797,8 +1827,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                339,
-                345
+                341,
+                347
             ],
             "description": "",
             "private": "",
@@ -1839,8 +1869,8 @@
             "annotations": {},
             "definedInFile": "js/ui/MenuButtonClass.js",
             "lineNumbers": [
-                55,
-                57
+                68,
+                70
             ],
             "definedBy": "js.ui.MenuButtonClass",
             "name": "_renderType",
@@ -1856,8 +1886,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                357,
-                365
+                359,
+                367
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderVisible",
@@ -1937,8 +1967,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                504,
-                520
+                506,
+                522
             ],
             "description": "sets the attribute as part of the rendering cycle on the element\n",
             "private": "",
@@ -2030,8 +2060,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                663,
-                681
+                665,
+                683
             ],
             "definedBy": "js.core.DomElement",
             "name": "addClass",
@@ -2101,8 +2131,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                709,
-                724
+                711,
+                726
             ],
             "definedBy": "js.core.DomElement",
             "name": "bindDomEvent",
@@ -2114,8 +2144,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                571,
-                575
+                573,
+                577
             ],
             "definedBy": "js.core.DomElement",
             "name": "bringToFront",
@@ -2189,8 +2219,8 @@
             "annotations": {},
             "definedInFile": "js/ui/MenuButtonClass.js",
             "lineNumbers": [
-                118,
-                120
+                131,
+                133
             ],
             "description": "Closes the menu",
             "definedBy": "js.ui.MenuButtonClass",
@@ -2310,8 +2340,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                543,
-                545
+                545,
+                547
             ],
             "definedBy": "js.core.DomElement",
             "name": "dom",
@@ -2377,8 +2407,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                753,
-                757
+                755,
+                759
             ],
             "definedBy": "js.core.DomElement",
             "name": "focus",
@@ -2521,8 +2551,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                780,
-                798
+                782,
+                800
             ],
             "definedBy": "js.core.DomElement",
             "name": "globalToLocal",
@@ -2567,8 +2597,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                659,
-                661
+                661,
+                663
             ],
             "definedBy": "js.core.DomElement",
             "name": "hasClass",
@@ -2587,8 +2617,8 @@
             },
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                536,
-                542
+                538,
+                544
             ],
             "definedBy": "js.core.DomElement",
             "name": "html",
@@ -2665,8 +2695,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                427,
-                429
+                429,
+                431
             ],
             "definedBy": "js.core.DomElement",
             "name": "isRendered",
@@ -2682,8 +2712,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                759,
-                778
+                761,
+                780
             ],
             "definedBy": "js.core.DomElement",
             "name": "localToGlobal",
@@ -2753,8 +2783,8 @@
             "annotations": {},
             "definedInFile": "js/ui/MenuButtonClass.js",
             "lineNumbers": [
-                125,
-                127
+                138,
+                140
             ],
             "description": "Opens the menu",
             "definedBy": "js.ui.MenuButtonClass",
@@ -2814,8 +2844,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                683,
-                707
+                685,
+                709
             ],
             "definedBy": "js.core.DomElement",
             "name": "removeClass",
@@ -2860,8 +2890,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                576,
-                580
+                578,
+                582
             ],
             "definedBy": "js.core.DomElement",
             "name": "sendToBack",
@@ -2925,8 +2955,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                546,
-                569
+                548,
+                571
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildIndex",
@@ -2942,8 +2972,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                581,
-                588
+                583,
+                590
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildInvisible",
@@ -2959,8 +2989,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                589,
-                605
+                591,
+                607
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildVisible",
@@ -3006,8 +3036,8 @@
             "annotations": {},
             "definedInFile": "js/ui/MenuButtonClass.js",
             "lineNumbers": [
-                132,
-                134
+                145,
+                147
             ],
             "description": "Toggles the menu",
             "definedBy": "js.ui.MenuButtonClass",
@@ -3095,8 +3125,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                725,
-                738
+                727,
+                740
             ],
             "definedBy": "js.core.DomElement",
             "name": "unbindDomEvent",

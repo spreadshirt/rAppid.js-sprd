@@ -400,8 +400,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
-                507,
-                600
+                515,
+                608
             ],
             "name": "_positionConfiguration",
             "visibility": "protected"
@@ -533,7 +533,7 @@
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
                 333,
-                505
+                513
             ],
             "name": "addText",
             "visibility": "public"
