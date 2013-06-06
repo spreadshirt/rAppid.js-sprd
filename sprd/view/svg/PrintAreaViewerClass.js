@@ -1,6 +1,6 @@
-define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function (SvgElement, ConfigurationViewer) {
+define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/List'], function (SvgElement, ConfigurationViewer, List) {
 
-    return SvgElement.inherit('sprd.view.svg.PrintAreaViewer', {
+    return SvgElement.inherit('sprd.view.svg.PrintAreaViewerClass', {
 
         defaults: {
             tagName: "g",
@@ -10,6 +10,10 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
             product: null,
             productViewer: null,
 
+            snapLines: null,
+
+            snapLinesGroup: null,
+
             _viewMap: null
         },
 
@@ -18,8 +22,17 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
         ctor: function () {
 
             this.$configurationViewerCache = {};
-
             this.callBase();
+        },
+
+        _commitProductViewer: function(productViewer) {
+
+            if (productViewer && productViewer.$.editable) {
+                this.$.snapLines = new List();
+            } else {
+                this.$.snapLines = null;
+            }
+
         },
 
         _initializeRenderer: function () {
@@ -67,6 +80,12 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer'], function
 
             defaultBox && this.addChild(defaultBox);
             softBoundary && this.addChild(softBoundary);
+
+            var productViewer = this.$.productViewer;
+
+            if (productViewer && productViewer.$.editable) {
+                this.addChild(this.$.snapLinesGroup);
+            }
 
             this.callBase();
         },

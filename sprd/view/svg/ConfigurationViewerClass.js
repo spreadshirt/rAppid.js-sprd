@@ -11,6 +11,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             rotationSnippingAngle = 45,
             rotationSnippingThreshold = 5,
             rotateSnippingEnabled = true,
+            moveSnippingEnabled = true,
+            moveSnippingThreshold = 7,
             enableGestures = false;
 
         return SvgElement.inherit({
@@ -386,6 +388,67 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$centerPoint = new Vector([svgPoint.x, svgPoint.y]);
 
                 if (mode === MOVE) {
+
+                    this.$snapPoints = [];
+
+                    if (moveSnippingEnabled) {
+
+                        var printArea = configuration.$.printArea;
+
+                        if (printArea) {
+
+                            var x,
+                                y,
+                                height,
+                                width;
+
+                            if (this.$.productViewer && this.$.productViewer.$.product) {
+                                var configurationsOnPrintArea = this.$.productViewer.$.product.getConfigurationsOnPrintAreas([printArea]) || [],
+                                    myIndex = _.indexOf(configurationsOnPrintArea, configuration);
+
+                                if (myIndex !== -1) {
+                                    configurationsOnPrintArea.splice(myIndex, 1);
+                                }
+
+                                for (var i = 0; i < configurationsOnPrintArea.length; i++) {
+                                    var otherConfiguration = configurationsOnPrintArea[i];
+
+                                    x = otherConfiguration.$.offset.$.x;
+                                    y = otherConfiguration.$.offset.$.y;
+                                    height = otherConfiguration.height();
+                                    width = otherConfiguration.width();
+
+                                    this.$snapPoints.push({
+                                        x: x,
+                                        y: y
+                                    }, {
+                                        x: x + width / 2,
+                                        y: y + height / 2
+                                    }, {
+                                        x: x + width,
+                                        y: y + height
+                                    });
+                                }
+                            }
+
+                            width = printArea.width();
+                            height = printArea.height();
+
+                            this.$snapPoints.push({
+                                x: 0,
+                                y: 0
+                            }, {
+                                x: width / 2,
+                                y: height / 2
+                            }, {
+                                x: width,
+                                y: height
+                            });
+
+                        }
+
+                    }
+
                     this.set('_offset', configuration.$.offset.clone());
                 } else if (mode === RESIZE) {
 
@@ -491,17 +554,77 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     currentDistance,
                     currentVector,
                     newConfigurationWidth,
-                    newConfigurationHeight;
+                    newConfigurationHeight,
+                    distanceX, distanceY;
 
                 if (mode === MOVE) {
+                    var newX = configuration.$.offset.$.x - deltaX * factor.x,
+                        newY = configuration.$.offset.$.y - deltaY * factor.y,
+                        snapX = Math.max(), snapY = Math.max(),
+                        posX, posY, snapPosX, snapPosY;
+
+                    if (moveSnippingEnabled) {
+
+                        var snapLines = [];
+
+                        // check if there is something to snap in the near
+                        for (var positionFactor = 0; positionFactor <= 2; positionFactor++) {
+                            posX = newX + positionFactor / 2 * configuration.width();
+                            posY = newY + positionFactor / 2 * configuration.height();
+
+                            for (var p = 0; p < this.$snapPoints.length; p++) {
+                                var snapPoint = this.$snapPoints[p];
+
+                                distanceX = posX - snapPoint.x;
+                                distanceY = posY - snapPoint.y;
+
+                                if (Math.abs(distanceX) <= moveSnippingThreshold && Math.abs(distanceX) < Math.abs(snapX)) {
+                                    // snap to point
+                                    snapX = distanceX;
+                                    snapPosX = snapPoint.x;
+                                }
+
+                                if (Math.abs(distanceY) <= moveSnippingThreshold && Math.abs(distanceY) < Math.abs(snapY)) {
+                                    snapY = distanceY;
+                                    snapPosY = snapPoint.y;
+                                }
+
+                            }
+                        }
+
+                        if (Math.abs(snapX) <= moveSnippingThreshold) {
+                            newX -= snapX;
+                            snapLines.push({
+                                x1: snapPosX,
+                                x2: snapPosX,
+                                y1: -2000,
+                                y2: 2000
+                            });
+                        }
+
+                        if (Math.abs(snapY) <= moveSnippingThreshold) {
+                            newY -= snapY;
+                            snapLines.push({
+                                y1: snapPosY,
+                                y2: snapPosY,
+                                x1: -2000,
+                                x2: 2000
+                            });
+                        }
+
+                        var snapLinesList = this.$.printAreaViewer.$.snapLines;
+                        if (snapLinesList) {
+                            snapLinesList.reset(snapLines);
+                        }
+
+                    }
+
                     this.$._offset.set({
-                        x: configuration.$.offset.$.x - deltaX * factor.x,
-                        y: configuration.$.offset.$.y - deltaY * factor.y
+                        x: newX,
+                        y: newY
                     }, userInteractionOptions);
 
                 } else if (mode === RESIZE) {
-
-                    downVector = new Vector([x, y]);
 
                     // diagonal in real px
                     currentDistance = x - this.$topLeftPoint.components[0];
@@ -641,6 +764,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         if (configuration.$.offset && configuration.$.offset !== this.$._offset) {
                             configuration.set('offset', this.$._offset);
                         }
+
+                        var snapLinesList = this.$.printAreaViewer.$.snapLines;
+                        snapLinesList && snapLinesList.clear();
+
                     } else if (mode === SCALE) {
                         configuration.set({
                             scale: this.$._scale,

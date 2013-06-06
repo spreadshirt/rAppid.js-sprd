@@ -1,4 +1,4 @@
-define(['js/svg/SvgElement', "sprd/data/ImageService", "sprd/view/svg/PrintAreaViewer"], function (SvgElement, ImageService, PrintAreaViewer) {
+define(['js/svg/SvgElement', "sprd/data/ImageService", "xaml!sprd/view/svg/PrintAreaViewer"], function (SvgElement, ImageService, PrintAreaViewer) {
 
     return SvgElement.inherit('sprd.view.svg.ProductTypeViewViewer', {
 
