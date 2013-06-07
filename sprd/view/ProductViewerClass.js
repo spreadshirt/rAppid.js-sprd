@@ -1,4 +1,4 @@
-define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
+define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager"], function (View, Bus, ProductManager) {
     return View.inherit('sprd.view.ProductViewerClass', {
 
         defaults: {
@@ -18,7 +18,8 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
         },
 
         inject: {
-            bus: Bus
+            bus: Bus,
+            productManager: ProductManager
         },
 
         events: ['on:configurationSelect'],
@@ -48,7 +49,9 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
         },
 
         keyUp: function (e) {
-
+            if (!this.$stage.$browser.isIOS) {
+                return;
+            }
             if (this.$keyPressHandled) {
                 return;
             }
@@ -71,12 +74,18 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
         },
 
         keyPress: function (e) {
+            if (!this.$stage.$browser.isIOS) {
+                return;
+            }
             this.$keyPressHandled = true;
             this.$.textArea.$el.value = "";
             this._keyPressHandler(e.domEvent);
         },
 
         keyDown: function (e) {
+            if (!this.$stage.$browser.isIOS) {
+                return;
+            }
             this.$keyPressHandled = false;
             this._keyDownHandler(e.domEvent);
         },
@@ -86,7 +95,8 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
                 var position = null,
                     selectedConfiguration = this.$.selectedConfiguration;
 
-                if (this.$.editable && selectedConfiguration && selectedConfiguration.type === "text" && this.$.productViewerSvg && this.$.productViewerSvg.$currentProductTypeViewViewer) {
+
+                if (!this.$textAreaFocused && this.$.editable && selectedConfiguration && selectedConfiguration.type === "text" && this.$.productViewerSvg && this.$.productViewerSvg.$currentProductTypeViewViewer) {
                     var factor = this.$.productViewerSvg.localToGlobalFactor(),
                         view = this.$.productViewerSvg.$currentProductTypeViewViewer.$._view,
                         viewMap;
@@ -256,6 +266,18 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
 
             if (this.$stage.$browser.isIOS) {
                 this.$.textArea.set('visibility', 'hidden');
+            } else {
+                // android hack
+                this.$stage.set('height', this.$stage.$el.offsetHeight);
+                var self = this;
+                setTimeout(function () {
+                    self._positionTextArea();
+                    self.$.textArea.set({
+                        opacity: 1.0,
+                        value: self.$.selectedConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "")
+                    });
+                    self.$.textArea.set('opacity', 1.0);
+                }, 1000);
             }
 
             this.addClass("text-area-active");
@@ -266,6 +288,17 @@ define(["js/ui/View", "js/core/Bus"], function (View, Bus) {
             this.set('focused', false);
             if (this.$stage.$browser.isIOS) {
                 this.$.textArea.set('visibility', 'visible');
+            } else {
+                // android hack
+                var self = this;
+
+                setTimeout(function () {
+                    self.$stage.set('height', '100%');
+                }, 200);
+
+                this.$.productManager.setTextForConfiguration(this.$.textArea.$.value, this.$.selectedConfiguration);
+
+                self.$.textArea.set('opacity', 0);
             }
 
             this.removeClass("text-area-active");

@@ -17,7 +17,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @param callback
              */
             setProductType: function (product, productType, appearance, callback) {
-                if(appearance instanceof Function){
+                if (appearance instanceof Function) {
                     callback = appearance;
                     appearance = null;
                 }
@@ -29,7 +29,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         productType.fetch(null, cb);
                     })
                     .seq(function () {
-                        if(!appearance){
+                        if (!appearance) {
                             if (product.$.appearance) {
                                 appearance = productType.getClosestAppearance(product.$.appearance.getMainColor());
                             } else {
@@ -66,7 +66,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            setAppearance: function(product, appearance){
+            setAppearance: function (product, appearance) {
                 this.convertConfigurations(product, product.$.productType, appearance);
                 product.set({
                     appearance: appearance
@@ -79,7 +79,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @param {sprd.model.ProductType} productType
              * @param {sprd.entity.Appearance} appearance
              */
-            convertConfigurations: function(product, productType, appearance){
+            convertConfigurations: function (product, productType, appearance) {
                 var configurations = product.$.configurations.$items,
                     removeConfigurations = [];
 
@@ -471,7 +471,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         var fontSize = this.vars.printArea.get("size.width") * 25 / 550;
 
 
-
                         (new ApplyStyleToElementOperation(TextRange.createTextRange(0, textFlow.textLength()), textFlow, new Style({
                             font: font,
                             fontSize: 25,
@@ -510,6 +509,33 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         callback && callback(err, results.configuration);
                     });
 
+            },
+
+            setTextForConfiguration: function (text, configuration) {
+                if (!(configuration instanceof TextConfiguration)) {
+                    throw new Error("Configuration is not a TextConfiguration");
+                }
+
+                var textFlow = TextFlow.initializeFromText(text),
+                    textRange = TextRange.createTextRange(0, textFlow.textLength()),
+                    firstLeaf = configuration.$.textFlow.getFirstLeaf(),
+                    paragraph,
+                    leafStyle,
+                    paragraphStyle;
+
+                if (firstLeaf) {
+                    paragraph = firstLeaf.$parent;
+                    leafStyle = firstLeaf.$.style;
+                    if (paragraph) {
+                        paragraphStyle = paragraph.$.style;
+                    }
+                }
+
+                var operation = new ApplyStyleToElementOperation(textRange, textFlow, leafStyle, paragraphStyle);
+                operation.doOperation();
+
+                configuration.set('textFlow', textFlow);
+                textFlow.trigger('operationComplete', null, textFlow);
             },
 
             _positionConfiguration: function (configuration) {
