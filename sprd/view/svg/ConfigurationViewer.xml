@@ -5,7 +5,7 @@
     <svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{_rotationRadius}"
                 visible="{isRotating()}"/>
 
-    <svg:clipPath cid="clipPath" id="{id()}"
+    <svg:clipPath cid="clipPath" id="{id()}" clip-rule="evenodd"
                   translateX="{invert(cv.translateX)}" translateY="{invert(cv.translateY)}"
                   rotation="{invert(cv.rotation)}" rotationX="{cv.rotationX}" rotationY="{cv.rotationY}">
     </svg:clipPath>
