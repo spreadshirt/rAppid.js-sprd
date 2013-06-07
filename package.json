@@ -11,7 +11,7 @@
     "lib": "sprd",
     "repository": {
         "type": "git",
-        "url": "git://github.com/it-ony/rAppid.js-sprd.git"
+        "url": "git://github.com/spreadshirt/rAppid.js-sprd.git"
     },
     "keywords": [
         "rAppid",
