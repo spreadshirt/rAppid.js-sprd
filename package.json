@@ -32,7 +32,7 @@
     "engines": {
         "node": "*"
     },
-    "homepage": "http://rappidjs.com/modules/sprd",
+    "homepage": "http://rappidjs.com/#/api/sprd",
     "optionalDependencies": {},
     "rAppid": {
         "type": "lib",
