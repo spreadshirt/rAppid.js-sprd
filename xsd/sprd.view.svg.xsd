@@ -8,6 +8,7 @@
     <element name="ConfigurationViewerClass" type="ns:ConfigurationViewerClass"/>
     <element name="DesignConfigurationRenderer" type="ns:DesignConfigurationRenderer"/>
     <element name="PrintAreaViewer" type="ns:PrintAreaViewer"/>
+    <element name="PrintAreaViewerClass" type="ns:PrintAreaViewerClass"/>
     <element name="ProductTypeViewViewer" type="ns:ProductTypeViewViewer"/>
     <element name="TextConfigurationRenderer" type="ns:TextConfigurationRenderer"/>
     <element name="TextConfigurationRendererClass" type="ns:TextConfigurationRendererClass"/>
@@ -82,7 +83,7 @@
     </complexType>
     <complexType name="PrintAreaViewer">
         <complexContent>
-            <extension base="ns1:SvgElement">
+            <extension base="ns:PrintAreaViewerClass">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.PrintAreaViewer"></documentation>
                 </annotation>
@@ -93,6 +94,26 @@
                 <attribute name="productTypeViewViewer"/>
                 <attribute name="product"/>
                 <attribute name="productViewer"/>
+                <attribute name="snapLines"/>
+                <attribute name="snapLinesGroup"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="PrintAreaViewerClass">
+        <complexContent>
+            <extension base="ns1:SvgElement">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.PrintAreaViewerClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="g"/>
+                <attribute name="productTypeViewViewer"/>
+                <attribute name="product"/>
+                <attribute name="productViewer"/>
+                <attribute name="snapLines"/>
+                <attribute name="snapLinesGroup"/>
             </extension>
         </complexContent>
     </complexType>

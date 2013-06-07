@@ -288,8 +288,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                121,
-                176
+                130,
+                185
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "_getBoundingBox",
@@ -337,8 +337,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                105,
-                119
+                114,
+                128
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "_hasHardBoundaryError",
@@ -648,7 +648,7 @@
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
                 65,
-                91
+                100
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "_validateTransform",
@@ -1159,8 +1159,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                183,
-                190
+                192,
+                199
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "height",
@@ -1269,8 +1269,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                257,
-                259
+                266,
+                268
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "isReadyForCompose",
@@ -1282,8 +1282,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                209,
-                211
+                218,
+                220
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "isRemovable",
@@ -1295,8 +1295,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                205,
-                207
+                214,
+                216
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "isRotatable",
@@ -1434,8 +1434,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                230,
-                239
+                239,
+                248
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "possiblePrintTypes",
@@ -1777,8 +1777,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                192,
-                199
+                201,
+                208
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "width",

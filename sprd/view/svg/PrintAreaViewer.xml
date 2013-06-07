@@ -1,0 +1,9 @@
+<svg:PrintAreaViewerClass xmlns:svg="sprd.view.svg" xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/2000/svg">
+    <js:Content>
+        <ui:ItemsView cid="snapLinesGroup" items="{snapLines}" itemKey="line" tagName="g" namespace="http://www.w3.org/2000/svg" class="snap-lines">
+            <js:Template name="item">
+                <line x1="${line.x1}" x2="${line.x2}" y1="${line.y1}" y2="${line.y2}" class="snap-line" />
+            </js:Template>
+        </ui:ItemsView>
+    </js:Content>
+</svg:PrintAreaViewerClass>

@@ -1699,6 +1699,7 @@
         "sprd.model.Currency",
         "sprd.model.Design",
         "sprd.model.DesignCategory",
+        "sprd.model.DiscountScale",
         "sprd.model.FontFamily",
         "sprd.model.PrintType",
         "sprd.model.Product",

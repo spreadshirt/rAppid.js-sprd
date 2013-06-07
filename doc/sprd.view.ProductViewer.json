@@ -116,6 +116,17 @@
             ],
             "definedBy": "sprd.view.ProductViewerClass"
         },
+        "removeEmptyTextConfiguration": {
+            "name": "removeEmptyTextConfiguration",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": true,
+            "lineNumbers": [
+                17,
+                17
+            ],
+            "definedBy": "sprd.view.ProductViewerClass"
+        },
         "tagName": {
             "name": "tagName",
             "defaultType": "value",
@@ -458,8 +469,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                401,
-                412
+                403,
+                414
             ],
             "definedBy": "js.core.DomElement",
             "name": "_clearRenderedChildren",
@@ -475,8 +486,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                121,
-                126
+                136,
+                141
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_clickHandler",
@@ -559,13 +570,16 @@
             "parameter": [
                 {
                     "name": "selectedConfiguration"
+                },
+                {
+                    "name": "oldSelectedConfiguration"
                 }
             ],
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                32,
-                34
+                34,
+                48
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_commitSelectedConfiguration",
@@ -581,8 +595,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                347,
-                355
+                349,
+                357
             ],
             "definedBy": "js.core.DomElement",
             "name": "_commitVisible",
@@ -629,8 +643,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                621,
-                626
+                623,
+                628
             ],
             "definedBy": "js.core.DomElement",
             "name": "_createDOMEventHandler",
@@ -895,8 +909,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                800,
-                808
+                802,
+                810
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getHtmlTag",
@@ -912,8 +926,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                414,
-                425
+                416,
+                427
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getIndexOfPlaceHolder",
@@ -946,8 +960,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                606,
-                620
+                608,
+                622
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getNextVisibleChild",
@@ -1278,8 +1292,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                478,
-                494
+                480,
+                496
             ],
             "description": "Returns wether a attribute key is a dom attribute or not\nTherefor it looks in the $classAttributes array.",
             "returns": {
@@ -1370,8 +1384,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                151,
-                214
+                166,
+                229
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_keyDownHandler",
@@ -1387,8 +1401,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                216,
-                221
+                231,
+                236
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_keyPressHandler",
@@ -1424,8 +1438,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                740,
-                751
+                742,
+                753
             ],
             "definedBy": "js.core.DomElement",
             "name": "_mapDOMEventType",
@@ -1441,8 +1455,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                111,
-                119
+                126,
+                134
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_onConfigurationViewerAdded",
@@ -1454,8 +1468,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                107,
-                109
+                122,
+                124
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_onConfigurationsReset",
@@ -1482,8 +1496,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                70,
-                105
+                84,
+                120
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "_positionTextArea",
@@ -1538,8 +1552,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                385,
-                399
+                387,
+                401
             ],
             "definedBy": "js.core.DomElement",
             "name": "_removeRenderedChild",
@@ -1558,8 +1572,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                441,
-                463
+                443,
+                465
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttribute",
@@ -1578,8 +1592,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                465,
-                469
+                467,
+                471
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttributeInternal",
@@ -1595,8 +1609,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                431,
-                439
+                433,
+                441
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttributes",
@@ -1616,7 +1630,7 @@
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
                 308,
-                333
+                335
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderChild",
@@ -1652,8 +1666,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                375,
-                383
+                377,
+                385
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderClass",
@@ -1672,8 +1686,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                366,
-                373
+                368,
+                375
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderComponentClass",
@@ -1852,8 +1866,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                339,
-                345
+                341,
+                347
             ],
             "description": "",
             "private": "",
@@ -1894,8 +1908,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                357,
-                365
+                359,
+                367
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderVisible",
@@ -1975,8 +1989,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                504,
-                520
+                506,
+                522
             ],
             "description": "sets the attribute as part of the rendering cycle on the element\n",
             "private": "",
@@ -2068,8 +2082,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                663,
-                681
+                665,
+                683
             ],
             "definedBy": "js.core.DomElement",
             "name": "addClass",
@@ -2139,8 +2153,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                709,
-                724
+                711,
+                726
             ],
             "definedBy": "js.core.DomElement",
             "name": "bindDomEvent",
@@ -2152,8 +2166,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                571,
-                575
+                573,
+                577
             ],
             "definedBy": "js.core.DomElement",
             "name": "bringToFront",
@@ -2334,8 +2348,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                543,
-                545
+                545,
+                547
             ],
             "definedBy": "js.core.DomElement",
             "name": "dom",
@@ -2401,8 +2415,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                753,
-                757
+                755,
+                759
             ],
             "definedBy": "js.core.DomElement",
             "name": "focus",
@@ -2545,8 +2559,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                144,
-                149
+                159,
+                164
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "getViewerForConfiguration",
@@ -2562,8 +2576,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                780,
-                798
+                782,
+                800
             ],
             "definedBy": "js.core.DomElement",
             "name": "globalToLocal",
@@ -2608,8 +2622,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                659,
-                661
+                661,
+                663
             ],
             "definedBy": "js.core.DomElement",
             "name": "hasClass",
@@ -2628,8 +2642,8 @@
             },
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                536,
-                542
+                538,
+                544
             ],
             "definedBy": "js.core.DomElement",
             "name": "html",
@@ -2706,8 +2720,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                427,
-                429
+                429,
+                431
             ],
             "definedBy": "js.core.DomElement",
             "name": "isRendered",
@@ -2723,8 +2737,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                65,
-                68
+                79,
+                82
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "keyDown",
@@ -2740,8 +2754,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                59,
-                63
+                73,
+                77
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "keyPress",
@@ -2757,8 +2771,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                36,
-                57
+                50,
+                71
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "keyUp",
@@ -2774,8 +2788,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                759,
-                778
+                761,
+                780
             ],
             "definedBy": "js.core.DomElement",
             "name": "localToGlobal",
@@ -2892,8 +2906,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                683,
-                707
+                685,
+                709
             ],
             "definedBy": "js.core.DomElement",
             "name": "removeClass",
@@ -2938,8 +2952,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                576,
-                580
+                578,
+                582
             ],
             "definedBy": "js.core.DomElement",
             "name": "sendToBack",
@@ -3003,8 +3017,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                546,
-                569
+                548,
+                571
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildIndex",
@@ -3020,8 +3034,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                581,
-                588
+                583,
+                590
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildInvisible",
@@ -3037,8 +3051,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                589,
-                605
+                591,
+                607
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildVisible",
@@ -3075,8 +3089,8 @@
             },
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                259,
-                263
+                274,
+                278
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "showTextAreaOverlay",
@@ -3102,8 +3116,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                250,
-                257
+                265,
+                272
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "textAreaBlured",
@@ -3115,8 +3129,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerClass.js",
             "lineNumbers": [
-                239,
-                248
+                254,
+                263
             ],
             "definedBy": "sprd.view.ProductViewerClass",
             "name": "textAreaFocused",
@@ -3203,8 +3217,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                725,
-                738
+                727,
+                740
             ],
             "definedBy": "js.core.DomElement",
             "name": "unbindDomEvent",

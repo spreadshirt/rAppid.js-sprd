@@ -137,7 +137,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             var x = offset.$.x,
                 y = offset.$.y;
 
-            if (!rotation) {
+            if (!(rotation % 180)) {
                 return {
                     x: x,
                     y: y,

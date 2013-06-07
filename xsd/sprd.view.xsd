@@ -341,6 +341,7 @@ set the default appearance of the product is used.
                 <attribute name="productViewerSvg"/>
                 <attribute name="textArea"/>
                 <attribute name="textAreaPosition"/>
+                <attribute name="removeEmptyTextConfiguration" default="true"/>
             </extension>
         </complexContent>
     </complexType>
@@ -363,6 +364,7 @@ set the default appearance of the product is used.
                 <attribute name="productViewerSvg"/>
                 <attribute name="textArea"/>
                 <attribute name="textAreaPosition"/>
+                <attribute name="removeEmptyTextConfiguration" default="true"/>
                 <attribute name="onconfigurationSelect" default="_onConfigurationSelectHandler" type="string"/>
             </extension>
         </complexContent>

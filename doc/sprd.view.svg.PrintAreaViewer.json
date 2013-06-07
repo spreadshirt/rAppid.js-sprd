@@ -1,4 +1,254 @@
 {
+    "fqClassName": "sprd.view.svg.PrintAreaViewer",
+    "dependencies": [
+        "sprd.view.svg.PrintAreaViewerClass"
+    ],
+    "type": "xml",
+    "inherit": "sprd.view.svg.PrintAreaViewerClass",
+    "defaults": {
+        "tagName": {
+            "name": "tagName",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": "g",
+            "lineNumbers": [
+                6,
+                6
+            ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass"
+        },
+        "componentClass": {
+            "name": "componentClass",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                62,
+                62
+            ],
+            "description": "sets the componentClass for the Component.\nThe resulting class attributes is the union from class and componentClass of the Element.\n",
+            "types": [
+                "String"
+            ],
+            "definedBy": "js.core.DomElement"
+        },
+        "productTypeViewViewer": {
+            "name": "productTypeViewViewer",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                9,
+                9
+            ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass"
+        },
+        "product": {
+            "name": "product",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                10,
+                10
+            ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass"
+        },
+        "productViewer": {
+            "name": "productViewer",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                11,
+                11
+            ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass"
+        },
+        "snapLines": {
+            "name": "snapLines",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                13,
+                13
+            ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass"
+        },
+        "snapLinesGroup": {
+            "name": "snapLinesGroup",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                15,
+                15
+            ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass"
+        },
+        "_viewMap": {
+            "name": "_viewMap",
+            "defaultType": "value",
+            "visibility": "private",
+            "value": null,
+            "lineNumbers": [
+                17,
+                17
+            ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass"
+        },
+        "transformations": {
+            "name": "transformations",
+            "defaultType": "factory",
+            "visibility": "public",
+            "lineNumbers": [
+                7,
+                7
+            ],
+            "definedBy": "js.svg.SvgElement"
+        },
+        "_transform": {
+            "name": "_transform",
+            "defaultType": "value",
+            "visibility": "private",
+            "value": null,
+            "lineNumbers": [
+                8,
+                8
+            ],
+            "definedBy": "js.svg.SvgElement"
+        },
+        "translateX": {
+            "name": "translateX",
+            "defaultType": "factory",
+            "visibility": "public",
+            "lineNumbers": [
+                10,
+                10
+            ],
+            "definedBy": "js.svg.SvgElement"
+        },
+        "translateY": {
+            "name": "translateY",
+            "defaultType": "factory",
+            "visibility": "public",
+            "lineNumbers": [
+                11,
+                11
+            ],
+            "definedBy": "js.svg.SvgElement"
+        },
+        "scaleX": {
+            "name": "scaleX",
+            "defaultType": "factory",
+            "visibility": "public",
+            "lineNumbers": [
+                13,
+                13
+            ],
+            "definedBy": "js.svg.SvgElement"
+        },
+        "scaleY": {
+            "name": "scaleY",
+            "defaultType": "factory",
+            "visibility": "public",
+            "lineNumbers": [
+                14,
+                14
+            ],
+            "definedBy": "js.svg.SvgElement"
+        },
+        "rotation": {
+            "name": "rotation",
+            "defaultType": "factory",
+            "visibility": "public",
+            "lineNumbers": [
+                16,
+                16
+            ],
+            "definedBy": "js.svg.SvgElement"
+        },
+        "rotationX": {
+            "name": "rotationX",
+            "defaultType": "factory",
+            "visibility": "public",
+            "lineNumbers": [
+                17,
+                17
+            ],
+            "definedBy": "js.svg.SvgElement"
+        },
+        "rotationY": {
+            "name": "rotationY",
+            "defaultType": "factory",
+            "visibility": "public",
+            "lineNumbers": [
+                18,
+                18
+            ],
+            "definedBy": "js.svg.SvgElement"
+        },
+        "class": {
+            "name": "class",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                54,
+                54
+            ],
+            "description": "sets the class for the Component.\nThe resulting class attributes is the union from class and componentClass of the Element.\n",
+            "types": [
+                "String"
+            ],
+            "definedBy": "js.core.DomElement"
+        },
+        "visible": {
+            "name": "visible",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": true,
+            "lineNumbers": [
+                69,
+                69
+            ],
+            "description": "sets the visibility of an component. If the value is false the component is removed from the DOM.\n",
+            "types": [
+                "Boolean"
+            ],
+            "definedBy": "js.core.DomElement"
+        },
+        "cid": {
+            "name": "cid",
+            "defaultType": "factory",
+            "visibility": "public",
+            "lineNumbers": [
+                66,
+                66
+            ],
+            "description": "the cid is a unique identifier for the component within a xaml class. \\\nThe corresponding component will be automatically added to the $ of the instance of the xaml class.\n",
+            "types": [
+                "String"
+            ],
+            "definedBy": "js.core.Component"
+        },
+        "creationPolicy": {
+            "name": "creationPolicy",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": "auto",
+            "lineNumbers": [
+                112,
+                112
+            ],
+            "description": "Decides if the initialization of the component is started automatically or manually by the application",
+            "types": [
+                "String"
+            ],
+            "definedBy": "js.core.Element"
+        }
+    },
     "methods": [
         {
             "type": "Method",
@@ -42,17 +292,16 @@
             "type": "Method",
             "parameter": [
                 {
-                    "name": "configuration"
+                    "name": "config"
                 }
             ],
             "annotations": {},
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
+            "definedInFile": "js/core/Component.js",
             "lineNumbers": [
-                102,
-                134
+                198,
+                200
             ],
             "definedBy": "js.core.Component",
-            "overwritesMethod": true,
             "name": "_addConfiguration",
             "visibility": "protected"
         },
@@ -153,8 +402,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                401,
-                412
+                403,
+                414
             ],
             "definedBy": "js.core.DomElement",
             "name": "_clearRenderedChildren",
@@ -236,14 +485,31 @@
             "type": "Method",
             "parameter": [
                 {
+                    "name": "productViewer"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/view/svg/PrintAreaViewerClass.js",
+            "lineNumbers": [
+                28,
+                36
+            ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass",
+            "name": "_commitProductViewer",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
                     "name": "visible"
                 }
             ],
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                347,
-                355
+                349,
+                357
             ],
             "definedBy": "js.core.DomElement",
             "name": "_commitVisible",
@@ -290,8 +556,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                621,
-                626
+                623,
+                628
             ],
             "definedBy": "js.core.DomElement",
             "name": "_createDOMEventHandler",
@@ -556,8 +822,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                800,
-                808
+                802,
+                810
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getHtmlTag",
@@ -573,8 +839,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                414,
-                425
+                416,
+                427
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getIndexOfPlaceHolder",
@@ -607,8 +873,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                606,
-                620
+                608,
+                622
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getNextVisibleChild",
@@ -807,15 +1073,18 @@
         },
         {
             "type": "Method",
-            "parameter": [],
+            "parameter": [
+                {
+                    "name": "el"
+                }
+            ],
             "annotations": {},
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
+            "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                25,
-                72
+                283,
+                285
             ],
             "definedBy": "js.core.DomElement",
-            "overwritesMethod": true,
             "name": "_initializeRenderer",
             "visibility": "protected"
         },
@@ -919,8 +1188,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                478,
-                494
+                480,
+                496
             ],
             "description": "Returns wether a attribute key is a dom attribute or not\nTherefor it looks in the $classAttributes array.",
             "returns": {
@@ -1014,8 +1283,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                740,
-                751
+                742,
+                753
             ],
             "definedBy": "js.core.DomElement",
             "name": "_mapDOMEventType",
@@ -1029,11 +1298,12 @@
                 }
             ],
             "annotations": {},
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
+            "definedInFile": "sprd/view/svg/PrintAreaViewerClass.js",
             "lineNumbers": [
-                94,
-                96
+                113,
+                115
             ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass",
             "name": "_onConfigurationAdded",
             "visibility": "protected"
         },
@@ -1045,11 +1315,12 @@
                 }
             ],
             "annotations": {},
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
+            "definedInFile": "sprd/view/svg/PrintAreaViewerClass.js",
             "lineNumbers": [
-                187,
-                197
+                206,
+                216
             ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass",
             "name": "_onConfigurationChanged",
             "visibility": "protected"
         },
@@ -1061,11 +1332,12 @@
                 }
             ],
             "annotations": {},
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
+            "definedInFile": "sprd/view/svg/PrintAreaViewerClass.js",
             "lineNumbers": [
-                98,
-                100
+                117,
+                119
             ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass",
             "name": "_onConfigurationRemoved",
             "visibility": "protected"
         },
@@ -1077,11 +1349,12 @@
                 }
             ],
             "annotations": {},
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
+            "definedInFile": "sprd/view/svg/PrintAreaViewerClass.js",
             "lineNumbers": [
-                83,
-                92
+                102,
+                111
             ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass",
             "name": "_onConfigurationsReset",
             "visibility": "protected"
         },
@@ -1160,11 +1433,12 @@
                 }
             ],
             "annotations": {},
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
+            "definedInFile": "sprd/view/svg/PrintAreaViewerClass.js",
             "lineNumbers": [
-                162,
-                173
+                181,
+                192
             ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass",
             "name": "_removeConfiguration",
             "visibility": "protected"
         },
@@ -1172,11 +1446,12 @@
             "type": "Method",
             "parameter": [],
             "annotations": {},
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
+            "definedInFile": "sprd/view/svg/PrintAreaViewerClass.js",
             "lineNumbers": [
-                175,
-                185
+                194,
+                204
             ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass",
             "name": "_removeConfigurationViewer",
             "visibility": "protected"
         },
@@ -1190,8 +1465,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                385,
-                399
+                387,
+                401
             ],
             "definedBy": "js.core.DomElement",
             "name": "_removeRenderedChild",
@@ -1210,8 +1485,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                441,
-                463
+                443,
+                465
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttribute",
@@ -1230,8 +1505,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                465,
-                469
+                467,
+                471
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttributeInternal",
@@ -1247,8 +1522,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                431,
-                439
+                433,
+                441
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttributes",
@@ -1268,7 +1543,7 @@
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
                 308,
-                333
+                335
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderChild",
@@ -1304,8 +1579,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                375,
-                383
+                377,
+                385
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderClass",
@@ -1324,8 +1599,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                366,
-                373
+                368,
+                375
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderComponentClass",
@@ -1394,11 +1669,12 @@
                 }
             ],
             "annotations": {},
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
+            "definedInFile": "sprd/view/svg/PrintAreaViewerClass.js",
             "lineNumbers": [
-                147,
-                159
+                166,
+                178
             ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass",
             "name": "_renderProduct",
             "visibility": "protected"
         },
@@ -1414,8 +1690,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                339,
-                345
+                341,
+                347
             ],
             "description": "",
             "private": "",
@@ -1446,8 +1722,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                357,
-                365
+                359,
+                367
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderVisible",
@@ -1501,8 +1777,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                504,
-                520
+                506,
+                522
             ],
             "description": "sets the attribute as part of the rendering cycle on the element\n",
             "private": "",
@@ -1594,8 +1870,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                663,
-                681
+                665,
+                683
             ],
             "definedBy": "js.core.DomElement",
             "name": "addClass",
@@ -1665,8 +1941,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                709,
-                724
+                711,
+                726
             ],
             "definedBy": "js.core.DomElement",
             "name": "bindDomEvent",
@@ -1678,8 +1954,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                571,
-                575
+                573,
+                577
             ],
             "definedBy": "js.core.DomElement",
             "name": "bringToFront",
@@ -1827,13 +2103,12 @@
             "type": "Method",
             "parameter": [],
             "annotations": {},
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
+            "definedInFile": "js/core/Base.js",
             "lineNumbers": [
-                18,
-                23
+                8,
+                14
             ],
             "definedBy": "js.core.Base",
-            "overwritesMethod": true,
             "name": "ctor",
             "visibility": "public"
         },
@@ -1861,8 +2136,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                543,
-                545
+                545,
+                547
             ],
             "definedBy": "js.core.DomElement",
             "name": "dom",
@@ -1928,8 +2203,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                753,
-                757
+                755,
+                759
             ],
             "definedBy": "js.core.DomElement",
             "name": "focus",
@@ -2083,11 +2358,12 @@
                 }
             ],
             "annotations": {},
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
+            "definedInFile": "sprd/view/svg/PrintAreaViewerClass.js",
             "lineNumbers": [
-                136,
-                145
+                155,
+                164
             ],
+            "definedBy": "sprd.view.svg.PrintAreaViewerClass",
             "name": "getViewerForConfiguration",
             "visibility": "public"
         },
@@ -2118,8 +2394,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                780,
-                798
+                782,
+                800
             ],
             "definedBy": "js.core.DomElement",
             "name": "globalToLocal",
@@ -2177,8 +2453,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                659,
-                661
+                661,
+                663
             ],
             "definedBy": "js.core.DomElement",
             "name": "hasClass",
@@ -2197,8 +2473,8 @@
             },
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                536,
-                542
+                538,
+                544
             ],
             "definedBy": "js.core.DomElement",
             "name": "html",
@@ -2208,13 +2484,13 @@
             "type": "Method",
             "parameter": [],
             "annotations": {},
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
+            "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                74,
-                81
+                179,
+                180
             ],
+            "description": "the initialize method is a hook function to add a custom logic during the initiation process.",
             "definedBy": "js.core.Bindable",
-            "overwritesMethod": true,
             "name": "initialize",
             "visibility": "public"
         },
@@ -2275,8 +2551,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                427,
-                429
+                429,
+                431
             ],
             "definedBy": "js.core.DomElement",
             "name": "isRendered",
@@ -2309,8 +2585,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                759,
-                778
+                761,
+                780
             ],
             "definedBy": "js.core.DomElement",
             "name": "localToGlobal",
@@ -2440,8 +2716,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                683,
-                707
+                685,
+                709
             ],
             "definedBy": "js.core.DomElement",
             "name": "removeClass",
@@ -2529,8 +2805,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                576,
-                580
+                578,
+                582
             ],
             "definedBy": "js.core.DomElement",
             "name": "sendToBack",
@@ -2594,8 +2870,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                546,
-                569
+                548,
+                571
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildIndex",
@@ -2611,8 +2887,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                581,
-                588
+                583,
+                590
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildInvisible",
@@ -2628,8 +2904,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                589,
-                605
+                591,
+                607
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildVisible",
@@ -2787,8 +3063,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                725,
-                738
+                727,
+                740
             ],
             "definedBy": "js.core.DomElement",
             "name": "unbindDomEvent",
@@ -2831,280 +3107,10 @@
             "visibility": "public"
         }
     ],
-    "staticMethods": [],
-    "defaults": {
-        "tagName": {
-            "name": "tagName",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": "g",
-            "lineNumbers": [
-                6,
-                6
-            ]
-        },
-        "componentClass": {
-            "name": "componentClass",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": "print-area",
-            "lineNumbers": [
-                7,
-                7
-            ],
-            "definedBy": "js.core.DomElement",
-            "overwrites": true
-        },
-        "productTypeViewViewer": {
-            "name": "productTypeViewViewer",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": null,
-            "lineNumbers": [
-                9,
-                9
-            ]
-        },
-        "product": {
-            "name": "product",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": null,
-            "lineNumbers": [
-                10,
-                10
-            ]
-        },
-        "productViewer": {
-            "name": "productViewer",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": null,
-            "lineNumbers": [
-                11,
-                11
-            ]
-        },
-        "_viewMap": {
-            "name": "_viewMap",
-            "defaultType": "value",
-            "visibility": "private",
-            "value": null,
-            "lineNumbers": [
-                13,
-                13
-            ]
-        },
-        "transformations": {
-            "name": "transformations",
-            "defaultType": "factory",
-            "visibility": "public",
-            "lineNumbers": [
-                7,
-                7
-            ],
-            "definedBy": "js.svg.SvgElement"
-        },
-        "_transform": {
-            "name": "_transform",
-            "defaultType": "value",
-            "visibility": "private",
-            "value": null,
-            "lineNumbers": [
-                8,
-                8
-            ],
-            "definedBy": "js.svg.SvgElement"
-        },
-        "translateX": {
-            "name": "translateX",
-            "defaultType": "factory",
-            "visibility": "public",
-            "lineNumbers": [
-                10,
-                10
-            ],
-            "definedBy": "js.svg.SvgElement"
-        },
-        "translateY": {
-            "name": "translateY",
-            "defaultType": "factory",
-            "visibility": "public",
-            "lineNumbers": [
-                11,
-                11
-            ],
-            "definedBy": "js.svg.SvgElement"
-        },
-        "scaleX": {
-            "name": "scaleX",
-            "defaultType": "factory",
-            "visibility": "public",
-            "lineNumbers": [
-                13,
-                13
-            ],
-            "definedBy": "js.svg.SvgElement"
-        },
-        "scaleY": {
-            "name": "scaleY",
-            "defaultType": "factory",
-            "visibility": "public",
-            "lineNumbers": [
-                14,
-                14
-            ],
-            "definedBy": "js.svg.SvgElement"
-        },
-        "rotation": {
-            "name": "rotation",
-            "defaultType": "factory",
-            "visibility": "public",
-            "lineNumbers": [
-                16,
-                16
-            ],
-            "definedBy": "js.svg.SvgElement"
-        },
-        "rotationX": {
-            "name": "rotationX",
-            "defaultType": "factory",
-            "visibility": "public",
-            "lineNumbers": [
-                17,
-                17
-            ],
-            "definedBy": "js.svg.SvgElement"
-        },
-        "rotationY": {
-            "name": "rotationY",
-            "defaultType": "factory",
-            "visibility": "public",
-            "lineNumbers": [
-                18,
-                18
-            ],
-            "definedBy": "js.svg.SvgElement"
-        },
-        "class": {
-            "name": "class",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": null,
-            "lineNumbers": [
-                54,
-                54
-            ],
-            "description": "sets the class for the Component.\nThe resulting class attributes is the union from class and componentClass of the Element.\n",
-            "types": [
-                "String"
-            ],
-            "definedBy": "js.core.DomElement"
-        },
-        "visible": {
-            "name": "visible",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": true,
-            "lineNumbers": [
-                69,
-                69
-            ],
-            "description": "sets the visibility of an component. If the value is false the component is removed from the DOM.\n",
-            "types": [
-                "Boolean"
-            ],
-            "definedBy": "js.core.DomElement"
-        },
-        "cid": {
-            "name": "cid",
-            "defaultType": "factory",
-            "visibility": "public",
-            "lineNumbers": [
-                66,
-                66
-            ],
-            "description": "the cid is a unique identifier for the component within a xaml class. \\\nThe corresponding component will be automatically added to the $ of the instance of the xaml class.\n",
-            "types": [
-                "String"
-            ],
-            "definedBy": "js.core.Component"
-        },
-        "creationPolicy": {
-            "name": "creationPolicy",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": "auto",
-            "lineNumbers": [
-                112,
-                112
-            ],
-            "description": "Decides if the initialization of the component is started automatically or manually by the application",
-            "types": [
-                "String"
-            ],
-            "definedBy": "js.core.Element"
-        }
-    },
-    "properties": {
-        "$classAttributes": {
-            "name": "$classAttributes",
-            "visibility": "private",
-            "definedInFile": "sprd/view/svg/PrintAreaViewer.js",
-            "lineNumbers": [
-                16,
-                16
-            ],
-            "propertyType": "complex",
-            "value": " [\"product\", \"productTypeViewViewer\", \"productViewer\"]",
-            "definedBy": "js.core.DomElement",
-            "overwrites": true
-        },
-        "$errorAttribute": {
-            "name": "$errorAttribute",
-            "visibility": "private",
-            "definedInFile": "js/core/Component.js",
-            "lineNumbers": [
-                69,
-                69
-            ],
-            "propertyType": "value",
-            "definedBy": "js.core.Component"
-        },
-        "$defaultContentName": {
-            "name": "$defaultContentName",
-            "visibility": "private",
-            "definedInFile": "js/core/Component.js",
-            "lineNumbers": [
-                74,
-                74
-            ],
-            "propertyType": "value",
-            "description": "if set all children from the descriptor will be placed into a\njs.core.Content block with the name of $defaultContentName",
-            "definedBy": "js.core.Component"
-        },
-        "$defaultTemplateName": {
-            "name": "$defaultTemplateName",
-            "visibility": "private",
-            "definedInFile": "js/core/Component.js",
-            "lineNumbers": [
-                76,
-                76
-            ],
-            "propertyType": "value",
-            "definedBy": "js.core.Component"
-        }
-    },
-    "fqClassName": "sprd.view.svg.PrintAreaViewer",
-    "inherit": "js.svg.SvgElement",
-    "dependencies": [
-        "js.svg.SvgElement",
-        "xaml!sprd.view.svg.ConfigurationViewer"
-    ],
-    "type": "js",
-    "file": "sprd/view/svg/PrintAreaViewer.js",
+    "file": "sprd/view/svg/PrintAreaViewer.xml",
     "package": "sprd.view.svg",
     "inheritancePath": [
+        "sprd.view.svg.PrintAreaViewerClass",
         "js.svg.SvgElement",
         "js.core.DomElement",
         "js.core.Component",
@@ -3112,5 +3118,6 @@
         "js.core.Bindable",
         "js.core.EventDispatcher",
         "js.core.Base"
-    ]
+    ],
+    "staticMethods": []
 }

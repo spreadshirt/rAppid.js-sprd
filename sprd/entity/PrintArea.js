@@ -55,7 +55,16 @@ define(['js/data/Entity', 'sprd/model/PrintType', 'sprd/entity/Size'], function 
             }
 
             return null;
-        }
+        },
+
+        height: function() {
+            return this.get("_size.height")
+        }.onChange("_size"),
+
+        width: function() {
+            return this.get("_size.width")
+        }.onChange("_size")
+
     });
 
 

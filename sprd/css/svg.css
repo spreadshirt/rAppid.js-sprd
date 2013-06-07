@@ -86,6 +86,13 @@ rect {
     vector-effect: non-scaling-stroke;
 }
 
+.snap-line {
+    fill: none;
+    stroke-width: 1;
+    stroke: #ffa53b;
+    vector-effect: non-scaling-stroke;
+}
+
 .text-configuration-background {
     fill: red;
     fill-opacity: 0.01;

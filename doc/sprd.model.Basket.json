@@ -433,8 +433,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Basket.js",
             "lineNumbers": [
-                36,
-                53
+                45,
+                62
             ],
             "name": "_onArticleSizeChange",
             "visibility": "protected"
@@ -562,8 +562,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Basket.js",
             "lineNumbers": [
-                66,
-                68
+                75,
+                77
             ],
             "name": "_triggerFunctions",
             "visibility": "protected"
@@ -594,8 +594,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Basket.js",
             "lineNumbers": [
-                18,
-                34
+                27,
+                43
             ],
             "name": "addElement",
             "visibility": "public"
@@ -801,12 +801,28 @@
             "annotations": {},
             "definedInFile": "sprd/model/Basket.js",
             "lineNumbers": [
-                10,
-                16
+                19,
+                25
             ],
             "definedBy": "js.core.Base",
             "overwritesMethod": true,
             "name": "ctor",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {
+                "onChange": [
+                    "discounts"
+                ]
+            },
+            "definedInFile": "sprd/model/Basket.js",
+            "lineNumbers": [
+                117,
+                134
+            ],
+            "name": "currentDiscount",
             "visibility": "public"
         },
         {
@@ -821,6 +837,22 @@
             "description": "Clears up the instance",
             "definedBy": "js.core.EventDispatcher",
             "name": "destroy",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {
+                "onChange": [
+                    "discounts"
+                ]
+            },
+            "definedInFile": "sprd/model/Basket.js",
+            "lineNumbers": [
+                109,
+                115
+            ],
+            "name": "discountVatIncluded",
             "visibility": "public"
         },
         {
@@ -983,8 +1015,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Basket.js",
             "lineNumbers": [
-                55,
-                64
+                64,
+                73
             ],
             "name": "getBasketItemForElement",
             "visibility": "public"
@@ -1312,8 +1344,8 @@
             },
             "definedInFile": "sprd/model/Basket.js",
             "lineNumbers": [
-                100,
-                105
+                143,
+                148
             ],
             "name": "platformCheckoutLink",
             "visibility": "public"
@@ -1478,8 +1510,8 @@
             },
             "definedInFile": "sprd/model/Basket.js",
             "lineNumbers": [
-                107,
-                112
+                150,
+                155
             ],
             "name": "shopCheckoutLink",
             "visibility": "public"
@@ -1511,10 +1543,27 @@
             },
             "definedInFile": "sprd/model/Basket.js",
             "lineNumbers": [
-                70,
-                78
+                79,
+                87
             ],
             "name": "totalItemsCount",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {
+                "onChange": [
+                    "priceItems",
+                    "discounts"
+                ]
+            },
+            "definedInFile": "sprd/model/Basket.js",
+            "lineNumbers": [
+                136,
+                141
+            ],
+            "name": "totalVatIncluded",
             "visibility": "public"
         },
         {
@@ -1708,8 +1757,8 @@
             },
             "definedInFile": "sprd/model/Basket.js",
             "lineNumbers": [
-                90,
-                98
+                99,
+                107
             ],
             "name": "vatExcluded",
             "visibility": "public"
@@ -1727,8 +1776,8 @@
             },
             "definedInFile": "sprd/model/Basket.js",
             "lineNumbers": [
-                80,
-                88
+                89,
+                97
             ],
             "name": "vatIncluded",
             "visibility": "public"
@@ -1847,9 +1896,12 @@
     "inherit": "sprd.data.SprdModel",
     "dependencies": [
         "js.data.Collection",
+        "js.data.Entity",
         "sprd.data.SprdModel",
+        "sprd.entity.Price",
         "sprd.model.BasketItem",
-        "sprd.model.Currency"
+        "sprd.model.Currency",
+        "sprd.model.DiscountScale"
     ],
     "type": "js",
     "file": "sprd/model/Basket.js",
