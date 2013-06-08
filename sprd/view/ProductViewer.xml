@@ -8,6 +8,7 @@
     <sprdView:ProductViewerSvg view="{view}" product="{product}"
                                cid="productViewerSvg"
                                focused="{focused}"
+                               imageService="{imageService}"
                                selectedConfiguration="{{selectedConfiguration}}"
                                width="{width}" height="{height}" editable="{editable}"/>
 </sprdView:ProductViewerClass>

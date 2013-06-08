@@ -1,14 +1,10 @@
-define(['sprd/view/svg/ConfigurationRenderer', "sprd/data/ImageService"], function (Renderer, ImageService) {
+define(['sprd/view/svg/ConfigurationRenderer'], function (Renderer) {
 
     return Renderer.inherit("sprd.view.svg.DesignConfigurationRenderer", {
 
         defaults: {
             tagName: "image",
             href: "{url()}"
-        },
-
-        inject: {
-            imageService: ImageService
         },
 
         url: function () {

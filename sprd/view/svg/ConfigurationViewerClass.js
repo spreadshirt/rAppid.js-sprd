@@ -63,7 +63,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _handleIconScale: 1,
 
                 _mode: null,
-                _rotationRadius: null
+                _rotationRadius: null,
+
+                imageService: null
             },
 
             inject: {
@@ -153,7 +155,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this.$asset = this.createComponent(rendererFactory, {
                         configuration: configuration,
                         productViewer: this.$.productViewer,
-                        configurationViewer: this
+                        configurationViewer: this,
+
+                        imageService: this.$.imageService
                     });
 
                     var softBoundary = this.get("_viewMap.printArea.boundary.soft.content.svg.path.d");

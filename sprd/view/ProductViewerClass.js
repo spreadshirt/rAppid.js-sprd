@@ -1,4 +1,4 @@
-define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager"], function (View, Bus, ProductManager) {
+define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/ImageService"], function (View, Bus, ProductManager, ImageService) {
     return View.inherit('sprd.view.ProductViewerClass', {
 
         defaults: {
@@ -14,12 +14,15 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager"], function (V
             textArea: null,
             textAreaPosition: null,
 
-            removeEmptyTextConfiguration: true
+            removeEmptyTextConfiguration: true,
+
+            imageService: null
         },
 
         inject: {
             bus: Bus,
-            productManager: ProductManager
+            productManager: ProductManager,
+            imageService: ImageService
         },
 
         events: ['on:configurationSelect'],

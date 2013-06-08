@@ -28,10 +28,6 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
 
             $classAttributes: ["product", "view", "editable", "selectedConfiguration"],
 
-            inject: {
-                imageService: ImageService
-            },
-
             ctor: function () {
 
                 this.$productTypeViewViewerCache = {};
@@ -140,7 +136,9 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
                             productViewer: this,
 
                             _view: view,
-                            _productType: productType
+                            _productType: productType,
+
+                            imageService: this.$.imageService
                         });
                     }
 
@@ -150,6 +148,7 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
 
                     this.$currentProductTypeViewViewer = this.$productTypeViewViewerCache[cacheId];
                     this.addChild(this.$currentProductTypeViewViewer);
+
 
                 }
             },

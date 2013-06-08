@@ -14,7 +14,9 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
 
             snapLinesGroup: null,
 
-            _viewMap: null
+            _viewMap: null,
+
+            imageService: null
         },
 
         $classAttributes: ["product", "productTypeViewViewer", "productViewer"],
@@ -142,7 +144,9 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
                     _viewMap: this.get("_viewMap"),
                     productViewer: this.$.productViewer,
 
-                    configuration: configuration
+                    configuration: configuration,
+
+                    imageService: this.$.imageService
                 });
 
                 this.addChild(viewer);

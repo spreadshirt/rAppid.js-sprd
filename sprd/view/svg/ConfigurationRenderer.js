@@ -6,7 +6,9 @@ define(['js/svg/SvgElement'], function(SvgElement) {
             y: 0,
             width: "{configuration.size().width}",
             height: "{configuration.size().height}",
-            focused: "{configurationViewer.focused}"
+            focused: "{configurationViewer.focused}",
+
+            imageService: null
         },
 
         $classAttributes: ["configuration","productViewer", "configurationViewer","textArea","showSelection","focused"]

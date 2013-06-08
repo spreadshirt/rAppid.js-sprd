@@ -1,4 +1,4 @@
-define(['js/svg/SvgElement', "sprd/data/ImageService", "xaml!sprd/view/svg/PrintAreaViewer"], function (SvgElement, ImageService, PrintAreaViewer) {
+define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer"], function (SvgElement, PrintAreaViewer) {
 
     return SvgElement.inherit('sprd.view.svg.ProductTypeViewViewer', {
 
@@ -15,14 +15,12 @@ define(['js/svg/SvgElement', "sprd/data/ImageService", "xaml!sprd/view/svg/Print
             _appearance: "{product.appearance}",
 
             _view: null,
-            _productType: null
+            _productType: null,
+
+            imageService: null
         },
 
         $classAttributes: ["productViewer", "product"],
-
-        inject: {
-            imageService: ImageService
-        },
 
         ctor: function () {
             this.$printAreas = [];
@@ -89,7 +87,9 @@ define(['js/svg/SvgElement', "sprd/data/ImageService", "xaml!sprd/view/svg/Print
                         productTypeViewViewer: this,
                         productViewer: this.$.productViewer,
 
-                        _viewMap: viewMap
+                        _viewMap: viewMap,
+
+                        imageService: this.$.imageService
                     });
 
                     this.addChild(printAreaViewer);

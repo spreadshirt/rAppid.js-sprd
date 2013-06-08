@@ -1,4 +1,4 @@
-define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], function (ConfigurationRenderer, ImageService) {
+define(['sprd/view/svg/ConfigurationRenderer'], function (ConfigurationRenderer) {
 
     return ConfigurationRenderer.inherit("sprd.view.svg.TextConfigurationRendererClass", {
 
@@ -10,11 +10,9 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/data/ImageService'], functi
             configuration: null,
 
             showSelection: "{configurationViewer.isSelectedConfiguration()}",
-            textArea: null
-        },
+            textArea: null,
 
-        inject: {
-            imageService: ImageService
+            imageService: null
         },
 
         ctor: function () {
