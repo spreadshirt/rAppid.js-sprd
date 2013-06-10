@@ -569,58 +569,60 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     if (moveSnippingEnabled) {
 
-                        var snapLines = [];
+                        var snapLines = [],
+                            threshold = moveSnippingThreshold * factor.x;
 
-                        // check if there is something to snap in the near
-                        for (var positionFactor = 0; positionFactor <= 2; positionFactor++) {
-                            posX = newX + positionFactor / 2 * configuration.width();
-                            posY = newY + positionFactor / 2 * configuration.height();
+                        if (!this.$.shiftKey) { // check if there is something to snap in the near
+                            for (var positionFactor = 0; positionFactor <= 2; positionFactor++) {
+                                posX = newX + positionFactor / 2 * configuration.width();
+                                posY = newY + positionFactor / 2 * configuration.height();
 
-                            for (var p = 0; p < this.$snapPoints.length; p++) {
-                                var snapPoint = this.$snapPoints[p];
+                                for (var p = 0; p < this.$snapPoints.length; p++) {
+                                    var snapPoint = this.$snapPoints[p];
 
-                                distanceX = posX - snapPoint.x;
-                                distanceY = posY - snapPoint.y;
+                                    distanceX = posX - snapPoint.x;
+                                    distanceY = posY - snapPoint.y;
 
-                                if (Math.abs(distanceX) <= moveSnippingThreshold && Math.abs(distanceX) < Math.abs(snapX)) {
-                                    // snap to point
-                                    snapX = distanceX;
-                                    snapPosX = snapPoint.x;
+                                    if (Math.abs(distanceX) <= threshold && Math.abs(distanceX) < Math.abs(snapX)) {
+                                        // snap to point
+                                        snapX = distanceX;
+                                        snapPosX = snapPoint.x;
+                                    }
+
+                                    if (Math.abs(distanceY) <= threshold && Math.abs(distanceY) < Math.abs(snapY)) {
+                                        snapY = distanceY;
+                                        snapPosY = snapPoint.y;
+                                    }
+
                                 }
+                            }
 
-                                if (Math.abs(distanceY) <= moveSnippingThreshold && Math.abs(distanceY) < Math.abs(snapY)) {
-                                    snapY = distanceY;
-                                    snapPosY = snapPoint.y;
-                                }
+                            if (Math.abs(snapX) <= threshold) {
+                                newX -= snapX;
+                                snapLines.push({
+                                    x1: snapPosX,
+                                    x2: snapPosX,
+                                    y1: -2000,
+                                    y2: 2000
+                                });
+                            }
 
+                            if (Math.abs(snapY) <= threshold) {
+                                newY -= snapY;
+                                snapLines.push({
+                                    y1: snapPosY,
+                                    y2: snapPosY,
+                                    x1: -2000,
+                                    x2: 2000
+                                });
                             }
                         }
 
-                        if (Math.abs(snapX) <= moveSnippingThreshold) {
-                            newX -= snapX;
-                            snapLines.push({
-                                x1: snapPosX,
-                                x2: snapPosX,
-                                y1: -2000,
-                                y2: 2000
-                            });
-                        }
+                    }
 
-                        if (Math.abs(snapY) <= moveSnippingThreshold) {
-                            newY -= snapY;
-                            snapLines.push({
-                                y1: snapPosY,
-                                y2: snapPosY,
-                                x1: -2000,
-                                x2: 2000
-                            });
-                        }
-
-                        var snapLinesList = this.$.printAreaViewer.$.snapLines;
-                        if (snapLinesList) {
-                            snapLinesList.reset(snapLines);
-                        }
-
+                    var snapLinesList = this.$.printAreaViewer.$.snapLines;
+                    if (snapLinesList) {
+                        snapLinesList.reset(snapLines);
                     }
 
                     this.$._offset.set({
@@ -846,6 +848,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     });
 
                     configuration._validateTransform(configuration.$);
+
+                    var snapLinesList = this.$.printAreaViewer.$.snapLines;
+                    if (snapLinesList) {
+                        snapLinesList.reset([]);
+                    }
                 }
             },
 
