@@ -15,6 +15,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             textAreaPosition: null,
 
             removeEmptyTextConfiguration: true,
+            removeConfigurationOutsidePrintArea: true,
 
             imageService: null
         },
@@ -37,12 +38,28 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
         _commitSelectedConfiguration: function (selectedConfiguration, oldSelectedConfiguration) {
 
-            if (this.$.removeEmptyTextConfiguration && !selectedConfiguration && oldSelectedConfiguration &&
+            if (this.$.removeEmptyTextConfiguration && oldSelectedConfiguration &&
                 oldSelectedConfiguration.type === "text" && oldSelectedConfiguration.$.textFlow &&
                 this.$.product) {
 
                 var text = oldSelectedConfiguration.$.textFlow.text(0, -1);
                 if (/^[\s\n\r]*$/.test(text)) {
+                    this.$.product.$.configurations.remove(oldSelectedConfiguration);
+                }
+            }
+
+            if (this.$.removeConfigurationOutsidePrintArea && oldSelectedConfiguration && this.$.product) {
+                // check if the configuration is complete outside the print area, if so remove it
+                var boundingBox = oldSelectedConfiguration._getBoundingBox(),
+                    printArea = oldSelectedConfiguration.$.printArea;
+
+                if (boundingBox && printArea && (
+                    boundingBox.x > printArea.width() ||
+                        boundingBox.x + boundingBox.width < 0 ||
+                        boundingBox.y > printArea.height() ||
+                        boundingBox.y + boundingBox.height < 0
+                    )) {
+
                     this.$.product.$.configurations.remove(oldSelectedConfiguration);
                 }
 
