@@ -53,7 +53,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 var boundingBox = oldSelectedConfiguration._getBoundingBox(),
                     printArea = oldSelectedConfiguration.$.printArea;
 
-                if (boundingBox && printArea && (
+                if (boundingBox && printArea && printArea.hasSoftBoundary() (
                     boundingBox.x > printArea.width() ||
                         boundingBox.x + boundingBox.width < 0 ||
                         boundingBox.y > printArea.height() ||
