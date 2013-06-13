@@ -54,8 +54,6 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             this.bind("configurations", "reset", priceChangeHandler, this);
             this.bind("configurations", "item:priceChanged", priceChangeHandler, this);
 
-            this.bind('change:productType', productChangeHandler, this);
-            this.bind('change:appearance', productChangeHandler, this);
             this.bind('configurations', 'reset', productChangeHandler, this);
             this.bind('configurations', 'item:configurationChanged', productChangeHandler, this);
             this.bind('configurations', 'item:change:printArea', productChangeHandler, this);
@@ -282,16 +280,23 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             return "";
         }.onChange(["appearance"]),
 
-        isReadyForCompose: function(){
+        isReadyForCompose: function () {
             var ready = true;
 
-            if(this.$.configurations){
-                this.$.configurations.each(function(configuration){
+            if (this.$.configurations) {
+                this.$.configurations.each(function (configuration) {
                     ready = ready && configuration.isReadyForCompose();
                 });
             }
 
             return ready;
+        },
+
+        _commitChangedAttributes: function (attributes) {
+            this.callBase();
+            if (attributes.hasOwnProperty("appearance") || attributes.hasOwnProperty("productType")) {
+                this.trigger("productChanged");
+            }
         }
 
     });
