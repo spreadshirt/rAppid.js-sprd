@@ -81,7 +81,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              */
             convertConfigurations: function (product, productType, appearance) {
                 var configurations = product.$.configurations.$items,
-                    removeConfigurations = [];
+                    removeConfigurations = [],
+                    setOptions = {silent: true};
 
                 for (var i = 0; i < configurations.length; i++) {
                     var configuration = configurations[i],
@@ -99,7 +100,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     }
 
                     if (targetPrintArea && configuration.isAllowedOnPrintArea(targetPrintArea)) {
-                        configuration.set('printArea', targetPrintArea);
+                        configuration.set('printArea', targetPrintArea, setOptions);
 
                         var currentPrintAreaWidth = currentPrintArea.get("boundary.size.width");
                         var currentPrintAreaHeight = currentPrintArea.get("boundary.size.height");
@@ -185,14 +186,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             configuration.set({
                                 printType: preferredPrintType,
                                 scale: preferredScale
-                            });
+                            }, setOptions);
 
                             preferredOffset = {
                                 x: targetPrintAreaWidth * center.x / currentPrintAreaWidth - configuration.width() / 2,
                                 y: targetPrintAreaHeight * center.y / currentPrintAreaHeight - configuration.height() / 2
                             };
 
-                            configuration.$.offset.set(preferredOffset);
+                            configuration.$.offset.set(preferredOffset, setOptions);
 
                         } else {
                             // remove configuration
@@ -205,7 +206,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     }
                 }
 
-                product.$.configurations.remove(removeConfigurations);
+                product.$.configurations.remove(removeConfigurations, setOptions);
             },
             /**
              * Adds a design to a given Product
