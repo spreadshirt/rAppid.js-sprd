@@ -66,7 +66,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.trigger("priceChanged");
             },
 
-            _debouncedComposeText: function() {
+            _debouncedComposeText: function () {
                 this._debounceFunctionCall(this._composeText, "composeText", 300, this, [true])
             },
 
@@ -101,7 +101,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         bound: composedTextFlow ? composedTextFlow.measure : null
                     });
 
-                    self.trigger('configurationChanged');
+                    self._debounceFunctionCall(function () {
+                        self.trigger('configurationChanged', null, self);
+                    }, "configurationChangedTrigger", 300, this, [true])
+
                 });
             },
 
