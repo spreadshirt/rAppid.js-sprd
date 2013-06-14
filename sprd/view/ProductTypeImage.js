@@ -99,7 +99,7 @@ define(['xaml!sprd/view/Image', 'sprd/data/ImageService'], function (Image, Imag
             }
 
             return url;
-        }.onChange('width', 'height', 'productType', 'appearance'),
+        }.onChange('width', 'height', 'productType', 'appearance', 'view'),
 
         alt: function () {
             if (this.$.productType) {
