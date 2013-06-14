@@ -1,0 +1,7 @@
+<view:AppearanceColorClass xmlns:view="sprd.view" xmlns:js="js.core" xmlns:ui="js.ui" xmlns='http://www.w3.org/1999/xhtml'>
+    <ui:ItemsView items="{appearance.colors}" visible="{not(appearance.isTexture())}" itemKey="color">
+        <js:Template name="item">
+            <div backgroundColor="{color.color().toString()}" width="{colorWidth(index)}%"/>
+        </js:Template>
+    </ui:ItemsView>
+</view:AppearanceColorClass>
