@@ -1,9 +1,11 @@
-define(["js/ui/View"], function(View) {
+define(["js/ui/View"], function (View) {
 
     var ratios = {
         2: [75, 25],
         3: [60, 30, 10]
     };
+
+    var lengthCache = {};
 
     return View.inherit("sprd.view.AppearanceColorClass", {
 
@@ -12,21 +14,30 @@ define(["js/ui/View"], function(View) {
             componentClass: "appearance-color"
         },
 
-        colorWidth: function(index) {
+        colorWidth: function (index) {
             var length = this.get("appearance.colors.length");
 
+            var cacheKey = "" + length;
+            if (lengthCache.hasOwnProperty(cacheKey)) {
+                return lengthCache[cacheKey];
+            }
+
+            var ret = 0;
             if (length) {
 
                 if (ratios.hasOwnProperty(length)) {
-                    return ratios[length][index];
+                    ret = ratios[length][index];
+                } else {
+                    ret = 100 / length;
                 }
 
-                return 100 / length;
             }
 
-            return 0;
+            lengthCache[cacheKey] = ret;
 
-        }.on("appearance.colors.length")
+            return ret;
+
+        }.onChange("appearance")
 
     });
 
