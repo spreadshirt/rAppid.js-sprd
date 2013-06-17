@@ -162,6 +162,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 printType.get("size.width") / configurationPrintTypeSize.$.width,
                                 printType.get("size.height") / configurationPrintTypeSize.$.height);
 
+                            if (printType.isShrinkable()) {
+                                maximumScale = 1;
+                            }
+
                             if (!allowScale && (maximumScale < 1 || (minimumScale && minimumScale > 1))) {
                                 continue;
                             }
