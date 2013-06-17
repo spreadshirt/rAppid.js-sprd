@@ -150,7 +150,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             printType = possiblePrintTypes[j];
 
                             var factor = optimalScale;
-                            var minimumScale = optimalScale;
+                            var minimumScale = null;
 
                             if (printType.isEnlargeable()) {
                                 minimumScale = configuration.minimumScale();
@@ -162,14 +162,17 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 printType.get("size.width") / configurationPrintTypeSize.$.width,
                                 printType.get("size.height") / configurationPrintTypeSize.$.height);
 
-                            if (!allowScale && (maximumScale < 1 || minimumScale > 1)) {
-                                continue;
-                            }
-                            if (minimumScale > maximumScale) {
+                            if (!allowScale && (maximumScale < 1 || (minimumScale && minimumScale > 1))) {
                                 continue;
                             }
 
-                            factor = Math.max(factor, minimumScale);
+                            if (minimumScale && minimumScale > maximumScale) {
+                                continue;
+                            }
+
+                            if (minimumScale) {
+                                factor = Math.max(factor, minimumScale);
+                            }
                             factor = Math.min(factor, maximumScale);
 
                             preferredScale = {
