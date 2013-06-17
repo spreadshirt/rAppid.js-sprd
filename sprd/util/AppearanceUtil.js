@@ -1,16 +1,16 @@
 define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color) {
 
     var COLOR_MAP = {
-        WHITE: 0xFFFFFF,
-        BLACK: 0x000000,
-        BLUE: 0x2244AA,
-        RED: 0xB91816,
-        GREY: 0xCCCCCC,
-        BROWN: 0x664B2F,
-        GREEN: 0x669933,
-        YELLOW: 0xFFF500,
-        TURQUOISE: 0x0AC7DF,
-        PINK: 0xFB4E81
+        white: 0xFFFFFF,
+        black: 0x000000,
+        blue: 0x2244AA,
+        red: 0xB91816,
+        grey: 0xCCCCCC,
+        brown: 0x664B2F,
+        green: 0x669933,
+        yellow: 0xFFF500,
+        turquoise: 0x0AC7DF,
+        pink: 0xFB4E81
     };
 
     var productTypeToColorMap = {},
@@ -40,6 +40,7 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
 
                 if (COLOR_MAP.hasOwnProperty(key)) {
                     color = Color.parse(COLOR_MAP[key]);
+                    color.key = key;
                     colors.push(color);
                     colorMap[color.toString()] = color;
                 }
