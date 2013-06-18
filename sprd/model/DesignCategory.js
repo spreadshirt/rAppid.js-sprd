@@ -18,7 +18,7 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], funct
             });
         },
         hasSubCategories: function () {
-            return !(this.$.designCategories === undefined || this.$.designCategories === null);
+            return this.$.designCategories && this.$.designCategories.size();
         },
         parse: function (data) {
             if (data.id.indexOf("b") === -1) {
@@ -28,7 +28,7 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], funct
         }
     });
 
-    DesignCategory.prototype.schema.designCategories =[DesignCategory];
+    DesignCategory.prototype.schema.designCategories = [DesignCategory];
 
     return DesignCategory;
 });
