@@ -512,8 +512,8 @@
             },
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                259,
-                265
+                262,
+                268
             ],
             "definedBy": "js.data.Model",
             "name": "_status",
@@ -697,8 +697,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                280,
-                289
+                283,
+                292
             ],
             "description": "Converts the identifier to the given type in the schema",
             "returns": {
@@ -855,8 +855,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                196,
-                225
+                193,
+                228
             ],
             "definedBy": "js.data.Model",
             "name": "fetch",
@@ -932,8 +932,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                148,
-                167
+                157,
+                176
             ],
             "definedBy": "js.data.Model",
             "name": "getCollection",
@@ -1099,8 +1099,8 @@
             },
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                271,
-                273
+                274,
+                276
             ],
             "definedBy": "js.data.Model",
             "name": "isCreated",
@@ -1150,8 +1150,8 @@
             },
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                267,
-                269
+                270,
+                272
             ],
             "definedBy": "js.data.Model",
             "name": "isNew",
@@ -1272,26 +1272,6 @@
             "type": "Method",
             "parameter": [
                 {
-                    "name": "attributes"
-                },
-                {
-                    "name": "action"
-                }
-            ],
-            "annotations": {},
-            "definedInFile": "js/data/Model.js",
-            "lineNumbers": [
-                169,
-                179
-            ],
-            "definedBy": "js.data.Model",
-            "name": "prepare",
-            "visibility": "public"
-        },
-        {
-            "type": "Method",
-            "parameter": [
-                {
                     "name": "options"
                 },
                 {
@@ -1301,8 +1281,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                227,
-                248
+                230,
+                251
             ],
             "definedBy": "js.data.Model",
             "name": "remove",
@@ -1346,7 +1326,7 @@
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
                 82,
-                123
+                132
             ],
             "description": "\npersistent the model over the data-source in which it was created\n",
             "definedBy": "js.data.Model",
@@ -1582,8 +1562,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                129,
-                146
+                138,
+                155
             ],
             "description": "",
             "definedBy": "js.data.Model",

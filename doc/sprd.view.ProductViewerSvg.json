@@ -10,34 +10,10 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                115,
-                122
+                111,
+                118
             ],
             "name": "_commitProduct",
-            "visibility": "protected"
-        },
-        {
-            "type": "Method",
-            "parameter": [],
-            "annotations": {},
-            "definedInFile": "sprd/view/ProductViewerSvg.js",
-            "lineNumbers": [
-                66,
-                68
-            ],
-            "name": "_commitView",
-            "visibility": "protected"
-        },
-        {
-            "type": "Method",
-            "parameter": [],
-            "annotations": {},
-            "definedInFile": "sprd/view/ProductViewerSvg.js",
-            "lineNumbers": [
-                70,
-                83
-            ],
-            "name": "_determinateInternalView",
             "visibility": "protected"
         },
         {
@@ -49,6 +25,30 @@
                 62,
                 64
             ],
+            "name": "_commitView",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                66,
+                79
+            ],
+            "name": "_determinateInternalView",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [],
+            "annotations": {},
+            "definedInFile": "sprd/view/ProductViewerSvg.js",
+            "lineNumbers": [
+                58,
+                60
+            ],
             "name": "_onViewsChanged",
             "visibility": "protected"
         },
@@ -58,8 +58,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                50,
-                60
+                46,
+                56
             ],
             "name": "_removeProductTypeViewViewers",
             "visibility": "protected"
@@ -77,8 +77,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                124,
-                155
+                120,
+                154
             ],
             "name": "_renderProductTypeView",
             "visibility": "protected"
@@ -96,8 +96,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                85,
-                94
+                81,
+                90
             ],
             "name": "_render_productType",
             "visibility": "protected"
@@ -112,8 +112,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                96,
-                113
+                92,
+                109
             ],
             "name": "_render_view",
             "visibility": "protected"
@@ -124,8 +124,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                35,
-                40
+                31,
+                36
             ],
             "definedBy": "js.svg.Svg",
             "overwritesMethod": true,
@@ -138,8 +138,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                157,
-                160
+                156,
+                159
             ],
             "name": "destroy",
             "visibility": "public"
@@ -154,8 +154,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                162,
-                167
+                161,
+                166
             ],
             "name": "getViewerForConfiguration",
             "visibility": "public"
@@ -179,8 +179,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
-                43,
-                48
+                39,
+                44
             ],
             "name": "initialize",
             "visibility": "public"

@@ -26,6 +26,7 @@
                 <attribute name="width" default="{configuration.size().width}"/>
                 <attribute name="height" default="{configuration.size().height}"/>
                 <attribute name="focused" default="{configurationViewer.focused}"/>
+                <attribute name="imageService"/>
             </extension>
         </complexContent>
     </complexType>
@@ -45,6 +46,7 @@
                 <attribute name="product"/>
                 <attribute name="focused" default="{isFocused()}"/>
                 <attribute name="selected" default="{isSelectedConfiguration()}"/>
+                <attribute name="imageService"/>
             </extension>
         </complexContent>
     </complexType>
@@ -64,6 +66,7 @@
                 <attribute name="product"/>
                 <attribute name="focused" default="{isFocused()}"/>
                 <attribute name="selected" default="{isSelectedConfiguration()}"/>
+                <attribute name="imageService"/>
             </extension>
         </complexContent>
     </complexType>
@@ -96,6 +99,7 @@
                 <attribute name="productViewer"/>
                 <attribute name="snapLines"/>
                 <attribute name="snapLinesGroup"/>
+                <attribute name="imageService"/>
             </extension>
         </complexContent>
     </complexType>
@@ -114,6 +118,7 @@
                 <attribute name="productViewer"/>
                 <attribute name="snapLines"/>
                 <attribute name="snapLinesGroup"/>
+                <attribute name="imageService"/>
             </extension>
         </complexContent>
     </complexType>
@@ -129,6 +134,7 @@
                 <attribute name="tagName" default="g"/>
                 <attribute name="product"/>
                 <attribute name="productViewer"/>
+                <attribute name="imageService"/>
             </extension>
         </complexContent>
     </complexType>

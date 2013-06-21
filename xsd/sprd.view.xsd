@@ -3,6 +3,8 @@
     xmlns:ns1="js.ui"
     xmlns:ns="sprd.view">
     <import namespace="js.ui"/>
+    <element name="AppearanceColor" type="ns:AppearanceColor"/>
+    <element name="AppearanceColorClass" type="ns:AppearanceColorClass"/>
     <element name="AppearanceImage" type="ns:AppearanceImage"/>
     <element name="ArticleImage" type="ns:ArticleImage"/>
     <element name="ColorSelector" type="ns:ColorSelector"/>
@@ -20,10 +22,37 @@
     <element name="ProductViewer" type="ns:ProductViewer"/>
     <element name="ProductViewerClass" type="ns:ProductViewerClass"/>
     <element name="ProductViewSelector" type="ns:ProductViewSelector"/>
+    <element name="ProductViewSelectorClass" type="ns:ProductViewSelectorClass"/>
     <element name="SimpleProductViewSelector" type="ns:SimpleProductViewSelector"/>
     <element name="SizeSelector" type="ns:SizeSelector"/>
     <element name="SizeSelectorClass" type="ns:SizeSelectorClass"/>
     <element name="UserImage" type="ns:UserImage"/>
+    <complexType name="AppearanceColor">
+        <complexContent>
+            <extension base="ns:AppearanceColorClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.AppearanceColor"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="appearance"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="AppearanceColorClass">
+        <complexContent>
+            <extension base="ns1:View">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.AppearanceColorClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="appearance"/>
+            </extension>
+        </complexContent>
+    </complexType>
     <complexType name="AppearanceImage">
         <complexContent>
             <extension base="ns:Image">
@@ -342,6 +371,9 @@ set the default appearance of the product is used.
                 <attribute name="textArea"/>
                 <attribute name="textAreaPosition"/>
                 <attribute name="removeEmptyTextConfiguration" default="true"/>
+                <attribute name="removeConfigurationOutsidePrintArea" default="true"/>
+                <attribute name="imageService"/>
+                <attribute name="errorKey" default="{product.configurationsOnViewErrorKey(view)}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -365,13 +397,16 @@ set the default appearance of the product is used.
                 <attribute name="textArea"/>
                 <attribute name="textAreaPosition"/>
                 <attribute name="removeEmptyTextConfiguration" default="true"/>
+                <attribute name="removeConfigurationOutsidePrintArea" default="true"/>
+                <attribute name="imageService"/>
+                <attribute name="errorKey" default="{product.configurationsOnViewErrorKey(view)}"/>
                 <attribute name="onconfigurationSelect" default="_onConfigurationSelectHandler" type="string"/>
             </extension>
         </complexContent>
     </complexType>
     <complexType name="ProductViewSelector">
         <complexContent>
-            <extension base="ns1:SelectionView">
+            <extension base="ns:ProductViewSelectorClass">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductViewSelector"></documentation>
                 </annotation>
@@ -381,6 +416,18 @@ set the default appearance of the product is used.
                 <attribute name="product" default="null"/>
                 <attribute name="viewHeight" default="50"/>
                 <attribute name="viewWidth" default="50"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ProductViewSelectorClass">
+        <complexContent>
+            <extension base="ns1:SelectionView">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ProductViewSelectorClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
             </extension>
         </complexContent>
     </complexType>

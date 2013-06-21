@@ -400,8 +400,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
-                515,
-                608
+                549,
+                642
             ],
             "name": "_positionConfiguration",
             "visibility": "protected"
@@ -509,8 +509,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
-                216,
-                331
+                224,
+                339
             ],
             "description": "Adds a design to a given Product",
             "name": "addDesign",
@@ -532,8 +532,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
-                333,
-                513
+                341,
+                520
             ],
             "name": "addText",
             "visibility": "public"
@@ -644,7 +644,7 @@
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
                 82,
-                209
+                217
             ],
             "description": "Converts the configurations of a product with the given productType and appearance",
             "name": "convertConfigurations",
@@ -1039,6 +1039,25 @@
             ],
             "description": "set the product type and converts all configurations\n",
             "name": "setProductType",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "text"
+                },
+                {
+                    "name": "configuration"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/manager/ProductManager.js",
+            "lineNumbers": [
+                522,
+                547
+            ],
+            "name": "setTextForConfiguration",
             "visibility": "public"
         },
         {

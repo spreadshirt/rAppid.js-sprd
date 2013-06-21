@@ -165,8 +165,8 @@
             "visibility": "public",
             "value": "YYYY-MM-DDTHH:mm:ssZ",
             "lineNumbers": [
-                697,
-                697
+                698,
+                698
             ],
             "definedBy": "js.data.DataSource"
         },
@@ -289,8 +289,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                965,
-                967
+                966,
+                968
             ],
             "definedBy": "js.data.DataSource",
             "name": "_afterModelSave",
@@ -325,8 +325,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                955,
-                957
+                956,
+                958
             ],
             "definedBy": "js.data.DataSource",
             "name": "_beforeModelSave",
@@ -748,8 +748,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                1048,
-                1059
+                1049,
+                1060
             ],
             "definedBy": "js.data.DataSource",
             "name": "_getContext",
@@ -1286,8 +1286,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                959,
-                963
+                960,
+                964
             ],
             "definedBy": "js.data.DataSource",
             "name": "_saveModel",
@@ -1339,8 +1339,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                1061,
-                1063
+                1062,
+                1064
             ],
             "definedBy": "js.data.DataSource",
             "name": "_translateQueryObject",
@@ -1365,8 +1365,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                754,
-                756
+                755,
+                757
             ],
             "definedBy": "js.data.DataSource",
             "name": "_validateConfiguration",
@@ -1523,8 +1523,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                727,
-                731
+                728,
+                732
             ],
             "definedBy": "js.data.DataSource",
             "name": "composeModel",
@@ -1546,8 +1546,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                926,
-                928
+                927,
+                929
             ],
             "definedBy": "js.data.DataSource",
             "name": "countCollection",
@@ -1618,8 +1618,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                882,
-                886
+                883,
+                887
             ],
             "description": "Creates a collection by a given factory in a caching context",
             "returns": {
@@ -1695,8 +1695,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                859,
-                861
+                860,
+                862
             ],
             "description": "Creates a context with the given properties",
             "returns": {
@@ -1737,8 +1737,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                870,
-                873
+                871,
+                874
             ],
             "description": "Create an instance of {js.data.Entity}",
             "returns": {
@@ -1934,8 +1934,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                767,
-                769
+                768,
+                770
             ],
             "description": "Returns the configuration for a collectionclass name",
             "returns": {
@@ -1957,8 +1957,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                758,
-                760
+                759,
+                761
             ],
             "definedBy": "js.data.DataSource",
             "name": "getConfigurationForModelClass",
@@ -1992,8 +1992,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                833,
-                843
+                834,
+                844
             ],
             "description": "Returns the context for a properties object",
             "returns": {
@@ -2027,8 +2027,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                776,
-                824
+                777,
+                825
             ],
             "description": "",
             "returns": {
@@ -2054,8 +2054,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                1038,
-                1040
+                1039,
+                1041
             ],
             "description": "Returns the format processor",
             "returns": {
@@ -2156,8 +2156,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                1024,
-                1031
+                1025,
+                1032
             ],
             "description": "Returns the correct processor for a collection\n",
             "returns": {
@@ -2191,8 +2191,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                988,
-                995
+                989,
+                996
             ],
             "description": "Returns the correct processor for model\n",
             "returns": {
@@ -2222,8 +2222,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                1004,
-                1015
+                1005,
+                1016
             ],
             "description": "Returns the correct processor for model class\n",
             "returns": {
@@ -2495,8 +2495,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                712,
-                714
+                713,
+                715
             ],
             "definedBy": "js.data.DataSource",
             "name": "initializeFormatProcessors",
@@ -2508,8 +2508,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                716,
-                725
+                717,
+                726
             ],
             "definedBy": "js.data.DataSource",
             "name": "initializeProcessors",
@@ -2594,8 +2594,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                920,
-                924
+                921,
+                925
             ],
             "description": "Same as loadModel, but for a collection page",
             "definedBy": "js.data.DataSource",
@@ -2630,8 +2630,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                908,
-                912
+                909,
+                913
             ],
             "description": "Loads the data for a given model. (abstract)\nThis method is called by model.fetch()",
             "definedBy": "js.data.DataSource",
@@ -2712,8 +2712,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                733,
-                738
+                734,
+                739
             ],
             "definedBy": "js.data.DataSource",
             "name": "parseModel",
@@ -2777,8 +2777,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                975,
-                979
+                976,
+                980
             ],
             "description": "Removes a model",
             "definedBy": "js.data.DataSource",
@@ -2822,8 +2822,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                895,
-                899
+                896,
+                900
             ],
             "description": "resolve references to models and collections",
             "definedBy": "js.data.DataSource",
@@ -2836,8 +2836,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                849,
-                851
+                850,
+                852
             ],
             "description": "Returns the root context of the data source",
             "returns": {
@@ -2898,8 +2898,8 @@
             "annotations": {},
             "definedInFile": "js/data/DataSource.js",
             "lineNumbers": [
-                936,
-                953
+                937,
+                954
             ],
             "description": "Saves a model",
             "definedBy": "js.data.DataSource",

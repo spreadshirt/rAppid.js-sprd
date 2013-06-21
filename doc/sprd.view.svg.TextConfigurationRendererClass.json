@@ -152,8 +152,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                403,
-                414
+                415,
+                426
             ],
             "definedBy": "js.core.DomElement",
             "name": "_clearRenderedChildren",
@@ -242,7 +242,7 @@
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
                 349,
-                357
+                369
             ],
             "definedBy": "js.core.DomElement",
             "name": "_commitVisible",
@@ -289,8 +289,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                623,
-                628
+                635,
+                640
             ],
             "definedBy": "js.core.DomElement",
             "name": "_createDOMEventHandler",
@@ -555,8 +555,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                802,
-                810
+                814,
+                822
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getHtmlTag",
@@ -572,8 +572,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                416,
-                427
+                428,
+                439
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getIndexOfPlaceHolder",
@@ -606,8 +606,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                608,
-                622
+                620,
+                634
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getNextVisibleChild",
@@ -689,8 +689,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/TextConfigurationRendererClass.js",
             "lineNumbers": [
-                25,
-                28
+                23,
+                26
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -920,8 +920,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                480,
-                496
+                492,
+                508
             ],
             "description": "Returns wether a attribute key is a dom attribute or not\nTherefor it looks in the $classAttributes array.",
             "returns": {
@@ -991,8 +991,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/TextConfigurationRendererClass.js",
             "lineNumbers": [
-                34,
-                49
+                32,
+                47
             ],
             "name": "_loadFonts",
             "visibility": "protected"
@@ -1027,8 +1027,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                742,
-                753
+                754,
+                765
             ],
             "definedBy": "js.core.DomElement",
             "name": "_mapDOMEventType",
@@ -1111,8 +1111,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                387,
-                401
+                399,
+                413
             ],
             "definedBy": "js.core.DomElement",
             "name": "_removeRenderedChild",
@@ -1131,8 +1131,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                443,
-                465
+                455,
+                477
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttribute",
@@ -1151,8 +1151,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                467,
-                471
+                479,
+                483
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttributeInternal",
@@ -1168,8 +1168,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                433,
-                441
+                445,
+                453
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttributes",
@@ -1225,8 +1225,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                377,
-                385
+                389,
+                397
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderClass",
@@ -1245,8 +1245,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                368,
-                375
+                380,
+                387
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderComponentClass",
@@ -1348,8 +1348,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                359,
-                367
+                371,
+                379
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderVisible",
@@ -1403,8 +1403,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                506,
-                522
+                518,
+                534
             ],
             "description": "sets the attribute as part of the rendering cycle on the element\n",
             "private": "",
@@ -1471,8 +1471,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/TextConfigurationRendererClass.js",
             "lineNumbers": [
-                55,
-                57
+                53,
+                55
             ],
             "name": "addChar",
             "visibility": "public"
@@ -1512,8 +1512,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                665,
-                683
+                677,
+                695
             ],
             "definedBy": "js.core.DomElement",
             "name": "addClass",
@@ -1583,8 +1583,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                711,
-                726
+                723,
+                738
             ],
             "definedBy": "js.core.DomElement",
             "name": "bindDomEvent",
@@ -1596,8 +1596,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                573,
-                577
+                585,
+                589
             ],
             "definedBy": "js.core.DomElement",
             "name": "bringToFront",
@@ -1747,8 +1747,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/TextConfigurationRendererClass.js",
             "lineNumbers": [
-                20,
-                23
+                18,
+                21
             ],
             "definedBy": "js.core.Base",
             "overwritesMethod": true,
@@ -1779,8 +1779,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                545,
-                547
+                557,
+                559
             ],
             "definedBy": "js.core.DomElement",
             "name": "dom",
@@ -1846,8 +1846,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                755,
-                759
+                767,
+                771
             ],
             "definedBy": "js.core.DomElement",
             "name": "focus",
@@ -2020,8 +2020,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                782,
-                800
+                794,
+                812
             ],
             "definedBy": "js.core.DomElement",
             "name": "globalToLocal",
@@ -2050,8 +2050,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/TextConfigurationRendererClass.js",
             "lineNumbers": [
-                59,
-                61
+                57,
+                59
             ],
             "name": "handleKeyDown",
             "visibility": "public"
@@ -2066,8 +2066,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/TextConfigurationRendererClass.js",
             "lineNumbers": [
-                51,
-                53
+                49,
+                51
             ],
             "name": "handleKeyPress",
             "visibility": "public"
@@ -2111,8 +2111,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                661,
-                663
+                673,
+                675
             ],
             "definedBy": "js.core.DomElement",
             "name": "hasClass",
@@ -2131,8 +2131,8 @@
             },
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                538,
-                544
+                550,
+                556
             ],
             "definedBy": "js.core.DomElement",
             "name": "html",
@@ -2209,8 +2209,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/TextConfigurationRendererClass.js",
             "lineNumbers": [
-                30,
-                32
+                28,
+                30
             ],
             "name": "isNotMobile",
             "visibility": "public"
@@ -2221,8 +2221,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                429,
-                431
+                441,
+                443
             ],
             "definedBy": "js.core.DomElement",
             "name": "isRendered",
@@ -2255,8 +2255,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                761,
-                780
+                773,
+                792
             ],
             "definedBy": "js.core.DomElement",
             "name": "localToGlobal",
@@ -2386,8 +2386,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                685,
-                709
+                697,
+                721
             ],
             "definedBy": "js.core.DomElement",
             "name": "removeClass",
@@ -2475,8 +2475,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                578,
-                582
+                590,
+                594
             ],
             "definedBy": "js.core.DomElement",
             "name": "sendToBack",
@@ -2540,8 +2540,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                548,
-                571
+                560,
+                583
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildIndex",
@@ -2557,8 +2557,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                583,
-                590
+                595,
+                602
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildInvisible",
@@ -2574,8 +2574,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                591,
-                607
+                603,
+                619
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildVisible",
@@ -2733,8 +2733,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                727,
-                740
+                739,
+                752
             ],
             "definedBy": "js.core.DomElement",
             "name": "unbindDomEvent",
@@ -2850,6 +2850,18 @@
                 13,
                 13
             ]
+        },
+        "imageService": {
+            "name": "imageService",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                15,
+                15
+            ],
+            "definedBy": "sprd.view.svg.ConfigurationRenderer",
+            "overwrites": true
         },
         "x": {
             "name": "x",
@@ -3108,7 +3120,6 @@
     "fqClassName": "sprd.view.svg.TextConfigurationRendererClass",
     "inherit": "sprd.view.svg.ConfigurationRenderer",
     "dependencies": [
-        "sprd.data.ImageService",
         "sprd.view.svg.ConfigurationRenderer"
     ],
     "type": "js",

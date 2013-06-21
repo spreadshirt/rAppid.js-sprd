@@ -10,8 +10,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                124,
-                126
+                199,
+                201
             ],
             "name": "_addConfiguration",
             "visibility": "protected"
@@ -72,32 +72,22 @@
             "type": "Method",
             "parameter": [
                 {
+                    "name": "attributes",
                     "types": [
                         "Object"
                     ],
-                    "name": "attributes",
                     "optional": false,
                     "description": "contains the changed attributes"
-                },
-                {
-                    "types": [
-                        "Object"
-                    ],
-                    "name": "options",
-                    "optional": false,
-                    "description": "the options passed in the set method"
                 }
             ],
             "annotations": {},
-            "definedInFile": "js/core/Bindable.js",
+            "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                763,
-                765
+                374,
+                379
             ],
-            "description": "called after attributes has set and some of the has been changed\n",
-            "abstract": "",
-            "private": "",
             "definedBy": "js.core.Bindable",
+            "overwritesMethod": true,
             "name": "_commitChangedAttributes",
             "visibility": "protected"
         },
@@ -442,8 +432,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                83,
-                93
+                158,
+                168
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -456,8 +446,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                95,
-                104
+                170,
+                179
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -530,8 +520,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                65,
-                72
+                140,
+                147
             ],
             "name": "_setUpConfiguration",
             "visibility": "protected"
@@ -546,8 +536,8 @@
             },
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                259,
-                265
+                262,
+                268
             ],
             "definedBy": "js.data.Model",
             "name": "_status",
@@ -581,8 +571,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                74,
-                81
+                149,
+                156
             ],
             "name": "_tearDownConfiguration",
             "visibility": "protected"
@@ -610,8 +600,8 @@
             },
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                273,
-                283
+                350,
+                360
             ],
             "name": "appearanceBrightness",
             "visibility": "public"
@@ -713,12 +703,35 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                167,
-                186
+                244,
+                263
             ],
             "definedBy": "js.data.Entity",
             "overwritesMethod": true,
             "name": "compose",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "view"
+                }
+            ],
+            "annotations": {
+                "on": [
+                    [
+                        "this",
+                        "configurationValidChanged"
+                    ]
+                ]
+            },
+            "definedInFile": "sprd/model/Product.js",
+            "lineNumbers": [
+                96,
+                138
+            ],
+            "name": "configurationsOnViewErrorKey",
             "visibility": "public"
         },
         {
@@ -746,8 +759,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                280,
-                289
+                283,
+                292
             ],
             "description": "Converts the identifier to the given type in the schema",
             "returns": {
@@ -801,7 +814,7 @@
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
                 25,
-                63
+                94
             ],
             "definedBy": "js.core.Base",
             "overwritesMethod": true,
@@ -905,8 +918,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                188,
-                196
+                265,
+                273
             ],
             "definedBy": "js.data.Model",
             "overwritesMethod": true,
@@ -983,8 +996,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                148,
-                167
+                157,
+                176
             ],
             "definedBy": "js.data.Model",
             "name": "getCollection",
@@ -1000,8 +1013,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                148,
-                165
+                223,
+                242
             ],
             "name": "getConfigurationsOnPrintAreas",
             "visibility": "public"
@@ -1016,8 +1029,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                128,
-                146
+                203,
+                221
             ],
             "name": "getConfigurationsOnView",
             "visibility": "public"
@@ -1157,8 +1170,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                198,
-                200
+                275,
+                277
             ],
             "name": "hasChanges",
             "visibility": "public"
@@ -1186,8 +1199,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                225,
-                271
+                302,
+                348
             ],
             "definedBy": "js.data.Entity",
             "overwritesMethod": true,
@@ -1218,8 +1231,8 @@
             },
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                271,
-                273
+                274,
+                276
             ],
             "definedBy": "js.data.Model",
             "name": "isCreated",
@@ -1269,8 +1282,8 @@
             },
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                267,
-                269
+                270,
+                272
             ],
             "definedBy": "js.data.Model",
             "name": "isNew",
@@ -1282,8 +1295,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                285,
-                295
+                362,
+                372
             ],
             "name": "isReadyForCompose",
             "visibility": "public"
@@ -1384,26 +1397,6 @@
         },
         {
             "type": "Method",
-            "parameter": [
-                {
-                    "name": "attributes"
-                },
-                {
-                    "name": "action"
-                }
-            ],
-            "annotations": {},
-            "definedInFile": "js/data/Model.js",
-            "lineNumbers": [
-                169,
-                179
-            ],
-            "definedBy": "js.data.Model",
-            "name": "prepare",
-            "visibility": "public"
-        },
-        {
-            "type": "Method",
             "parameter": [],
             "annotations": {
                 "on": [
@@ -1419,8 +1412,8 @@
             },
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                106,
-                122
+                181,
+                197
             ],
             "definedBy": "sprd.model.ProductBase",
             "overwritesMethod": true,
@@ -1440,8 +1433,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                227,
-                248
+                230,
+                251
             ],
             "definedBy": "js.data.Model",
             "name": "remove",
@@ -1484,8 +1477,8 @@
             "annotations": {},
             "definedInFile": "sprd/model/Product.js",
             "lineNumbers": [
-                202,
-                223
+                279,
+                300
             ],
             "definedBy": "js.data.Model",
             "overwritesMethod": true,
@@ -1721,8 +1714,8 @@
             "annotations": {},
             "definedInFile": "js/data/Model.js",
             "lineNumbers": [
-                129,
-                146
+                138,
+                155
             ],
             "description": "",
             "definedBy": "js.data.Model",

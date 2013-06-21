@@ -104,8 +104,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                186,
-                250
+                190,
+                254
             ],
             "definedBy": "js.core.DomElement",
             "overwritesMethod": true,
@@ -118,8 +118,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                822,
-                827
+                859,
+                864
             ],
             "name": "_cancelTransformation",
             "visibility": "protected"
@@ -161,8 +161,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                403,
-                414
+                415,
+                426
             ],
             "definedBy": "js.core.DomElement",
             "name": "_clearRenderedChildren",
@@ -204,8 +204,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                298,
-                313
+                302,
+                317
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -231,8 +231,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                294,
-                296
+                298,
+                300
             ],
             "name": "_commitSelected",
             "visibility": "protected"
@@ -248,7 +248,7 @@
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
                 349,
-                357
+                369
             ],
             "definedBy": "js.core.DomElement",
             "name": "_commitVisible",
@@ -295,8 +295,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                623,
-                628
+                635,
+                640
             ],
             "definedBy": "js.core.DomElement",
             "name": "_createDOMEventHandler",
@@ -452,8 +452,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                315,
-                528
+                319,
+                532
             ],
             "name": "_down",
             "visibility": "protected"
@@ -583,8 +583,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                802,
-                810
+                814,
+                822
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getHtmlTag",
@@ -600,8 +600,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                416,
-                427
+                428,
+                439
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getIndexOfPlaceHolder",
@@ -634,8 +634,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                608,
-                622
+                620,
+                634
             ],
             "definedBy": "js.core.DomElement",
             "name": "_getNextVisibleChild",
@@ -704,8 +704,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                93,
-                101
+                95,
+                103
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -781,8 +781,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                111,
-                129
+                113,
+                131
             ],
             "name": "_initializeCapabilities",
             "visibility": "protected"
@@ -855,8 +855,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                140,
-                184
+                142,
+                188
             ],
             "definedBy": "js.core.DomElement",
             "overwritesMethod": true,
@@ -963,8 +963,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                480,
-                496
+                492,
+                508
             ],
             "description": "Returns wether a attribute key is a dom attribute or not\nTherefor it looks in the $classAttributes array.",
             "returns": {
@@ -1021,8 +1021,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                252,
-                254
+                256,
+                258
             ],
             "name": "_isGesture",
             "visibility": "protected"
@@ -1057,8 +1057,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                763,
-                776
+                795,
+                808
             ],
             "name": "_keyDown",
             "visibility": "protected"
@@ -1073,8 +1073,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                784,
-                786
+                816,
+                818
             ],
             "name": "_keyPress",
             "visibility": "protected"
@@ -1092,8 +1092,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                778,
-                782
+                810,
+                814
             ],
             "name": "_keyUp",
             "visibility": "protected"
@@ -1128,8 +1128,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                742,
-                753
+                754,
+                765
             ],
             "definedBy": "js.core.DomElement",
             "name": "_mapDOMEventType",
@@ -1148,8 +1148,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                530,
-                732
+                534,
+                760
             ],
             "name": "_move",
             "visibility": "protected"
@@ -1160,8 +1160,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                278,
-                292
+                282,
+                296
             ],
             "name": "_offsetChanged",
             "visibility": "protected"
@@ -1226,8 +1226,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                256,
-                258
+                260,
+                262
             ],
             "name": "_productViewerSizeChanged",
             "visibility": "protected"
@@ -1255,8 +1255,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                387,
-                401
+                399,
+                413
             ],
             "definedBy": "js.core.DomElement",
             "name": "_removeRenderedChild",
@@ -1275,8 +1275,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                443,
-                465
+                455,
+                477
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttribute",
@@ -1295,8 +1295,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                467,
-                471
+                479,
+                483
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttributeInternal",
@@ -1312,8 +1312,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                433,
-                441
+                445,
+                453
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderAttributes",
@@ -1369,8 +1369,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                377,
-                385
+                389,
+                397
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderClass",
@@ -1389,8 +1389,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                368,
-                375
+                380,
+                387
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderComponentClass",
@@ -1423,8 +1423,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                131,
-                138
+                133,
+                140
             ],
             "name": "_renderFocused",
             "visibility": "protected"
@@ -1508,8 +1508,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                359,
-                367
+                371,
+                379
             ],
             "definedBy": "js.core.DomElement",
             "name": "_renderVisible",
@@ -1538,8 +1538,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                808,
-                820
+                840,
+                857
             ],
             "name": "_resetTransformation",
             "visibility": "protected"
@@ -1575,8 +1575,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                506,
-                522
+                518,
+                534
             ],
             "description": "sets the attribute as part of the rendering cycle on the element\n",
             "private": "",
@@ -1608,8 +1608,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                260,
-                276
+                264,
+                280
             ],
             "name": "_showKeyBoard",
             "visibility": "protected"
@@ -1620,8 +1620,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                792,
-                798
+                824,
+                830
             ],
             "name": "_stopTransformation",
             "visibility": "protected"
@@ -1663,8 +1663,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                800,
-                806
+                832,
+                838
             ],
             "name": "_unbindTransformationHandler",
             "visibility": "protected"
@@ -1682,8 +1682,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                734,
-                761
+                762,
+                793
             ],
             "name": "_up",
             "visibility": "protected"
@@ -1698,8 +1698,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                788,
-                790
+                820,
+                822
             ],
             "name": "addChar",
             "visibility": "public"
@@ -1739,8 +1739,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                665,
-                683
+                677,
+                695
             ],
             "definedBy": "js.core.DomElement",
             "name": "addClass",
@@ -1810,8 +1810,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                711,
-                726
+                723,
+                738
             ],
             "definedBy": "js.core.DomElement",
             "name": "bindDomEvent",
@@ -1823,8 +1823,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                573,
-                577
+                585,
+                589
             ],
             "definedBy": "js.core.DomElement",
             "name": "bringToFront",
@@ -1974,8 +1974,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                75,
-                91
+                77,
+                93
             ],
             "definedBy": "js.core.Base",
             "overwritesMethod": true,
@@ -1988,8 +1988,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                846,
-                858
+                883,
+                895
             ],
             "name": "deleteConfiguration",
             "visibility": "public"
@@ -2018,8 +2018,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                545,
-                547
+                557,
+                559
             ],
             "definedBy": "js.core.DomElement",
             "name": "dom",
@@ -2055,8 +2055,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                889,
-                891
+                926,
+                928
             ],
             "name": "errorClass",
             "visibility": "public"
@@ -2074,8 +2074,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                937,
-                962
+                974,
+                999
             ],
             "name": "errorDescription",
             "visibility": "public"
@@ -2124,8 +2124,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                873,
-                879
+                910,
+                916
             ],
             "name": "flipOffsetX",
             "visibility": "public"
@@ -2140,8 +2140,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                881,
-                887
+                918,
+                924
             ],
             "name": "flipOffsetY",
             "visibility": "public"
@@ -2152,8 +2152,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                755,
-                759
+                767,
+                771
             ],
             "definedBy": "js.core.DomElement",
             "name": "focus",
@@ -2205,8 +2205,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                829,
-                836
+                866,
+                873
             ],
             "name": "getButtonSize",
             "visibility": "public"
@@ -2342,8 +2342,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                782,
-                800
+                794,
+                812
             ],
             "definedBy": "js.core.DomElement",
             "name": "globalToLocal",
@@ -2372,8 +2372,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                869,
-                871
+                906,
+                908
             ],
             "name": "half",
             "visibility": "public"
@@ -2417,8 +2417,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                661,
-                663
+                673,
+                675
             ],
             "definedBy": "js.core.DomElement",
             "name": "hasClass",
@@ -2437,8 +2437,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                933,
-                935
+                970,
+                972
             ],
             "name": "hasError",
             "visibility": "public"
@@ -2456,8 +2456,8 @@
             },
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                538,
-                544
+                550,
+                556
             ],
             "definedBy": "js.core.DomElement",
             "name": "html",
@@ -2469,8 +2469,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                103,
-                105
+                105,
+                107
             ],
             "name": "id",
             "visibility": "public"
@@ -2499,8 +2499,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                107,
-                109
+                109,
+                111
             ],
             "name": "invert",
             "visibility": "public"
@@ -2573,8 +2573,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                893,
-                895
+                930,
+                932
             ],
             "name": "isFocused",
             "visibility": "public"
@@ -2589,8 +2589,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                921,
-                923
+                958,
+                960
             ],
             "name": "isMovable",
             "visibility": "public"
@@ -2605,8 +2605,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                925,
-                927
+                962,
+                964
             ],
             "name": "isRemovable",
             "visibility": "public"
@@ -2617,8 +2617,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                429,
-                431
+                441,
+                443
             ],
             "definedBy": "js.core.DomElement",
             "name": "isRendered",
@@ -2634,8 +2634,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                913,
-                915
+                950,
+                952
             ],
             "name": "isResizeable",
             "visibility": "public"
@@ -2650,8 +2650,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                917,
-                919
+                954,
+                956
             ],
             "name": "isRotatable",
             "visibility": "public"
@@ -2666,8 +2666,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                929,
-                931
+                966,
+                968
             ],
             "name": "isRotating",
             "visibility": "public"
@@ -2682,8 +2682,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                909,
-                911
+                946,
+                948
             ],
             "name": "isScalable",
             "visibility": "public"
@@ -2701,8 +2701,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                897,
-                900
+                934,
+                937
             ],
             "name": "isSelectedConfiguration",
             "visibility": "public"
@@ -2724,8 +2724,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                902,
-                907
+                939,
+                944
             ],
             "name": "isSelectedConfigurationOrConfigurationHasError",
             "visibility": "public"
@@ -2757,8 +2757,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                761,
-                780
+                773,
+                792
             ],
             "definedBy": "js.core.DomElement",
             "name": "localToGlobal",
@@ -2823,8 +2823,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                865,
-                867
+                902,
+                904
             ],
             "name": "mul",
             "visibility": "public"
@@ -2868,8 +2868,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                838,
-                840
+                875,
+                877
             ],
             "name": "pixelToViewBox",
             "visibility": "public"
@@ -2927,8 +2927,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                685,
-                709
+                697,
+                721
             ],
             "definedBy": "js.core.DomElement",
             "name": "removeClass",
@@ -3020,8 +3020,8 @@
             },
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                842,
-                844
+                879,
+                881
             ],
             "name": "scaleIconToViewBox",
             "visibility": "public"
@@ -3032,8 +3032,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                578,
-                582
+                590,
+                594
             ],
             "definedBy": "js.core.DomElement",
             "name": "sendToBack",
@@ -3097,8 +3097,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                548,
-                571
+                560,
+                583
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildIndex",
@@ -3114,8 +3114,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                583,
-                590
+                595,
+                602
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildInvisible",
@@ -3131,8 +3131,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                591,
-                607
+                603,
+                619
             ],
             "definedBy": "js.core.DomElement",
             "name": "setChildVisible",
@@ -3171,8 +3171,8 @@
             "annotations": {},
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                861,
-                863
+                898,
+                900
             ],
             "name": "substract",
             "visibility": "public"
@@ -3309,8 +3309,8 @@
             "annotations": {},
             "definedInFile": "js/core/DomElement.js",
             "lineNumbers": [
-                727,
-                740
+                739,
+                752
             ],
             "definedBy": "js.core.DomElement",
             "name": "unbindDomEvent",
@@ -3676,6 +3676,16 @@
                 66
             ]
         },
+        "imageService": {
+            "name": "imageService",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": null,
+            "lineNumbers": [
+                68,
+                68
+            ]
+        },
         "transformations": {
             "name": "transformations",
             "defaultType": "factory",
@@ -3783,8 +3793,8 @@
             "visibility": "private",
             "definedInFile": "sprd/view/svg/ConfigurationViewerClass.js",
             "lineNumbers": [
-                73,
-                73
+                75,
+                75
             ],
             "propertyType": "complex",
             "value": " [\"configuration\", \"product\", \"printAreaViewer\", \"assetContainer\", \"productViewer\", \"clipPath\"]",
