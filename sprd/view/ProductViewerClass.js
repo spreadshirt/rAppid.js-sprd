@@ -236,7 +236,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                         deltaY *= 10;
                     }
 
-                    var offset = selectedConfiguration.$.offset;
+                    var offset = selectedConfiguration.$.offset.clone();
                     offset.set({
                         x: offset.$.x + deltaX,
                         y: offset.$.y + deltaY

@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/ViewMap', 'sprd/entity/Size'], function (Entity, ViewMap, Size) {
+define(['js/data/Entity', 'sprd/entity/ViewMap', 'sprd/entity/Size', 'underscore'], function (Entity, ViewMap, Size, _) {
     return Entity.inherit('sprd.entity.ProductTypeView', {
 
         schema: {
@@ -36,6 +36,22 @@ define(['js/data/Entity', 'sprd/entity/ViewMap', 'sprd/entity/Size'], function (
 
         },
 
+        getViewMapForPrintArea: function(printArea) {
+
+            if (printArea) {
+                for (var i = 0; i < this.$.viewMaps.$items.length; i++) {
+                    var viewMap = this.$.viewMaps.$items[i];
+                    if (viewMap && viewMap.$.printArea === printArea) {
+                        return viewMap;
+                    }
+
+                }
+            }
+
+            return null;
+        },
+
+
         getPrintAreas: function() {
             var printAreas = [];
 
@@ -44,6 +60,10 @@ define(['js/data/Entity', 'sprd/entity/ViewMap', 'sprd/entity/Size'], function (
             });
 
             return printAreas;
+        },
+
+        containsPrintArea: function(printArea) {
+            return printArea && _.indexOf(this.getPrintAreas(), printArea) !== -1;
         }
     });
 });

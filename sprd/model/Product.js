@@ -15,7 +15,9 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
         },
 
         defaults: {
-            configurations: List
+            configurations: List,
+
+            removeConfigurationOutsideViewPort: true
         },
 
         inject: {
@@ -91,12 +93,78 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                 this.trigger("configurationValidChanged");
             }, this);
 
+            this.bind('configurations', 'item:change:offset', this._onConfigurationOffsetChanged, this);
+
+        },
+
+        _onConfigurationOffsetChanged: function(e) {
+
+            if (!this.$.removeConfigurationOutsideViewPort) {
+                return;
+            }
+
+            var configuration = e.$.item;
+
+            if (!configuration) {
+                return;
+            }
+
+            // check if the configuration is complete outside the print area, if so remove it
+            var boundingBox = configuration._getBoundingBox(),
+                printArea = configuration.$.printArea;
+
+
+            if (!(printArea && boundingBox)) {
+                return;
+            }
+
+            if (printArea.hasSoftBoundary()) {
+                // don't remove for soft boundaries
+                return;
+            }
+
+            // find default view for print area
+            var view;
+
+            if (this.$.view && this.$.view.containsPrintArea(printArea)) {
+                // use current view of the product
+                view = this.$.view;
+            }
+
+            if (!view) {
+                // use the default view
+                view = printArea.getDefaultView();
+            }
+
+            if (!view) {
+                return;
+            }
+
+            var viewMap = view.getViewMapForPrintArea(printArea);
+
+            if (!viewMap) {
+                return;
+            }
+
+            var right = view.get("size.width"),
+                bottom = view.get("size.height"),
+                middlePoint = {
+                    x: boundingBox.x + boundingBox.width / 2 + viewMap.get("offset.x"),
+                    y: boundingBox.y + boundingBox.height / 2 + viewMap.get("offset.y")
+                };
+
+            if (middlePoint.x < 0 || middlePoint.y < 0 || middlePoint.x > right || middlePoint.y > bottom) {
+                // outside the view
+                this.$.configurations.remove(configuration);
+            }
+
+//            console.log(arguments);
         },
 
         configurationsOnViewErrorKey: function(view) {
 
             var errorKey = null,
-                configurations = null;
+                configurations;
 
             if (!view) {
                 return null;

@@ -50,8 +50,9 @@ define(['js/data/Entity', 'sprd/model/PrintType', 'sprd/entity/Size'], function 
 
         getDefaultView: function () {
 
-            if (this.$.defaultView && this.getProductType()) {
-                return this.getProductType().getViewById(this.$.defaultView.id);
+            var productType = this.getProductType();
+            if (this.$.defaultView && productType) {
+                return productType.getViewById(this.$.defaultView.id);
             }
 
             return null;
