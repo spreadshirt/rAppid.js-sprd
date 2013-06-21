@@ -17,7 +17,9 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             removeEmptyTextConfiguration: true,
             removeConfigurationOutsidePrintArea: true,
 
-            imageService: null
+            imageService: null,
+
+            errorKey: "{product.configurationsOnViewErrorKey(view)}"
         },
 
         inject: {

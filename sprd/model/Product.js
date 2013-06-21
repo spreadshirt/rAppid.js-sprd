@@ -23,6 +23,8 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
         },
 
         ctor: function () {
+            this.configurationsOnViewCache = {};
+
             this.callBase();
 
             var priceChangeHandler = function () {
@@ -33,17 +35,34 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                 this.trigger("productChanged");
             };
 
-
             var configurationAdd = function (e) {
-                this._setUpConfiguration(e.$.item);
+                var configuration = e.$.item,
+                    viewId = configuration.get("printArea.getDefaultView().id");
+
+                if (viewId) {
+                    // clear configuration cache
+                    this.configurationsOnViewCache[viewId] = null;
+                    this.trigger("configurationValidChanged");
+                }
+
+                this._setUpConfiguration(configuration);
 
                 productChangeHandler.call(this);
                 priceChangeHandler.call(this);
+
             };
 
             var configurationRemove = function (e) {
+                var configuration = e.$.item,
+                    viewId = configuration.get("printArea.getDefaultView().id");
 
-                this._tearDownConfiguration(e.$.item);
+                if (viewId) {
+                    // clear configuration cache
+                    this.configurationsOnViewCache[viewId] = null;
+                    this.trigger("configurationValidChanged");
+                }
+
+                this._tearDownConfiguration(configuration);
 
                 productChangeHandler.call(this);
                 priceChangeHandler.call(this);
@@ -51,14 +70,72 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
             this.bind("configurations", "add", configurationAdd, this);
             this.bind("configurations", "remove", configurationRemove, this);
-            this.bind("configurations", "reset", priceChangeHandler, this);
-            this.bind("configurations", "item:priceChanged", priceChangeHandler, this);
+            this.bind("configurations", "reset", function() {
+                this.configurationsOnViewCache = {};
+                this.trigger("configurationValidChanged");
 
-            this.bind('configurations', 'reset', productChangeHandler, this);
+                priceChangeHandler.call(this);
+                productChangeHandler.call(this);
+            }, this);
+
+            this.bind("configurations", "item:priceChanged", priceChangeHandler, this);
             this.bind('configurations', 'item:configurationChanged', productChangeHandler, this);
-            this.bind('configurations', 'item:change:printArea', productChangeHandler, this);
+            this.bind('configurations', 'item:change:printArea', function() {
+                this.configurationsOnViewCache = {};
+                this.trigger("configurationValidChanged");
+
+                productChangeHandler.call(this);
+            }, this);
+
+            this.bind('configurations', 'item:isValidChanged', function() {
+                this.trigger("configurationValidChanged");
+            }, this);
 
         },
+
+        configurationsOnViewErrorKey: function(view) {
+
+            var errorKey = null,
+                configurations = null;
+
+            if (!view) {
+                return null;
+            }
+
+            var viewId = view.$.id;
+
+            configurations = this.configurationsOnViewCache[viewId];
+
+            if (!configurations) {
+                this.configurationsOnViewCache[viewId] = configurations = this.getConfigurationsOnView(view);
+            }
+
+            if (!configurations) {
+                return null;
+            }
+
+            for (var i = 0; i < configurations.length; i++) {
+                var configuration = configurations[i];
+
+                if (!configuration.isValid() && configuration.$errors) {
+
+                    for (var key in configuration.$errors.$) {
+                        if (configuration.$errors.$.hasOwnProperty(key)) {
+                            errorKey = configuration.$errors.$[key];
+                            if (errorKey) {
+                                errorKey = key;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            this.configurationsOnViewCache[viewId].errorKey = errorKey;
+
+            return errorKey;
+
+        }.on("configurationValidChanged"),
 
         _setUpConfiguration: function (configuration) {
 
@@ -152,11 +229,13 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
             var ret = [];
 
-            this.$.configurations.each(function (configuration) {
+            for (var i = 0; i < this.$.configurations.$items.length; i++) {
+                var configuration = this.$.configurations.$items[i];
                 if (_.contains(printAreas, configuration.$.printArea)) {
                     ret.push(configuration);
                 }
-            });
+            }
+
 
             return ret;
 
