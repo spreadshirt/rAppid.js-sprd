@@ -114,12 +114,11 @@
             </svg:g>
         </svg:g>
 
-
-        <svg:g selected="{hasError()}" class="configuration-handle-icon" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"
-               translateY="-{pixelToViewBox(_handleWidth)}">
-            <svg:title>{errorDescription()}</svg:title>
-            <svg:use href="{baseUrl('sprd/css/library.svg#info')}"/>
-        </svg:g>
+        <!--<svg:g selected="{hasError()}" class="configuration-handle-icon" scaleX="{pixelToViewBox(1)}" scaleY="{scaleX}"-->
+               <!--translateY="-{pixelToViewBox(_handleWidth)}">-->
+            <!--<svg:title>{errorDescription()}</svg:title>-->
+            <!--<svg:use href="{baseUrl('sprd/css/library.svg#info')}"/>-->
+        <!--</svg:g>-->
 
 
     </svg:g>
