@@ -639,7 +639,109 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     offset: offset
                 });
 
+            },
+
+            checkConfigurationOffset: function (product, configuration) {
+
+                if (this._checkConfigurationOutsideViewPort(product, configuration)) {
+                    // configuration has been removed
+                    return;
+                }
+
+                this._checkConfigurationOutsidePrintArea(product, configuration);
+
+            },
+
+            _checkConfigurationOutsidePrintArea: function (product, configuration) {
+
+                if (!(product && configuration)) {
+                    return;
+                }
+
+                // check if the configuration is complete outside the print area, if so remove it
+                var boundingBox = configuration._getBoundingBox(),
+                    printArea = configuration.$.printArea;
+
+                if (boundingBox && printArea && printArea.hasSoftBoundary() &&
+                    (
+                        boundingBox.x > printArea.width() ||
+                            boundingBox.x + boundingBox.width < 0 ||
+                            boundingBox.y > printArea.height() ||
+                            boundingBox.y + boundingBox.height < 0
+                        )) {
+
+                    product.$.configurations.remove(configuration);
+                    return true;
+                }
+
+                return false;
+
+            },
+
+            _checkConfigurationOutsideViewPort: function (product, configuration) {
+
+                if (!this.$.removeConfigurationOutsideViewPort) {
+                    return;
+                }
+
+                if (!(configuration && product)) {
+                    return;
+                }
+
+                // check if the configuration is complete outside the print area, if so remove it
+                var boundingBox = configuration._getBoundingBox(),
+                    printArea = configuration.$.printArea;
+
+
+                if (!(printArea && boundingBox)) {
+                    return;
+                }
+
+                if (printArea.hasSoftBoundary()) {
+                    // don't remove for soft boundaries
+                    return;
+                }
+
+                // find default view for print area
+                var view;
+
+                if (this.$.view && this.$.view.containsPrintArea(printArea)) {
+                    // use current view of the product
+                    view = this.$.view;
+                }
+
+                if (!view) {
+                    // use the default view
+                    view = printArea.getDefaultView();
+                }
+
+                if (!view) {
+                    return;
+                }
+
+                var viewMap = view.getViewMapForPrintArea(printArea);
+
+                if (!viewMap) {
+                    return;
+                }
+
+                var right = view.get("size.width"),
+                    bottom = view.get("size.height"),
+                    middlePoint = {
+                        x: boundingBox.x + boundingBox.width / 2 + viewMap.get("offset.x"),
+                        y: boundingBox.y + boundingBox.height / 2 + viewMap.get("offset.y")
+                    };
+
+                if (middlePoint.x < 0 || middlePoint.y < 0 || middlePoint.x > right || middlePoint.y > bottom) {
+                    // outside the view
+                    product.$.configurations.remove(configuration);
+                    return true;
+                }
+
+                return false;
+
             }
+
 
 
         });
