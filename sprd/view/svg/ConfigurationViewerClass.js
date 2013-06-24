@@ -72,7 +72,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 i18n: I18n
             },
 
-            $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer", "clipPath"],
+            $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer", "clipPath", "imageService"],
 
             ctor: function () {
 

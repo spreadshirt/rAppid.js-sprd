@@ -19,7 +19,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
             imageService: null
         },
 
-        $classAttributes: ["product", "productTypeViewViewer", "productViewer"],
+        $classAttributes: ["product", "productTypeViewViewer", "productViewer", "snapLines", "snapLinesGroup", "imageService"],
 
         ctor: function () {
 

@@ -11,6 +11,6 @@ define(['js/svg/SvgElement'], function(SvgElement) {
             imageService: null
         },
 
-        $classAttributes: ["configuration","productViewer", "configurationViewer","textArea","showSelection","focused"]
+        $classAttributes: ["configuration","productViewer", "configurationViewer","textArea","showSelection","focused", "imageService"]
     })
 });

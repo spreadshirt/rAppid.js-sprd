@@ -20,7 +20,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer"], function (Sv
             imageService: null
         },
 
-        $classAttributes: ["productViewer", "product"],
+        $classAttributes: ["productViewer", "product", "imageService"],
 
         ctor: function () {
             this.$printAreas = [];

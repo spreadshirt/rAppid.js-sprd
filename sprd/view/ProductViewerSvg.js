@@ -26,7 +26,7 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
                 editable: true
             },
 
-            $classAttributes: ["product", "view", "editable", "selectedConfiguration"],
+            $classAttributes: ["product", "view", "editable", "selectedConfiguration", "imageService"],
 
             ctor: function () {
 
