@@ -58,7 +58,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
          * the basketChanged event is dispatched after the basket has been modified e.g. added, removed or updated an
          * BasketItem
          */
-            "on:basketChanged"
+            "on:basketChanged",
+            "on:basketUpdated"
         ],
 
         inject: {
@@ -107,6 +108,10 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
         _triggerBasketChanged: function () {
             this.trigger("on:basketChanged", this.$.basket, this);
+        },
+
+        _triggerBasketUpdated: function () {
+            this.trigger("on:basketUpdated", this.$.basket, this);
         },
 
         _initBasket: function (callback) {
@@ -199,17 +204,34 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
         },
 
         saveBasket: function () {
-            this._debounceFunctionCall(this._saveBasket, "saveBasketCall", 300, this);
+            this._debounceFunctionCall(this._saveBasket, "saveBasketCall", 700, this);
         },
 
         _saveBasket: function () {
-            var self = this;
-            this.$.basket.save(null, function (err, basket) {
-                if (!err) {
-                    basket.fetch({noCache: true}, null);
+            if (!this.$savingBasket) {
+                var self = this;
+                this.$callSaveBasketAgain = false;
+                this.$savingBasket = true;
+                this.$.basket.save(null, function (err, basket) {
                     self._triggerBasketChanged();
-                }
-            });
+                    if (!err) {
+                        basket.fetch({noCache: true}, function (err) {
+                            self.$savingBasket = false;
+                            if (!err) {
+                                if (self.$callSaveBasketAgain) {
+                                    self.saveBasket();
+                                } else {
+                                    self._triggerBasketUpdated();
+                                }
+                            }
+                        });
+                    } else {
+                        self.$savingBasket = false;
+                    }
+                });
+            } else {
+                this.$callSaveBasketAgain = true;
+            }
         }
     });
 
