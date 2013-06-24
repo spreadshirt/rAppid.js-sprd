@@ -177,10 +177,9 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
          * @param {sprd.model.BasketItem} basketItem
          */
         saveBasketItem: function (basketItem) {
-
             var self = this;
-
             this.$itemSaveTimeout && clearTimeout(this.$itemSaveTimeout);
+
 
             this.$itemSaveTimeout = setTimeout(function () {
                 basketItem.save(null, function () {
@@ -195,12 +194,22 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
          * @param {sprd.model.BasketItem} basketItem
          */
         removeBasketItem: function (basketItem) {
-            var self = this;
-            basketItem.remove(null, function () {
-                self.$.basket.fetch({noCache: true});
-            });
             this.$.basket.$.basketItems.remove(basketItem);
-            this._triggerBasketChanged();
+            this.saveBasket();
+        },
+
+        saveBasket: function () {
+            this._debounceFunctionCall(this._saveBasket, "saveBasketCall", 300, this);
+        },
+
+        _saveBasket: function () {
+            var self = this;
+            this.$.basket.save(null, function (err, basket) {
+                if (!err) {
+                    basket.fetch({noCache: true}, null);
+                    self._triggerBasketChanged();
+                }
+            });
         }
     });
 

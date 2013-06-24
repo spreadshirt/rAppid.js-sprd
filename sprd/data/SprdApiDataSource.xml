@@ -24,7 +24,7 @@
         <conf:ResourceConfiguration path="currencies" modelClassName="sprd.model.Currency">
 
         </conf:ResourceConfiguration>
-        <conf:ResourceConfiguration path="baskets" modelClassName="sprd.model.Basket">
+        <conf:ResourceConfiguration path="baskets" modelClassName="sprd.model.Basket" processor="BasketProcessor">
             <conf:ResourceConfiguration path="items" modelClassName="sprd.model.BasketItem" processor="BasketItemProcessor"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="users" modelClassName="sprd.model.User">

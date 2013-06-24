@@ -1,5 +1,25 @@
-define(['js/data/DataSource'], function (DataSource) {
+define(['sprd/model/processor/DefaultProcessor'], function (DefaultProcessor) {
 
-    return DataSource.Processor.inherit("sprd.model.processor.BasketProcessor", {
+    return DefaultProcessor.inherit("sprd.model.processor.BasketProcessor", {
+
+        compose: function (model) {
+
+            var payload = this.callBase();
+
+            var basketItems = model.$.basketItems,
+                composedItems = [];
+            if (basketItems) {
+                var self = this;
+                basketItems.each(function (basketItem) {
+                    composedItems.push(self.$dataSource.composeModel(basketItem));
+                });
+                payload.basketItems = composedItems;
+            }
+
+
+            return payload;
+
+        }
+
     });
 });
