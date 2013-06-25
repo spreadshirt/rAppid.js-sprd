@@ -47,7 +47,9 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
                 this._setUpConfiguration(configuration);
 
-                productChangeHandler.call(this);
+                if(!(configuration instanceof TextConfiguration)){
+                    productChangeHandler.call(this);
+                }
                 priceChangeHandler.call(this);
 
             };
