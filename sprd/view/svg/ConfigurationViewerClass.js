@@ -353,7 +353,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         anchorIndex: cursorIndex
                     });
                 }
-
+                var selected = this.$.selected;
                 this.$.productViewer.set("selectedConfiguration", this.$.configuration);
                 this.$stage.focus();
 
@@ -509,11 +509,16 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var window = this.dom(this.$stage.$window);
 
                 this.$moveHandler = function (e) {
+                    selected = true;
                     self._move(e, mode);
                 };
 
                 this.$upHandler = function (e) {
-                    self._up(e, mode);
+                    if(selected){
+                        self._up(e, mode);
+                    } else {
+                        self.$moving = false;
+                    }
                 };
 
                 this.$keyDownHandler = function (e) {
@@ -528,6 +533,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 window.bindDomEvent(this.$upEvent, this.$upHandler);
                 window.bindDomEvent("keydown", this.$keyDownHandler);
                 window.bindDomEvent("keyup", this.$keyUpHandler);
+
 
             },
 
