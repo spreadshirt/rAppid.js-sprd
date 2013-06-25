@@ -156,14 +156,16 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                         for (var i = 0; i < departments.length; i++) {
                             key = departments[i].$.name;
                             departmentHash = departmentSizeMap[key] = departmentSizeMap[key] || {};
-                            productType.$.sizes.each(function (size) {
-                                if (!departmentHash[size.$.name]) {
-                                    departmentHash[size.$.name] = {
-                                        productTypes: []
-                                    };
-                                }
-                                departmentHash[size.$.name].productTypes.push(productType);
-                            });
+                            if(productType.$.sizes){
+                                productType.$.sizes.each(function (size) {
+                                    if (!departmentHash[size.$.name]) {
+                                        departmentHash[size.$.name] = {
+                                            productTypes: []
+                                        };
+                                    }
+                                    departmentHash[size.$.name].productTypes.push(productType);
+                                });
+                            }
                         }
                     }
                 });
