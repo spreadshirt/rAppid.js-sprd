@@ -49,8 +49,9 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
             productTypes.each(function (productType) {
                 bestColor = null;
                 productTypeToColorMap[productType.$.id] = tmpProductType = {};
-                if (productType.$.appearances) {
-                    productType.$.appearances.each(function (appearance) {
+                var appearances = productType.getAvailableAppearances();
+                if (appearances) {
+                    appearances.each(function (appearance) {
                         distance = Number.MAX_VALUE;
                         bestColor = null;
                         for (var i = 0; i < colors.length; i++) {
