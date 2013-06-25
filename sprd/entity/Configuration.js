@@ -35,31 +35,20 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             _printTypePrice: "{printType.price}"
         },
 
-        ctor: function () {
-            this.callBase();
-
-            function triggerConfigurationChanged() {
-                this.trigger('configurationChanged');
-            }
-
-            this.bind('change:offset', function (e) {
-                if (e.$ && !e.$.isDeepEqual(this.$previousAttributes["offset"])) {
-                    this.trigger('configurationChanged');
-                }
-            }, this);
-
-            this.bind('change:scale', triggerConfigurationChanged, this);
-            this.bind('change:rotation', triggerConfigurationChanged, this);
-            this.bind('change:printArea', triggerConfigurationChanged, this);
-            this.bind('change:printColors', triggerConfigurationChanged, this);
-        },
-
         _commitChangedAttributes: function ($, options) {
 
             var delay = options && options.userInteraction ? 300 : 0;
             this._debounceFunctionCall(this._validateTransform, "validateTransform", delay, this, [$]);
 
             this.callBase();
+
+            if (this._hasSome($, ["scale", "rotation", "printArea", "printColors", "printArea"])) {
+                this.trigger('configurationChanged');
+            } else if($.hasOwnProperty("offset")){
+                if ($.offset && !$.offset.isDeepEqual(this.$previousAttributes["offset"])) {
+                    this.trigger('configurationChanged');
+                }
+            }
         },
 
         _validateTransform: function ($) {
