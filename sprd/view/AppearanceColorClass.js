@@ -17,7 +17,7 @@ define(["js/ui/View"], function (View) {
         colorWidth: function (index) {
             var length = this.get("appearance.colors.length");
 
-            var cacheKey = "" + length;
+            var cacheKey = "" + length+"_"+index;
             if (lengthCache.hasOwnProperty(cacheKey)) {
                 return lengthCache[cacheKey];
             }
