@@ -47,8 +47,8 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
                 this._setUpConfiguration(configuration);
 
-                if(!(configuration instanceof TextConfiguration)){
-                    productChangeHandler.call(this);
+                if(configuration instanceof TextConfiguration){
+                    configuration._composeText();
                 }
                 priceChangeHandler.call(this);
 
