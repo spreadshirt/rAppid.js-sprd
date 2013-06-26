@@ -63,10 +63,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             _onTextFlowChange: function () {
                 var self = this;
-                this._composeText();
-                this._debounceFunctionCall(function () {
-                    self.$.bus.trigger('Application.productChanged', null, self);
-                }, "productChanged", 300);
+                this._composeText(false, function () {
+                    self._debounceFunctionCall(function () {
+                        self.$.bus.trigger('Application.productChanged', null, self);
+                    }, "productChanged", 300);
+                });
 
                 this.trigger("priceChanged");
             },
@@ -492,13 +493,13 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 var ret = this.callBase(options);
                 ret.$stage = this.$stage;
+                ret.$.composedTextFlow = null;
                 return ret;
             },
 
             sync: function () {
-                var ret = this.callBase();
-                ret.$stage = this.$stage;
-                return ret;
+                this.$stage = this._$source.$stage;
+                return this.callBase();
             },
 
             isAllowedOnPrintArea: function (printArea) {
