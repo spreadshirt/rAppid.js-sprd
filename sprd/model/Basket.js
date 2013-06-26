@@ -42,23 +42,23 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return basketItem;
         },
 
-        _onArticleSizeChange: function (e, model) {
+        mergeBasketItem: function(basketItem){
             var old, nItem;
             this.$.basketItems.each(function (item) {
-                if (!nItem && item.$.element !== model && item.$.element.isEqual(model)) {
+                if (!nItem && item.$.element !== basketItem.$.element && item.$.element.isEqual(basketItem.$.element)) {
                     nItem = item;
+                    this["break"]();
                 }
             });
             if (nItem) {
                 this.$.basketItems.each(function (item) {
-                    if (!old && item.$.element === model) {
+                    if (!old && item.$.element === basketItem.$.element) {
                         old = item;
                     }
                 });
                 nItem.increaseQuantity(old.$.quantity);
                 this.$.basketItems.remove(old);
             }
-
         },
 
         getBasketItemForElement: function (element) {
