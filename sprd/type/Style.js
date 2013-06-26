@@ -1,8 +1,8 @@
-define(["text/type/Style","underscore"], function(Style,_) {
+define(["text/type/Style", "underscore"], function (Style, _) {
 
     return Style.inherit({
 
-        _getUniqueFontName: function() {
+        _getUniqueFontName: function () {
             var font = this.$.font;
             if (font) {
                 return font.getUniqueFontName();
@@ -11,7 +11,7 @@ define(["text/type/Style","underscore"], function(Style,_) {
             return null;
         },
 
-        _getColor: function() {
+        _getColor: function () {
             var printTypeColor = this.$.printTypeColor;
             if (printTypeColor) {
                 return printTypeColor.toHexString();
@@ -29,7 +29,7 @@ define(["text/type/Style","underscore"], function(Style,_) {
             return null;
         },
 
-        compose: function() {
+        compose: function () {
 
             var ret = this.callBase();
 
@@ -54,11 +54,11 @@ define(["text/type/Style","underscore"], function(Style,_) {
             return ret;
         },
 
-        serialize: function() {
+        serialize: function () {
             var font = this.$.font,
                 fontFamily = font.getFontFamily();
 
-             return {
+            return {
                 fontFamilyId: fontFamily.$.id,
                 fontId: font.$.id,
                 printColorId: this._getPrintColorId(),
@@ -71,7 +71,11 @@ define(["text/type/Style","underscore"], function(Style,_) {
         },
 
         clone: function(){
-            return new this.factory(_.clone(this.$));
+            var options = {
+                exclude: ["font","printTypeColor"]
+            };
+
+            return this.callBase(options);
         }
     });
 
