@@ -1,5 +1,5 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "xaml!sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n"],
-    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _, Vector, I18n) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "xaml!sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus"],
+    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _, Vector, I18n, Bus) {
 
         var MOVE = "move",
             SCALE = "scale",
@@ -69,7 +69,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             inject: {
-                i18n: I18n
+                i18n: I18n,
+                bus: Bus
             },
 
             $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer", "clipPath", "imageService"],
@@ -514,7 +515,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 };
 
                 this.$upHandler = function (e) {
-                    if(selected){
+                    if (selected) {
                         self._up(e, mode);
                     } else {
                         self.$moving = false;
@@ -793,6 +794,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             scale: this.$._scale
                         });
                     }
+                    this.$.bus.trigger('Application.productChanged', this.$.product);
                 }
 
                 this._stopTransformation();
@@ -892,7 +894,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         productViewer = this.$.productViewer;
 
                     this.$.product.$.configurations.remove(configuration);
-
+                    this.$.bus.trigger('Application.productChanged', this.$.product);
                     if (productViewer && productViewer.$.selectedConfiguration === configuration) {
                         productViewer.set('selectedConfiguration', null);
                     }

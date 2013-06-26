@@ -29,9 +29,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     .seq(function (cb) {
                         productManager.initializeConfiguration(self, cb);
                     })
-                    .seq(function () {
+                    .seq(function (cb) {
                         if (self.$stageRendered || (self.$stage && self.$stage.rendered)) {
-                            self._composeText();
+                            self._composeText(false, cb);
+                        } else {
+                            cb();
                         }
                     })
                     .exec(callback);
@@ -52,7 +54,6 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             }.bus("Stage.Rendered"),
 
             _commitChangedAttributes: function ($) {
-
                 if ($.hasOwnProperty("bound")) {
                     this._setError(this._validateTransform($));
                 }
@@ -61,7 +62,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
             _onTextFlowChange: function () {
+                var self = this;
                 this._composeText();
+                this._debounceFunctionCall(function () {
+                    self.$.bus.trigger('Application.productChanged', null, self);
+                }, "productChanged", 300);
 
                 this.trigger("priceChanged");
             },
@@ -70,7 +75,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this._debounceFunctionCall(this._composeText, "composeText", 300, this, [true])
             },
 
-            _composeText: function (skipHeight) {
+            _composeText: function (skipHeight, callback) {
 
                 if (!(this.$stage && this.$stage.rendered)) {
                     return;
@@ -101,10 +106,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         bound: composedTextFlow ? composedTextFlow.measure : null
                     });
 
-                    self._debounceFunctionCall(function () {
-                        self.trigger('configurationChanged', null, self);
-                    }, "configurationChangedTrigger", 300, this, [true])
-
+                    callback && callback(err);
                 });
             },
 
@@ -486,10 +488,17 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 options = options || {};
                 options.exclude = options.exclude || [];
 
-                options.exclude.push("bus", "composer", "composedTextFlow");
+                options.exclude.push("bus", "composer", "textArea", "composedTextFlow");
 
-                return this.callBase(options);
+                var ret = this.callBase(options);
+                ret.$stage = this.$stage;
+                return ret;
+            },
 
+            sync: function () {
+                var ret = this.callBase();
+                ret.$stage = this.$stage;
+                return ret;
             },
 
             isAllowedOnPrintArea: function (printArea) {

@@ -61,6 +61,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             view: view,
                             appearance: appearance
                         });
+
+                        self.$.bus.trigger('Application.productChanged', product);
                     })
                     .exec(callback);
 
@@ -71,6 +73,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 product.set({
                     appearance: appearance
                 });
+                this.$.bus && this.$.bus.trigger('Application.productChanged', product);
             },
 
             /***
@@ -334,6 +337,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .exec(function (err, results) {
                         !err && product._addConfiguration(results.designConfiguration);
                         callback && callback(err, results.designConfiguration);
+                        self.$.bus.trigger('Application.productChanged', product);
                     });
 
             },
@@ -515,6 +519,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .exec(function (err, results) {
                         !err && product._addConfiguration(results.configuration);
                         callback && callback(err, results.configuration);
+                        self.$.bus.trigger('Application.productChanged', product);
                     });
 
             },

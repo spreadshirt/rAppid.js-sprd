@@ -1,4 +1,4 @@
-define(['sprd/view/svg/ConfigurationRenderer'], function (ConfigurationRenderer) {
+define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (ConfigurationRenderer, Bus) {
 
     return ConfigurationRenderer.inherit("sprd.view.svg.TextConfigurationRendererClass", {
 
@@ -13,6 +13,10 @@ define(['sprd/view/svg/ConfigurationRenderer'], function (ConfigurationRenderer)
             textArea: null,
 
             imageService: null
+        },
+
+        inject: {
+            bus: Bus
         },
 
         ctor: function () {
