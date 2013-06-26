@@ -87,7 +87,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.set('_globalToLocalFactor', this.$.productViewer.globalToLocalFactor());
 
                 if (validateConfigurationOnTransform) {
-                    this.bind("_offset", "change", this._offsetChanged, this);
+                    this.bind("_offset", "change", this._transformationChanged, this);
+                    this.bind("change:_rotation", this._transformationChanged, this);
                 }
 
                 this.bind('productViewer', 'change:width', this._productViewerSizeChanged, this);
@@ -280,8 +281,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _offsetChanged: function () {
-
+            _transformationChanged: function () {
 
                 var configuration = this.$.configuration;
                 if (configuration) {
@@ -292,29 +292,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             scale: this.$._scale,
                             rotation: this.$._rotation
                         }));
-                    }, "offsetChanged");
+                    }, "transformationChanged");
                 }
             },
 
             _commitSelected: function () {
                 this.$wasSelected = false;
-            },
-
-            _commitChangedAttributes: function ($) {
-                this.callBase();
-
-                var configuration = this.$.configuration;
-
-                if (validateConfigurationOnTransform && configuration && this._hasSome($, ["_scale", "_rotation"])) {
-
-                    // TODO: validate within invalidation interval
-                    configuration._setError(configuration._validateTransform({
-                        scale: $._scale || this.$.scale,
-                        rotation: $._rotation || this.$.rotation,
-                        offset: this.$._offset
-                    }));
-                }
-
             },
 
             _down: function (e, mode, initiator) {
