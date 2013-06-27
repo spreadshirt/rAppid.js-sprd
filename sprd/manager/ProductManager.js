@@ -549,6 +549,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 configuration.set('textFlow', textFlow);
                 textFlow.trigger('operationComplete', null, textFlow);
+                this.$.bus.trigger('Application.productChanged', null);
             },
 
             _positionConfiguration: function (configuration) {
