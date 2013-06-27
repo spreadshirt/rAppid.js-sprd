@@ -515,9 +515,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 window.bindDomEvent(this.$moveEvent, this.$moveHandler);
                 window.bindDomEvent(this.$upEvent, this.$upHandler);
-                window.bindDomEvent("keydown", this.$keyDownHandler);
-                window.bindDomEvent("keyup", this.$keyUpHandler);
 
+                if(!this.$stage.$browser.hasTouch || this.$stage.$browser.isIOS){
+                    window.bindDomEvent("keydown", this.$keyDownHandler);
+                    window.bindDomEvent("keyup", this.$keyUpHandler);
+                }
 
             },
 
