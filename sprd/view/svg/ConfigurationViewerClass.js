@@ -58,8 +58,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 selected: "{isSelectedConfiguration()}",
 
                 _handleWidth: 15,
-                _handleOffset: 8,
-                "_handle-Offset": -8,
+                _handleOffset: 0,
+                "_handle-Offset": -15,
                 _handleIconScale: 1,
 
                 _mode: null,
@@ -125,8 +125,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (hasTouch) {
                     this.set({
                         _handleWidth: 28,
-                        _handleOffset: 14,
-                        "_handle-Offset": -14,
+                        _handleOffset: 0,
+                        "_handle-Offset": -28,
                         _handleIconScale: 1.6
                     });
                 }

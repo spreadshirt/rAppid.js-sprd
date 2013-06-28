@@ -62,7 +62,7 @@
         </svg:g>
 
         <svg:rect cid="_resizeHandle" class="configuration-handle resize" selected="{isResizeable()}"
-                  x="{substract(_configurationWidth,pixelToViewBox(mul(_handleOffset,3)))}"
+                  x="{substract(_configurationWidth,pixelToViewBox(_handleWidth))}"
                   y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}" />
 
