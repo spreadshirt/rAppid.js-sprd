@@ -188,14 +188,14 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
                 return this.$.sizes;
             }
             return sizes;
-        }.on(['stockStates', 'add']),
+        }.on(['stockStates', 'reset']),
 
         isSizeAndAppearanceAvailable: function (size, appearance) {
             if (this.$.stockStates) {
                 return this.$.stockStates.isSizeAndAppearanceAvailable(size, appearance);
             }
             return false;
-        }.on(['stockStates', 'add']),
+        }.on(['stockStates', 'reset']),
 
 
         getMeasures: function () {
