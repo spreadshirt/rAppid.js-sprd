@@ -11,6 +11,12 @@ define(["js/ui/View", "underscore", "sprd/data/ImageService"], function(View, _,
             loaded: false,
 
             /***
+             * indicator if image has a loading error
+             * @type Boolean
+             */
+            loadingError: false,
+
+            /***
              * the width of the Image
              * @type Number
              */
@@ -40,6 +46,13 @@ define(["js/ui/View", "underscore", "sprd/data/ImageService"], function(View, _,
          */
         _onLoad: function () {
             this.set('loaded', true);
+        },
+
+        _onError: function() {
+            this.set({
+                loadingError: true,
+                loaded: true
+            });
         },
 
         /***
@@ -74,6 +87,14 @@ define(["js/ui/View", "underscore", "sprd/data/ImageService"], function(View, _,
                 this.removeClass('loading');
             } else {
                 this.addClass('loading');
+            }
+        },
+
+        _renderLoadingError: function (error) {
+            if (error) {
+                this.addClass('loading-error');
+            } else {
+                this.removeClass('loading-error');
             }
         },
 
