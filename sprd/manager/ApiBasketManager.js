@@ -67,9 +67,12 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             localStorage: LocalStorage
         },
 
-        addElementToBasket: function (element, quantity, callback) {
-
-            var self = this;
+        /**
+         * Adds an element to the basket without savoing it
+         * @param element
+         * @param quantity
+         */
+        addElementToBasket: function (element, quantity) {
 
             if (this.$.basket) {
                 var basketItem = this.$.basket.addElement(element, quantity);
@@ -92,17 +95,6 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 if (editBasketItemLinkTemplate) {
                     element.set("editLink", editBasketItemLinkTemplate.replace("$productId", element.get("item.id")))
                 }
-
-                basketItem.save({
-                    invalidatePageCache: false
-                }, function (err) {
-                    if (!err) {
-                        self.$.basket.fetch({noCache: true});
-                        self._triggerBasketChanged();
-                    }
-
-                    callback && callback(err);
-                });
             }
         },
 
