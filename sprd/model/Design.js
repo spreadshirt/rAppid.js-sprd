@@ -47,7 +47,8 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             colors: [DesignColor],
             price: Price,
 
-            restrictions: Restrictions
+            restrictions: Restrictions,
+            user: "sprd/model/User"
         },
 
         parse: function (data) {
