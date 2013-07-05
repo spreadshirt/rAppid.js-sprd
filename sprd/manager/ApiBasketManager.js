@@ -128,11 +128,25 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     self.set("apiBasketId", basketId);
                     self.$.localStorage.setItem("basketId", basket.$.id);
                     self._triggerBasketChanged();
+                    fetchBasketDiscountScales(basket, callback);
                 } else {
                     console.warn(err);
+                    callback(err);
                 }
 
-                callback(err);
+            };
+
+            var fetchBasketDiscountScales = function (basket, cb) {
+                if (basket.$.discounts && basket.$.discounts.size()) {
+                    var discount = basket.$.discounts.at(0);
+                    if (discount && discount.$.discountScale) {
+                        discount.$.discountScale.fetch(null, cb);
+                    } else {
+                        cb();
+                    }
+                } else {
+                    cb();
+                }
             };
 
             if (basket.isNew()) {
@@ -144,28 +158,35 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
                 basket.save(null, basketSaveCallback);
             } else {
-                basket.fetch({
-                    noCache: true,
-                    fetchSubModels: ["currency"]
-                }, function (err) {
-                    if (err) {
-                        // something went wrong
-                        basket.set('id', undefined);
-                        basket.save(null, basketSaveCallback);
-                        console.warn(err)
-                    } else {
+                flow()
+                    .seq(function (cb) {
+                        basket.fetch({
+                            noCache: true,
+                            fetchSubModels: ["currency"]
+                        }, cb)
+                    })
+                    .seq(function (cb) {
+                        fetchBasketDiscountScales(basket, cb);
+                    })
+                    .exec(function (err) {
+                        if (err) {
+                            // something went wrong
+                            basket.set('id', undefined);
+                            basket.save(null, basketSaveCallback);
+                            console.warn(err)
+                        } else {
 
-                        self.set("shop", basket.$.shop);
+                            self.set("shop", basket.$.shop);
 
-                        flow()
-                            .parEach(basket.$.basketItems.toArray(), function (item, cb) {
-                                item.$.element.getProduct().fetch({
-                                    fetchSubModels: ["productType"]
-                                }, cb);
-                            })
-                            .exec(callback);
-                    }
-                });
+                            flow()
+                                .parEach(basket.$.basketItems.toArray(), function (item, cb) {
+                                    item.$.element.getProduct().fetch({
+                                        fetchSubModels: ["productType"]
+                                    }, cb);
+                                })
+                                .exec(callback);
+                        }
+                    });
             }
         },
 

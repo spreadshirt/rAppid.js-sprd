@@ -42,7 +42,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return basketItem;
         },
 
-        mergeBasketItem: function(basketItem){
+        mergeBasketItem: function (basketItem) {
             var old, nItem;
             this.$.basketItems.each(function (item) {
                 if (!nItem && item.$.element !== basketItem.$.element && item.$.element.isEqual(basketItem.$.element)) {
@@ -120,12 +120,15 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
                 var currentDiscountId = discount.$.currentDiscount.id,
                     currentDiscount = null;
 
-                discount.$.discountScale.$.discounts.each(function (discountItem) {
-                    if (discountItem.$.id === currentDiscountId) {
-                        currentDiscount = discountItem;
-                        this["break"]();
-                    }
-                });
+                if (discount.$.discountScale.$.discounts) {
+                    discount.$.discountScale.$.discounts.each(function (discountItem) {
+                        if (discountItem.$.id === currentDiscountId) {
+                            currentDiscount = discountItem;
+                            this["break"]();
+                        }
+                    });
+                }
+
 
                 return currentDiscount;
             }
