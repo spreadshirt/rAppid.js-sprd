@@ -114,28 +114,6 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return 0;
         }.onChange("discounts"),
 
-        currentDiscount: function () {
-            if (this.$.discounts && this.$.discounts.size()) {
-                var discount = this.$.discounts.at(0);
-                var currentDiscountId = discount.$.currentDiscount.id,
-                    currentDiscount = null;
-
-                if (discount.$.discountScale.$.discounts) {
-                    discount.$.discountScale.$.discounts.each(function (discountItem) {
-                        if (discountItem.$.id === currentDiscountId) {
-                            currentDiscount = discountItem;
-                            this["break"]();
-                        }
-                    });
-                }
-
-
-                return currentDiscount;
-            }
-            return null;
-
-        }.onChange("discounts"),
-
         totalVatIncluded: function () {
             if (this.$.priceItems) {
                 return this.$.priceItems.$.vatIncluded - this.discountVatIncluded();
