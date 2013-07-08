@@ -234,8 +234,10 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     basket = this.$.basket;
 
                 function callCallbacks(err, basket) {
-                    while (self.$saveCallbacks.length) {
-                        self.$saveCallbacks.shift()(err, basket);
+                    var cb;
+                    while (self.$saveCallbacks && self.$saveCallbacks.length) {
+                        cb = self.$saveCallbacks.shift();
+                        cb && cb(err, basket);
                     }
                 }
 
@@ -260,7 +262,9 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         }
                     });
             } else {
-                this.$saveCallbacks.push(callback);
+                if(callback){
+                    this.$saveCallbacks.push(callback);
+                }
                 this.$basketChanged = true;
             }
 
