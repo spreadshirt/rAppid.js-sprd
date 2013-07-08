@@ -213,38 +213,58 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
          */
         removeBasketItem: function (basketItem) {
             this.$.basket.$.basketItems.remove(basketItem);
-            this.saveBasket();
+            this.saveBasketDebounced();
         },
 
-        saveBasket: function () {
-            this._debounceFunctionCall(this._saveBasket, "saveBasketCall", 700, this);
+        saveBasketDebounced: function () {
+            this._debounceFunctionCall(function () {
+                this.saveBasket();
+            }, "saveBasketCall", 700, this);
         },
 
-        _saveBasket: function () {
+        saveBasket: function (callback) {
             if (!this.$savingBasket) {
-                var self = this;
-                this.$callSaveBasketAgain = false;
                 this.$savingBasket = true;
-                this.$.basket.save(null, function (err, basket) {
-                    self._triggerBasketChanged();
-                    if (!err) {
-                        basket.fetch({noCache: true}, function (err) {
-                            self.$savingBasket = false;
-                            if (!err) {
-                                if (self.$callSaveBasketAgain) {
-                                    self.saveBasket();
-                                } else {
-                                    self._triggerBasketUpdated();
-                                }
-                            }
-                        });
-                    } else {
-                        self.$savingBasket = false;
+                this.$callSaveBasketAgain = false;
+                this.$saveCallbacks = this.$saveCallbacks || [];
+                if (callback) {
+                    this.$saveCallbacks.push(callback);
+                }
+                var self = this,
+                    basket = this.$.basket;
+
+                function callCallbacks(err, basket) {
+                    while (self.$saveCallbacks.length) {
+                        self.$saveCallbacks.shift()(err, basket);
                     }
-                });
+                }
+
+                flow()
+                    .seq(function (cb) {
+                        basket.save(null, cb);
+                    })
+                    .seq(function (cb) {
+                        self._triggerBasketChanged();
+
+                        basket.fetch({noCache: true}, cb);
+                    })
+                    .exec(function (err) {
+                        if (self.$basketChanged) {
+                            self.$basketChanged = false;
+                            self.$savingBasket = false;
+                            self.saveBasket();
+                        } else {
+                            callCallbacks(err, basket);
+                            self.$savingBasket = false;
+                            self._triggerBasketUpdated();
+                        }
+                    });
             } else {
-                this.$callSaveBasketAgain = true;
+                this.$saveCallbacks.push(callback);
+                this.$basketChanged = true;
             }
+
+
         }
     });
 
