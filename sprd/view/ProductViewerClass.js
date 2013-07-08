@@ -292,6 +292,10 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             this.set('focused', false);
             if (this.$stage.$browser.isIOS) {
                 this.$.textArea.set('visibility', 'visible');
+                var viewer = this.$.selectedConfigurationViewer;
+                if (viewer) {
+                    viewer.set('focused', false);
+                }
             } else {
                 // android hack
                 var self = this;
