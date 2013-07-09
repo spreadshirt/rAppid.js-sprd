@@ -48,7 +48,7 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
 
                 var optimizely = window["optimizely"];
 
-                if (optimizely && _.isObject(optimizely)) {
+                if (optimizely && _.isObject(optimizely) && !_.isArray(optimizely) && "trackEvent" in optimizely) {
                     self.$tracker = optimizely;
                     self.trigger("on:trackingInitialized");
                     self._trackQueue();
