@@ -59,7 +59,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
          * BasketItem
          */
             "on:basketChanged",
-            "on:basketUpdated"
+            "on:basketUpdated",
+            "on:basketUpdating"
         ],
 
         inject: {
@@ -104,6 +105,10 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
         _triggerBasketUpdated: function () {
             this.trigger("on:basketUpdated", this.$.basket, this);
+        },
+
+        _triggerBasketUpdating: function(){
+            this.trigger("on:basketUpdating", this.$.basket, this);
         },
 
         _initBasket: function (callback) {
@@ -217,6 +222,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
         },
 
         saveBasketDebounced: function () {
+            this._triggerBasketUpdating();
             this._debounceFunctionCall(function () {
                 this.saveBasket();
             }, "saveBasketCall", 700, this);
@@ -224,6 +230,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
         saveBasket: function (callback) {
             if (!this.$savingBasket) {
+                this._triggerBasketUpdating();
                 this.$savingBasket = true;
                 this.$callSaveBasketAgain = false;
                 this.$saveCallbacks = this.$saveCallbacks || [];
