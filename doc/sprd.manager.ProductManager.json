@@ -6,8 +6,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                198,
-                200
+                202,
+                204
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_beforeDestroy",
@@ -19,11 +19,49 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                251,
-                260
+                280,
+                289
             ],
             "definedBy": "js.core.Bindable",
             "name": "_bindBus",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "product"
+                },
+                {
+                    "name": "configuration"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/manager/ProductManager.js",
+            "lineNumbers": [
+                661,
+                685
+            ],
+            "name": "_checkConfigurationOutsidePrintArea",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "product"
+                },
+                {
+                    "name": "configuration"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/manager/ProductManager.js",
+            "lineNumbers": [
+                687,
+                749
+            ],
+            "name": "_checkConfigurationOutsideViewPort",
             "visibility": "protected"
         },
         {
@@ -43,8 +81,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                481,
-                507
+                489,
+                515
             ],
             "description": "Returns a copy of the attribute. This method is a hook for further cloning options",
             "private": "",
@@ -75,8 +113,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                763,
-                765
+                771,
+                773
             ],
             "description": "called after attributes has set and some of the has been changed\n",
             "abstract": "",
@@ -91,8 +129,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                668,
-                671
+                676,
+                679
             ],
             "definedBy": "js.core.Bindable",
             "name": "_commitInvalidatedAttributes",
@@ -164,8 +202,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                513,
-                515
+                521,
+                523
             ],
             "description": "",
             "returns": {
@@ -185,8 +223,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                206,
-                212
+                210,
+                216
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_destroyCompleted",
@@ -198,8 +236,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                273,
-                286
+                302,
+                315
             ],
             "definedBy": "js.core.Bindable",
             "name": "_extract",
@@ -220,8 +258,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                524,
-                552
+                532,
+                560
             ],
             "description": "generates a default chain containing the values from this instance and base classes\n",
             "returns": {
@@ -247,8 +285,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                767,
-                776
+                775,
+                784
             ],
             "definedBy": "js.core.Bindable",
             "name": "_hasAll",
@@ -267,8 +305,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                778,
-                787
+                786,
+                795
             ],
             "definedBy": "js.core.Bindable",
             "name": "_hasSome",
@@ -280,8 +318,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                368,
-                379
+                376,
+                387
             ],
             "definedBy": "js.core.Bindable",
             "name": "_initializationComplete",
@@ -293,8 +331,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                164,
-                174
+                193,
+                203
             ],
             "description": "starts the initialization of the `Bindable` if it hasn't initialized yet.\n\nIt calls the following methods:\n\n* initialize();\n* _initializeBindings();\n",
             "private": "",
@@ -308,8 +346,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                291,
-                362
+                320,
+                370
             ],
             "description": "Initialize all Binding and Event attributes",
             "definedBy": "js.core.Bindable",
@@ -322,8 +360,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                364,
-                366
+                372,
+                374
             ],
             "definedBy": "js.core.Bindable",
             "name": "_initializeBindingsBeforeComplete",
@@ -335,8 +373,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                149,
-                152
+                178,
+                181
             ],
             "description": "\ninvokes the `_initialize` method. This method is a hook function and is overwritten by js.core.Component\n",
             "private": "",
@@ -350,8 +388,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                224,
-                248
+                253,
+                277
             ],
             "definedBy": "js.core.Bindable",
             "name": "_inject",
@@ -363,8 +401,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                189,
-                191
+                218,
+                220
             ],
             "description": "\nreturns the chained object defining the required injections\n",
             "returns": {
@@ -383,8 +421,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                202,
-                204
+                206,
+                208
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_innerDestroy",
@@ -400,8 +438,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
-                549,
-                642
+                555,
+                648
             ],
             "name": "_positionConfiguration",
             "visibility": "protected"
@@ -412,8 +450,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                381,
-                383
+                389,
+                391
             ],
             "definedBy": "js.core.Bindable",
             "name": "_postConstruct",
@@ -425,8 +463,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                385,
-                387
+                393,
+                395
             ],
             "definedBy": "js.core.Bindable",
             "name": "_preDestroy",
@@ -438,8 +476,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                206,
-                209
+                235,
+                238
             ],
             "description": "sets up the Bindable or Component. It will inject the required injections and\nalso will bind the application wide `MessageBus` to all methods annotated with the\n`.bus()` method annotation\n\nFor `Components` the setUp method is invoked automatically during the add of the Component.\nFor non `Components`\n\n",
             "private": "",
@@ -456,8 +494,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                219,
-                222
+                248,
+                251
             ],
             "description": "tears down the Bindable or Component. It will remove the injected variables and\nalso will unbind the annotated event handlers from the application wide `MessageBus`\n",
             "private": "",
@@ -474,8 +512,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                262,
-                271
+                291,
+                300
             ],
             "definedBy": "js.core.Bindable",
             "name": "_unbindBus",
@@ -509,8 +547,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
-                224,
-                339
+                227,
+                343
             ],
             "description": "Adds a design to a given Product",
             "name": "addDesign",
@@ -532,8 +570,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
-                341,
-                520
+                345,
+                525
             ],
             "name": "addText",
             "visibility": "public"
@@ -565,7 +603,7 @@
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
                 75,
-                87
+                91
             ],
             "description": "Binds a callback and a scope to a given eventType\n",
             "definedBy": "js.core.EventDispatcher",
@@ -574,12 +612,33 @@
         },
         {
             "type": "Method",
+            "parameter": [
+                {
+                    "name": "product"
+                },
+                {
+                    "name": "configuration"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/manager/ProductManager.js",
+            "lineNumbers": [
+                650,
+                659
+            ],
+            "definedBy": "sprd.manager.IProductManager",
+            "overwritesMethod": true,
+            "name": "checkConfigurationOffset",
+            "visibility": "public"
+        },
+        {
+            "type": "Method",
             "parameter": [],
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                804,
-                806
+                812,
+                814
             ],
             "description": "Clears all attributes",
             "returns": {
@@ -601,8 +660,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                454,
-                474
+                462,
+                482
             ],
             "description": "This method returns a copy of the Object",
             "returns": {
@@ -643,8 +702,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
-                82,
-                217
+                85,
+                220
             ],
             "description": "Converts the configurations of a product with the given productType and appearance",
             "name": "convertConfigurations",
@@ -669,8 +728,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                185,
-                196
+                189,
+                200
             ],
             "description": "Clears up the instance",
             "definedBy": "js.core.EventDispatcher",
@@ -721,8 +780,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                680,
-                743
+                688,
+                751
             ],
             "description": "evaluates a path to retrieve a value\n",
             "returns": {
@@ -743,8 +802,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                400,
-                409
+                408,
+                417
             ],
             "definedBy": "js.core.Bindable",
             "name": "getScopeForFncName",
@@ -760,8 +819,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                389,
-                398
+                397,
+                406
             ],
             "definedBy": "js.core.Bindable",
             "name": "getScopeForKey",
@@ -782,8 +841,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                751,
-                753
+                759,
+                761
             ],
             "description": "determinate if a attribute is available\n",
             "returns": {
@@ -802,8 +861,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                179,
-                180
+                208,
+                209
             ],
             "description": "the initialize method is a hook function to add a custom logic during the initiation process.",
             "definedBy": "js.core.Bindable",
@@ -823,8 +882,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/IProductManager.js",
             "lineNumbers": [
-                3,
-                4
+                12,
+                13
             ],
             "definedBy": "sprd.manager.IProductManager",
             "name": "initializeProduct",
@@ -840,8 +899,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                879,
-                896
+                904,
+                921
             ],
             "definedBy": "js.core.Bindable",
             "name": "isDeepEqual",
@@ -857,8 +916,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                897,
-                899
+                922,
+                924
             ],
             "definedBy": "js.core.Bindable",
             "name": "isEqual",
@@ -948,8 +1007,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                564,
-                650
+                572,
+                658
             ],
             "description": "Sets new values for attributes and notify about changes\n",
             "returns": {
@@ -975,8 +1034,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
-                69,
-                74
+                71,
+                77
             ],
             "name": "setAppearance",
             "visibility": "public"
@@ -994,8 +1053,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                652,
-                666
+                660,
+                674
             ],
             "definedBy": "js.core.Bindable",
             "name": "setLater",
@@ -1035,7 +1094,7 @@
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
                 19,
-                67
+                69
             ],
             "description": "set the product type and converts all configurations\n",
             "name": "setProductType",
@@ -1054,8 +1113,8 @@
             "annotations": {},
             "definedInFile": "sprd/manager/ProductManager.js",
             "lineNumbers": [
-                522,
-                547
+                527,
+                553
             ],
             "name": "setTextForConfiguration",
             "visibility": "public"
@@ -1066,8 +1125,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                421,
-                449
+                429,
+                457
             ],
             "description": "Writes attributes back to the source",
             "definedBy": "js.core.Bindable",
@@ -1102,8 +1161,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                96,
-                157
+                100,
+                161
             ],
             "description": "Triggers a specific event and the * event\n",
             "definedBy": "js.core.EventDispatcher",
@@ -1134,8 +1193,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                165,
-                180
+                169,
+                184
             ],
             "description": "Unbinds callbacks for events\n",
             "definedBy": "js.core.EventDispatcher",
@@ -1165,8 +1224,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                795,
-                798
+                803,
+                806
             ],
             "description": "Unset attribute on $",
             "returns": {
@@ -1180,7 +1239,30 @@
         }
     ],
     "staticMethods": [],
-    "defaults": {},
+    "defaults": {
+        "removeConfigurationOutsideViewPort": {
+            "name": "removeConfigurationOutsideViewPort",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": true,
+            "lineNumbers": [
+                5,
+                5
+            ],
+            "definedBy": "sprd.manager.IProductManager"
+        },
+        "removeConfigurationOutsidePrintArea": {
+            "name": "removeConfigurationOutsidePrintArea",
+            "defaultType": "value",
+            "visibility": "public",
+            "value": true,
+            "lineNumbers": [
+                6,
+                6
+            ],
+            "definedBy": "sprd.manager.IProductManager"
+        }
+    },
     "properties": {},
     "fqClassName": "sprd.manager.ProductManager",
     "inherit": "sprd.manager.IProductManager",

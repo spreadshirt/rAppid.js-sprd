@@ -2,7 +2,7 @@
     xmlns="http://www.w3.org/2001/XMLSchema"
     xmlns:ns1="js.svg"
     xmlns:ns="sprd.view.svg">
-    <import namespace="js.svg"/>
+    <import/>
     <element name="ConfigurationRenderer" type="ns:ConfigurationRenderer"/>
     <element name="ConfigurationViewer" type="ns:ConfigurationViewer"/>
     <element name="ConfigurationViewerClass" type="ns:ConfigurationViewerClass"/>

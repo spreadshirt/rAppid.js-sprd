@@ -404,7 +404,7 @@
                 29
             ],
             "propertyType": "complex",
-            "value": " [\"product\", \"view\", \"editable\", \"selectedConfiguration\"]",
+            "value": " [\"product\", \"view\", \"editable\", \"selectedConfiguration\", \"imageService\"]",
             "definedBy": "js.svg.Svg",
             "overwrites": true
         }

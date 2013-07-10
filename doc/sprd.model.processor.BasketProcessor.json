@@ -1,13 +1,57 @@
 {
-    "methods": [],
+    "methods": [
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "model"
+                },
+                {
+                    "name": "action"
+                },
+                {
+                    "name": "options"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/model/processor/DefaultProcessor.js",
+            "lineNumbers": [
+                4,
+                9
+            ],
+            "definedBy": "sprd.model.processor.DefaultProcessor",
+            "name": "_composeSubModel",
+            "visibility": "protected"
+        },
+        {
+            "type": "Method",
+            "parameter": [
+                {
+                    "name": "model"
+                }
+            ],
+            "annotations": {},
+            "definedInFile": "sprd/model/processor/BasketProcessor.js",
+            "lineNumbers": [
+                5,
+                22
+            ],
+            "name": "compose",
+            "visibility": "public"
+        }
+    ],
     "staticMethods": [],
     "defaults": {},
     "properties": {},
     "fqClassName": "sprd.model.processor.BasketProcessor",
+    "inherit": "sprd.model.processor.DefaultProcessor",
     "dependencies": [
-        "js.data.DataSource"
+        "sprd.model.processor.DefaultProcessor"
     ],
     "type": "js",
     "file": "sprd/model/processor/BasketProcessor.js",
-    "package": "sprd.model.processor"
+    "package": "sprd.model.processor",
+    "inheritancePath": [
+        "sprd.model.processor.DefaultProcessor"
+    ]
 }

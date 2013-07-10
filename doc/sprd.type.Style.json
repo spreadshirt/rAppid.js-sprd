@@ -43,7 +43,7 @@
             "definedInFile": "sprd/type/Style.js",
             "lineNumbers": [
                 73,
-                75
+                79
             ],
             "name": "clone",
             "visibility": "public"

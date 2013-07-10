@@ -6,8 +6,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                198,
-                200
+                202,
+                204
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_beforeDestroy",
@@ -19,8 +19,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                251,
-                260
+                280,
+                289
             ],
             "definedBy": "js.core.Bindable",
             "name": "_bindBus",
@@ -43,8 +43,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                481,
-                507
+                489,
+                515
             ],
             "description": "Returns a copy of the attribute. This method is a hook for further cloning options",
             "private": "",
@@ -62,8 +62,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                54,
-                61
+                56,
+                62
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -76,8 +76,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                668,
-                671
+                676,
+                679
             ],
             "definedBy": "js.core.Bindable",
             "name": "_commitInvalidatedAttributes",
@@ -93,8 +93,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                174,
-                206
+                177,
+                209
             ],
             "name": "_commitPrintType",
             "visibility": "protected"
@@ -104,13 +104,16 @@
             "parameter": [
                 {
                     "name": "skipHeight"
+                },
+                {
+                    "name": "callback"
                 }
             ],
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                73,
-                109
+                79,
+                112
             ],
             "name": "_composeText",
             "visibility": "protected"
@@ -181,8 +184,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                69,
-                71
+                75,
+                77
             ],
             "name": "_debouncedComposeText",
             "visibility": "protected"
@@ -193,8 +196,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                513,
-                515
+                521,
+                523
             ],
             "description": "",
             "returns": {
@@ -214,8 +217,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                206,
-                212
+                210,
+                216
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_destroyCompleted",
@@ -240,8 +243,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                273,
-                286
+                302,
+                315
             ],
             "definedBy": "js.core.Bindable",
             "name": "_extract",
@@ -262,8 +265,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                524,
-                552
+                532,
+                560
             ],
             "description": "generates a default chain containing the values from this instance and base classes\n",
             "returns": {
@@ -301,8 +304,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                149,
-                172
+                152,
+                175
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -322,8 +325,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                767,
-                776
+                775,
+                784
             ],
             "definedBy": "js.core.Bindable",
             "name": "_hasAll",
@@ -351,8 +354,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                114,
-                128
+                103,
+                117
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "_hasHardBoundaryError",
@@ -371,8 +374,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                778,
-                787
+                786,
+                795
             ],
             "definedBy": "js.core.Bindable",
             "name": "_hasSome",
@@ -384,8 +387,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                368,
-                379
+                376,
+                387
             ],
             "definedBy": "js.core.Bindable",
             "name": "_initializationComplete",
@@ -397,8 +400,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                164,
-                174
+                193,
+                203
             ],
             "description": "starts the initialization of the `Bindable` if it hasn't initialized yet.\n\nIt calls the following methods:\n\n* initialize();\n* _initializeBindings();\n",
             "private": "",
@@ -412,8 +415,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                291,
-                362
+                320,
+                370
             ],
             "description": "Initialize all Binding and Event attributes",
             "definedBy": "js.core.Bindable",
@@ -426,8 +429,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                364,
-                366
+                372,
+                374
             ],
             "definedBy": "js.core.Bindable",
             "name": "_initializeBindingsBeforeComplete",
@@ -439,8 +442,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                149,
-                152
+                178,
+                181
             ],
             "description": "\ninvokes the `_initialize` method. This method is a hook function and is overwritten by js.core.Component\n",
             "private": "",
@@ -454,8 +457,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                224,
-                248
+                253,
+                277
             ],
             "definedBy": "js.core.Bindable",
             "name": "_inject",
@@ -467,8 +470,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                189,
-                191
+                218,
+                220
             ],
             "description": "\nreturns the chained object defining the required injections\n",
             "returns": {
@@ -487,8 +490,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                202,
-                204
+                206,
+                208
             ],
             "definedBy": "js.core.EventDispatcher",
             "name": "_innerDestroy",
@@ -517,8 +520,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                63,
-                67
+                64,
+                73
             ],
             "name": "_onTextFlowChange",
             "visibility": "protected"
@@ -529,8 +532,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                40,
-                43
+                42,
+                45
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -543,8 +546,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                45,
-                47
+                47,
+                49
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -595,8 +598,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                206,
-                209
+                235,
+                238
             ],
             "description": "sets up the Bindable or Component. It will inject the required injections and\nalso will bind the application wide `MessageBus` to all methods annotated with the\n`.bus()` method annotation\n\nFor `Components` the setUp method is invoked automatically during the add of the Component.\nFor non `Components`\n\n",
             "private": "",
@@ -613,8 +616,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                219,
-                222
+                248,
+                251
             ],
             "description": "tears down the Bindable or Component. It will remove the injected variables and\nalso will unbind the annotated event handlers from the application wide `MessageBus`\n",
             "private": "",
@@ -631,8 +634,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                262,
-                271
+                291,
+                300
             ],
             "definedBy": "js.core.Bindable",
             "name": "_unbindBus",
@@ -657,8 +660,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                111,
-                147
+                114,
+                150
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -675,8 +678,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                65,
-                100
+                54,
+                89
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "_validateTransform",
@@ -688,8 +691,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                258,
-                260
+                247,
+                249
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "allowScale",
@@ -722,7 +725,7 @@
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
                 75,
-                87
+                91
             ],
             "description": "Binds a callback and a scope to a given eventType\n",
             "definedBy": "js.core.EventDispatcher",
@@ -739,8 +742,8 @@
             },
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                49,
-                52
+                51,
+                54
             ],
             "name": "bus_StageRendered",
             "visibility": "public"
@@ -751,8 +754,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                804,
-                806
+                812,
+                814
             ],
             "description": "Clears all attributes",
             "returns": {
@@ -788,8 +791,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                485,
-                493
+                488,
+                498
             ],
             "definedBy": "js.core.Bindable",
             "overwritesMethod": true,
@@ -802,8 +805,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                267,
-                383
+                270,
+                386
             ],
             "definedBy": "js.data.Entity",
             "overwritesMethod": true,
@@ -877,8 +880,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                185,
-                196
+                189,
+                200
             ],
             "description": "Clears up the instance",
             "definedBy": "js.core.EventDispatcher",
@@ -996,8 +999,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                680,
-                743
+                688,
+                751
             ],
             "description": "evaluates a path to retrieve a value\n",
             "returns": {
@@ -1050,8 +1053,8 @@
             },
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                400,
-                427
+                403,
+                430
             ],
             "name": "getPossiblePrintTypes",
             "visibility": "public"
@@ -1069,8 +1072,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                429,
-                454
+                432,
+                457
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1087,8 +1090,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                400,
-                409
+                408,
+                417
             ],
             "definedBy": "js.core.Bindable",
             "name": "getScopeForFncName",
@@ -1104,8 +1107,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                389,
-                398
+                397,
+                406
             ],
             "definedBy": "js.core.Bindable",
             "name": "getScopeForKey",
@@ -1125,8 +1128,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                477,
-                479
+                480,
+                482
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1139,8 +1142,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                241,
-                265
+                244,
+                268
             ],
             "name": "getUsedFonts",
             "visibility": "public"
@@ -1160,8 +1163,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                751,
-                753
+                759,
+                761
             ],
             "description": "determinate if a attribute is available\n",
             "returns": {
@@ -1195,8 +1198,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                192,
-                199
+                181,
+                188
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "height",
@@ -1226,7 +1229,7 @@
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
                 23,
-                38
+                40
             ],
             "definedBy": "js.data.Entity",
             "overwritesMethod": true,
@@ -1239,8 +1242,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                179,
-                180
+                208,
+                209
             ],
             "description": "the initialize method is a hook function to add a custom logic during the initiation process.",
             "definedBy": "js.core.Bindable",
@@ -1257,8 +1260,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                495,
-                497
+                505,
+                507
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1275,8 +1278,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                879,
-                896
+                904,
+                921
             ],
             "definedBy": "js.core.Bindable",
             "name": "isDeepEqual",
@@ -1292,8 +1295,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                897,
-                899
+                922,
+                924
             ],
             "definedBy": "js.core.Bindable",
             "name": "isEqual",
@@ -1305,8 +1308,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                499,
-                501
+                509,
+                511
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1319,8 +1322,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                218,
-                220
+                207,
+                209
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "isRemovable",
@@ -1332,8 +1335,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                214,
-                216
+                203,
+                205
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "isRotatable",
@@ -1349,8 +1352,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                210,
-                212
+                199,
+                201
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "isScalable",
@@ -1426,8 +1429,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                262,
-                264
+                251,
+                253
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "minimumScale",
@@ -1445,8 +1448,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                456,
-                475
+                459,
+                478
             ],
             "definedBy": "js.data.Entity",
             "overwritesMethod": true,
@@ -1467,8 +1470,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                239,
-                248
+                228,
+                237
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "possiblePrintTypes",
@@ -1490,8 +1493,8 @@
             },
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                208,
-                239
+                211,
+                242
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1549,8 +1552,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                564,
-                650
+                572,
+                658
             ],
             "description": "Sets new values for attributes and notify about changes\n",
             "returns": {
@@ -1576,8 +1579,8 @@
             "annotations": {},
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                385,
-                398
+                388,
+                401
             ],
             "name": "setColor",
             "visibility": "public"
@@ -1595,8 +1598,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                652,
-                666
+                660,
+                674
             ],
             "definedBy": "js.core.Bindable",
             "name": "setLater",
@@ -1618,8 +1621,8 @@
             },
             "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                481,
-                483
+                484,
+                486
             ],
             "definedBy": "sprd.entity.Configuration",
             "overwritesMethod": true,
@@ -1630,13 +1633,13 @@
             "type": "Method",
             "parameter": [],
             "annotations": {},
-            "definedInFile": "js/core/Bindable.js",
+            "definedInFile": "sprd/entity/TextConfiguration.js",
             "lineNumbers": [
-                421,
-                449
+                500,
+                503
             ],
-            "description": "Writes attributes back to the source",
             "definedBy": "js.core.Bindable",
+            "overwritesMethod": true,
             "name": "sync",
             "visibility": "public"
         },
@@ -1668,8 +1671,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                96,
-                157
+                100,
+                161
             ],
             "description": "Triggers a specific event and the * event\n",
             "definedBy": "js.core.EventDispatcher",
@@ -1700,8 +1703,8 @@
             "annotations": {},
             "definedInFile": "js/core/EventDispatcher.js",
             "lineNumbers": [
-                165,
-                180
+                169,
+                184
             ],
             "description": "Unbinds callbacks for events\n",
             "definedBy": "js.core.EventDispatcher",
@@ -1731,8 +1734,8 @@
             "annotations": {},
             "definedInFile": "js/core/Bindable.js",
             "lineNumbers": [
-                795,
-                798
+                803,
+                806
             ],
             "description": "Unset attribute on $",
             "returns": {
@@ -1814,8 +1817,8 @@
             },
             "definedInFile": "sprd/entity/Configuration.js",
             "lineNumbers": [
-                201,
-                208
+                190,
+                197
             ],
             "definedBy": "sprd.entity.Configuration",
             "name": "width",

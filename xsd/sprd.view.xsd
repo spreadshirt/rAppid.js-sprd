@@ -2,7 +2,7 @@
     xmlns="http://www.w3.org/2001/XMLSchema"
     xmlns:ns1="js.ui"
     xmlns:ns="sprd.view">
-    <import namespace="js.ui"/>
+    <import/>
     <element name="AppearanceColor" type="ns:AppearanceColor"/>
     <element name="AppearanceColorClass" type="ns:AppearanceColorClass"/>
     <element name="AppearanceImage" type="ns:AppearanceImage"/>
@@ -157,6 +157,13 @@
                     </documentation>
                     </annotation>
                 </attribute>
+                <attribute name="loadingError">
+                    <annotation>
+                        <documentation>
+                        indicator if image has a loading error
+                    </documentation>
+                    </annotation>
+                </attribute>
                 <attribute name="width">
                     <annotation>
                         <documentation>
@@ -201,6 +208,13 @@
                     <annotation>
                         <documentation>
                         the loading state
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="loadingError">
+                    <annotation>
+                        <documentation>
+                        indicator if image has a loading error
                     </documentation>
                     </annotation>
                 </attribute>
@@ -371,7 +385,6 @@ set the default appearance of the product is used.
                 <attribute name="textArea"/>
                 <attribute name="textAreaPosition"/>
                 <attribute name="removeEmptyTextConfiguration" default="true"/>
-                <attribute name="removeConfigurationOutsidePrintArea" default="true"/>
                 <attribute name="imageService"/>
                 <attribute name="errorKey" default="{product.configurationsOnViewErrorKey(view)}"/>
             </extension>
@@ -397,7 +410,6 @@ set the default appearance of the product is used.
                 <attribute name="textArea"/>
                 <attribute name="textAreaPosition"/>
                 <attribute name="removeEmptyTextConfiguration" default="true"/>
-                <attribute name="removeConfigurationOutsidePrintArea" default="true"/>
                 <attribute name="imageService"/>
                 <attribute name="errorKey" default="{product.configurationsOnViewErrorKey(view)}"/>
                 <attribute name="onconfigurationSelect" default="_onConfigurationSelectHandler" type="string"/>

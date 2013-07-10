@@ -3,8 +3,8 @@
     xmlns:ns1="js.core"
     xmlns:ns2="js.data"
     xmlns:ns="sprd.data">
-    <import namespace="js.core"/>
-    <import namespace="js.data"/>
+    <import/>
+    <import/>
     <element name="ImageServerDataSource" type="ns:ImageServerDataSource"/>
     <element name="ImageServerDataSourceClass" type="ns:ImageServerDataSourceClass"/>
     <element name="ImageService" type="ns:ImageService"/>
