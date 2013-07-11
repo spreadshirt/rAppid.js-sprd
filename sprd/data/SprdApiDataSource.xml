@@ -49,5 +49,6 @@
         </conf:ResourceConfiguration>
 
         <conf:ResourceConfiguration path="sessions" modelClassName="sprd.model.Session" />
+        <conf:ResourceConfiguration path="messages" modelClassName="sprd.model.Message"/>
     </conf:DataSourceConfiguration>
 </data:SprdApiDataSourceClass>
