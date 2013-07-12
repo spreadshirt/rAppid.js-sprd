@@ -10,7 +10,7 @@
                 <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design"/>
             </conf:ResourceConfiguration>
             <conf:ResourceConfiguration path="printTypes" modelClassName="sprd.model.PrintType" />
-            <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" />
+            <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" signatureRequired="true"/>
             <conf:ResourceConfiguration path="designCategories" modelClassName="sprd.model.DesignCategory"/>
 
             <conf:ResourceConfiguration path="productTypes" modelClassName="sprd.model.ProductType" >

@@ -1,5 +1,6 @@
 <data:ImageServerDataSourceClass xmlns:data="sprd.data" xmlns:conf="js.conf">
     <conf:DataSourceConfiguration>
-        <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.UploadImage" processor="UploadDesignProcessor"/>
+        <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.UploadImage" processor="UploadDesignProcessor"
+                apiKeyRequired="true"/>
     </conf:DataSourceConfiguration>
 </data:ImageServerDataSourceClass>
