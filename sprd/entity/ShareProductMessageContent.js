@@ -11,7 +11,7 @@ define(["sprd/entity/MessageContent", "js/data/validator/EmailValidator"], funct
             mailFrom: null,
             mailTo: null,
             viewIds: null,
-            productDeeplinkUrl: null
+            productDeeplinkURL: null
         },
 
         schema: {
@@ -29,7 +29,7 @@ define(["sprd/entity/MessageContent", "js/data/validator/EmailValidator"], funct
             mailTo: String,
 
             viewIds: String,
-            productDeeplinkUrl: String
+            productDeeplinkURL: String
         },
 
         validators: [

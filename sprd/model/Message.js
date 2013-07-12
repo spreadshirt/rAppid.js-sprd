@@ -27,7 +27,7 @@ define(["sprd/data/SprdModel", "js/data/Entity"], function (SprdModel, Entity) {
             }
 
             ret.properties = properties;
-            ret.type = content.type;
+            ret.type = this.$.content.type;
 
             delete ret.content;
 
