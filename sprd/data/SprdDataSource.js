@@ -36,37 +36,43 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
             var params = _.defaults(obj, this.callBase());
 
             var configuration,
-                apiKey = this.$.apiKey;
+                apiKey = this.$.apiKey,
+                needsSignature;
 
-            if (this.$.session) {
-                // get the configuration only if needed
+            // get the configuration only if needed
+            configuration = this._getConfigurationForResource(resource);
 
-                configuration = this._getConfigurationForResource(resource);
-
-
-                if (!configuration) {
-                    throw new Error("Configuration for resource not found");
-                }
-
-                if (configuration.$.sessionRequired) {
-
-                    var secret = this.$.secret;
-                    var sessionId = this.$.session.$.id;
-                    var time = Date.now();
-                    var url = this._buildUriForResource(resource, this.$.endPoint);
-
-                    var data = method + " " + url + " " + time + " " + secret;
-
-                    params = _.defaults({
-                        sig: SprdDataSource.SHA1(data),
-                        time: time,
-                        sessionId: sessionId,
-                        apiKey: apiKey
-                    });
-                }
+            if (!configuration) {
+                throw new Error("Configuration for resource not found");
             }
 
-            if (apiKey) {
+            var signatureRequired = configuration.$.signatureRequired,
+                apiKeyRequired = configuration.$.apiKeyRequired,
+                sessionRequired = configuration.$.sessionRequired;
+
+            needsSignature = signatureRequired || sessionRequired;
+
+            if (this.$.session && sessionRequired) {
+                params = _.defaults({
+                    sessionId: this.$.session.$.id
+                });
+            }
+
+            if (needsSignature) {
+                var secret = this.$.secret;
+                var time = Date.now();
+                var url = this._buildUriForResource(resource, this.$.endPoint);
+
+                var data = method + " " + url + " " + time + " " + secret;
+
+                params = _.defaults({
+                    sig: SprdDataSource.SHA1(data),
+                    time: time,
+                    apiKey: apiKey
+                });
+            }
+
+            if (apiKeyRequired || signatureRequired || sessionRequired) {
                 params = _.defaults(params, {
                     apiKey: apiKey
                 });
