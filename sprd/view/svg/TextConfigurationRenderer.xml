@@ -5,5 +5,5 @@
                         selection="{configuration.selection}"
                         focused="{focused}"
                         width="{configuration.textArea.width}" height="{configuration.textArea.height}"
-            editable="{productViewer.editable}" selectable="{isNotMobile()}" showSelection="true"/>
+            editable="{productViewer.editable}" selectable="{isNotMobile()}" showSelection="{productViewer.editable}"/>
 </sprdSvg:TextConfigurationRendererClass>
