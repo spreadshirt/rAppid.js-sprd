@@ -158,7 +158,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         configuration: configuration,
                         productViewer: this.$.productViewer,
                         configurationViewer: this,
-
+                        _width: '{productViewer.width}',
                         imageService: this.$.imageService
                     });
 

@@ -22,7 +22,7 @@ define(['sprd/view/svg/ConfigurationRenderer'], function (Renderer) {
 
 
             return null;
-        }.onChange("design").on(["configuration.printColors", "reset"])
+        }.onChange("design", "_width","_height").on(["configuration.printColors", "reset"])
 
     })
 });
