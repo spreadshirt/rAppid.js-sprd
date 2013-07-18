@@ -336,8 +336,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     })
                     .exec(function (err, results) {
                         !err && product._addConfiguration(results.designConfiguration);
-                        callback && callback(err, results.designConfiguration);
                         self.$.bus.trigger('Application.productChanged', product);
+                        callback && callback(err, results.designConfiguration);
                     });
 
             },
