@@ -107,7 +107,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             this.trigger("on:basketUpdated", this.$.basket, this);
         },
 
-        _triggerBasketUpdating: function(){
+        _triggerBasketUpdating: function () {
             this.trigger("on:basketUpdating", this.$.basket, this);
         },
 
@@ -133,25 +133,12 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     self.set("apiBasketId", basketId);
                     self.$.localStorage.setItem("basketId", basket.$.id);
                     self._triggerBasketChanged();
-                    fetchBasketDiscountScales(basket, callback);
+                    self.fetchBasketDiscounts(callback);
                 } else {
                     console.warn(err);
                     callback(err);
                 }
 
-            };
-
-            var fetchBasketDiscountScales = function (basket, cb) {
-                if (basket.$.discounts && basket.$.discounts.size()) {
-                    var discount = basket.$.discounts.at(0);
-                    if (discount && discount.$.discountScale) {
-                        discount.$.discountScale.fetch(null, cb);
-                    } else {
-                        cb();
-                    }
-                } else {
-                    cb();
-                }
             };
 
             if (basket.isNew()) {
@@ -171,7 +158,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         }, cb)
                     })
                     .seq(function (cb) {
-                        fetchBasketDiscountScales(basket, cb);
+                        self.fetchBasketDiscounts(cb);
                     })
                     .exec(function (err) {
                         if (err) {
@@ -192,6 +179,20 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                                 .exec(callback);
                         }
                     });
+            }
+        },
+
+        fetchBasketDiscounts: function (cb) {
+            var basket = this.$.basket;
+            if (basket.$.discounts && basket.$.discounts.size()) {
+                var discount = basket.$.discounts.at(0);
+                if (discount && discount.$.discountScale) {
+                    discount.$.discountScale.fetch(null, cb);
+                } else {
+                    cb();
+                }
+            } else {
+                cb();
             }
         },
 
@@ -257,6 +258,9 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
                         basket.fetch({noCache: true}, cb);
                     })
+                    .seq(function(cb){
+                        self.fetchBasketDiscounts(cb);
+                    })
                     .exec(function (err) {
                         if (self.$basketChanged) {
                             self.$basketChanged = false;
@@ -269,7 +273,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         }
                     });
             } else {
-                if(callback){
+                if (callback) {
                     this.$saveCallbacks.push(callback);
                 }
                 this.$basketChanged = true;
