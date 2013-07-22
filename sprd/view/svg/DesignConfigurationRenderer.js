@@ -11,8 +11,8 @@ define(['sprd/view/svg/ConfigurationRenderer'], function (Renderer) {
 
             if (this.$.imageService && this.$.configuration && this.$.configuration.$.design && this.$.configuration.$.printColors) {
                 var options = {
-                    width: this.$._width,
-                    height: this.$._height
+                    width: Math.min(this.$._width, 600),
+                    height: Math.min(this.$._height, 600)
                 };
 
                 options.printColors =  this.$.configuration.getPrintColorsAsRGB();
