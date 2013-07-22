@@ -7,9 +7,15 @@ define(["sprd/data/SprdModel", "js/data/Entity"], function (SprdModel, Entity) {
         },
 
         schema: {
-            type: String,
+            type: {
+                type: String,
+                generated: true
+            },
             content: Entity,
-            properties: Array
+            properties: {
+                type: Array,
+                generated: true
+            }
         },
 
         compose: function () {
