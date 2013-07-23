@@ -51,6 +51,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                     configuration._composeText();
                 }
                 priceChangeHandler.call(this);
+                productChangeHandler.call(this);
 
             };
 
