@@ -93,6 +93,12 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
                 });
         },
 
+        _debug: function (message) {
+            if (this.$.debug) {
+                this.log(message);
+            }
+        },
+
         track: function (oneTimeIdentifier, data, events) {
             data = data || {};
 
@@ -105,16 +111,42 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
                 this.$trackedEvents.push(oneTimeIdentifier);
             }
 
+            var trackingData = _.clone(data);
+            if (events) {
+                // https://microsite.omniture.com/t2/help/en_US/sc/implement/index.html#Methods_of_Event_Serialization
+                trackingData.events = (events || []).join(",");
+            }
+
             this._queueOrExecute(function () {
-                var trackingData = _.clone(data);
-                if (events) {
-                    // https://microsite.omniture.com/t2/help/en_US/sc/implement/index.html#Methods_of_Event_Serialization
-                    trackingData.events = (events || []).join(",");
+
+
+                if (typeof qaContext !== "undefined" && qaContext.getTrackings()) {
+                    try {
+                        qaContext.getTrackings().push({
+                            service: "omniture",
+                            type: "track",
+                            data: trackingData
+                        });
+                    } catch (e) {
+                    }
                 }
 
                 // https://microsite.omniture.com/t2/help/en_US/sc/implement/index.html#Variable_Overrides
                 this.t(trackingData);
             });
+
+            if (this.$.debug) {
+                var message = "";
+                for (var key in trackingData) {
+                    if (trackingData.hasOwnProperty(key)) {
+                        message += key + ": " + trackingData[key] + ", ";
+                    }
+                }
+
+                this._debug(message);
+            }
+
+
         }
 
     });
