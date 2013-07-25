@@ -216,7 +216,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     }
                 }
 
-                product.$.configurations.remove(removeConfigurations, setOptions);
+                product.$.configurations.remove(removeConfigurations);
             },
             /**
              * Adds a design to a given Product
