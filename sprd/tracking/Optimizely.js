@@ -10,6 +10,12 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
             enabled: true,
 
             /***
+             * enables debugging to console
+             * @type Boolean
+             */
+            debug: false,
+
+            /***
              * the number of tries to find the 'optimizely' object on the window object
              */
             maxTries: 10
@@ -149,6 +155,12 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
             });
         },
 
+        _debug: function (message) {
+            if (this.$.debug) {
+                this.log(message);
+            }
+        },
+
         /***
          * Track custom events in Optimizely. The event "eventName" will be tracked and associated with the current visitor.
          *
@@ -158,8 +170,25 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
          */
         trackEvent: function (eventName, data) {
             this._queueOrExecute(function () {
+
+                if (typeof qaContext !== "undefined" && qaContext.getTrackings()) {
+                    try {
+                        qaContext.getTrackings().push({
+                            service: "optimizely",
+                            type: "event",
+                            data: {
+                                eventName: eventName,
+                                data: data
+                            }
+                        });
+                    } catch (e) {
+                    }
+                }
+
                 this.trackEvent(eventName, data);
             });
+
+            this._debug('trackEvent: ' + [eventName, JSON.stringify(data || {})].join(', '));
         }
 
     });
