@@ -22,7 +22,7 @@ define(['sprd/view/svg/ConfigurationRenderer'], function (Renderer) {
 
                 options.printColors = this.$.configuration.getPrintColorsAsRGB();
 
-                return this.$.imageService.designImage(this.$.configuration.$.design.$.id, options);
+                return this.$.imageService.designImage(this.$.configuration.$.design.$.wtfMbsId, options);
             }
 
 
