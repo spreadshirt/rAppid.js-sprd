@@ -194,21 +194,18 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
         },
 
         price: function () {
-            // TODO format price with currency
-            if (this.$.price) {
-                return this.$.price;
-            } else {
-                // calculate price
-                var price = new Price({
-                    vatIncluded: this.get("productType.price.vatIncluded"),
-                    currency: this.get('productType.price.currency')
-                });
-                this.$.configurations.each(function (configuration) {
-                    price.add(configuration.price());
-                });
 
-                return price;
-            }
+            // calculate price
+            var price = new Price({
+                vatIncluded: this.get("productType.price.vatIncluded"),
+                currency: this.get('productType.price.currency')
+            });
+            this.$.configurations.each(function (configuration) {
+                price.add(configuration.price());
+            });
+
+            return price;
+
         }.on("priceChanged", "change:productType"),
 
         _addConfiguration: function (configuration) {

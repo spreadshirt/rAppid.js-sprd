@@ -1,5 +1,5 @@
-define(["sprd/data/SprdModel", 'sprd/model/ProductType', 'sprd/entity/Appearance'],
-    function (SprdModel, ProductType, Appearance) {
+define(["sprd/data/SprdModel", 'sprd/model/ProductType', 'sprd/entity/Appearance', 'sprd/entity/Price'],
+    function (SprdModel, ProductType, Appearance, Price) {
         return SprdModel.inherit("sprd.model.ProductBase", {
 
             schema: {
@@ -9,7 +9,11 @@ define(["sprd/data/SprdModel", 'sprd/model/ProductType', 'sprd/entity/Appearance
                     isReference: true
                 },
                 restrictions: Object,
-                defaultValues: Object
+                defaultValues: Object,
+                price: {
+                    type: Price,
+                    generated: true
+                }
             },
 
             defaults: {
