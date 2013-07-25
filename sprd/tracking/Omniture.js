@@ -10,6 +10,12 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
             enabled: true,
 
             /***
+             * enables debugging to console
+             * @type Boolean
+             */
+            debug: false,
+
+            /***
              * the number of tries to find the s object on the window
              * @type Number
              */
