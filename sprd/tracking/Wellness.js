@@ -1,4 +1,4 @@
-define(["js/core/Component", "underscore", "flow"], function (Component, _, flow) {
+define(["js/core/Component", "underscore", "flow", "js/lib/extensions"], function (Component, _, flow, extensions) {
 
     return Component.inherit('sprd.tracking.Omniture', {
 
@@ -53,6 +53,9 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
                     if (callbackName && !data.hasOwnProperty("callback")) {
                         data.callback = callbackName;
                     }
+
+                    data.locale = data.locale || self.$.locale;
+                    data.localTime = data.localTime || Date.now().toString();
 
                     url = url.join("/") + "?" + rAppid.createQueryString(data);
 
