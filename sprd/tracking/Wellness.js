@@ -1,4 +1,4 @@
-define(["js/core/Component", "underscore", "flow", "js/lib/extensions"], function (Component, _, flow, extensions) {
+define(["js/core/Component", "underscore", "flow", "js/lib/extension"], function (Component, _, flow, extension) {
 
     return Component.inherit('sprd.tracking.Omniture', {
 
