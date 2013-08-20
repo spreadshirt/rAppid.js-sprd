@@ -92,7 +92,7 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
             // track all events from queue
             flow()
                 .seqEach(this.$trackQueue, function (executeFunction) {
-                    executeFunction.apply(self.$pageTracker);
+                    executeFunction.apply(self.$tracker);
                 })
                 .exec(function () {
                     self.$trackQueue = [];
