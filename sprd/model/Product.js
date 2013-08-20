@@ -292,10 +292,15 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
         save: function (options, callback) {
 
-            if (this.$originalProduct && this.$.id) {
+            if (this.$originalProduct) {
                 if (this.hasChanges()) {
                     this.set('id', undef);
                 } else {
+                    this.set({
+                        id: this.$originalProduct.$.id,
+                        href: this.$originalProduct.$.href
+                    });
+
                     callback && callback(null, this);
                     return;
                 }
