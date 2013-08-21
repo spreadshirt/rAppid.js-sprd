@@ -24,14 +24,14 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
                 imageService = this.$.imageService,
                 design = this.$.design;
 
-            if (design && imageService) {
+            if (design && imageService && (this.$.height || this.$.width)) {
                 return imageService.designImage(this.$.design.$.id, {
-                    width: this.$.width,
-                    height: this.$.height
+                    width: !this.$.width ? this.$.height : this.$.width,
+                    height: !this.$.height ? this.$.width : this.$.height
                 });
             }
             return url;
 
-        }.onChange('design')
+        }.onChange('design', 'height', 'width')
     });
 });
