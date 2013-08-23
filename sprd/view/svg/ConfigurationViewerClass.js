@@ -171,8 +171,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         });
 
                         this.$.clipPath.addChild(softBoundary);
-
+                        this.$._assetContainerWrapper.set('clip-path', "url(#"+ this.$.cv.id()+")");
                     } else {
+                        this.$._assetContainerWrapper.set('clip-path',null);
                         this.$.clipPath.set("visible", false);
                     }
 
