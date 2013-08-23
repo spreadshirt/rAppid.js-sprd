@@ -12,9 +12,6 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
             flow()
                 .seq(function () {
                     var navigation = window.navigator;
-                    if (!/webkit/i.test(navigation.userAgent || navigation.appVersion)) {
-                        throw new Error("Text is only supported in webkit");
-                    }
                 })
                 .par(function (cb) {
                     printType.fetch(null, cb);

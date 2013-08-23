@@ -36,11 +36,13 @@ define(["text/composer/SvgMeasurer", "xaml!text/ui/SvgTextArea"], function (SvgM
             });
 
             var textEl = this.svgTextArea.$.text.$el;
+            var bbox = textEl.getBBox();
+
             return {
-                x: textEl.offsetLeft,
-                y: textEl.offsetTop,
-                width: textEl.offsetWidth,
-                height: textEl.offsetHeight
+                x: bbox.x,
+                y: bbox.y,
+                width: bbox.width,
+                height: bbox.height
             };
 
         }

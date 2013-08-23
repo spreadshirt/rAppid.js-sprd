@@ -1,4 +1,4 @@
-define(['js/core/Component','underscore'], function(Component, _) {
+define(['js/core/Component', 'underscore'], function (Component, _) {
 
     var exceptionSizes = [120, 178];
 
@@ -13,11 +13,11 @@ define(['js/core/Component','underscore'], function(Component, _) {
                 ImageService.getImageSizeParameter(options));
         },
 
-        productTypeSizeImage: function(productTypeId, options){
-            return this.buildUrl(["productTypes", productTypeId, "variants","size"], ImageService.getImageSizeParameter(options))
+        productTypeSizeImage: function (productTypeId, options) {
+            return this.buildUrl(["productTypes", productTypeId, "variants", "size"], ImageService.getImageSizeParameter(options))
         },
 
-        designImage: function(designId, options) {
+        designImage: function (designId, options) {
             var parameter = ImageService.getImageSizeParameter(options) || {};
 
             var printColors = options.printColors;
@@ -30,23 +30,24 @@ define(['js/core/Component','underscore'], function(Component, _) {
             return this.buildUrl(['designs', designId], parameter);
         },
 
-        appearanceImage: function(appearanceId, options){
-            return this.buildUrl(['appearances',appearanceId], ImageService.getImageSizeParameter(options));
+        appearanceImage: function (appearanceId, options) {
+            return this.buildUrl(['appearances', appearanceId], ImageService.getImageSizeParameter(options));
         },
 
         printColorImage: function (printColorId, options) {
             return this.buildUrl(['printColors', printColorId], ImageService.getImageSizeParameter(options));
         },
 
-        emptyImage: function() {
+        emptyImage: function () {
             return "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
         },
 
-        fontUrl: function(font) {
-            return this.buildUrl(['fontFamilies', font.getFontFamily().$.id, 'fonts', font.$.id + ".svg#font"]);
+        fontUrl: function (font, extension) {
+            extension = extension || "woff" || "svg#font";
+            return this.buildUrl(['fontFamilies', font.getFontFamily().$.id, 'fonts', font.$.id + "." + extension]);
         },
 
-        buildUrl: function(url, parameter) {
+        buildUrl: function (url, parameter) {
             url = url || [];
             url.unshift(this.$.endPoint);
 
@@ -87,7 +88,7 @@ define(['js/core/Component','underscore'], function(Component, _) {
         return url.join('/') + (queryString ? '?' + queryString : '');
     };
 
-    ImageService.buildQueryString = function(parameter) {
+    ImageService.buildQueryString = function (parameter) {
         var ret = [];
 
         for (var key in parameter) {

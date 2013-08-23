@@ -42,11 +42,12 @@ define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (Configu
             }
 
             var fonts = configuration.getUsedFonts(),
-                svgRoot = this.getSvgRoot();
+                svgRoot = this.getSvgRoot(),
+                extension = this.$stage.$browser.isMobile ? "svg#font" : "woff";
 
             for (var i = 0; i < fonts.length; i++) {
                 var font = fonts[i];
-                svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font));
+                svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font, extension));
             }
         },
 
