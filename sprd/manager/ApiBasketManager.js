@@ -69,11 +69,12 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
         },
 
         /**
-         * Adds an element to the basket without savoing it
+         * Adds an element to the basket without saving it
          * @param element
          * @param quantity
+         * @param callback
          */
-        addElementToBasket: function (element, quantity) {
+        addElementToBasket: function (element, quantity, callback) {
 
             if (this.$.basket) {
                 var basketItem = this.$.basket.addElement(element, quantity);
@@ -97,6 +98,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     element.set("editLink", editBasketItemLinkTemplate.replace("$productId", element.get("item.id")))
                 }
             }
+
+            callback && callback();
         },
 
         _triggerBasketChanged: function () {
