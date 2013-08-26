@@ -11,6 +11,10 @@ define(["sprd/manager/IBasketManager", "flow"], function (IBasketManager, flow) 
             externalBasket.addBasketItem(element, quantity, callback);
         },
 
+        saveBasket: function(cb) {
+            cb && cb();
+        },
+
         _initBasket: function (callback) {
 
             var basketImplementation = this.$stage.$parameter.basketImplementation;
