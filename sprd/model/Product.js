@@ -1,10 +1,12 @@
-define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError"], function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError) {
+define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType'],
+    function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType) {
 
     var undef;
 
     return ProductBase.inherit("sprd.model.Product", {
 
         schema: {
+            productType: ProductType,
             configurations: [new AttributeTypeResolver({
                 attribute: "type",
                 mapping: {
@@ -97,6 +99,16 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             this.bind('configurations', 'item:change:offset', this._onConfigurationOffsetChanged, this);
 
         },
+
+        getDefaultAppearance: function () {
+            var productType = this.$.productType;
+
+            if (productType) {
+                return productType.getAppearanceById(this.get('appearance.id'));
+            }
+
+            return null;
+        }.onChange('appearance', 'productType'),
 
         _onConfigurationOffsetChanged: function(e) {
 
@@ -206,7 +218,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
             return price;
 
-        }.on("priceChanged", "change:productType"),
+        }.on("priceChanged", ["productType", 'change:price']).onChange('productType'),
 
         _addConfiguration: function (configuration) {
             this.$.configurations.add(configuration);
