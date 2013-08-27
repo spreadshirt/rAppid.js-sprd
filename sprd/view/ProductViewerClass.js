@@ -294,6 +294,27 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
         },
 
+        _delegateEvent: function (e) {
+
+            var viewer = this.$.selectedConfigurationViewer;
+            if (viewer) {
+                viewer._down(e.domEvent, viewer._isGesture(e.domEvent) ? "gesture" : "move");
+            }
+
+            this.$pointerMoveEventTriggerd = false;
+
+        },
+        _textAreaMove: function () {
+            this.$pointerMoveEventTriggerd = true;
+        },
+
+        _endTextAreaMove: function (e) {
+            if (!this.$pointerMoveEventTriggerd) {
+                e.target.focus();
+            }
+        },
+
+
         textAreaBlured: function () {
             this.set('focused', false);
             if (this.$stage.$browser.isIOS) {
