@@ -116,7 +116,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         },
 
-        _getBoundingBox: function (offset, width, height, rotation, scale, onlyContent) {
+        _getBoundingBox: function (offset, width, height, rotation, scale, onlyContent, xOffset) {
 
             offset = offset || this.$.offset;
             width = width || this.width();
@@ -126,7 +126,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             var x = offset.$.x,
                 y = offset.$.y;
 
-            if (!(rotation % 180)) {
+            if (!(rotation % 360)) {
                 return {
                     x: x,
                     y: y,
@@ -141,14 +141,16 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 maxY,
                 matrix = new Matrix2d().rotateDeg(rotation);
 
+            xOffset = xOffset || 0;
+
             var halfW = width / 2,
                 halfH = height / 2;
 
             var points = [
-                [-halfW, -halfH],
-                [halfW, -halfH],
-                [halfW, halfH],
-                [-halfW, halfH]
+                [-halfW + xOffset, -halfH],
+                [halfW + xOffset, -halfH],
+                [halfW + xOffset, halfH],
+                [-halfW + xOffset, halfH]
             ];
 
             var point = matrix.transformPoint(points[0]);
@@ -165,7 +167,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
             return {
-                x: minX + halfW + x,
+                x: minX + halfW + x - xOffset,
                 y: minY + halfH + y,
                 width: maxX - minX,
                 height: maxY - minY
