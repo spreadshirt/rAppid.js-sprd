@@ -60,6 +60,10 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             }
 
             return data;
+        },
+
+        isVectorDesign: function() {
+            return this.$.colors.length > 0;
         }
     });
 

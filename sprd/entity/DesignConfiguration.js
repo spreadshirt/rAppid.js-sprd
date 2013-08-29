@@ -135,12 +135,14 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             _validatePrintTypeSize: function (printType, width, height, scale) {
                 var ret = this.callBase();
 
-                if (!printType || !scale) {
+                var design = this.$.design;
+
+                if (!printType || !scale || !design) {
                     return ret;
                 }
 
                 ret.minBound = !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale"));
-                ret.maxBound= printType.isShrinkable() && Math.max(Math.abs(scale.x), Math.abs(scale.y)) > 1;
+                ret.maxBound = printType.isShrinkable() && !design.isVectorDesign() && Math.max(Math.abs(scale.x), Math.abs(scale.y)) > 1;
 
                 return ret;
 
