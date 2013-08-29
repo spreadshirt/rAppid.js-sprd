@@ -296,12 +296,14 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
         _delegateEvent: function (e) {
 
-            var viewer = this.$.selectedConfigurationViewer;
-            if (viewer) {
-                viewer._down(e.domEvent, viewer._isGesture(e.domEvent) ? "gesture" : "move");
-            }
+            if(this.$stage.$browser.isIOS || this.$.textArea.get('opacity') == 0) {
+                var viewer = this.$.selectedConfigurationViewer;
+                if (viewer) {
+                    viewer._down(e.domEvent, viewer._isGesture(e.domEvent) ? "gesture" : "move");
+                }
 
-            this.$pointerMoveEventTriggerd = false;
+                this.$pointerMoveEventTriggerd = false;
+            }
 
         },
         _textAreaMove: function () {
