@@ -166,7 +166,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         y: offset.$.y + bound.y * scale.y
                     });
 
-                    return this.callBase(offset, width, height, rotation, scale);
+                    var scaleFactor = scale.x;
+
+                    var distance = -(this.width(scaleFactor) - bound.width * scaleFactor) / 2 + bound.x * scaleFactor;
+                    return this.callBase(offset, width, height, rotation, scale, onlyContent, distance);
+
                 } else {
                     return this.callBase();
                 }
