@@ -408,6 +408,5 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                 this.trigger("productChanged");
             }
         }
-
     });
 });
