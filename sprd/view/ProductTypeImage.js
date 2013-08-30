@@ -84,8 +84,8 @@ define(['xaml!sprd/view/Image', 'sprd/data/ImageService'], function (Image, Imag
                     }
 
                     return imageService.productTypeImage(productTypeId, viewId, appearanceId, {
-                        width: this.$.width,
-                        height: this.$.height
+                        width: Math.max(this.$.width || 0, this.$.height || 0),
+                        height: Math.max(this.$.width || 0, this.$.height || 0)
                     });
 
                 } else if (this.$.type === "size") {

@@ -31,8 +31,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer"], function (Sv
         url: function () {
             if (this.$.imageService && this.$._productType && this.$._view && this.$._productType.containsAppearance(this.$._appearance)) {
                 return this.$.imageService.productTypeImage(this.$._productType.$.id, this.$._view.$.id, this.$._appearance.$.id, {
-                    width: this.$._width,
-                    height: this.$._height
+                    width: Math.max(this.$._width,this.$._height),
+                    height: Math.max(this.$._width, this.$._height)
                 });
             }
 
