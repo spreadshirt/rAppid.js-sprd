@@ -74,7 +74,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
 
                             }
 
-                            maxLineWidth = Math.max(maxLineWidth, tspan.lineWidth);
+                            maxLineWidth = Math.max(maxLineWidth, tspan.lineWidth || 0);
 
                             lastTSpan = tspan;
 
