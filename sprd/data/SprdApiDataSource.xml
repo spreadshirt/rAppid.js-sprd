@@ -42,7 +42,6 @@
             <conf:ResourceConfiguration path="fontFamilies" modelClassName="sprd.model.FontFamily"/>
             <conf:ResourceConfiguration path="productTypeDepartments" modelClassName="sprd.model.ProductTypeDepartment"/>
             <conf:ResourceConfiguration path="shippingTypes" modelClassName="sprd.model.ShippingType"/>
-            <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.Application"/>
 
             <conf:ResourceConfiguration path="productTypes" modelClassName="sprd.model.ProductType" sessionRequired="true">
                 <conf:ResourceConfiguration path="stockStates" modelClassName="sprd.model.StockState"
