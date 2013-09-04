@@ -37,18 +37,34 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         _commitChangedAttributes: function ($, options) {
 
-            var delay = options && options.userInteraction ? 300 : 0;
-            this._debounceFunctionCall(this._validateTransform, "validateTransform", delay, this, [$]);
+            var delay = options && options.userInteraction ? 300 : 0,
+                self = this,
+                combinedAttributes = {};
+
+
 
             this.callBase();
 
-            if (this._hasSome($, ["scale", "rotation", "printArea", "printColors", "printArea"])) {
+            if (this._hasSome($, ["scale", "rotation", "printArea", "printColors", "printArea", "printType"])) {
+                validate($);
                 this.trigger('configurationChanged');
             } else if($.hasOwnProperty("offset")){
                 if ($.offset && !$.offset.isDeepEqual(this.$previousAttributes["offset"])) {
+                    validate($);
                     this.trigger('configurationChanged');
                 }
             }
+
+            function validate(attributes) {
+                _.extend(combinedAttributes, attributes);
+                self._debounceFunctionCall(performValidate, "validateTransform", delay, self);
+            }
+
+            function performValidate() {
+                self._setError(self._validateTransform(combinedAttributes));
+                combinedAttributes = {};
+            }
+
         },
 
         _validateTransform: function ($) {

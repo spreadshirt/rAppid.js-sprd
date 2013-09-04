@@ -1,6 +1,6 @@
 define(["sprd/data/SprdModel", "underscore"], function (Model, _) {
 
-    var dotCurrencyCodes = ['USD'];
+    var dotCurrencyCodes = ['USD','GBP'];
 
     return Model.inherit('sprd.model.Currency', {
 
@@ -32,7 +32,6 @@ define(["sprd/data/SprdModel", "underscore"], function (Model, _) {
             }
 
             if (this.$.pattern) {
-
                 var currencySeparator = _.include(dotCurrencyCodes, this.$.isoCode) ? "." : ",";
 
                 return this.$.pattern.replace('%', val.join(currencySeparator)).replace('$', this.$.symbol);
