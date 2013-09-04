@@ -52,7 +52,8 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                         }
 
                         var lastTSpan = null,
-                            paragraph = null;
+                            paragraph = null,
+                            maxLineWidth = text.width;
 
                         for (var i = 0; i < content.length; i++) {
                             var tspan = content[i];
@@ -72,6 +73,8 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                                 textFlow.addChild(paragraph);
 
                             }
+
+                            maxLineWidth = Math.max(maxLineWidth, tspan.lineWidth);
 
                             lastTSpan = tspan;
 
@@ -110,7 +113,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                         configurationObject.textFlow = textFlow;
                         configurationObject.selection = TextRange.createTextRange(0, 0);
                         configurationObject.textArea = new Size({
-                            width: text.width,
+                            width: maxLineWidth,
                             height: text.height
                         });
 
