@@ -70,6 +70,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 });
 
                 this.trigger("priceChanged");
+                this.trigger("configurationChanged");
             },
 
             _debouncedComposeText: function () {
