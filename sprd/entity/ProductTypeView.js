@@ -14,8 +14,7 @@ define(['js/data/Entity', 'sprd/entity/ViewMap', 'sprd/entity/Size', 'underscore
 
         getDefaultPrintArea: function () {
 
-            var printArea,
-                productType;
+            var printArea;
 
             if (this.$.viewMaps) {
                 for (var i = 0; i < this.$.viewMaps.$items.length; i++) {
@@ -24,12 +23,6 @@ define(['js/data/Entity', 'sprd/entity/ViewMap', 'sprd/entity/Size', 'underscore
                         return printArea;
                     }
                 }
-            }
-
-            productType = this.getProductType();
-
-            if (productType) {
-                return productType.getDefaultPrintArea();
             }
 
             return null;
