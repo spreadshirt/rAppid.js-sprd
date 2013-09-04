@@ -131,9 +131,10 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
             var viewId = view.$.id;
 
-            configurations = this.configurationsOnViewCache[viewId];
+            var productType = this.get('product.productType');
 
-            if (!configurations) {
+            configurations = this.configurationsOnViewCache[viewId];
+            if (!configurations && productType && productType.containsView(view)) {
                 this.configurationsOnViewCache[viewId] = configurations = this.getConfigurationsOnView(view);
             }
 
