@@ -37,6 +37,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                     if (svg) {
 
                         var text = svg.text,
+                            viewBox = svg.viewBox.split(" "),
                             textFlow = new TextFlow(),
                             content = text.content,
                             configurationObject = {};
@@ -113,7 +114,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                         configurationObject.textFlow = textFlow;
                         configurationObject.selection = TextRange.createTextRange(0, 0);
                         configurationObject.textArea = new Size({
-                            width: maxLineWidth,
+                            width: maxLineWidth + 2 * parseFloat(viewBox[0]),
                             height: text.height
                         });
 

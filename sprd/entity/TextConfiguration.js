@@ -383,7 +383,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     dpi: "25.4",
                     unit: "mm",
                     svg: {
-                        text: text
+                        text: text,
+                        viewBox: [0,0,text.width,text.height].join(" ")
                     }
                 };
 
