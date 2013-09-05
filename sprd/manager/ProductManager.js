@@ -102,6 +102,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         targetPrintArea = targetView.getDefaultPrintArea();
                     }
 
+                    if (!targetPrintArea) {
+                        targetPrintArea = productType.getDefaultPrintArea();
+                    }
+
                     if (targetPrintArea && configuration.isAllowedOnPrintArea(targetPrintArea)) {
                         configuration.set('printArea', targetPrintArea, setOptions);
 
