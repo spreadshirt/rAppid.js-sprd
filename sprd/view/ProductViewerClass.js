@@ -267,10 +267,6 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 this.$stage.bind('on:focus', function () {
                     self.set('focused', true);
                 });
-
-                this.$stage.bind('on:click', function () {
-                    self.set('selectedConfiguration', null);
-                });
                 this.callBase();
             }
         },
