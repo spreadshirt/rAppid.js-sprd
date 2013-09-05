@@ -154,6 +154,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
         },
 
         _clickHandler: function (e) {
+            e.stopPropagation();
             if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent && e.domEvent.target !== this.$.textArea.$el) {
                 this.set('selectedConfiguration', null);
             }
@@ -267,6 +268,9 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     self.set('focused', true);
                 });
 
+                this.$stage.bind('on:click', function () {
+                    self.set('selectedConfiguration', null);
+                });
                 this.callBase();
             }
         },
@@ -296,7 +300,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
         _delegateEvent: function (e) {
 
-            if(this.$stage.$browser.isIOS || this.$.textArea.get('opacity') == 0) {
+            if (this.$stage.$browser.isIOS || this.$.textArea.get('opacity') == 0) {
                 var viewer = this.$.selectedConfigurationViewer;
                 if (viewer) {
                     viewer._down(e.domEvent, viewer._isGesture(e.domEvent) ? "gesture" : "move");
