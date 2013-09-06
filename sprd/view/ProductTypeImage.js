@@ -106,7 +106,7 @@ define(['xaml!sprd/view/Image', 'sprd/data/ImageService'], function (Image, Imag
                 return this.$.productType.$.name;
             }
             return null;
-        }
+        }.onChange('productType')
 
     });
 
