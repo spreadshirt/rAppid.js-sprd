@@ -1,4 +1,4 @@
-define(["underscore", "sprd/util/ArrayUtil","js/core/List","sprd/model/ProductType","flow"], function (_, ArrayUtil, List, ProductType, flow) {
+define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/ProductType", "flow", "sprd/entity/Price"], function (_, ArrayUtil, List, ProductType, flow, Price) {
 
     return {
 
@@ -7,7 +7,7 @@ define(["underscore", "sprd/util/ArrayUtil","js/core/List","sprd/model/ProductTy
                 this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId));
         },
 
-        getPossiblePrintTypesForDesignOnProduct: function(design, product){
+        getPossiblePrintTypesForDesignOnProduct: function (design, product) {
             return this.getPossiblePrintTypesForDesignOnPrintArea(design, product.$.view.getDefaultPrintArea(), product.$.appearance.$.id);
 
         },
@@ -29,8 +29,7 @@ define(["underscore", "sprd/util/ArrayUtil","js/core/List","sprd/model/ProductTy
 
                 if (appearance) {
                     _.each(appearance.$.printTypes.$items, function (printType) {
-                        if (!_.contains(printArea.$.restrictions.$.excludedPrintTypes.$items, printType) &&
-                            !_.contains(ret, printType)) {
+                        if (!_.contains(printArea.$.restrictions.$.excludedPrintTypes.$items, printType) && !_.contains(ret, printType)) {
                             ret.push(printType);
                         }
                     });
@@ -40,27 +39,55 @@ define(["underscore", "sprd/util/ArrayUtil","js/core/List","sprd/model/ProductTy
             return ret;
         },
 
-        fetchColorsForProductTypes: function(productTypes, minDistance, callback){
+        getCheapestPriceForDesignOnProduct: function (design, product) {
+            var possiblePrintTypes = this.getPossiblePrintTypesForDesignOnProduct(design, product),
+                cheapestPrintTypePrice = null;
+            if (possiblePrintTypes.length) {
+                for (var i = 0; i < possiblePrintTypes.length; i++) {
+                    var price = new Price();
+                    var printType = possiblePrintTypes[i];
+                    if (printType.isPrintColorColorSpace()) {
+                        var colors = ArrayUtil.removeDuplicates(design.$.colors.toArray());
+                        for (var k = 0; k < colors.length; k++) {
+                            var printColor = printType.getClosestPrintColor(colors[k].$.default);
+                            if (printColor) {
+                                price.add(printColor.$.price);
+                            }
+                        }
+                    }
+                    price.add(printType.$.price);
+                    price.add(design.$.price);
+
+                    if (!cheapestPrintTypePrice || cheapestPrintTypePrice.$.vatIncluded > price.$.vatIncluded) {
+                        cheapestPrintTypePrice = price;
+                    }
+
+                }
+            }
+            return cheapestPrintTypePrice;
+        },
+
+        fetchColorsForProductTypes: function (productTypes, minDistance, callback) {
             minDistance = minDistance || 2;
 
             var colors = new List();
 
             flow()
-                .parEach(productTypes,function(item, cb){
+                .parEach(productTypes, function (item, cb) {
                     item.fetch(null, cb);
                 })
-                .seqEach(productTypes,function(productType,cb){
+                .seqEach(productTypes, function (productType, cb) {
                     productType.$.appearances.each(function (appearance) {
                         var merge = false;
-                        colors.each(function(color){
+                        colors.each(function (color) {
                             merge = appearance.$.color.distanceTo(color) < minDistance;
                         });
-                        if (!merge){
+                        if (!merge) {
                             colors.add(appearance.$.color);
                         }
                     });
                 })
-                .exec(function(err){
+                .exec(function (err) {
                     callback(err, colors);
                 });
         }

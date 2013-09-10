@@ -47,6 +47,18 @@ define(["underscore", "js/core/List"], function (_, List) {
 
 
             return ret;
+        },
+        removeDuplicates: function(array){
+            var ret = [];
+
+            for (var i = 0; i < array.length; i++) {
+                var element = array[i];
+                if(ret.indexOf(element) === -1){
+                    ret.push(element);
+                }
+            }
+
+            return ret;
         }
 
     };
