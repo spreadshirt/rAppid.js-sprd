@@ -24,9 +24,9 @@ define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (Configu
             this.callBase();
         },
 
-        _initialize: function () {
-            this.callBase();
+        render: function () {
             this._loadFonts();
+            return this.callBase();
         },
 
         isNotMobile: function(){
