@@ -246,7 +246,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         return false;
                     };
 
-                    assetContainer.bindDomEvent(this.$clickEvent, preventDefault);
+                    assetContainer.bindDomEvent(this.$clickEvent, function(e){
+                        e.stopPropagation && e.stopPropagation();
+                        return false;
+                    });
 
                     scaleHandle && scaleHandle.bindDomEvent(this.$clickEvent, preventDefault);
                     rotateHandle && rotateHandle.bindDomEvent(this.$clickEvent, preventDefault);
