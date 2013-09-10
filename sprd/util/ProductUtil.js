@@ -7,6 +7,11 @@ define(["underscore", "sprd/util/ArrayUtil","js/core/List","sprd/model/ProductTy
                 this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId));
         },
 
+        getPossiblePrintTypesForDesignOnProduct: function(design, product){
+            return this.getPossiblePrintTypesForDesignOnPrintArea(design, product.$.view.getDefaultPrintArea(), product.$.appearance.$.id);
+
+        },
+
         getPossiblePrintTypesForTextOnPrintArea: function (fontFamily, printArea, appearanceId) {
             return ArrayUtil.average(fontFamily.$.printTypes.$items,
                 this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId));
