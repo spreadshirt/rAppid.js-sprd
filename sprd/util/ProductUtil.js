@@ -47,13 +47,8 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                     var price = new Price();
                     var printType = possiblePrintTypes[i];
                     if (printType.isPrintColorColorSpace()) {
-                        var colors = ArrayUtil.removeDuplicates(design.$.colors.toArray());
-                        for (var k = 0; k < colors.length; k++) {
-                            var printColor = printType.getClosestPrintColor(colors[k].$.default);
-                            if (printColor) {
-                                price.add(printColor.$.price);
-                            }
-                        }
+                        var printColor = printType.getClosestPrintColor(design.$.colors.at(0).$.default);
+                        price.add(printColor.$.price);
                     }
                     price.add(printType.$.price);
                     price.add(design.$.price);
