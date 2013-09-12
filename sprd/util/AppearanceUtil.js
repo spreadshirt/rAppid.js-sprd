@@ -51,24 +51,33 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                 productTypeToColorMap[productType.$.id] = tmpProductType = {};
                 var appearances = productType.getAvailableAppearances();
                 if (appearances) {
-                    appearances.each(function (appearance) {
+                    for (var i = 0; i < colors.length; i++) {
                         distance = Number.MAX_VALUE;
                         bestColor = null;
-                        for (var i = 0; i < colors.length; i++) {
-                            color = colors[i];
-                            bestAppearance = null;
+                        bestAppearance = null;
+                        color = colors[i];
+
+                        appearances.each(function (appearance) {
                             tmpDistance = color.distanceTo(appearance.getMainColor());
                             if (tmpDistance < distance) {
                                 distance = tmpDistance;
                                 bestColor = color;
+                                bestAppearance = appearance;
                             }
-                        }
-                        colorKey = bestColor.toString();
-                        if (!tmpProductType[colorKey]) {
-                            tmpProductType[colorKey] = [];
-                        }
-                        tmpProductType[colorKey].push(appearance);
-                    });
+                            if(distance < 30){
+                                colorKey = bestColor.toString();
+                                if (!tmpProductType[colorKey]) {
+                                    tmpProductType[colorKey] = [];
+                                }
+                                if (bestAppearance === appearance) {
+                                    tmpProductType[colorKey].unshift(appearance);
+                                } else {
+                                    tmpProductType[colorKey].push(appearance);
+                                }
+                            }
+                        });
+
+                    }
                 }
             });
         },
@@ -156,7 +165,7 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                         for (var i = 0; i < departments.length; i++) {
                             key = departments[i].$.name;
                             departmentHash = departmentSizeMap[key] = departmentSizeMap[key] || {};
-                            if(productType.$.sizes){
+                            if (productType.$.sizes) {
                                 productType.$.sizes.each(function (size) {
                                     if (!departmentHash[size.$.name]) {
                                         departmentHash[size.$.name] = {
