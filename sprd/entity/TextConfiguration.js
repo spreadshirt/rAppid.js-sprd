@@ -514,6 +514,14 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             isReadyForCompose: function () {
                 return !!this.$.composedTextFlow;
+            },
+            isDeepEqual: function(b){
+                if(this.$.textFlow === null && b.$.textFlow === null){
+                    return true;
+                } else if(this.$.textFlow){
+                    return this.$.textFlow.isDeepEqual(b.$.textFlow);
+                }
+                return false;
             }
 
         });
