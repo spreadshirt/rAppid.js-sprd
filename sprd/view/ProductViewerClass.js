@@ -261,9 +261,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 var self = this;
 
                 this.bind("on:click", this._clickHandler, this);
-                this.$stage.bind('on:blur', function () {
-                    self.set('focused', false);
-                });
+
                 this.$stage.bind('on:focus', function () {
                     self.set('focused', true);
                 });
