@@ -171,9 +171,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         });
 
                         this.$.clipPath.addChild(softBoundary);
-                        this.$._assetContainerWrapper.set('clip-path', "url(#"+ this.$.cv.id()+")");
+                        this.$._assetContainerWrapper.set('clip-path', "url(#" + this.$.cv.id() + ")");
                     } else {
-                        this.$._assetContainerWrapper.set('clip-path',null);
+                        this.$._assetContainerWrapper.set('clip-path', null);
                         this.$.clipPath.set("visible", false);
                     }
 
@@ -246,7 +246,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         return false;
                     };
 
-                    assetContainer.bindDomEvent(this.$clickEvent, function(e){
+                    assetContainer.bindDomEvent(this.$clickEvent, function (e) {
                         e.stopPropagation && e.stopPropagation();
                         return false;
                     });
@@ -335,7 +335,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 if (this.$stage.$browser.isMobile && configuration instanceof TextConfiguration) {
-                    var cursorIndex = configuration.$.textFlow.textLength() - 1;
+                    var cursorIndex;
+                    if (configuration.$.textFlow) {
+                        cursorIndex = configuration.$.textFlow.textLength() - 1;
+                    } else {
+                        cursorIndex = 0;
+                    }
                     configuration.$.selection.set({
                         activeIndex: cursorIndex,
                         anchorIndex: cursorIndex
@@ -520,7 +525,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 window.bindDomEvent(this.$moveEvent, this.$moveHandler);
                 window.bindDomEvent(this.$upEvent, this.$upHandler);
 
-                if(!this.$stage.$browser.hasTouch || this.$stage.$browser.isIOS){
+                if (!this.$stage.$browser.hasTouch || this.$stage.$browser.isIOS) {
                     window.bindDomEvent("keydown", this.$keyDownHandler);
                     window.bindDomEvent("keyup", this.$keyUpHandler);
                 }
