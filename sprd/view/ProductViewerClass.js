@@ -331,7 +331,9 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     self.$stage.set('height', '100%');
                 }, 200);
 
-                this.$.productManager.setTextForConfiguration(this.$.textArea.$.value, this.$.selectedConfiguration);
+                if(this.$.selectedConfiguration){
+                    this.$.productManager.setTextForConfiguration(this.$.textArea.$.value, this.$.selectedConfiguration);
+                }
 
                 self.$.textArea.set('opacity', 0);
             }
