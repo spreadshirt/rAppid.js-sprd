@@ -34,6 +34,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             this.callBase();
             this.bind('productViewerSvg', 'add:configurationViewer', this._onConfigurationViewerAdded, this);
             this.bind('product.configurations', 'reset', this._onConfigurationsReset, this);
+            this.bind('product', 'change:configurations', this._onConfigurationsReset, this);
             this.bind('product.configurations', 'remove', function (e) {
                 if (e.$.item === this.$.selectedConfiguration) {
                     this.set('selectedConfiguration', null);

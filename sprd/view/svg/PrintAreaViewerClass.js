@@ -97,6 +97,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
             this.bind('product.configurations', 'change', this._onConfigurationChanged, this);
             this.bind('product.configurations', 'remove', this._onConfigurationRemoved, this);
             this.bind('product.configurations', 'reset', this._onConfigurationsReset, this);
+            this.bind('product', 'change:configurations', this._onConfigurationsReset, this);
 
             this.callBase();
         },
