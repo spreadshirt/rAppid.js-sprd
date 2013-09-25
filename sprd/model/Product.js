@@ -85,6 +85,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
             this.bind("configurations", "item:priceChanged", priceChangeHandler, this);
             this.bind('configurations', 'item:configurationChanged', productChangeHandler, this);
+            this.bind('change:configurations', productChangeHandler, this);
             this.bind('configurations', 'item:change:printArea', function() {
                 this.configurationsOnViewCache = {};
                 this.trigger("configurationValidChanged");
