@@ -518,7 +518,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             isDeepEqual: function(b){
                 var comparableProperties = ['offset', 'rotation', 'printType', 'printColors', 'scale'],
                     i,
-                    prop = '';
+                    prop;
 
                 for (i in comparableProperties) {
                     prop = comparableProperties[i];
