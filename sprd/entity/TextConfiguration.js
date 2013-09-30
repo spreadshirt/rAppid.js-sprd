@@ -516,20 +516,29 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return !!this.$.composedTextFlow;
             },
             isDeepEqual: function(b){
-                var comparableProperties = ['offset', 'rotation', 'printType', 'printColors', 'scale'],
+                var comparableProperties = ['offset', 'rotation', 'printType', 'printColors', 'scale', 'printArea'],
                     i,
-                    prop;
+                    property,
+                    originalProperty,
+                    newProperty;
 
-                for (i in comparableProperties) {
-                    prop = comparableProperties[i];
+                for (i = comparableProperties.length; i--;) {
+                    property = comparableProperties[i];
+                    newProperty = this.$[property];
+                    originalProperty = b.$[property];
 
-                    if (this.$.hasOwnProperty(prop)) {
-                        if (this.$[prop].isDeepEqual && this.$[prop].isDeepEqual instanceof Function) {
-                            if (!this.$[prop].isDeepEqual(b.$[prop])) {
+                    if (this.$.hasOwnProperty(property)) {
+                        if (newProperty === null && originalProperty !== null){
+                            return false;
+                        } else if (newProperty !== null && originalProperty === null) {
+                            return false;
+                        }
+                        else if (newProperty.isDeepEqual && newProperty.isDeepEqual instanceof Function) {
+                            if (!newProperty.isDeepEqual(originalProperty)) {
                                 return false;
                             };
                         } else {
-                            if (this.$[prop] !== b.$[prop]) {
+                            if (newProperty !== originalProperty) {
                                 return false;
                             }
                         }
