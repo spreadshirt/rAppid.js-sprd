@@ -532,8 +532,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                             return false;
                         } else if (newProperty !== null && originalProperty === null) {
                             return false;
-                        }
-                        else if (newProperty.isDeepEqual && newProperty.isDeepEqual instanceof Function) {
+                        } else if (newProperty.isDeepEqual && newProperty.isDeepEqual instanceof Function) {
                             if (!newProperty.isDeepEqual(originalProperty)) {
                                 return false;
                             };
