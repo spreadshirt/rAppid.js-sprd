@@ -516,6 +516,26 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return !!this.$.composedTextFlow;
             },
             isDeepEqual: function(b){
+                var comparableProperties = ['offset', 'rotation', 'printType', 'printColors', 'scale'],
+                    i,
+                    prop = '';
+
+                for (i in comparableProperties) {
+                    prop = comparableProperties[i];
+
+                    if (this.$.hasOwnProperty(prop)) {
+                        if (this.$[prop].isDeepEqual && this.$[prop].isDeepEqual instanceof Function) {
+                            if (!this.$[prop].isDeepEqual(b.$[prop])) {
+                                return false;
+                            };
+                        } else {
+                            if (this.$[prop] !== b.$[prop]) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+
                 if(this.$.textFlow === null && b.$.textFlow === null){
                     return true;
                 } else if(this.$.textFlow){
