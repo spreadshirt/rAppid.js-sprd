@@ -5,6 +5,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
     var ImageService = Component.inherit('sprd.data.ImageService', {
 
         defaults: {
+            numSubdomains: 10,
             endPoint: '//image.spreadshirt.net/image-server/v1'
         },
 
@@ -48,8 +49,14 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         },
 
         buildUrl: function (url, parameter) {
+            var imgServer = this.$.endPoint,
+                entityId = url[1].match(/[0-9]+/)[0],
+                numSubdomains = this.$.numSubdomains;
+
+            imgServer = imgServer.replace(/(\/\/image)/, '$1' + (entityId % numSubdomains));
+
             url = url || [];
-            url.unshift(this.$.endPoint);
+            url.unshift(imgServer);
 
             return ImageService.buildUrl(url, parameter);
         }
