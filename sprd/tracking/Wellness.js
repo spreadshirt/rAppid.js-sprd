@@ -40,24 +40,21 @@ define(["js/core/Component", "underscore", "flow", "js/lib/extension"], function
 
             var self = this,
                 trackRequest = 0,
-                callbackNamePrototype;
+                callbackName;
 
             this.$tracker = {
                 track: function(action, data) {
 
-                    trackRequest++;
+                    var url = [self.$.basePath,
+                        (self.$.platform || "EU").toLowerCase(),
+                        self.$.context === "shop" ? self.$.contextId : -1,  // TODO: send context, needs a fix from jbe in wellness
+                        self.$.application,
+                        self.$.version || -1,
+                        action];
 
-                    var head,
-                        script,
-                        url = [self.$.basePath,
-                            (self.$.platform || "EU").toLowerCase(),
-                            self.$.context === "shop" ? self.$.contextId : -1,  // TODO: send context, needs a fix from jbe in wellness
-                            self.$.application,
-                            self.$.version || -1,
-                            action],
-                        callbackName = data.callback = callbackNamePrototype + trackRequest;
-
-                    window[callbackName] = removeScriptNode;
+                    if (callbackName && !data.hasOwnProperty("callback")) {
+                        data.callback = callbackName;
+                    }
 
                     for (var key in data) {
                         if (data.hasOwnProperty(key)) {
@@ -73,28 +70,17 @@ define(["js/core/Component", "underscore", "flow", "js/lib/extension"], function
                     url = url.join("/") + "?" + rAppid.createQueryString(data);
 
                     if (self.$.host) {
-                        url = "//www" + (trackRequest % 10) + "." + self.$.host + url;
+                        url = "//www" + (++trackRequest % 10) + "." + self.$.host + url;
                     }
 
-                    head = document.getElementsByTagName('head')[0];
+                    var head = document.getElementsByTagName('head')[0];
 
-                    script = document.createElement("script");
+                    var script = document.createElement("script");
                     script.type = "text/javascript";
                     script.src = url;
                     script.async = true;
-                    script.onerror = removeScriptNode;
 
                     head && head.appendChild(script);
-
-                    function removeScriptNode() {
-                        // empty jsonp callback
-                        if (script && script.parentNode) {
-                            script.parentNode.removeChild(script);
-                        }
-
-                        window[callbackName] = null;
-                        delete window[callbackName];
-                    }
 
                 }
             };
@@ -102,7 +88,10 @@ define(["js/core/Component", "underscore", "flow", "js/lib/extension"], function
             this.callBase();
 
             if (this.runsInBrowser()) {
-                callbackNamePrototype = "wellnessTracking" + this.$cid + "_";
+                callbackName = "wellnessTracking" + this.$cid;
+                window[callbackName] = window[callbackName] || function() {
+                    // empty jsonp callback
+                }
             }
         },
 
