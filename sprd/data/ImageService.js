@@ -5,17 +5,18 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
     var ImageService = Component.inherit('sprd.data.ImageService', {
 
         defaults: {
-            numSubdomains: 10,
-            endPoint: '//image.spreadshirt.net/image-server/v1'
+            subDomainCount: 10,
+            endPoint: '//image.spreadshirt.net/image-server/v1',
+            gateway: '/image-server/v1'
         },
 
         productTypeImage: function (productTypeId, viewId, appearanceId, options) {
             return this.buildUrl(['productTypes', productTypeId, 'views', viewId, 'appearances', appearanceId],
-                ImageService.getImageSizeParameter(options));
+                ImageService.getImageSizeParameter(options), productTypeId);
         },
 
         productTypeSizeImage: function (productTypeId, options) {
-            return this.buildUrl(["productTypes", productTypeId, "variants", "size"], ImageService.getImageSizeParameter(options))
+            return this.buildUrl(["productTypes", productTypeId, "variants", "size"], ImageService.getImageSizeParameter(options), productTypeId)
         },
 
         designImage: function (designId, options) {
@@ -28,15 +29,15 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
                 }
             }
 
-            return this.buildUrl(['designs', designId], parameter);
+            return this.buildUrl(['designs', designId], parameter, (designId || "").replace(/^.*?(\d+).*/, "$1"));
         },
 
         appearanceImage: function (appearanceId, options) {
-            return this.buildUrl(['appearances', appearanceId], ImageService.getImageSizeParameter(options));
+            return this.buildUrl(['appearances', appearanceId], ImageService.getImageSizeParameter(options), appearanceId);
         },
 
         printColorImage: function (printColorId, options) {
-            return this.buildUrl(['printColors', printColorId], ImageService.getImageSizeParameter(options));
+            return this.buildUrl(['printColors', printColorId], ImageService.getImageSizeParameter(options), printColorId);
         },
 
         emptyImage: function () {
@@ -48,12 +49,17 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             return this.buildUrl(['fontFamilies', font.getFontFamily().$.id, 'fonts', font.$.id + "." + extension]);
         },
 
-        buildUrl: function (url, parameter) {
-            var imgServer = this.$.endPoint,
-                entityId = url[1].match(/[0-9]+/)[0],
-                numSubdomains = this.$.numSubdomains;
+        buildUrl: function (url, parameter, cacheId) {
+            var imgServer,
+                subDomainCount = this.$.subDomainCount;
 
-            imgServer = imgServer.replace(/(\/\/image)/, '$1' + (entityId % numSubdomains));
+            if (!isNaN(parseInt(cacheId))) {
+                // use the full qualified endpoint
+                imgServer = this.$.endPoint;
+                imgServer = imgServer.replace(/(\/\/image)\./, '$1' + (cacheId % subDomainCount) + ".");
+            } else {
+                imgServer = this.$.gateway;
+            }
 
             url = url || [];
             url.unshift(imgServer);
