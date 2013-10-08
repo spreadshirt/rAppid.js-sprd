@@ -599,7 +599,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             }
 
                             if (Math.abs(snapX) <= threshold) {
-                                newX -= snapX;
+                                newX -= (snapX + 0.00001);
                                 snapLines.push({
                                     x1: snapPosX,
                                     x2: snapPosX,
@@ -609,7 +609,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             }
 
                             if (Math.abs(snapY) <= threshold) {
-                                newY -= snapY;
+                                newY -= (snapY +0.00001);
                                 snapLines.push({
                                     y1: snapPosY,
                                     y2: snapPosY,
