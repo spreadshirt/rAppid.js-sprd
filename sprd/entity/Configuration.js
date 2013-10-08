@@ -121,14 +121,14 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             var printArea = this.$.printArea;
 
             if (!(printArea && offset)) {
-                return;
+                return null;
             }
 
             var boundingBox = this._getBoundingBox(offset, width, height, rotation, scale, true);
 
-            return !(boundingBox.x >= 0 && boundingBox.y >= 0 &&
-                (boundingBox.x + boundingBox.width) <= printArea.get("boundary.size.width") &&
-                (boundingBox.y + boundingBox.height) <= printArea.get("boundary.size.height"));
+            return !(boundingBox.x >= -0.1 && boundingBox.y >= -0.1 &&
+                (boundingBox.x + boundingBox.width - 0.1) <= printArea.get("boundary.size.width") &&
+                (boundingBox.y + boundingBox.height - 0.1) <= printArea.get("boundary.size.height"));
 
         },
 
