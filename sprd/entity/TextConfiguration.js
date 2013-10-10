@@ -65,7 +65,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 var self = this;
                 this._composeText(false, function () {
                     self._debounceFunctionCall(function () {
-                        self.$.bus.trigger('Application.productChanged', null, self);
+                        self.$.bus && self.$.bus.trigger('Application.productChanged', null, self);
                     }, "productChanged", 300);
                 });
 
