@@ -41,8 +41,6 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 self = this,
                 combinedAttributes = {};
 
-
-
             this.callBase();
 
             if (this._hasSome($, ["scale", "rotation", "printArea", "printColors", "printArea", "printType"])) {
@@ -109,6 +107,16 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 return {};
             }
 
+            var printArea = this.$.printArea;
+            if (printArea && printArea.hasSoftBoundary()) {
+                // if we use softboundaries the size of the configuration is maximum the
+                // size of the softboudary. As long as we haven't the size of the softboundary
+                // we use the size of the print area
+                width = Math.min(width, printArea.width());
+                height = Math.max(height, printArea.height());
+            }
+
+
             return {
                 printTypeScaling: !printType.isScalable() && (scale.x != 1 || scale.y != 1),
                 maxBound: width > printType.get("size.width") || height > printType.get("size.height")
@@ -121,14 +129,14 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             var printArea = this.$.printArea;
 
             if (!(printArea && offset)) {
-                return;
+                return null;
             }
 
             var boundingBox = this._getBoundingBox(offset, width, height, rotation, scale, true);
 
-            return !(boundingBox.x >= 0 && boundingBox.y >= 0 &&
-                (boundingBox.x + boundingBox.width) <= printArea.get("boundary.size.width") &&
-                (boundingBox.y + boundingBox.height) <= printArea.get("boundary.size.height"));
+            return !(boundingBox.x >= -0.1 && boundingBox.y >= -0.1 &&
+                (boundingBox.x + boundingBox.width - 0.1) <= printArea.get("boundary.size.width") &&
+                (boundingBox.y + boundingBox.height - 0.1) <= printArea.get("boundary.size.height"));
 
         },
 

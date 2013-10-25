@@ -15,11 +15,22 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
 
     var productTypeToColorMap = {},
         colorMap = {},
+        color,
         colors = [],
         productTypeDepartmentToSizeMap = {},
         categoryToSizeMap = {},
         departmentProductTypeMap = {},
         productTypeToDepartmentsMap = {};
+
+    // init color map
+    for (var key in COLOR_MAP) {
+        if (COLOR_MAP.hasOwnProperty(key)) {
+            color = Color.parse(COLOR_MAP[key]);
+            color.key = key;
+            colors.push(color);
+            colorMap[color.toString()] = color;
+        }
+    }
 
     return {
         /***
@@ -34,17 +45,6 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                 tmpDistance,
                 tmpProductType,
                 colorKey;
-            colors = [];
-
-            for (var key in COLOR_MAP) {
-
-                if (COLOR_MAP.hasOwnProperty(key)) {
-                    color = Color.parse(COLOR_MAP[key]);
-                    color.key = key;
-                    colors.push(color);
-                    colorMap[color.toString()] = color;
-                }
-            }
 
             productTypes.each(function (productType) {
                 bestColor = null;
@@ -64,7 +64,7 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                                 bestColor = color;
                                 bestAppearance = appearance;
                             }
-                            if(distance < 30){
+                            if (distance < 30) {
                                 colorKey = bestColor.toString();
                                 if (!tmpProductType[colorKey]) {
                                     tmpProductType[colorKey] = [];
@@ -85,50 +85,49 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
          *
          * @param {js.core.List} productTypeDepartments
          */
-        initProductTypeSizeCache: function (productTypeDepartments) {
+        initProductTypeSizeCache: function (productTypeDepartment, productTypeCategory) {
 
             var departmentSizes,
                 categorySizes;
 
-            productTypeDepartments.each(function (productTypeDepartment, index) {
-                departmentSizes = productTypeDepartmentToSizeMap[productTypeDepartment.$.name] = {
-                    order: index
-                };
-                productTypeDepartment.$.categories.each(function (category) {
-                    categorySizes = categoryToSizeMap[category.identifier()] = {};
-                    category.$.productTypes.each(function (productType) {
-                        if (productType.$.sizes) {
-                            productType.$.sizes.each(function (size) {
-                                if (!departmentSizes[size.$.name]) {
-                                    departmentSizes[size.$.name] = {
-                                        productTypes: []
-                                    };
-                                }
-                                departmentSizes[size.$.name].productTypes.push(productType);
-                                if (!categorySizes[size.$.name]) {
-                                    categorySizes[size.$.name] = {
-                                        productTypes: []
-                                    };
-                                }
-                                categorySizes[size.$.name].productTypes.push(productType);
-                            });
 
-                            departmentProductTypeMap[productTypeDepartment.$.name] = departmentProductTypeMap[productTypeDepartment.$.name] || {};
-                            departmentProductTypeMap[productTypeDepartment.$.name][productType.$.id] = productTypeDepartment.$.name;
-                            if (!productTypeToDepartmentsMap[productType.$.id]) {
-                                productTypeToDepartmentsMap[productType.$.id] = [];
+            departmentSizes = productTypeDepartmentToSizeMap[productTypeDepartment.$.name] = productTypeDepartmentToSizeMap[productTypeDepartment.$.name] || {};
+            productTypeDepartment.$.categories.each(function (category) {
+                if (!productTypeCategory || productTypeCategory === category) {
+                    if (!categoryToSizeMap[category.identifier()]) {
+                        categorySizes = categoryToSizeMap[category.identifier()] = {};
+                        category.$.productTypes.each(function (productType) {
+                            if (productType.$.sizes) {
+                                productType.$.sizes.each(function (size) {
+                                    if (!departmentSizes[size.$.name]) {
+                                        departmentSizes[size.$.name] = {
+                                            productTypes: []
+                                        };
+                                    }
+                                    departmentSizes[size.$.name].productTypes.push(productType);
+                                    if (!categorySizes[size.$.name]) {
+                                        categorySizes[size.$.name] = {
+                                            productTypes: []
+                                        };
+                                    }
+                                    categorySizes[size.$.name].productTypes.push(productType);
+                                });
+
+                                departmentProductTypeMap[productTypeDepartment.$.name] = departmentProductTypeMap[productTypeDepartment.$.name] || {};
+                                departmentProductTypeMap[productTypeDepartment.$.name][productType.$.id] = productTypeDepartment.$.name;
+                                if (!productTypeToDepartmentsMap[productType.$.id]) {
+                                    productTypeToDepartmentsMap[productType.$.id] = [];
+                                }
+                                productTypeToDepartmentsMap[productType.$.id].push(productTypeDepartment);
                             }
-                            productTypeToDepartmentsMap[productType.$.id].push(productTypeDepartment);
-                        }
-                    });
-                });
+                        });
+                    }
+                }
             });
 
         },
         /***
          *
-         * @param {sprd.model.ProductTypeDepartment} productTypeDepartment
-         * @param {sprd.entity.DepartmentCategory} category
          * @returns {Array}
          */
         getGroupedSizes: function (productTypes, department) {
