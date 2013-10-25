@@ -2,7 +2,7 @@ define(["js/core/Component", "underscore", "flow", "js/lib/extension"], function
 
     var undefined;
 
-    return Component.inherit('sprd.tracking.Omniture', {
+    return Component.inherit('sprd.tracking.Wellness', {
 
         defaults: {
             /***
