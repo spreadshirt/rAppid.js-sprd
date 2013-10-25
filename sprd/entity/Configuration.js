@@ -41,8 +41,6 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 self = this,
                 combinedAttributes = {};
 
-
-
             this.callBase();
 
             if (this._hasSome($, ["scale", "rotation", "printArea", "printColors", "printArea", "printType"])) {
@@ -108,6 +106,16 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             if (!printType) {
                 return {};
             }
+
+            var printArea = this.$.printArea;
+            if (printArea && printArea.hasSoftBoundary()) {
+                // if we use softboundaries the size of the configuration is maximum the
+                // size of the softboudary. As long as we haven't the size of the softboundary
+                // we use the size of the print area
+                width = Math.min(width, printArea.width());
+                height = Math.max(height, printArea.height());
+            }
+
 
             return {
                 printTypeScaling: !printType.isScalable() && (scale.x != 1 || scale.y != 1),
