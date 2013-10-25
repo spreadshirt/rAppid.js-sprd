@@ -46,7 +46,7 @@
             "definedInFile": "sprd/manager/SprdSvgMeasurer.js",
             "lineNumbers": [
                 17,
-                46
+                48
             ],
             "name": "measureComposedTextFlow",
             "visibility": "public"

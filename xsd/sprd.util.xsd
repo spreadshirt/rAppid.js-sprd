@@ -1,12 +1,10 @@
 <schema targetNamespace="sprd.util"
     xmlns="http://www.w3.org/2001/XMLSchema"
-    xmlns:ns1="js.core"
     xmlns:ns="sprd.util">
-    <import/>
     <element name="LocaleService" type="ns:LocaleService"/>
     <complexType name="LocaleService">
         <complexContent>
-            <extension base="ns1:Component">
+            <extension>
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.util.LocaleService"></documentation>
                 </annotation>

@@ -1,8 +1,6 @@
 <schema targetNamespace="sprd.manager"
     xmlns="http://www.w3.org/2001/XMLSchema"
-    xmlns:ns1="js.core"
     xmlns:ns="sprd.manager">
-    <import/>
     <element name="ApiBasketManager" type="ns:ApiBasketManager"/>
     <element name="ExternalBasketManager" type="ns:ExternalBasketManager"/>
     <element name="IBasketManager" type="ns:IBasketManager"/>
@@ -98,7 +96,7 @@ BasketItem
     </complexType>
     <complexType name="IBasketManager">
         <complexContent>
-            <extension base="ns1:Component">
+            <extension base="ns:IBasketManager">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.manager.IBasketManager"></documentation>
                 </annotation>

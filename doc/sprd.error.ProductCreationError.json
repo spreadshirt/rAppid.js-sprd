@@ -1,29 +1,5 @@
 {
-    "methods": [
-        {
-            "type": "Method",
-            "parameter": [
-                {
-                    "name": "message"
-                },
-                {
-                    "name": "statusCode"
-                },
-                {
-                    "name": "baseError"
-                }
-            ],
-            "annotations": {},
-            "definedInFile": "js/core/Error.js",
-            "lineNumbers": [
-                7,
-                13
-            ],
-            "definedBy": "js.core.Error",
-            "name": "ctor",
-            "visibility": "public"
-        }
-    ],
+    "methods": [],
     "staticMethods": [
         {
             "type": "Method",
@@ -53,7 +29,6 @@
     "file": "sprd/error/ProductCreationError.js",
     "package": "sprd.error",
     "inheritancePath": [
-        "js.core.Error",
-        "Error"
+        "js.core.Error"
     ]
 }

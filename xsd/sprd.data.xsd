@@ -1,57 +1,26 @@
 <schema targetNamespace="sprd.data"
     xmlns="http://www.w3.org/2001/XMLSchema"
-    xmlns:ns1="js.core"
-    xmlns:ns2="js.data"
     xmlns:ns="sprd.data">
-    <import/>
-    <import/>
-    <element name="ImageServerDataSource" type="ns:ImageServerDataSource"/>
-    <element name="ImageServerDataSourceClass" type="ns:ImageServerDataSourceClass"/>
     <element name="ImageService" type="ns:ImageService"/>
     <element name="ImageUploadService" type="ns:ImageUploadService"/>
-    <element name="SprdApiDataSource" type="ns:SprdApiDataSource"/>
-    <element name="SprdApiDataSourceClass" type="ns:SprdApiDataSourceClass"/>
-    <element name="SprdDataSource" type="ns:SprdDataSource"/>
-    <complexType name="ImageServerDataSource">
-        <complexContent>
-            <extension base="ns:ImageServerDataSourceClass">
-                <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageServerDataSource"></documentation>
-                </annotation>
-                <sequence>
-                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-            </extension>
-        </complexContent>
-    </complexType>
-    <complexType name="ImageServerDataSourceClass">
-        <complexContent>
-            <extension base="ns:SprdDataSource">
-                <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageServerDataSourceClass"></documentation>
-                </annotation>
-                <sequence>
-                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-            </extension>
-        </complexContent>
-    </complexType>
     <complexType name="ImageService">
         <complexContent>
-            <extension base="ns1:Component">
+            <extension>
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageService"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+                <attribute name="subDomainCount" default="10"/>
                 <attribute name="endPoint" default="//image.spreadshirt.net/image-server/v1"/>
+                <attribute name="gateway" default="/image-server/v1"/>
             </extension>
         </complexContent>
     </complexType>
     <complexType name="ImageUploadService">
         <complexContent>
-            <extension base="ns1:Component">
+            <extension>
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageUploadService"></documentation>
                 </annotation>
@@ -59,47 +28,6 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="uploadContext"/>
-            </extension>
-        </complexContent>
-    </complexType>
-    <complexType name="SprdApiDataSource">
-        <complexContent>
-            <extension base="ns:SprdApiDataSourceClass">
-                <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.SprdApiDataSource"></documentation>
-                </annotation>
-                <sequence>
-                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-                <attribute name="locale" default="en_EU"/>
-            </extension>
-        </complexContent>
-    </complexType>
-    <complexType name="SprdApiDataSourceClass">
-        <complexContent>
-            <extension base="ns:SprdDataSource">
-                <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.SprdApiDataSourceClass"></documentation>
-                </annotation>
-                <sequence>
-                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-                <attribute name="locale" default="en_EU"/>
-            </extension>
-        </complexContent>
-    </complexType>
-    <complexType name="SprdDataSource">
-        <complexContent>
-            <extension base="ns2:RestDataSource">
-                <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.SprdDataSource"></documentation>
-                </annotation>
-                <sequence>
-                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-                <attribute name="apiKey"/>
-                <attribute name="secret"/>
-                <attribute name="session"/>
             </extension>
         </complexContent>
     </complexType>

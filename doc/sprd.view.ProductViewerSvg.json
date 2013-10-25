@@ -127,8 +127,6 @@
                 31,
                 36
             ],
-            "definedBy": "js.svg.Svg",
-            "overwritesMethod": true,
             "name": "ctor",
             "visibility": "public"
         },
@@ -164,77 +162,12 @@
             "type": "Method",
             "parameter": [],
             "annotations": {},
-            "definedInFile": "js/svg/Svg.js",
-            "lineNumbers": [
-                39,
-                44
-            ],
-            "definedBy": "js.svg.Svg",
-            "name": "globalToLocalFactor",
-            "visibility": "public"
-        },
-        {
-            "type": "Method",
-            "parameter": [],
-            "annotations": {},
             "definedInFile": "sprd/view/ProductViewerSvg.js",
             "lineNumbers": [
                 39,
                 44
             ],
             "name": "initialize",
-            "visibility": "public"
-        },
-        {
-            "type": "Method",
-            "parameter": [],
-            "annotations": {},
-            "definedInFile": "js/svg/Svg.js",
-            "lineNumbers": [
-                32,
-                37
-            ],
-            "definedBy": "js.svg.Svg",
-            "name": "localToGlobalFactor",
-            "visibility": "public"
-        },
-        {
-            "type": "Method",
-            "parameter": [],
-            "annotations": {},
-            "definedInFile": "js/svg/Svg.js",
-            "lineNumbers": [
-                46,
-                64
-            ],
-            "definedBy": "js.svg.Svg",
-            "name": "save",
-            "visibility": "public"
-        },
-        {
-            "type": "Method",
-            "parameter": [
-                {
-                    "name": "x"
-                },
-                {
-                    "name": "y"
-                },
-                {
-                    "name": "width"
-                },
-                {
-                    "name": "height"
-                }
-            ],
-            "annotations": {},
-            "definedInFile": "js/svg/Svg.js",
-            "lineNumbers": [
-                22,
-                30
-            ],
-            "definedBy": "js.svg.Svg",
-            "name": "setViewBox",
             "visibility": "public"
         }
     ],
@@ -352,46 +285,6 @@
                 26,
                 26
             ]
-        },
-        "tagName": {
-            "name": "tagName",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": "svg",
-            "lineNumbers": [
-                6,
-                6
-            ],
-            "definedBy": "js.svg.Svg"
-        },
-        "viewBox": {
-            "name": "viewBox",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": "0 0 100 100",
-            "lineNumbers": [
-                7,
-                7
-            ],
-            "definedBy": "js.svg.Svg"
-        },
-        "hidden": {
-            "name": "hidden",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": null,
-            "lineNumbers": [
-                9,
-                9
-            ],
-            "definedBy": "js.svg.Svg"
-        },
-        "version": {
-            "name": "version",
-            "defaultType": "value",
-            "visibility": "public",
-            "value": "1.2",
-            "definedBy": "js.svg.SvgDescriptor"
         }
     },
     "properties": {
@@ -404,9 +297,7 @@
                 29
             ],
             "propertyType": "complex",
-            "value": " [\"product\", \"view\", \"editable\", \"selectedConfiguration\", \"imageService\"]",
-            "definedBy": "js.svg.Svg",
-            "overwrites": true
+            "value": " [\"product\", \"view\", \"editable\", \"selectedConfiguration\", \"imageService\"]"
         }
     },
     "fqClassName": "sprd.view.ProductViewerSvg",
@@ -420,8 +311,6 @@
     "file": "sprd/view/ProductViewerSvg.js",
     "package": "sprd.view",
     "inheritancePath": [
-        "js.svg.Svg",
-        "js.svg.SvgDescriptor",
-        "js.svg.SvgClass"
+        "js.svg.Svg"
     ]
 }
