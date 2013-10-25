@@ -234,6 +234,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
                     e.preventDefault();
                     e.stopPropagation();
+
+                    this.$.bus.trigger('Application.productChanged', this.$.product);
                 }
 
 
