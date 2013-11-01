@@ -17,7 +17,20 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
     return Entity.inherit("sprd.entity.Address", {
 
         defaults: {
-            type: null
+            type: null,
+            company: null,
+            person: null,
+
+            street: null,
+            houseNumber: null,
+            streetAnnex: null,
+            city: null,
+            state: null,
+            country: null,
+            zipCode: null,
+            email: null,
+            phone: null,
+            fax: null
         },
 
         schema: {
