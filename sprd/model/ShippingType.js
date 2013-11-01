@@ -1,4 +1,4 @@
-define(['sprd/data/SprdModel', 'sprd/entity/ShippingCountry'], function (SprdModel, ShippingCountry) {
+define(['sprd/data/SprdModel', 'sprd/entity/ShippingCountry', 'sprd/entity/ShippingRegion'], function (SprdModel, ShippingCountry, ShippingRegion) {
 
     return SprdModel.inherit('sprd.model.ShippingType', {
         defaults: {
@@ -14,9 +14,16 @@ define(['sprd/data/SprdModel', 'sprd/entity/ShippingCountry'], function (SprdMod
             description: String,
             trackingLink: Object,
 
-            shippingCountries: [ShippingCountry]
+            shippingCountries: [ShippingCountry],
+            shippingRegions: [ShippingRegion]
         },
 
+        /***
+         * this method is necessary, because ShippingCountry should be a model, but is defined by the API as entity
+         *
+         * @param id
+         * @returns {*}
+         */
         getShippingCountryById: function (id) {
 
             for (var i = 0; i < this.$.shippingCountries.$items.length; i++) {
