@@ -1,6 +1,12 @@
-define(["js/data/Entity", "sprd/model/Currency"], function (Entity, Currency) {
+define(["js/data/Entity", "sprd/entity/Price", "sprd/model/Currency"], function (Entity, Price, Currency) {
 
     var OrderValueRange = Entity.inherit("sprd.entity.ShippingCost.OrderValueRange", {
+
+        defaults: {
+            from: null,
+            to: null,
+            currency: null
+        },
 
         schema: {
             from: Number,
@@ -10,22 +16,11 @@ define(["js/data/Entity", "sprd/model/Currency"], function (Entity, Currency) {
 
     });
 
-    var Cost = Entity.inherit("sprd.entity.ShippingCost.Cost", {
-
-        schema: {
-            vatExcluded: Number,
-            vatIncluded: Number,
-            vat: Number,
-            currency: Currency
-        }
-
-    });
-
     return Entity.inherit("sprd.entity.ShippingCost", {
 
         schema: {
             orderValueRange: OrderValueRange,
-            cost: Cost
+            cost: Price
         }
 
     });
