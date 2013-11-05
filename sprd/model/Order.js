@@ -15,14 +15,27 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
     var Shipping = Entity.inherit("sprd.model.Order.Shipping", {
         defaults: {
             address: Address,
-            shippingType: null
+            shippingType: null,
+
+            order: null,
+            shippingTypes: "{order.shippingTypes()}"
         },
 
         schema: {
             address: Address,
             shippingType: ShippingType
-        }
+        },
 
+        _commitShippingTypes: function(shippingTypes) {
+
+            if (shippingTypes) {
+                var shippingType = this.$.shippingType;
+                if (!shippingType || _.indexOf(shippingTypes, shippingType) === -1) {
+                    // select first shipping type or shipping type not available any more
+                    this.set("shippingType", shippingTypes[0]);
+                }
+            }
+        }
     });
 
     return SprdModel.inherit('sprd.model.Order', {
@@ -47,17 +60,24 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             shipping: Shipping
         },
 
+        ctor: function() {
+            this.callBase();
+
+            this.$.billing.set("order", this);
+            this.$.shipping.set("order", this);
+        },
+
         _commitShipToBillingAddress: function(shipToBillingAddress) {
             var address;
             if (shipToBillingAddress) {
-                address = this.$.billing.$.address;
-                if (!address.$.country) {
+                address = this.get("billing.address");
+                if (address && !address.$.country) {
                     // set same country for shipping address as the delivery address
                     address.set("country", this.get("shipping.address.country"));
                 }
             } else {
-                address = this.$.shipping.$.address;
-                if (!address.$.country) {
+                address = this.get("shipping.address");
+                if (address && !address.$.country) {
                     // set same country for shipping address as the delivery address
                     address.set("country", this.get("billing.address.country"));
                 }
