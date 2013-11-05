@@ -37,7 +37,9 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
 
             billing: Billing,
             shipping: Shipping,
-            shipToBillingAddress: true
+            shipToBillingAddress: true,
+
+            shippingCosts: "{shippingCosts()}"
         },
 
         schema: {
@@ -46,8 +48,15 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
         },
 
         _commitShipToBillingAddress: function(shipToBillingAddress) {
-            if (!shipToBillingAddress) {
-                var address = this.$.shipping.$.address;
+            var address;
+            if (shipToBillingAddress) {
+                address = this.$.billing.$.address;
+                if (!address.$.country) {
+                    // set same country for shipping address as the delivery address
+                    address.set("country", this.get("shipping.address.country"));
+                }
+            } else {
+                address = this.$.shipping.$.address;
                 if (!address.$.country) {
                     // set same country for shipping address as the delivery address
                     address.set("country", this.get("billing.address.country"));
@@ -55,9 +64,24 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             }
         },
 
+        total: function() {
+
+            var basketVatIncluded = this.get("basket.vatIncluded()") || 0,
+                orderDiscount = 0,
+                voucherDiscount = 0,
+                shippingCosts = this.get("shippingCosts.vatIncluded") || 0;
+
+            return basketVatIncluded + orderDiscount + voucherDiscount + shippingCosts;
+        }.onChange("basket.vatIncluded()", "shippingCosts.vatIncluded"),
+
         deliveryAddress: function() {
             return this.$.shipToBillingAddress ? this.get("billing.address") : this.get("shipping.address");
         }.onChange("shipToBillingAddress"),
+
+        shippingCosts: function() {
+            // TODO: change on basket price change -> pass basket price as argument
+            return this.get("shipping.shippingType.getShippingCountryById(deliveryAddress().country.id).shippingRegion.getShippingCostsForOrderValue(20).cost");
+        }.onChange("shipping.shippingType", "deliveryAddress().country"),
 
         shippingTypes: function() {
 
