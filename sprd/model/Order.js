@@ -33,6 +33,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
 
         defaults: {
             root: null,
+            basket: null,
 
             billing: Billing,
             shipping: Shipping,
@@ -69,7 +70,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
 
             return null;
 
-        }.onChange("shippingCountry", "root", "deliveryAddress().country")
+        }.onChange("root", "deliveryAddress().country")
 
 
     });
