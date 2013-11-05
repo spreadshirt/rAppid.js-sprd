@@ -50,7 +50,12 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
              * the origin id used for basked items
              * @type {Number|String}
              */
-            originId: null
+            originId: null,
+
+            /***
+             * a flag that indicates if the basket is updating
+             */
+            updating: false
         },
 
         events: [
@@ -66,6 +71,20 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
         inject: {
             api: SprdApiDataSource,
             localStorage: LocalStorage
+        },
+
+
+        ctor: function() {
+            this.callBase();
+
+            this.bind("on:basketUpdated", function () {
+                this.set("updating", false);
+            }, this);
+
+            this.bind("on:basketUpdating", function () {
+                this.set("updating", true);
+            }, this);
+
         },
 
         /**
