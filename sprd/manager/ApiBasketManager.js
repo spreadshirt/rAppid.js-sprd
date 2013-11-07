@@ -281,8 +281,6 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 }
                 this.$basketChanged = true;
             }
-
-
         }
     });
 

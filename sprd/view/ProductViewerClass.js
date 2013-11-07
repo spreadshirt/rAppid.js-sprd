@@ -232,10 +232,10 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     });
                     selectedConfiguration.set('offset', offset);
 
+                    this.$configurationMoved = true;
                     e.preventDefault();
                     e.stopPropagation();
 
-                    this.$.bus.trigger('Application.productChanged', this.$.product);
                 }
 
 
@@ -256,6 +256,13 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             var viewer = this.$.selectedConfigurationViewer;
             if (viewer) {
                 viewer._keyPress(e);
+            }
+        },
+
+        _keyUpHandler: function () {
+            if (this.$configurationMoved) {
+                this.$configurationMoved = false;
+                this.$.bus.trigger("Application.productChanged", this.$.product);
             }
         },
 
@@ -334,7 +341,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     self.$stage.set('height', '100%');
                 }, 200);
 
-                if(this.$.selectedConfiguration){
+                if (this.$.selectedConfiguration) {
                     this.$.productManager.setTextForConfiguration(this.$.textArea.$.value, this.$.selectedConfiguration);
                 }
 
