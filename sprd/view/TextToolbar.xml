@@ -1,0 +1,54 @@
+<view:TextToolbarClass xmlns:view="sprd.view"
+                       xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="js.ui" xmlns:js="js.core">
+
+    <div>
+
+        <ui:MenuButton label="T" fontFamily="{selectedFont.getUniqueFontName()}" class="font-family-button"
+                       buttonClass="round-btn"
+                       labelClass="icon">
+            <div class="font-family-settings">
+                <div class="font-family-list-wrapper">
+                    <ui:SelectionView items="{filteredFontFamilies}" itemKey="$fontFamily"
+                                      tagName="ul"
+                                      class="font-family-list" selectedItem="{{selectedFontFamily}}"
+                                      needsSelection="false">
+                        <js:Template name="item">
+                            <li class="font-family-item">
+                                <a backgroundPosition="0 ${indexToPos(index)}px">${$fontFamily.name}</a>
+                            </li>
+                        </js:Template>
+                    </ui:SelectionView>
+                </div>
+                <div class="font-family-buttons">
+                    <button class="bold-btn" onclick="toggleBold"
+                            enabled="{canToggleBold()}" selected="{selectedFont.isBold()}">
+                        {i18n.t('textToolSelector.bold')}
+                    </button>
+                    <button class="italic-btn" onclick="toggleItalic"
+                            enabled="{canToggleItalic()}" selected="{selectedFont.isItalic()}">
+                        {i18n.t('textToolSelector.italic')}
+                    </button>
+                </div>
+            </div>
+        </ui:MenuButton>
+    </div>
+
+    <ui:MenuButton label="{textAnchorLabel()}" class="text-alignment-button" buttonClass="round-btn" labelClass="icon">
+        <div class="text-setting text-alignment">
+            <a class="left-align-btn cng-icons" selected="{isLeftAligned()}" onclick="alignLeft">
+                <span class="icon">L</span>
+                <span class="label">{i18n.t('textToolSelector.alignLeft')}</span>
+
+            </a>
+            <a class="center-btn cng-icons" selected="{isCenterAligned()}" onclick="alignCenter">
+                <span class="icon">C</span>
+                <span class="label">{i18n.t('textToolSelector.alignCenter')}</span>
+            </a>
+            <a class="right-align-btn cng-icons" selected="{isRightAligned()}" onclick="alignRight">
+                <span class="icon">R</span>
+                <span class="label">{i18n.t('textToolSelector.alignRight')}</span>
+            </a>
+        </div>
+    </ui:MenuButton>
+
+</view:TextToolbarClass>
