@@ -30,7 +30,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
             zipCode: null,
             email: null,
             phone: null,
-            fax: null
+            fax: null,
+
+            root: null,
+            shippingCountries: "{root.shippingCountries()}"
         },
 
         schema: {

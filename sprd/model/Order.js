@@ -65,6 +65,13 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
 
             this.$.billing.set("order", this);
             this.$.shipping.set("order", this);
+
+
+        },
+
+        _postConstruct: function() {
+            this.$.billing.$.address.set("root", this.$.root);
+            this.$.shipping.$.address.set("root", this.$.root);
         },
 
         _commitShipToBillingAddress: function(shipToBillingAddress) {
