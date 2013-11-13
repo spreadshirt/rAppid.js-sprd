@@ -356,7 +356,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printArea: null,
                     printType: null,
                     fontStyle: "normal",
-                    fontWeight: "normal"
+                    fontWeight: "normal",
+                    printTypeId: null
                 });
 
                 var self = this,
@@ -368,7 +369,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     view = params.view,
                     font = null,
                     appearance = product.$.appearance,
-                    printType = params.printType;
+                    printType = params.printType,
+                    printTypeId = params.printTypeId;
 
                 if (!text) {
                     callback(new Error("No text"));
@@ -457,6 +459,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         if (printType && !_.contains(possiblePrintTypes, printType)) {
                             throw new Error("PrintType not possible for text and printArea");
+                        }
+
+                        if (printTypeId) {
+                            for (var i = possiblePrintTypes.length; i--;) {
+                                if (possiblePrintTypes[i].$.id == printTypeId) {
+                                    printType = possiblePrintTypes[i];
+                                    break;
+                                }
+                            }
                         }
 
                         printType = printType || possiblePrintTypes[0];
