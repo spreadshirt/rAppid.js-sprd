@@ -223,6 +223,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
         }.on("priceChanged", ["productType", 'change:price']).onChange('productType'),
 
         _addConfiguration: function (configuration) {
+            this.trigger('beforeConfigurationAdd', configuration);
             this.$.configurations.add(configuration);
         },
 
