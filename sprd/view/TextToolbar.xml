@@ -31,24 +31,30 @@
                 </div>
             </div>
         </ui:MenuButton>
+        <div class="sidebar-toolbox-label">${i18n.t('toolbox.chooseFont')}</div>
     </div>
 
-    <ui:MenuButton label="{textAnchorLabel()}" class="text-alignment-button" buttonClass="round-btn" labelClass="icon">
-        <div class="text-setting text-alignment">
-            <a class="left-align-btn cng-icons" selected="{isLeftAligned()}" onclick="alignLeft">
-                <span class="icon">L</span>
-                <span class="label">{i18n.t('textToolSelector.alignLeft')}</span>
+    <div>
+        <ui:MenuButton label="{textAnchorLabel()}" class="text-alignment-button" buttonClass="round-btn" labelClass="icon">
+            <div class="text-setting text-alignment">
+                <a class="left-align-btn cng-icons" selected="{isLeftAligned()}" onclick="alignLeft">
+                    <span class="icon">L</span>
+                    <span class="label">{i18n.t('textToolSelector.alignLeft')}</span>
 
-            </a>
-            <a class="center-btn cng-icons" selected="{isCenterAligned()}" onclick="alignCenter">
-                <span class="icon">C</span>
-                <span class="label">{i18n.t('textToolSelector.alignCenter')}</span>
-            </a>
-            <a class="right-align-btn cng-icons" selected="{isRightAligned()}" onclick="alignRight">
-                <span class="icon">R</span>
-                <span class="label">{i18n.t('textToolSelector.alignRight')}</span>
-            </a>
-        </div>
-    </ui:MenuButton>
+                </a>
+                <a class="center-btn cng-icons" selected="{isCenterAligned()}" onclick="alignCenter">
+                    <span class="icon">C</span>
+                    <span class="label">{i18n.t('textToolSelector.alignCenter')}</span>
+                </a>
+                <a class="right-align-btn cng-icons" selected="{isRightAligned()}" onclick="alignRight">
+                    <span class="icon">R</span>
+                    <span class="label">{i18n.t('textToolSelector.alignRight')}</span>
+                </a>
+            </div>
+        </ui:MenuButton>
+        <div class="sidebar-toolbox-label">${i18n.t('toolbox.textAlignment')}</div>
+
+    </div>
+
 
 </view:TextToolbarClass>
