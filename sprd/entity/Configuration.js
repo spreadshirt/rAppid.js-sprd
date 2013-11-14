@@ -32,6 +32,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             _x: "{offset.x}",
             _y: "{offset.y}",
 
+            _isDeletable: true,
+
             _printTypePrice: "{printType.price}"
         },
 
