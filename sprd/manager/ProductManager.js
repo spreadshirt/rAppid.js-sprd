@@ -357,7 +357,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printType: null,
                     fontStyle: "normal",
                     fontWeight: "normal",
-                    printTypeId: null
+                    printTypeId: null,
+                    fontFamilyId: null
                 });
 
                 var self = this,
@@ -403,7 +404,24 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
                     })
                     .seq("fontFamily", function () {
-                        var fontFamily = params.fontFamily || this.vars["fontFamilies"].at(0);
+                        var fontFamily,
+                            fontFamilies = this.vars['fontFamilies'];
+
+                        if (params.fontFamily) {
+                            fontFamily = params.fontFamily;
+                        } else if (params.fontFamilyId) {
+                            var items = fontFamilies.$items;
+
+                            for (var i = items.length; i--;){
+                                if (items[i].$.id == params.fontFamilyId) {
+                                    fontFamily = items[i];
+                                    break;
+                                }
+                            }
+                        } else {
+                            fontFamily = fontFamilies.at(0);
+                        }
+
                         if (!fontFamily) {
                             throw new Error("No found");
                         }
