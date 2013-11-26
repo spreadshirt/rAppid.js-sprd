@@ -18,7 +18,7 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], funct
                     }
                 });
             } else {
-                this['return'](null);
+                return null;
             }
         },
         hasSubCategories: function () {
