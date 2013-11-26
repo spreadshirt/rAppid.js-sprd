@@ -11,15 +11,11 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], funct
             return this.$.designCategories;
         },
         getSubCategoryById: function (id) {
-            if (this.$.designCategories && this.$.designCategories.length() > 0) {
-                return this.$.designCategories.each(function (val) {
-                    if (val.$.id == id) {
-                        this['return'](val);
-                    }
-                });
-            } else {
-                return null;
-            }
+            return this.$.designCategories.each(function (val) {
+                if (val.$.id == id) {
+                    this['return'](val);
+                }
+            });
         },
         hasSubCategories: function () {
             return this.$.designCategories && this.$.designCategories.size();
