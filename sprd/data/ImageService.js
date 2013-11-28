@@ -20,6 +20,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         },
 
         designImage: function (designId, options) {
+            options = options || {};
             var parameter = ImageService.getImageSizeParameter(options) || {};
 
             var printColors = options.printColors;
@@ -29,7 +30,8 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
                 }
             }
 
-            return this.buildUrl(['designs', designId], parameter, (designId || "").replace(/^.*?(\d+).*/, "$1"));
+            var cacheId = options.cacheId || (designId || "").replace(/^.*?(\d+).*/, "$1");
+            return this.buildUrl(['designs', designId], parameter, cacheId);
         },
 
         appearanceImage: function (appearanceId, options) {
