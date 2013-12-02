@@ -4,12 +4,31 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], funct
         schema: {
             designs: Collection.of(Design)
         },
+
         isMarketPlace: function () {
-            return this.$.id === "b1000000";
+            return this.$.type === "MARKETPLACE";
         },
+
+        isShopDesigns: function() {
+            return this.$.type === "SHOP";
+        },
+
+        isMyDesigns: function() {
+            return this.$.type === "MY_DESIGNS"
+        },
+
+        isBestseller: function() {
+            return this.$.type === "BESTSELLER";
+        },
+
         getSubCategories: function () {
             return this.$.designCategories;
         },
+
+        allowSearch: function() {
+            return this.isMarketPlace() || this.isBestseller();
+        },
+
         getSubCategoryById: function (id) {
             return this.$.designCategories.each(function (val) {
                 if (val.$.id == id) {
@@ -17,15 +36,11 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], funct
                 }
             });
         },
+
         hasSubCategories: function () {
             return this.$.designCategories && this.$.designCategories.size();
-        },
-        parse: function (data) {
-            if (data.id.indexOf("b") === -1) {
-                data.id = "b" + data.id;
-            }
-            return data;
         }
+
     });
 
     DesignCategory.prototype.schema.designCategories = [DesignCategory];
