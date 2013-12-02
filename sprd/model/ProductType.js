@@ -7,12 +7,16 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
             printAreas: [PrintArea],
             sizes: [Size],
             price: Price,
-            stockStates: StockStates
+            stockStates: StockStates,
+
+            sizeFitHint: String
         },
 
         defaults: {
             availableAppearances: List,
-            outOfStock: false
+            outOfStock: false,
+
+            sizeFitHint: "normal"
         },
 
         getViewById: function (id) {
