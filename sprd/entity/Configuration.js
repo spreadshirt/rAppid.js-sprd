@@ -48,7 +48,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             if (this._hasSome($, ["scale", "rotation", "printArea", "printColors", "printArea", "printType"])) {
                 validate($);
                 this.trigger('configurationChanged');
-            } else if($.hasOwnProperty("offset")){
+            } else if ($.hasOwnProperty("offset")) {
                 if ($.offset && !$.offset.isDeepEqual(this.$previousAttributes["offset"])) {
                     validate($);
                     this.trigger('configurationChanged');
@@ -100,6 +100,18 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 _.extend(ret, this._validatePrintTypeSize(printType, width, height, scale));
             }
 
+            if (ret.minBound && this.$context && this.$context.$contextModel && !printTypeChanged) {
+                var printTypes = this.getPossiblePrintTypesForPrintArea(this.$.printArea, this.$context.$contextModel.get('appearance.id'));
+                for (var i = 0; i < printTypes.length; i++) {
+                    if (!printTypes[i].isPrintColorColorSpace()) {
+                        this.set('printType', printTypes[i]);
+                        ret.minBound = false;
+                        break;
+                    }
+
+                }
+            }
+
             return ret;
 
         },
@@ -121,10 +133,18 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
             return {
                 printTypeScaling: !printType.isScalable() && (scale.x != 1 || scale.y != 1),
-                maxBound: width > printType.get("size.width") || height > printType.get("size.height")
+                maxBound: width > printType.get("size.width") || height > printType.get("size.height"),
+                minBound: false
             };
 
         },
+
+        isPrintTypeAvailable: function (printType) {
+
+            var ret = this._validatePrintTypeSize(printType, this.get('size.width'), this.get('size.height'), this.$.scale);
+
+            return !ret.maxBound && !ret.minBound && !ret.printTypeScaling;
+        }.onChange('_size.width', '_size.height', 'scale'),
 
         _hasHardBoundaryError: function (offset, width, height, rotation, scale) {
 

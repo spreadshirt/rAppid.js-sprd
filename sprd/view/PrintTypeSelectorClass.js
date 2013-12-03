@@ -4,8 +4,7 @@ define(['sprd/view/PrintTypePanelBase'], function(PrintTypePanelBase){
 
         events: ["on:printTypeSelect"],
 
-        _onPrintTypeClick: function (e) {
-            var printType = e.target.find("printType");
+        _selectPrintType: function (printType) {
 
             this.trigger("on:printTypeSelect", printType, this);
         }

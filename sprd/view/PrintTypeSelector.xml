@@ -8,7 +8,7 @@
     <ui:SelectionView items="{possiblePrintTypes}" itemKey="printType" selectedItem="{configuration.printType}">
         <js:Template name="item">
             <div class="print-type-item print-type-{printType.id}">
-                <a onclick="_onPrintTypeClick">
+                <a onclick="_selectPrintType(printType)" enabled="{configuration.isPrintTypeAvailable(printType)}">
                     <span class="icon"/>
                     <span class="label">${labelForPrintType(printType)}</span>
                 </a>

@@ -151,7 +151,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             targetPrintAreaHeight / currentPrintAreaHeight
                         ) * Math.abs(configuration.$.scale.x);
 
-                        var allowScale = configuration.allowScale();
+                        var allowScale = configuration.allowScale(),
+                            printTypeFallback;
 
                         for (var j = 0; j < possiblePrintTypes.length; j++) {
                             printType = possiblePrintTypes[j];
@@ -173,6 +174,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 maximumScale = 1;
                             }
 
+
                             if (!allowScale && (maximumScale < 1 || (minimumScale && minimumScale > 1))) {
                                 continue;
                             }
@@ -191,16 +193,26 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 y: factor
                             };
 
+                            if (!printTypeFallback) {
+                                printTypeFallback = printType
+                            }
+                            var result = configuration._validatePrintTypeSize(printType, currentConfigurationWidth, currentConfigurationHeight, preferredScale);
+                            if (result.minBound || result.maxBound) {
+                                continue;
+                            }
+
                             preferredPrintType = printType;
                             break;
                         }
+
+                        preferredPrintType = preferredPrintType || printTypeFallback;
 
                         if (preferredPrintType) {
 
                             configuration.set({
                                 printType: preferredPrintType,
                                 scale: preferredScale
-                            }, setOptions);
+                            });
 
                             preferredOffset = {
                                 x: targetPrintAreaWidth * center.x / currentPrintAreaWidth - configuration.width() / 2,
@@ -412,7 +424,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         } else if (params.fontFamilyId) {
                             var items = fontFamilies.$items;
 
-                            for (var i = items.length; i--;){
+                            for (var i = items.length; i--;) {
                                 if (items[i].$.id == params.fontFamilyId) {
                                     fontFamily = items[i];
                                     break;
@@ -527,6 +539,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }))).doOperation();
 
                         var entity = product.createEntity(TextConfiguration);
+
                         entity.set({
                             printType: printType,
                             printArea: printArea,
