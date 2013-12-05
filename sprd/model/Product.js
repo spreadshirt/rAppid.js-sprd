@@ -373,6 +373,9 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                         .exec(cb);
                 })
                 .exec(function (err) {
+
+                    self.trigger("priceChanged");
+
                     if (err) {
                         callback && callback(err);
                     } else {
