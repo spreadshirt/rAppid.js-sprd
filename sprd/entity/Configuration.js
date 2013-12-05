@@ -127,7 +127,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 // size of the softboudary. As long as we haven't the size of the softboundary
                 // we use the size of the print area
                 width = Math.min(width, printArea.width());
-                height = Math.max(height, printArea.height());
+                height = Math.min(height, printArea.height());
             }
 
 
