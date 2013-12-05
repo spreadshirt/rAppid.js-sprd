@@ -134,12 +134,17 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             var basketSaveCallback = function (err) {
                 if (!err) {
                     self.set("apiBasketId", basketId);
-                    self.$.localStorage.setItem("basketId", basket.$.id);
-                    self._triggerBasketChanged();
-                    self.fetchBasketDiscounts(callback);
+                    try {
+                        self.$.localStorage.setItem("basketId", basket.$.id);
+                        self._triggerBasketChanged();
+                        self.fetchBasketDiscounts(callback);
+                    } catch (e) {
+                        callback && callback(e);
+                    }
+
                 } else {
                     console.warn(err);
-                    callback(err);
+                    callback && callback(err);
                 }
 
             };
