@@ -59,7 +59,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         var key,
                             method;
 
-                        if (svg.image.hasOwnProperty("printColorIds")) {
+                        if (svg.image.hasOwnProperty("printColorIds") && printType.isPrintColorColorSpace()) {
                             key = "printColorIds";
                             method = "getPrintColorById";
                         } else {
