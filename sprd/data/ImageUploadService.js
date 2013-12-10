@@ -28,10 +28,13 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                     });
                 }
 
-
-                this._uploadDesign(new UploadDesign({
+                var uploadDesign = new UploadDesign({
                     image: image
-                }), callback);
+                });
+
+                this._uploadDesign(uploadDesign, callback);
+
+                return uploadDesign;
             },
 
 
