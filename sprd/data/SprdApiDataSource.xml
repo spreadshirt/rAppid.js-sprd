@@ -1,33 +1,37 @@
 <data:SprdApiDataSourceClass xmlns:data="sprd.data" xmlns:conf="js.conf">
     <conf:DataSourceConfiguration>
         <conf:ResourceConfiguration path="languages" modelClassName="sprd.model.Language"/>
-        <conf:ResourceConfiguration path="countries" modelClassName="sprd.model.Country" />
+        <conf:ResourceConfiguration path="countries" modelClassName="sprd.model.Country"/>
         <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop">
             <conf:ResourceConfiguration path="address" modelClassName="sprd.model.Address"/>
-            <conf:ResourceConfiguration path="articles" modelClassName="sprd.model.Article" />
+            <conf:ResourceConfiguration path="articles" modelClassName="sprd.model.Article"/>
             <conf:ResourceConfiguration path="articleCategories" modelClassName="sprd.model.ArticleCategory"/>
             <conf:ResourceConfiguration path="designCategories" modelClassName="sprd.model.DesignCategory">
                 <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design"/>
             </conf:ResourceConfiguration>
-            <conf:ResourceConfiguration path="printTypes" modelClassName="sprd.model.PrintType" />
+            <conf:ResourceConfiguration path="printTypes" modelClassName="sprd.model.PrintType"/>
             <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" signatureRequired="true"/>
             <conf:ResourceConfiguration path="designCategories" modelClassName="sprd.model.DesignCategory"/>
 
-            <conf:ResourceConfiguration path="productTypes" modelClassName="sprd.model.ProductType" >
-                <conf:ResourceConfiguration path="stockStates" modelClassName="sprd.model.StockState" collectionClassName="sprd.collection.StockStates" />
+            <conf:ResourceConfiguration path="productTypes" modelClassName="sprd.model.ProductType">
+                <conf:ResourceConfiguration path="stockStates" modelClassName="sprd.model.StockState"
+                                            collectionClassName="sprd.collection.StockStates"/>
             </conf:ResourceConfiguration>
             <conf:ResourceConfiguration path="discountScales" modelClassName="sprd.model.DiscountScale"/>
-            <conf:ResourceConfiguration path="fontFamilies" modelClassName="sprd.model.FontFamily" />
+            <conf:ResourceConfiguration path="fontFamilies" modelClassName="sprd.model.FontFamily"/>
             <conf:ResourceConfiguration path="products" modelClassName="sprd.model.Product" signatureRequired="true"/>
-            <conf:ResourceConfiguration path="productTypeDepartments" modelClassName="sprd.model.ProductTypeDepartment"/>
+            <conf:ResourceConfiguration path="productTypeDepartments"
+                                        modelClassName="sprd.model.ProductTypeDepartment"/>
             <conf:ResourceConfiguration path="shippingTypes" modelClassName="sprd.model.ShippingType"/>
             <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.Application"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="currencies" modelClassName="sprd.model.Currency">
 
         </conf:ResourceConfiguration>
-        <conf:ResourceConfiguration path="baskets" modelClassName="sprd.model.Basket" processor="BasketProcessor" apiKeyRequired="true">
-            <conf:ResourceConfiguration path="items" modelClassName="sprd.model.BasketItem" processor="BasketItemProcessor"/>
+        <conf:ResourceConfiguration path="baskets" modelClassName="sprd.model.Basket" processor="BasketProcessor"
+                                    apiKeyRequired="true">
+            <conf:ResourceConfiguration path="items" modelClassName="sprd.model.BasketItem"
+                                        processor="BasketItemProcessor"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="users" modelClassName="sprd.model.User">
             <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop">
@@ -41,16 +45,26 @@
                                         sessionRequired="true"/>
 
             <conf:ResourceConfiguration path="fontFamilies" modelClassName="sprd.model.FontFamily"/>
-            <conf:ResourceConfiguration path="productTypeDepartments" modelClassName="sprd.model.ProductTypeDepartment"/>
+            <conf:ResourceConfiguration path="productTypeDepartments"
+                                        modelClassName="sprd.model.ProductTypeDepartment"/>
             <conf:ResourceConfiguration path="shippingTypes" modelClassName="sprd.model.ShippingType"/>
 
-            <conf:ResourceConfiguration path="productTypes" modelClassName="sprd.model.ProductType" sessionRequired="true">
+            <conf:ResourceConfiguration path="productTypes" modelClassName="sprd.model.ProductType"
+                                        sessionRequired="true">
                 <conf:ResourceConfiguration path="stockStates" modelClassName="sprd.model.StockState"
                                             collectionClassName="sprd.collection.StockStates"/>
             </conf:ResourceConfiguration>
         </conf:ResourceConfiguration>
 
-        <conf:ResourceConfiguration path="sessions" modelClassName="sprd.model.Session" />
+        <conf:ResourceConfiguration path="sessions" modelClassName="sprd.model.Session"/>
         <conf:ResourceConfiguration path="messages" modelClassName="sprd.model.Message" signatureRequired="true"/>
+
+        <conf:ResourceConfiguration path="labels" modelClassName="sprd.model.Label"/>
+        <conf:ResourceConfiguration path="labelTypes" modelClassName="sprd.model.LabelType"/>
+        <conf:ResourceConfiguration path="objectLabels" modelClassName="sprd.model.ObjectLabel"
+                                    signatureRequired="true"/>
+        <conf:ResourceConfiguration path="objectTypes" modelClassName="sprd.model.ObjectType"/>
+
+
     </conf:DataSourceConfiguration>
 </data:SprdApiDataSourceClass>

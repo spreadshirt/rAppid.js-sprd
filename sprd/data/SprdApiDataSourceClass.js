@@ -17,8 +17,13 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
             },
 
             getQueryParameters: function (method, resource) {
+                var fullData = false;
+                if (resource.constructor.name.indexOf("Label") > -1) {
+                    fullData = true
+                }
                 return _.defaults({
-                    mediaType: "json"
+                    mediaType: "json",
+                    fullData: fullData
                 }, this.callBase());
             },
 
@@ -26,11 +31,11 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
                 return new SprdApiDataSource.SprdApiContext(this, contextModel, properties, parentContext);
             },
 
-            getQueryComposer: function(){
+            getQueryComposer: function () {
                 return SprdApiQueryComposer;
             },
 
-            _getContextPath: function(data) {
+            _getContextPath: function (data) {
                 var match = /\/api\/v1\/(.*)$/.exec(data[this.$.determinateContextAttribute]);
 
                 if (match) {
