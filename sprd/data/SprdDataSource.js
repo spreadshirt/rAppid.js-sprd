@@ -54,6 +54,7 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
 
             if (this.$.session && sessionRequired) {
                 params = _.defaults({
+                    // TODO: change session id to token for translation service
                     sessionId: this.$.session.$.id
                 });
             }
