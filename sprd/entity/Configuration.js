@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore", "js/core/Bus"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _, Bus) {
 
     return Entity.inherit('sprd.entity.Configuration', {
 
@@ -35,6 +35,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             _isDeletable: true,
 
             _printTypePrice: "{printType.price}"
+        },
+
+        inject: {
+            bus: Bus
         },
 
         _commitChangedAttributes: function ($, options) {
@@ -104,6 +108,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 var printTypes = this.getPossiblePrintTypesForPrintArea(this.$.printArea, this.$context.$contextModel.get('appearance.id'));
                 for (var i = 0; i < printTypes.length; i++) {
                     if (!printTypes[i].isPrintColorColorSpace()) {
+
+                        this.$.bus && this.$.bus.trigger("Configuration.automaticallyPrintTypeChange", {
+                            printType: printTypes[i]
+                        });
+
                         this.set('printType', printTypes[i]);
                         ret.minBound = false;
                         break;
