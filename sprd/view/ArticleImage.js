@@ -2,7 +2,7 @@ define(["sprd/view/ProductImage"], function (ProductImage) {
 
     return ProductImage.inherit("sprd.view.ArticleImage", {
 
-        _commitChangedAttributes: function(attributes){
+        _commitChangedAttributes: function (attributes) {
             this.callBase();
             if (attributes.hasOwnProperty('article')) {
                 this.set('loaded', false);
@@ -28,8 +28,7 @@ define(["sprd/view/ProductImage"], function (ProductImage) {
             }
 
             return this.callBase();
-        }.onChange("article")
-            .on(["article", "change:resources"]),
+        }.onChange("article").on(["article", "change:resources"]),
 
         alt: function () {
             return this.get("article.name");
