@@ -1,4 +1,4 @@
-define(["js/core/Component", "js/core/ExternalInterface", "js/core/Bus", "sprd/entity/ConcreteElement", "flow", "underscore", "sprd/data/ImageUploadService", "sprd/manager/IProductManager"], function (Component, ExternalInterface, Bus, ConcreteElement, flow, _, ImageUploadService, IProductManager) {
+define(["js/core/Component", "js/core/ExternalInterface", "js/core/Bus"], function (Component, ExternalInterface, Bus) {
 
     return Component.inherit("sprd.manager.ExternalApi", {
 
