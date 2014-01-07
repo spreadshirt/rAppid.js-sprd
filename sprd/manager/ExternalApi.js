@@ -15,6 +15,9 @@ define(["js/core/Component", "js/core/ExternalInterface", "js/core/Bus"], functi
 
         _registerCallbacks: function(externalInterface) {
             // register callbacks here
+
+            externalInterface.addCallback("getStartParameter", this.getStartParameter, this);
+
         },
 
         triggerAsync: function (eventType, event) {
