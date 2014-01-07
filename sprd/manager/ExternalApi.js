@@ -7,11 +7,6 @@ define(["js/core/Component", "js/core/ExternalInterface", "js/core/Bus", "sprd/e
             bus: Bus
         },
 
-        defaults: {
-            _product: "{concreteElement.getProduct()}",
-            _productType: "{_product.productType}"
-        },
-
         initialize: function () {
             this.callBase();
 
