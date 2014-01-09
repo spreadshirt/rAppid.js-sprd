@@ -88,6 +88,8 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
 
                         uploadImage.save({
                             xhrBeforeSend: function (xhr) {
+                                uploadDesign.set('xhr', xhr);
+
                                 if (xhr && xhr.upload) {
                                     xhr.upload.onprogress = function (e) {
                                         uploadDesign.set('uploadProgress', 100 / e.total * e.loaded);
@@ -106,10 +108,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                         callback && callback(err, uploadDesign);
 
                     });
-
             }
-
-
         });
 
     });
