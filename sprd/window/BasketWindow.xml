@@ -1,0 +1,75 @@
+<window:BasketWindowClass xmlns="http://www.w3.org/1999/xhtml"
+                          xmlns:ui="js.ui" xmlns:js="js.core" xmlns:sprdView="sprd.view" xmlns:window="sprd.window"
+                          name="basket-window">
+    <div class="basket-items-wrapper">
+        <ui:ItemsView items="{basketItems}" tagName="ul" class="basket-items">
+            <js:Template name="item">
+                <li>
+                    <div class="basket-item-wrapper product-{item.element.getProduct().id}">
+                        <sprdView:ProductImage class="composition"
+                                               product="{item.element.getProduct()}"
+                                               appearance="{item.element.appearance}"
+                                               width="75" height="75"
+                                               onclick="openProduct"/>
+                        <div class="basket-item-info appearance-{item.appearance.id}">
+                            <div class="basket-item-product-type">
+                                <p class="name">{item.element.getProduct().productType.name}</p>
+                                <p class="brand">{item.element.getProduct().productType.brand}</p>
+                            </div>
+                            <div class="basket-item-size">
+                                <select items="{item.element.getProduct().productType.getAvailableSizesForAppearance(item.element.appearance)}"
+                                        selectedItem="{{item.element.size}}" class="input-small" itemKey="size"
+                                        keyPath="id"
+                                        needsSelection="false"
+                                        onchange="onSizeChange">
+                                    <js:Template name="item">
+                                        <option value="${size.id}">${size.name}</option>
+                                    </js:Template>
+                                </select>
+                            </div>
+                            <div class="basket-item-quantity">
+                                <a class="basket-item-remove round-action" onclick="removeBasketItem" visible="{eql(item.quantity,1)}">b</a>
+                                <a class="round-action" onclick="decreaseQuantity" visible="{gt(item.quantity,1)}">-</a>
+                                <input type="text" value="{item.quantity}" class="input-mini quantity-input"
+                                       onchange="onQuantityChange"/>
+                                <a class="round-action" onclick="increaseQuantity">+</a>
+                            </div>
+                            <div class="basket-item-price">
+                                {context.currency.formatValue(item.totalVatIncluded())}
+                            </div>
+
+                        </div>
+                    </div>
+
+                </li>
+            </js:Template>
+        </ui:ItemsView>
+    </div>
+
+    <div class="basket-footer">
+        <div class="basket-summary">
+            <div class="basket-discount" visible="{basket.discountVatIncluded()}">
+                {basket.discounts.at(0).discountScale.getDiscountById(basket.discounts.at(0).currentDiscount.id).credit.value}% ${i18n.t('basket.volumeDiscount')}:
+                <span class="basket-discount-value">
+                    {context.currency.formatValue(basket.discountVatIncluded())}
+                </span>
+            </div>
+        </div>
+        <div class="price-container">
+            <p class="price">{context.currency.formatValue(basket.totalVatIncluded())}</p>
+            <ul class="price-infos">
+                <li class="vat" visible="{showVat()}">
+                    <a onclick="showVatInfo">{i18n.t('basket.vatIncluded')}</a>
+                </li>
+                <li class="shipping-costs">
+                    <a onclick="showShippingInfo">{i18n.t('basket.shippingCosts')}</a>
+                </li>
+            </ul>
+        </div>
+        <a onclick="checkout" class="btn-success go-to-checkout" enabled="{not(updatingBasket)}">
+            <i/>
+            <span>${i18n.t('basket.checkout')}</span>
+        </a>
+    </div>
+
+</window:BasketWindowClass>
