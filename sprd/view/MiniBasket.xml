@@ -1,0 +1,7 @@
+<view:MiniBasketClass xmlns="http://www.w3.org/1999/xhtml" xmlns:view="sprd.view">
+    <span class="items-count" visible="{basket.totalItemsCount()}">{basket.totalItemsCount()}</span>
+    <div class="icon">
+        <span class="basket-icon">B</span>
+        <span class="price">{currency.formatValue(basket.totalVatIncluded())}</span>
+    </div>
+</view:MiniBasketClass>
