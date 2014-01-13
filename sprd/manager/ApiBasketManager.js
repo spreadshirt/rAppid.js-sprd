@@ -1,4 +1,6 @@
-define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/data/SprdApiDataSource", "js/data/LocalStorage", "js/data/Entity"], function (IBasketManager, flow, Basket, SprdApiDataSource, LocalStorage, Entity) {
+define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/data/SprdApiDataSource",
+        "js/data/LocalStorage", "js/data/Entity"],
+    function (IBasketManager, flow, Basket, SprdApiDataSource, LocalStorage, Entity) {
 
     /***
      * @summary A BasketManager to interact with the Spreadshirt Basket API
@@ -90,12 +92,12 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 var continueShoppingLink = this.$.continueShoppingLink;
 
                 if (continueShoppingLink) {
-                    element.set("continueShoppingLink", continueShoppingLink)
+                    element.set("continueShoppingLink", continueShoppingLink);
                 }
 
                 var editBasketItemLinkTemplate = this.$.editBasketItemLinkTemplate;
                 if (editBasketItemLinkTemplate) {
-                    element.set("editLink", editBasketItemLinkTemplate.replace("$productId", element.get("item.id")))
+                    element.set("editLink", editBasketItemLinkTemplate.replace("$productId", element.get("item.id")));
                 }
             }
 
@@ -163,7 +165,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         basket.fetch({
                             noCache: true,
                             fetchSubModels: ["currency"]
-                        }, cb)
+                        }, cb);
                     })
                     .seq(function (cb) {
                         self.fetchBasketDiscounts(cb);
@@ -173,7 +175,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                             // something went wrong
                             basket.set('id', undefined);
                             basket.save(null, basketSaveCallback);
-                            console.warn(err)
+                            console.warn(err);
                         } else {
 
                             self.set("shop", basket.$.shop);
