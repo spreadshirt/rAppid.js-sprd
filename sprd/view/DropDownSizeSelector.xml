@@ -31,7 +31,7 @@
                           selectedItem="{{selectedSize}}"
                           needsSelection="{hasSelection()}" onclick="closeMenu">
             <js:Template name="item">
-                <li>
+                <li data-size-id="${item.id}">
                     <a>${item.name}</a>
                 </li>
             </js:Template>
