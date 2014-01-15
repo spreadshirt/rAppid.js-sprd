@@ -45,6 +45,10 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
                 this.get('item.id') === concreteElement.get('item.id');
         },
 
+        init: function (callback) {
+            this.$.item.fetch(null, callback);
+        },
+
         getProduct: function () {
             if (this.$.item instanceof Product) {
                 return this.$.item;
