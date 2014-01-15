@@ -182,9 +182,22 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
                             flow()
                                 .parEach(basket.$.basketItems.toArray(), function (item, cb) {
-                                    item.$.element.getProduct().fetch({
-                                        fetchSubModels: ["productType"]
-                                    }, cb);
+                                    flow()
+                                        .seq(function (cb) {
+                                            item.$.element.init(cb);
+                                        })
+                                        .seq(function (cb) {
+                                            item.$.element.getProduct().fetch({
+                                                fetchSubModels: ["productType"]
+                                            }, cb);
+                                        })
+                                        .exec(function (err) {
+                                            if (err) {
+                                                basket.$.basketItems.remove(item);
+                                            }
+
+                                            cb();
+                                        });
                                 })
                                 .exec(callback);
                         }
