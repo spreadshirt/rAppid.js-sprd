@@ -1,9 +1,8 @@
 <view:DropDownSizeSelectorClass xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml"
                                 xmlns:view="sprd.view">
     <js:Content name="menu">
-        <ui:SelectionView items="{productType.getAvailableSizesForAppearance(appearance)}" tagName="ul"
-                          selectedItem="{{selectedSize}}"
-                          needsSelection="{hasSelection()}" onclick="closeMenu">
+        <ui:SelectionView items="{_sizes}" tagName="ul"
+                          selectedItem="{{selectedSize}}" onclick="closeMenu">
             <js:Template name="item">
                 <li data-size-id="${item.id}">
                     <a>${item.name}</a>
