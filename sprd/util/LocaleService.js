@@ -89,10 +89,9 @@ define(['js/core/Component'], function (Component) {
             language = language || browserLanguage;
 
             for (var key in this.$languageMap) {
-                if (this.$languageMap.hasOwnProperty(key)) {
-                    if (key && key === this.$languageMap[key] && (!supportedLanguages || supportedLanguages[key])) {
+                if (this.$languageMap.hasOwnProperty(key) &&
+                    (key && key === this.$languageMap[key] && (!supportedLanguages || supportedLanguages[key]))) {
                         return language;
-                    }
                 }
             }
 
@@ -117,10 +116,9 @@ define(['js/core/Component'], function (Component) {
             }
 
             for (var key in this.$countryMap) {
-                if (this.$countryMap.hasOwnProperty(key)) {
-                    if (key && key === this.$countryMap[key] && (!supportedCountries || supportedCountries[key])) {
+                if (this.$countryMap.hasOwnProperty(key) &&
+                    (key && key === this.$countryMap[key] && (!supportedCountries || supportedCountries[key]))) {
                         return country;
-                    }
                 }
             }
 

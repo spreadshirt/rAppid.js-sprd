@@ -90,38 +90,36 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
             var departmentSizes,
                 categorySizes;
 
-
             departmentSizes = productTypeDepartmentToSizeMap[productTypeDepartment.$.name] = productTypeDepartmentToSizeMap[productTypeDepartment.$.name] || {};
             productTypeDepartment.$.categories.each(function (category) {
-                if (!productTypeCategory || productTypeCategory === category) {
-                    if (!categoryToSizeMap[category.identifier()]) {
-                        categorySizes = categoryToSizeMap[category.identifier()] = {};
-                        category.$.productTypes.each(function (productType) {
-                            if (productType.$.sizes) {
-                                productType.$.sizes.each(function (size) {
-                                    if (!departmentSizes[size.$.name]) {
-                                        departmentSizes[size.$.name] = {
-                                            productTypes: []
-                                        };
-                                    }
-                                    departmentSizes[size.$.name].productTypes.push(productType);
-                                    if (!categorySizes[size.$.name]) {
-                                        categorySizes[size.$.name] = {
-                                            productTypes: []
-                                        };
-                                    }
-                                    categorySizes[size.$.name].productTypes.push(productType);
-                                });
-
-                                departmentProductTypeMap[productTypeDepartment.$.name] = departmentProductTypeMap[productTypeDepartment.$.name] || {};
-                                departmentProductTypeMap[productTypeDepartment.$.name][productType.$.id] = productTypeDepartment.$.name;
-                                if (!productTypeToDepartmentsMap[productType.$.id]) {
-                                    productTypeToDepartmentsMap[productType.$.id] = [];
+                if ((!productTypeCategory || productTypeCategory === category) &&
+                    (!categoryToSizeMap[category.identifier()])) {
+                    categorySizes = categoryToSizeMap[category.identifier()] = {};
+                    category.$.productTypes.each(function (productType) {
+                        if (productType.$.sizes) {
+                            productType.$.sizes.each(function (size) {
+                                if (!departmentSizes[size.$.name]) {
+                                    departmentSizes[size.$.name] = {
+                                        productTypes: []
+                                    };
                                 }
-                                productTypeToDepartmentsMap[productType.$.id].push(productTypeDepartment);
+                                departmentSizes[size.$.name].productTypes.push(productType);
+                                if (!categorySizes[size.$.name]) {
+                                    categorySizes[size.$.name] = {
+                                        productTypes: []
+                                    };
+                                }
+                                categorySizes[size.$.name].productTypes.push(productType);
+                            });
+
+                            departmentProductTypeMap[productTypeDepartment.$.name] = departmentProductTypeMap[productTypeDepartment.$.name] || {};
+                            departmentProductTypeMap[productTypeDepartment.$.name][productType.$.id] = productTypeDepartment.$.name;
+                            if (!productTypeToDepartmentsMap[productType.$.id]) {
+                                productTypeToDepartmentsMap[productType.$.id] = [];
                             }
-                        });
-                    }
+                            productTypeToDepartmentsMap[productType.$.id].push(productTypeDepartment);
+                        }
+                    });
                 }
             });
 
@@ -236,10 +234,8 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
             productTypes.each(function (productType) {
                 colorHash = productTypeToColorMap[productType.$.id];
                 for (var color in colorHash) {
-                    if (colorHash.hasOwnProperty(color)) {
-                        if (ret.indexOf(colorMap[color]) === -1) {
-                            ret.push(colorMap[color]);
-                        }
+                    if (colorHash.hasOwnProperty(color) && (ret.indexOf(colorMap[color]) === -1)) {
+                        ret.push(colorMap[color]);
                     }
                 }
             });

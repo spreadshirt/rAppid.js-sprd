@@ -52,11 +52,9 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             if (this._hasSome($, ["scale", "rotation", "printArea", "printColors", "printArea", "printType"])) {
                 validate($);
                 this.trigger('configurationChanged');
-            } else if ($.hasOwnProperty("offset")) {
-                if ($.offset && !$.offset.isDeepEqual(this.$previousAttributes["offset"])) {
+            } else if ($.hasOwnProperty("offset") && $.offset && !$.offset.isDeepEqual(this.$previousAttributes["offset"])) {
                     validate($);
                     this.trigger('configurationChanged');
-                }
             }
 
             function validate(attributes) {

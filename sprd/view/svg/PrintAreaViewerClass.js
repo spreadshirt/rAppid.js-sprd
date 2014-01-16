@@ -159,10 +159,8 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
 
         getViewerForConfiguration: function (configuration) {
             for (var key in this.$configurationViewerCache) {
-                if (this.$configurationViewerCache.hasOwnProperty(key)) {
-                    if (this.$configurationViewerCache[key].$.configuration === configuration) {
-                        return this.$configurationViewerCache[key];
-                    }
+                if (this.$configurationViewerCache.hasOwnProperty(key) && (this.$configurationViewerCache[key].$.configuration === configuration)) {
+                    return this.$configurationViewerCache[key];
                 }
             }
             return null;
