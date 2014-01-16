@@ -1,17 +1,18 @@
-define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "js/data/Collection", "js/core/List"],
-    function (SprdDataSource, RestDataSource, _, SprdModel, Collection, List) {
+define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "js/data/Collection"],
+    function (SprdDataSource, RestDataSource, _, SprdModel, Collection) {
 
         var Translation = SprdModel.inherit('sprd.model.Translation', {
             schema: {
-
             },
+
             idField: null,
+
             language: function () {
                 return this.$.locale.split("_").shift()
             }
         });
 
-        var SprdApiDataSource = SprdDataSource.inherit('sprd.data.SprdApiDataSourceClass', {
+        var SprdApiDataSource = SprdDataSource.inherit('sprd.data.TranslationServiceClass', {
 
             defaults: {
                 locale: "en_EU",
