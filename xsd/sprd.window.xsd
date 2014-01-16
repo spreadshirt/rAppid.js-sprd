@@ -1,0 +1,41 @@
+<schema targetNamespace="sprd.window"
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:ns1="js.core"
+    xmlns:ns="sprd.window">
+    <import/>
+    <element name="BasketWindow" type="ns:BasketWindow"/>
+    <element name="BasketWindowClass" type="ns:BasketWindowClass"/>
+    <complexType name="BasketWindow">
+        <complexContent>
+            <extension base="ns:BasketWindowClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.window.BasketWindow"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="name" default="basket-window"/>
+                <attribute name="basket" default="{basketManager.basket}"/>
+                <attribute name="basketItems"/>
+                <attribute name="closable"/>
+                <attribute name="updatingBasket"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="BasketWindowClass">
+        <complexContent>
+            <extension base="ns1:Window">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.window.BasketWindowClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="basket" default="{basketManager.basket}"/>
+                <attribute name="basketItems"/>
+                <attribute name="closable"/>
+                <attribute name="updatingBasket"/>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>
