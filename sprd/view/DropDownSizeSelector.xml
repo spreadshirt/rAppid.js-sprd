@@ -4,7 +4,7 @@
         <ui:SelectionView items="{_sizes}" tagName="ul"
                           selectedItem="{{selectedSize}}" onclick="closeMenu">
             <js:Template name="item">
-                <li data-size-id="${item.id}">
+                <li data-size-id="${item.id}" enabled="{productType.isSizeAndAppearanceAvailable(item,appearance)}" onclick="selectSize(item)">
                     <a>${item.name}</a>
                 </li>
             </js:Template>

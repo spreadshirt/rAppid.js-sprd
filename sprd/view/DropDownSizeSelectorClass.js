@@ -52,12 +52,39 @@ define(["xaml!js/ui/MenuButton"], function (MenuButton) {
                 sizes = productType.getAvailableSizesForAppearance(appearance);
             }
 
-            this.set("_sizes", sizes);
-
-            if (sizes && sizes.length === 1) {
-                this.set("selectedSize", sizes.at(0));
+            if (!sizes) {
+                // no sizes available
+                this.set("selectedSize", null);
+            } else if (this.$.selectedSize) {
+                // check that size is available
+                if (!sizes.includes(this.$.selectedSize)) {
+                    this.set("selectedSize", null);
+                }
             }
 
+            if (this.$.autoSelectedSize) {
+                this.set("selectedSize", null);
+            }
+
+            this.set("_sizes", this.get("productType.sizes"), {
+                force: true
+            });
+
+            if (!this.$.selectedSize && sizes && sizes.length === 1) {
+                this.set({
+                    selectedSize: sizes.at(0),
+                    autoSelectedSize: sizes.at(0)
+                });
+            }
+
+        },
+
+        selectSize: function(size) {
+            this.set({
+                selectedSize: size,
+                autoSelectedSize: null
+            });
+            this.closeMenu();
         },
 
         closeMenu: function () {
