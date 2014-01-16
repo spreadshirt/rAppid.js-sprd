@@ -1,9 +1,14 @@
 <schema targetNamespace="sprd.manager"
     xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:ns1="js.core"
     xmlns:ns="sprd.manager">
+    <import/>
     <element name="ApiBasketManager" type="ns:ApiBasketManager"/>
+    <element name="ExternalApi" type="ns:ExternalApi"/>
     <element name="ExternalBasketManager" type="ns:ExternalBasketManager"/>
+    <element name="FeatureManager" type="ns:FeatureManager"/>
     <element name="IBasketManager" type="ns:IBasketManager"/>
+    <element name="TrackingManagerBase" type="ns:TrackingManagerBase"/>
     <complexType name="ApiBasketManager">
         <complexContent>
             <extension base="ns:IBasketManager">
@@ -81,6 +86,18 @@ BasketItem
             </extension>
         </complexContent>
     </complexType>
+    <complexType name="ExternalApi">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.ExternalApi"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
     <complexType name="ExternalBasketManager">
         <complexContent>
             <extension base="ns:IBasketManager">
@@ -94,11 +111,35 @@ BasketItem
             </extension>
         </complexContent>
     </complexType>
+    <complexType name="FeatureManager">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.FeatureManager"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
     <complexType name="IBasketManager">
         <complexContent>
-            <extension base="ns:IBasketManager">
+            <extension base="ns1:Component">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.manager.IBasketManager"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="TrackingManagerBase">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.TrackingManagerBase"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
