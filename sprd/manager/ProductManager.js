@@ -525,9 +525,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         var textFlow = TextFlow.initializeFromText(text);
 
-                        var fontSize = this.vars.printArea.get("size.width") * 25 / 550;
-
-
                         (new ApplyStyleToElementOperation(TextRange.createTextRange(0, textFlow.textLength()), textFlow, new Style({
                             font: font,
                             fontSize: 25,

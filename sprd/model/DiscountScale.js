@@ -1,10 +1,5 @@
 define(["sprd/data/SprdModel", "js/data/Entity"], function (Model, Entity) {
 
-    var Discount = Entity.inherit('sprd.entity.Discount', {
-
-
-    });
-
     return Model.inherit('sprd.model.DiscountScale', {
         schema: {
             discounts: [Entity]
@@ -32,5 +27,4 @@ define(["sprd/data/SprdModel", "js/data/Entity"], function (Model, Entity) {
 
     });
 
-})
-;
+});

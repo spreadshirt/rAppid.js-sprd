@@ -10,9 +10,6 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 fontFamilies = product.$context.$contextModel.getCollection("fontFamilies");
 
             flow()
-                .seq(function () {
-                    var navigation = window.navigator;
-                })
                 .par(function (cb) {
                     printType.fetch(null, cb);
                 }, function (cb) {
