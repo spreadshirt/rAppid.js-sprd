@@ -13,11 +13,13 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                     "design": DesignConfiguration,
                     "text": TextConfiguration
                 }
-            })]
+            })],
+            creator: String
         },
 
         defaults: {
-            configurations: List
+            configurations: List,
+            creator: null
         },
 
         inject: {
@@ -322,6 +324,13 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             }
 
             var self = this;
+
+            if (!this.$.creator) {
+                if (this.$stage && this.$stage.$application.name) {
+                    this.set("creator", this.$stage.$application.name);
+                }
+            }
+
             this.callBase(options, function (err) {
                 if (!err) {
                     self.$originalProduct = self.clone();
