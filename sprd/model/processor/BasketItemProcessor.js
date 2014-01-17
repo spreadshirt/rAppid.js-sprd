@@ -6,9 +6,11 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
     return DefaultProcessor.inherit("sprd.model.processor.BasketItemProcessor", {
 
         parse: function (model, payload, action, options) {
-            var element = payload.element;
+            var element = payload.element,
+                properties = element.properties,
+                prop,
+                elementPayload = {};
 
-            var properties = element.properties, prop, elementPayload = {};
             for (var i = 0; i < properties.length; i++) {
                 prop = properties[i];
                 if (prop.key === "size" || prop.key === "appearance") {
