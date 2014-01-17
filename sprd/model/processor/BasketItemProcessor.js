@@ -54,10 +54,19 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
 
             var element = payload.element;
             var elementPayload = {};
-            elementPayload['properties'] = [
+            var properties = elementPayload['properties'] = [
                 {key: "appearance", value: element.appearance.id},
                 {key: "size", value: element.size.id}
             ];
+
+            var baseArticleId = model.get("element.article.id");
+
+            if (baseArticleId) {
+                properties.push({
+                    key: "article",
+                    value: baseArticleId
+                });
+            }
 
             var links = [];
 
@@ -77,6 +86,9 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                     href: editLink
                 });
             }
+
+
+
 
             if (links.length > 0) {
                 elementPayload['links'] = links;
