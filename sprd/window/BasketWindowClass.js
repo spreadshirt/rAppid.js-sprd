@@ -30,7 +30,7 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
                 var itemsCount = this.get("basket.basketItems.$items.length");
 
                 if (itemsCount === 0) {
-                    this.$.history.navigate("create");
+                    this._emptyBasket();
                 }
 
             }, this);
@@ -168,6 +168,10 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
             return this.$.updatingBasket ? "updating" : "";
         }.onChange("updatingBasket"),
 
+        _emptyBasket: function () {
+            this.$.history.navigate("", false);
+        },
+
         start: function (callback) {
             var self = this;
             this.$.basketManager.initBasket(function (err) {
@@ -176,7 +180,7 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
 
                     var itemsCount = self.get(self.$.basket.$.basketItems, "$items.length");
                     if (itemsCount === 0) {
-                        self.$.history.navigate("create", false);
+                        self._emptyBasket();
                     }
                 }
                 callback(err);
