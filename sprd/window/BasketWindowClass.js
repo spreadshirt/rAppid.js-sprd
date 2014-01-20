@@ -18,7 +18,8 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
             basketItems: null,
             componentClass: "basket-window {basketStatusClass()}",
             closable: false,
-            updatingBasket: false
+            updatingBasket: false,
+            itemSwitch: ''
         },
 
         $events: ["on:checkout"],
@@ -138,7 +139,7 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
         },
 
         showVat: function () {
-            return this.$stage.$parameter.platform != "NA";
+            return this.$stage.$parameter.platform !== "NA";
         },
 
         showVatInfo: function () {
@@ -161,7 +162,7 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
         },
 
         checkoutEnabled: function() {
-            return !this.$.updatingBasket && this.get("basket.basketItems.$items.length")
+            return !this.$.updatingBasket && this.get("basket.basketItems.$items.length");
         }.onChange("updatingBasket"),
 
         basketStatusClass: function () {
@@ -170,6 +171,10 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
 
         _emptyBasket: function () {
             // HOOK: Will be overridden.
+        },
+
+        basketItemInfo: function (item) {
+            return this.get(item, "element.getProduct().productType.brand");
         },
 
         start: function (callback) {
@@ -183,6 +188,7 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
                         self._emptyBasket();
                     }
                 }
+
                 callback(err);
             });
         }

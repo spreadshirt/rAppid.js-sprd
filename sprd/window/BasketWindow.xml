@@ -14,7 +14,7 @@
                         <div class="basket-item-info appearance-{item.appearance.id}">
                             <div class="basket-item-product-type">
                                 <p class="name">{item.element.getProduct().productType.name}</p>
-                                <p class="brand">{item.element.getProduct().productType.brand}</p>
+                                <p class="brand">{basketItemInfo(item)}</p>
                             </div>
                             <div class="basket-item-size">
                                 <select items="{item.element.getProduct().productType.getAvailableSizesForAppearance(item.element.appearance)}"
