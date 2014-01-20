@@ -169,7 +169,7 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
         }.onChange("updatingBasket"),
 
         _emptyBasket: function () {
-            this.$.history.navigate("", false);
+            // HOOK: Will be overridden.
         },
 
         start: function (callback) {
