@@ -656,6 +656,7 @@ set the default appearance of the product is used.
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="product"/>
+                <attribute name="appearance"/>
                 <attribute name="viewHeight" default="50"/>
                 <attribute name="viewWidth" default="50"/>
             </extension>

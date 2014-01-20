@@ -4,10 +4,13 @@
     xmlns:ns="sprd.manager">
     <import/>
     <element name="ApiBasketManager" type="ns:ApiBasketManager"/>
+    <element name="DesignProductInitializer" type="ns:DesignProductInitializer"/>
     <element name="ExternalApi" type="ns:ExternalApi"/>
     <element name="ExternalBasketManager" type="ns:ExternalBasketManager"/>
     <element name="FeatureManager" type="ns:FeatureManager"/>
     <element name="IBasketManager" type="ns:IBasketManager"/>
+    <element name="IProductInitializer" type="ns:IProductInitializer"/>
+    <element name="ProductInitializer" type="ns:ProductInitializer"/>
     <element name="TrackingManagerBase" type="ns:TrackingManagerBase"/>
     <complexType name="ApiBasketManager">
         <complexContent>
@@ -86,6 +89,18 @@ BasketItem
             </extension>
         </complexContent>
     </complexType>
+    <complexType name="DesignProductInitializer">
+        <complexContent>
+            <extension base="ns:IProductInitializer">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.DesignProductInitializer"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
     <complexType name="ExternalApi">
         <complexContent>
             <extension base="ns1:Component">
@@ -128,6 +143,33 @@ BasketItem
             <extension base="ns1:Component">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.manager.IBasketManager"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="IProductInitializer">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.IProductInitializer"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="productManager"/>
+                <attribute name="designConfigurationManager"/>
+                <attribute name="textConfigurationManager"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ProductInitializer">
+        <complexContent>
+            <extension base="ns:DesignProductInitializer">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.ProductInitializer"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
