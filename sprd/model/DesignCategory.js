@@ -30,10 +30,8 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], funct
         },
 
         getSubCategoryById: function (id) {
-            return this.$.designCategories.each(function (val) {
-                if (val.$.id == id) {
-                    this['return'](val);
-                }
+            return this.$.designCategories.find(function (val) {
+                return val.$.id == id;
             });
         },
 

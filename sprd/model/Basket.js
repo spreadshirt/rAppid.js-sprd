@@ -44,12 +44,10 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
 
         mergeBasketItem: function (basketItem) {
             var old, nItem;
-            this.$.basketItems.each(function (item) {
-                if (!nItem && item.$.element !== basketItem.$.element && item.$.element.isEqual(basketItem.$.element)) {
-                    nItem = item;
-                    this["break"]();
-                }
+            nItem = this.$.basketItems.find(function (item) {
+                return (!nItem && item.$.element !== basketItem.$.element && item.$.element.isEqual(basketItem.$.element));
             });
+
             if (nItem) {
                 this.$.basketItems.each(function (item) {
                     if (!old && item.$.element === basketItem.$.element) {

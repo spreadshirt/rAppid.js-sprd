@@ -59,10 +59,8 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
 
         getSizeById: function (id) {
             if (this.$.sizes) {
-                return this.$.sizes.each(function (size) {
-                    if (size.$.id == id) {
-                        this['return'](size);
-                    }
+                return this.$.sizes.find(function (size) {
+                    return size.$.id == id;
                 });
             }
             return null;
@@ -70,10 +68,8 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
 
         getSizeByName: function (name) {
             if (this.$.sizes) {
-                return this.$.sizes.each(function (size) {
-                    if (size.$.name == name) {
-                        this['return'](size);
-                    }
+                return this.$.sizes.find(function (size) {
+                    return size.$.name == name;
                 });
             }
             return null;

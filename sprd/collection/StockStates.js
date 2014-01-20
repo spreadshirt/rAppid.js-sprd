@@ -4,10 +4,8 @@ define(["js/data/Collection", "sprd/model/StockState"], function(Collection, Sto
         $modelFactory: StockState,
 
         isSizeAndAppearanceAvailable: function(size, appearance){
-            return this.each(function(item){
-                if(item.$.size.$.id === size.$.id && item.$.appearance.$.id === appearance.$.id){
-                    this['return'](item.$.available);
-                }
+            return this.find(function(item){
+                return item.$.size.$.id === size.$.id && item.$.appearance.$.id === appearance.$.id;
             }) || false;
         }
     });

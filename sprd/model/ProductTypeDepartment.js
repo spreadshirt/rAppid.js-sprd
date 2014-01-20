@@ -6,10 +6,8 @@ define(["sprd/data/SprdModel","sprd/entity/DepartmentCategory", "underscore"], f
 
         getProductTypeCategoryById: function(id){
             if(this.$.categories){
-                return this.$.categories.each(function(category){
-                    if(category.$.id == id){
-                        this['return'](category);
-                    }
+                return this.$.categories.find(function(category){
+                    return category.$.id == id;
                 });
             }
             return null;
