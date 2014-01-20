@@ -1,10 +1,11 @@
-define(["js/core/Component", "js/core/ExternalInterface", "js/core/Bus"], function (Component, ExternalInterface, Bus) {
+define(["js/core/Component", "js/core/ExternalInterface", "js/core/Bus", "sprd/manager/FeatureManager"], function (Component, ExternalInterface, Bus, FeatureManager) {
 
     return Component.inherit("sprd.manager.ExternalApi", {
 
         inject: {
             externalInterface: ExternalInterface,
-            bus: Bus
+            bus: Bus,
+            featureManager: FeatureManager
         },
 
         initialize: function () {
@@ -17,6 +18,8 @@ define(["js/core/Component", "js/core/ExternalInterface", "js/core/Bus"], functi
             // register callbacks here
 
             externalInterface.addCallback("getStartParameter", this.getStartParameter, this);
+            externalInterface.addCallback("setFeatureState", this.setFeatureState, this);
+            externalInterface.addCallback("getFeatureState", this.getFeatureState, this);
 
         },
 
@@ -31,6 +34,14 @@ define(["js/core/Component", "js/core/ExternalInterface", "js/core/Bus"], functi
 
         getStartParameter: function() {
             return this.$stage.$parameter;
+        },
+
+        setFeatureState: function (featureName, state) {
+            return this.$.featureManager.setFeatureState(featureName, state);
+        },
+
+        getFeatureState: function (featureName) {
+            return this.$.featureManager.getFeatureState(featureName);
         }
 
     });
