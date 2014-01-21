@@ -19,6 +19,7 @@
                 <attribute name="basketItems"/>
                 <attribute name="closable"/>
                 <attribute name="updatingBasket"/>
+                <attribute name="itemSwitch"/>
             </extension>
         </complexContent>
     </complexType>
@@ -35,6 +36,7 @@
                 <attribute name="basketItems"/>
                 <attribute name="closable"/>
                 <attribute name="updatingBasket"/>
+                <attribute name="itemSwitch"/>
             </extension>
         </complexContent>
     </complexType>

@@ -5,6 +5,8 @@
     <import/>
     <element name="AppearanceColor" type="ns:AppearanceColor"/>
     <element name="AppearanceColorClass" type="ns:AppearanceColorClass"/>
+    <element name="AppearanceColorPicker" type="ns:AppearanceColorPicker"/>
+    <element name="AppearanceColorPickerClass" type="ns:AppearanceColorPickerClass"/>
     <element name="AppearanceImage" type="ns:AppearanceImage"/>
     <element name="ArticleImage" type="ns:ArticleImage"/>
     <element name="ColorSelector" type="ns:ColorSelector"/>
@@ -59,6 +61,35 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="appearance"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="AppearanceColorPicker">
+        <complexContent>
+            <extension base="ns:AppearanceColorPickerClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.AppearanceColorPicker"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="appearance"/>
+                <attribute name="productType"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="AppearanceColorPickerClass">
+        <complexContent>
+            <extension base="ns1:View">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.AppearanceColorPickerClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="appearance"/>
+                <attribute name="productType"/>
+                <attribute name="onappearanceSelect" default="_onAppearanceSelectHandler" type="string"/>
             </extension>
         </complexContent>
     </complexType>
