@@ -3,6 +3,7 @@ define(['sprd/data/SprdModel', 'sprd/entity/Person', 'sprd/model/Country'], func
         defaults: {
             person: null,
             street: '',
+            streetAnnex: '',
             houseNumber: '',
             zipCode: '',
             city: '',
@@ -14,6 +15,7 @@ define(['sprd/data/SprdModel', 'sprd/entity/Person', 'sprd/model/Country'], func
         schema: {
             person: Person,
             street: String,
+            streetAnnex: String,
             houseNumber: String,
             zipCode: String,
             city: String,
