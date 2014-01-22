@@ -10,7 +10,7 @@
                                                product="{item.element.getProduct()}"
                                                appearance="{item.element.appearance}"
                                                width="75" height="75"
-                                               onclick="openProduct"/>
+                                               onclick="openBasketItemHandler(event,item)"/>
                         <div class="basket-item-info appearance-{item.appearance.id}">
                             <div class="basket-item-product-type">
                                 <p class="name">{item.element.getProduct().productType.name}</p>

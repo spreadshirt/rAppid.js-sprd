@@ -19,7 +19,8 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
             componentClass: "basket-window {basketStatusClass()}",
             closable: false,
             updatingBasket: false,
-            itemSwitch: ''
+            itemSwitch: '',
+            openFromBasket: false
         },
 
         $events: ["on:checkout"],
@@ -45,32 +46,28 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
             }, this);
         },
 
-        openProduct: function (e) {
-            var target = e.target,
-                product = target.$.product,
-                self = this,
-                wrapper = target.$parent,
-                item = self.$.concreteElement.$.item;
+        /***
+         * Hook to implement functional opening of basket item.
+         * @param {type} basketItem
+         * @param {type} callback
+         */
+        openBasketItem: function (basketItem, callback) {
+            callback();
+        },
+
+        openBasketItemHandler: function (e, basketItem) {
+            // HOOK:
+
+            if (!this.$.openFromBasket) {
+                return;
+            }
+
+            var self = this,
+                wrapper = e.target.$parent;
 
             setTimeout(function () {
-                var newProduct = product.clone();
-
-                // first setup
-                self.$.bus.setUp(newProduct);
-
-                // then appearance
-                newProduct.set('appearance', target.$.appearance);
-                // then init
-                newProduct.init(function () {
-                    // clear product id to ensure, product gets validated again
-                    newProduct.set('id', null);
-
-                    item.set(newProduct.$);
+                self.openBasketItem(basketItem, function () {
                     wrapper.removeClass('loading');
-                    // and then set to concreteElement
-                    self.close(true);
-
-                    self.$.bus.trigger('Application.newProductChanged', item);
                 });
 
             }, 200);
