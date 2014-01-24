@@ -160,7 +160,7 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
 
         checkoutEnabled: function() {
             return !this.$.updatingBasket && this.get("basket.basketItems.$items.length");
-        }.onChange("updatingBasket"),
+        }.onChange("updatingBasket", "basket.basketItems.$items.length"),
 
         basketStatusClass: function () {
             return this.$.updatingBasket ? "updating" : "";
