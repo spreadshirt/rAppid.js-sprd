@@ -1,10 +1,14 @@
 <schema targetNamespace="sprd.window"
     xmlns="http://www.w3.org/2001/XMLSchema"
     xmlns:ns1="js.core"
+    xmlns:ns2="js.ui"
     xmlns:ns="sprd.window">
+    <import/>
     <import/>
     <element name="BasketWindow" type="ns:BasketWindow"/>
     <element name="BasketWindowClass" type="ns:BasketWindowClass"/>
+    <element name="IFrameWindow" type="ns:IFrameWindow"/>
+    <element name="IFrameWindowClass" type="ns:IFrameWindowClass"/>
     <complexType name="BasketWindow">
         <complexContent>
             <extension base="ns:BasketWindowClass">
@@ -39,6 +43,32 @@
                 <attribute name="updatingBasket"/>
                 <attribute name="itemSwitch"/>
                 <attribute name="openFromBasket"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="IFrameWindow">
+        <complexContent>
+            <extension base="ns:IFrameWindowClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.window.IFrameWindow"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="src"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="IFrameWindowClass">
+        <complexContent>
+            <extension base="ns2:Dialog">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.window.IFrameWindowClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="src"/>
             </extension>
         </complexContent>
     </complexType>
