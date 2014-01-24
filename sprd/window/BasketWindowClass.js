@@ -140,11 +140,11 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
         },
 
         showVatInfo: function () {
-            this.$.bus.trigger("Confomat.showTaxInfo");
+            // HOOK: Will be overwritten.
         },
 
         showShippingInfo: function () {
-            this.$.bus.trigger("Confomat.showShippingInfo");
+            // HOOK: Will be overwritten.
         },
 
         toUpperCase: function (str) {

@@ -1,0 +1,5 @@
+<window:IFrameWindowClass xmlns:window="sprd.window" xmlns='http://www.w3.org/1999/xhtml' xmlns:js="js.core" title="foo">
+    <js:Content name="body">
+        <iframe src="{src}" frameborder="0"/>
+    </js:Content>
+</window:IFrameWindowClass>
