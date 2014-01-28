@@ -13,6 +13,18 @@ define(["sprd/data/SprdModel","sprd/entity/DepartmentCategory", "underscore"], f
             return null;
         },
 
+        containsProductType: function(productTypeId) {
+
+            var categories = this.$.categories;
+            if (categories) {
+                return categories.find(function(category) {
+                    return !!category.containsProductType(productTypeId);
+                });
+            }
+
+            return false;
+        },
+
         /***
          * @deprecated
          */
