@@ -302,9 +302,13 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
         },
 
         hasChanges: function () {
-            return !(this.$.configurations.isDeepEqual(this.$originalProduct.$.configurations) &&
-                this.$.appearance.isDeepEqual(this.$originalProduct.$.appearance) &&
-                this.$.productType.isDeepEqual(this.$originalProduct.$.productType));
+            return !this.equals(this.$originalProduct);
+        },
+        
+        equals: function(product) {
+            return (this.$.configurations.isDeepEqual(product.$.configurations) &&
+                this.$.appearance.isDeepEqual(product.$.appearance) &&
+                this.$.productType.isDeepEqual(product.$.productType));
         },
 
         save: function (options, callback) {
