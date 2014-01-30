@@ -12,9 +12,13 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
             },
 
 
-            upload: function (data, callback) {
-
+            upload: function (data, restrictions, callback) {
                 var image;
+
+                if (restrictions instanceof Function) {
+                    callback = restrictions;
+                    restrictions = null;
+                }
 
                 if (data instanceof Image) {
                     image = data;
@@ -32,13 +36,18 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                     image: image
                 });
 
-                this._uploadDesign(uploadDesign, callback);
+                this._uploadDesign(uploadDesign, restrictions, callback);
 
                 return uploadDesign;
             },
 
 
-            _uploadDesign: function (uploadDesign, callback) {
+            _uploadDesign: function (uploadDesign, restrictions, callback) {
+                if (restrictions instanceof Function) {
+                    callback = restrictions;
+                    restrictions = null;
+                }
+
                 callback = callback || this.emptyCallback();
 
                 var uploadContext = this.$.uploadContext,
@@ -71,6 +80,11 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                     .seq("design", function () {
                         var design = uploadContext.getCollection("designs").createItem();
                         design.set("name", uploadDesign.get("image.name"));
+
+                        if (restrictions) {
+                            design.set('restrictions', restrictions);
+                        }
+
                         return design;
                     })
                     .seq(function (cb) {
