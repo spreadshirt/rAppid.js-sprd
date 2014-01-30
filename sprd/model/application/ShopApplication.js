@@ -2,7 +2,6 @@ define(["sprd/model/Application", "js/core/Bindable"], function(Application, Bin
 
     var ShopSettings = Bindable.inherit({
         defaults: {
-            enableProductEditor: true,
             enableVirtualProducts: true
         }
     });
