@@ -48,6 +48,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
              */
             editBasketItemLinkTemplate: null,
 
+            editBasketItemLinkHook: null,
+
             /***
              * the origin id used for basked items
              * @type {Number|String}
@@ -95,9 +97,20 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     element.set("continueShoppingLink", continueShoppingLink);
                 }
 
+                var editBasketItemLinkHook = this.$.editBasketItemLinkHook,
+                    editLink = null;
+
+                if (editBasketItemLinkHook) {
+                    editLink = editBasketItemLinkHook(basketItem);
+                }
+
                 var editBasketItemLinkTemplate = this.$.editBasketItemLinkTemplate;
-                if (editBasketItemLinkTemplate) {
-                    element.set("editLink", editBasketItemLinkTemplate.replace("$productId", element.get("item.id")));
+                if (!editLink && editBasketItemLinkTemplate) {
+                    editLink = editBasketItemLinkTemplate.replace("$productId", element.get("item.id"));
+                }
+
+                if (editLink) {
+                    element.set("editLink", editLink);
                 }
             }
 
