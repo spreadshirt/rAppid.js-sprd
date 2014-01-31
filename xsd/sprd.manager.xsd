@@ -69,6 +69,7 @@ The following values are replaced
                     </documentation>
                     </annotation>
                 </attribute>
+                <attribute name="editBasketItemLinkHook"/>
                 <attribute name="originId">
                     <annotation>
                         <documentation>
