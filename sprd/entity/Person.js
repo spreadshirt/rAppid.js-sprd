@@ -1,12 +1,23 @@
 define(["js/data/Entity"], function (Entity) {
-    return Entity.inherit("sprd.entity.Person", {
+    var Salutation = Entity.inherit("sprd.entity.Person.Salutation", {
         defaults: {
-            salutation: 1,
+            id: null
+        },
+
+        schema: {
+            id: Number
+        }
+    });
+
+    return Entity.inherit("sprd.entity.Person", {
+
+        defaults: {
+            salutation: Salutation,
             firstName: '',
             lastName: ''
         },
         schema: {
-            salutation: Number,
+            salutation: Salutation,
             firstName: String,
             lastName: String
         }
