@@ -9,9 +9,15 @@ define(["js/data/Collection", "sprd/model/StockState"], function(Collection, Sto
                 return false;
             }
 
-            return this.find(function(item){
+            var stockState = this.find(function (item) {
                 return item.$.size.$.id === size.$.id && item.$.appearance.$.id === appearance.$.id;
-            }) || false;
+            });
+
+            if (stockState) {
+                return stockState.$.available;
+            }
+
+            return false;
         }
     });
 });
