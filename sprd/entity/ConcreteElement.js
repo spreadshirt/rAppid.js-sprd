@@ -36,13 +36,23 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
              * edit link is the link displayed in checkout for editing the basket item
              * @type String
              */
-            editLink: null
+            editLink: null,
+
+            /***
+             * the base article
+             * @type sprd.model.Article
+             */
+            article: null
         },
 
         isEqual: function (concreteElement) {
             return this.get('appearance.id') === concreteElement.get('appearance.id') &&
                 this.get('size.id') === concreteElement.get('size.id') &&
                 this.get('item.id') === concreteElement.get('item.id');
+        },
+
+        init: function (callback) {
+            this.$.item.fetch(null, callback);
         },
 
         getProduct: function () {

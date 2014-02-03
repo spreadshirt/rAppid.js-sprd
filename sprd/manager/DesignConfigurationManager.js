@@ -59,7 +59,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         var key,
                             method;
 
-                        if (svg.image.hasOwnProperty("printColorIds")) {
+                        if (svg.image.hasOwnProperty("printColorIds") && printType.isPrintColorColorSpace()) {
                             key = "printColorIds";
                             method = "getPrintColorById";
                         } else {
@@ -125,8 +125,8 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                             values,
                             ret = {
                                 scale: {
-                                    x: svg.image.width / size.$.width,
-                                    y: svg.image.height / size.$.height
+                                    x: Math.round(svg.image.width / size.$.width, 3),
+                                    y: Math.round(svg.image.height / size.$.height, 3)
                                 }
                             };
 

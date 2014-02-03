@@ -13,11 +13,13 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                     "design": DesignConfiguration,
                     "text": TextConfiguration
                 }
-            })]
+            })],
+            creator: String
         },
 
         defaults: {
-            configurations: List
+            configurations: List,
+            creator: null
         },
 
         inject: {
@@ -223,6 +225,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
         }.on("priceChanged", ["productType", 'change:price']).onChange('productType'),
 
         _addConfiguration: function (configuration) {
+            this.trigger('beforeConfigurationAdd', configuration);
             this.$.configurations.add(configuration);
         },
 
@@ -299,9 +302,13 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
         },
 
         hasChanges: function () {
-            return !(this.$.configurations.isDeepEqual(this.$originalProduct.$.configurations) &&
-                this.$.appearance.isDeepEqual(this.$originalProduct.$.appearance) &&
-                this.$.productType.isDeepEqual(this.$originalProduct.$.productType));
+            return !this.equals(this.$originalProduct);
+        },
+        
+        equals: function(product) {
+            return (this.$.configurations.isDeepEqual(product.$.configurations) &&
+                this.$.appearance.isDeepEqual(product.$.appearance) &&
+                this.$.productType.isDeepEqual(product.$.productType));
         },
 
         save: function (options, callback) {
@@ -321,6 +328,13 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             }
 
             var self = this;
+
+            if (!this.$.creator) {
+                if (this.$stage && this.$stage.$application.name) {
+                    this.set("creator", this.$stage.$application.name);
+                }
+            }
+
             this.callBase(options, function (err) {
                 if (!err) {
                     self.$originalProduct = self.clone();
@@ -372,6 +386,9 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                         .exec(cb);
                 })
                 .exec(function (err) {
+
+                    self.trigger("priceChanged");
+
                     if (err) {
                         callback && callback(err);
                     } else {

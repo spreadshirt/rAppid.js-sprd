@@ -4,10 +4,8 @@
                   multiSelect="false"
                   itemKey="view"
                   tagName="ul"
-                  product=""
-                    viewHeight="50"
-                    viewWidth="50"
-                    componentClass="product-view-selector">
+                  product="" appearance="" viewHeight="50" viewWidth="50"
+                  componentClass="product-view-selector">
     <js:Template name="item">
         <li>
             <view:ProductImage view="{view}" product="{product}" appearance="{appearance}" width="{viewWidth}" height="{viewHeight}"/>

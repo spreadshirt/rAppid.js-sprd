@@ -1,0 +1,16 @@
+<view:AppearanceColorPickerClass xmlns:sprdView="sprd.view" xmlns:view="sprd.view" xmlns:js="js.core" xmlns:ui="js.ui" xmlns='http://www.w3.org/1999/xhtml'>
+    <div class="appearance-list-wrapper">
+        <ui:SelectionView items="{productType.getAvailableAppearances()}"
+                          itemKey="appearanceItem" selectedItem="{{appearance}}"
+                          tagName="ul"
+                          class="appearance-list">
+            <js:Template name="item">
+                <sprdView:AppearanceColor appearance="{appearanceItem}" tagName="li" />
+            </js:Template>
+        </ui:SelectionView>
+
+        <div visible="{not(productType.getAvailableAppearances().length)}" class="not-in-stock-label">
+            {i18n.t('productTypeSelector.notInStock')}
+        </div>
+    </div>
+</view:AppearanceColorPickerClass>

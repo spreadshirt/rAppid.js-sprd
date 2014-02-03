@@ -1,40 +1,13 @@
-<ui:MenuButton xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml" type="{btnType()}">
-
-    <js:Script><![CDATA[
-        (function () {
-            return {
-                $defaultContentName: null,
-                initialize: function(){
-                    this.bind('change:productType', this._onProductTypeChange, this);
-                },
-                _onProductTypeChange: function(){
-                    var sizes = this.get('productType.sizes');
-                    if(sizes && sizes.length === 1){
-                        this.set('selectedSize',sizes.at(0));
-                    }
-                },
-                closeMenu: function(){
-                    this.set('menuVisible', false);
-                },
-                btnType: function(){
-                    if(this.$.selectedSize){
-                        return 'info';
-                    }
-                    return null;
-                }.onChange('selectedSize')
-            }
-        })
-        ]]>
-    </js:Script>
+<view:DropDownSizeSelectorClass xmlns:js="js.core" xmlns:ui="js.ui" xmlns="http://www.w3.org/1999/xhtml"
+                                xmlns:view="sprd.view">
     <js:Content name="menu">
-        <ui:SelectionView items="{productType.getAvailableSizesForAppearance(appearance)}" tagName="ul"
-                          selectedItem="{{selectedSize}}"
-                          needsSelection="{hasSelection()}" onclick="closeMenu">
+        <ui:SelectionView items="{_sizes}" tagName="ul"
+                          selectedItem="{{selectedSize}}" onclick="closeMenu">
             <js:Template name="item">
-                <li>
+                <li data-size-id="${item.id}" enabled="{productType.isSizeAndAppearanceAvailable(item,appearance)}" onclick="selectSize(item)">
                     <a>${item.name}</a>
                 </li>
             </js:Template>
         </ui:SelectionView>
     </js:Content>
-</ui:MenuButton>
+</view:DropDownSizeSelectorClass>

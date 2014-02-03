@@ -767,28 +767,38 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 var configuration = this.$.configuration;
                 if (configuration) {
+                    var changed = false;
                     if (mode === MOVE) {
                         if (configuration.$.offset && configuration.$.offset !== this.$._offset) {
                             configuration.set('offset', this.$._offset);
+                            changed = true;
+
                         }
 
                         var snapLinesList = this.$.printAreaViewer.$.snapLines;
                         snapLinesList && snapLinesList.clear();
 
                     } else if (mode === SCALE) {
+                        changed = configuration.$.offset !== this.$._offset && configuration.$.scale !== this.$._scale;
                         configuration.set({
                             scale: this.$._scale,
                             offset: this.$._offset
                         });
                     } else if (mode === ROTATE) {
+                        changed = configuration.$.rotation !== this.$._rotation;
                         configuration.set('rotation', this.$._rotation);
+
                     } else if (mode === GESTURE) {
+                        changed = configuration.$.rotation !== this.$._rotation && configuration.$.scale !== this.$._scale;
                         configuration.set({
                             rotation: this.$._rotation,
                             scale: this.$._scale
                         });
                     }
-                    this.$.bus.trigger('Application.productChanged', this.$.product);
+
+                    if(changed){
+                        this.$.bus.trigger('Application.productChanged', this.$.product);
+                    }
                 }
 
                 this._stopTransformation();

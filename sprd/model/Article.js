@@ -7,7 +7,8 @@ define(["sprd/data/SprdModel", "sprd/model/Product", "sprd/entity/Price"],
 
         schema: {
             product: Product,
-            price: Price
+            price: Price,
+            commission: Price
         },
 
         price: function() {

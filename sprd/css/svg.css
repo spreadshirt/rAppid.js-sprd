@@ -2,6 +2,10 @@ rect {
     fill: none;
 }
 
+image {
+    -webkit-user-select: none;
+}
+
 .product-viewer.active .print-area-border,
 .product-viewer.active .soft-boundary-border {
     stroke-width: 1;

@@ -151,7 +151,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             targetPrintAreaHeight / currentPrintAreaHeight
                         ) * Math.abs(configuration.$.scale.x);
 
-                        var allowScale = configuration.allowScale();
+                        var allowScale = configuration.allowScale(),
+                            printTypeFallback;
 
                         for (var j = 0; j < possiblePrintTypes.length; j++) {
                             printType = possiblePrintTypes[j];
@@ -173,6 +174,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 maximumScale = 1;
                             }
 
+
                             if (!allowScale && (maximumScale < 1 || (minimumScale && minimumScale > 1))) {
                                 continue;
                             }
@@ -191,16 +193,26 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 y: factor
                             };
 
+                            if (!printTypeFallback) {
+                                printTypeFallback = printType
+                            }
+                            var result = configuration._validatePrintTypeSize(printType, currentConfigurationWidth, currentConfigurationHeight, preferredScale);
+                            if (result.minBound || result.maxBound) {
+                                continue;
+                            }
+
                             preferredPrintType = printType;
                             break;
                         }
+
+                        preferredPrintType = preferredPrintType || printTypeFallback;
 
                         if (preferredPrintType) {
 
                             configuration.set({
                                 printType: preferredPrintType,
                                 scale: preferredScale
-                            }, setOptions);
+                            });
 
                             preferredOffset = {
                                 x: targetPrintAreaWidth * center.x / currentPrintAreaWidth - configuration.width() / 2,
@@ -356,7 +368,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printArea: null,
                     printType: null,
                     fontStyle: "normal",
-                    fontWeight: "normal"
+                    fontWeight: "normal",
+                    printTypeId: null,
+                    fontFamilyId: null
                 });
 
                 var self = this,
@@ -368,7 +382,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     view = params.view,
                     font = null,
                     appearance = product.$.appearance,
-                    printType = params.printType;
+                    printType = params.printType,
+                    printTypeId = params.printTypeId;
 
                 if (!text) {
                     callback(new Error("No text"));
@@ -401,7 +416,24 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
                     })
                     .seq("fontFamily", function () {
-                        var fontFamily = params.fontFamily || this.vars["fontFamilies"].at(0);
+                        var fontFamily,
+                            fontFamilies = this.vars['fontFamilies'];
+
+                        if (params.fontFamily) {
+                            fontFamily = params.fontFamily;
+                        } else if (params.fontFamilyId) {
+                            var items = fontFamilies.$items;
+
+                            for (var i = items.length; i--;) {
+                                if (items[i].$.id == params.fontFamilyId) {
+                                    fontFamily = items[i];
+                                    break;
+                                }
+                            }
+                        } else {
+                            fontFamily = fontFamilies.at(0);
+                        }
+
                         if (!fontFamily) {
                             throw new Error("No found");
                         }
@@ -459,6 +491,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             throw new Error("PrintType not possible for text and printArea");
                         }
 
+                        if (printTypeId) {
+                            for (var i = possiblePrintTypes.length; i--;) {
+                                if (possiblePrintTypes[i].$.id == printTypeId) {
+                                    printType = possiblePrintTypes[i];
+                                    break;
+                                }
+                            }
+                        }
+
                         printType = printType || possiblePrintTypes[0];
 
                         if (!printType) {
@@ -484,9 +525,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         var textFlow = TextFlow.initializeFromText(text);
 
-                        var fontSize = this.vars.printArea.get("size.width") * 25 / 550;
-
-
                         (new ApplyStyleToElementOperation(TextRange.createTextRange(0, textFlow.textLength()), textFlow, new Style({
                             font: font,
                             fontSize: 25,
@@ -498,6 +536,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }))).doOperation();
 
                         var entity = product.createEntity(TextConfiguration);
+
                         entity.set({
                             printType: printType,
                             printArea: printArea,

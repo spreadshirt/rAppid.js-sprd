@@ -1,0 +1,7 @@
+<parent:TranslationServiceClass xmlns="http://www.w3.org/1999/xhtml"
+                                xmlns:parent="sprd.data" xmlns:conf="js.conf">
+    <conf:DataSourceConfiguration>
+        <conf:ResourceConfiguration path="text" modelClassName="sprd.model.Translation" sessionRequired="true"/>
+    </conf:DataSourceConfiguration>
+
+</parent:TranslationServiceClass>

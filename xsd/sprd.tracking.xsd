@@ -1,12 +1,14 @@
 <schema targetNamespace="sprd.tracking"
     xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:ns1="js.core"
     xmlns:ns="sprd.tracking">
+    <import/>
     <element name="Omniture" type="ns:Omniture"/>
     <element name="Optimizely" type="ns:Optimizely"/>
     <element name="Wellness" type="ns:Wellness"/>
     <complexType name="Omniture">
         <complexContent>
-            <extension>
+            <extension base="ns1:Component">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.tracking.Omniture"></documentation>
                 </annotation>
@@ -47,7 +49,7 @@ the window object
     </complexType>
     <complexType name="Optimizely">
         <complexContent>
-            <extension>
+            <extension base="ns1:Component">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.tracking.Optimizely"></documentation>
                 </annotation>
@@ -88,7 +90,7 @@ the window object
     </complexType>
     <complexType name="Wellness">
         <complexContent>
-            <extension>
+            <extension base="ns1:Component">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.tracking.Wellness"></documentation>
                 </annotation>
