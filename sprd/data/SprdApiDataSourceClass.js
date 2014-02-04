@@ -17,14 +17,15 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
             },
 
             getQueryParameters: function (method, resource) {
-                var fullData = null;
-                if (resource.constructor.name.indexOf("Label") > -1) {
-                    fullData = true
-                }
-                return _.defaults({
-                    mediaType: "json",
-                    fullData: fullData
+                var ret = _.defaults({
+                    mediaType: "json"
                 }, this.callBase());
+
+                if (resource.constructor.name.indexOf("Label") > -1) {
+                    ret.fullData = true
+                }
+                return ret;
+
             },
 
             createContext: function (contextModel, properties, parentContext) {
