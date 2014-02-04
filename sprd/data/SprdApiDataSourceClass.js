@@ -17,7 +17,7 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
             },
 
             getQueryParameters: function (method, resource) {
-                var fullData = false;
+                var fullData = null;
                 if (resource.constructor.name.indexOf("Label") > -1) {
                     fullData = true
                 }
