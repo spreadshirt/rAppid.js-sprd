@@ -1,6 +1,6 @@
 <window:MessageDialogClass xmlns="http://www.w3.org/1999/xhtml"
                            xmlns:window="sprd.window" xmlns:js="js.core"
-                           xmlns:ui="js.ui" title class="{classes}">
+                           xmlns:ui="js.ui" title="">
     <js:Content name="body">
         <div>
             <p>{message}</p>
