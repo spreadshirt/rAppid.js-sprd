@@ -1,0 +1,14 @@
+<window:MessageDialogClass xmlns="http://www.w3.org/1999/xhtml"
+                           xmlns:window="sprd.window" xmlns:js="js.core"
+                           xmlns:ui="js.ui" title class="{classes}">
+    <js:Content name="body">
+        <div>
+            <p>{message}</p>
+        </div>
+    </js:Content>
+    <js:Content name="footer">
+        <ui:ItemsView items="{buttons}" itemKey="button">
+            <ui:Button label="{button.label}" class="{button.classes}" />
+        </ui:ItemsView>
+    </js:Content>
+</window:MessageDialogClass>
