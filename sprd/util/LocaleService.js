@@ -1,5 +1,10 @@
 define(['js/core/Component'], function (Component) {
 
+    var Languages = {
+        EU: ["de", "dk", "en", "es", "fi", "fr", "it", "nl", "no", "pl", "se"],
+        NA: ["fr", "us"]
+    };
+
     return Component.inherit('sprd.util.LocaleService', {
 
         defaults: {
@@ -66,7 +71,7 @@ define(['js/core/Component'], function (Component) {
             return this.getLanguage() + '_' + this.getCountry();
         },
 
-        determinateLanguage: function (host, browserLanguage, supportedLanguages, fallbackLanguage) {
+        determinateLanguage: function (hostname, browserLanguage, supportedLanguages, fallbackLanguage) {
             fallbackLanguage = fallbackLanguage || 'en';
 
             if (supportedLanguages && !(supportedLanguages instanceof Array)) {
@@ -75,9 +80,9 @@ define(['js/core/Component'], function (Component) {
 
             var language;
 
-            if (host) {
+            if (hostname) {
                 // determinate by domain
-                var domain = /\.([a-z]{2,4})$/.exec(host);
+                var domain = /\.v?([a-z]{2,4})$/.exec(hostname);
                 if (domain) {
                     language = this.$languageMap[domain[1]];
                 }
@@ -98,7 +103,7 @@ define(['js/core/Component'], function (Component) {
             return fallbackLanguage;
         },
 
-        determinateCountry: function (host, supportedCountries, fallbackCountry) {
+        determinateCountry: function (hostname, supportedCountries, fallbackCountry) {
             fallbackCountry = fallbackCountry || 'EU';
 
             if (supportedCountries && !(supportedCountries instanceof Array)) {
@@ -107,9 +112,9 @@ define(['js/core/Component'], function (Component) {
 
             var country;
 
-            if (host) {
+            if (hostname) {
                 // determinate by domain
-                var domain = /\.([a-z]{2,4})$/.exec(host);
+                var domain = /\.v?([a-z]{2,4})$/.exec(hostname);
                 if (domain) {
                     country = this.$countryMap[domain[1]];
                 }
@@ -125,5 +130,7 @@ define(['js/core/Component'], function (Component) {
             return fallbackCountry;
         }
 
+    }, {
+        Languages: Languages
     });
 });
