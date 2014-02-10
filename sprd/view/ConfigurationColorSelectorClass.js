@@ -1,4 +1,4 @@
-define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfiguration", "sprd/model/PrintType", "js/core/Bus", "js/core/List"], function (View, TextConfiguration, DesignConfiguration, PrintType, Bus, List) {
+define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfiguration", "sprd/model/PrintType", "js/core/Bus", "js/core/List", "js/core/I18n"], function (View, TextConfiguration, DesignConfiguration, PrintType, Bus, List, I18n) {
 
 
     var DEFAULT_DIGITAL_COLORS = {
@@ -47,7 +47,8 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
         },
 
         inject: {
-            bus: Bus
+            bus: Bus,
+            i18n: I18n
         },
 
         _handleLayerSelect: function (e) {
