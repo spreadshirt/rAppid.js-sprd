@@ -48,7 +48,7 @@
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
 
-        <svg:g selected="{isScalable()}" class="configuration-handle-icon"
+        <svg:g selected="{isScalable()}" class="configuration-handle-icon scale"
                scaleX="{pixelToViewBox(_handleIconScale)}" scaleY="{scaleX}"
                translateX="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
                translateY="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
@@ -66,7 +66,7 @@
                   y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}" />
 
-        <svg:g class="configuration-handle-icon"
+        <svg:g class="configuration-handle-icon resize"
                selected="{isResizeable()}" scaleX="{pixelToViewBox(_handleIconScale)}" scaleY="{scaleX}"
                translateX="{_resizeHandle.x}"
                translateY="{_resizeHandle.y}"
@@ -84,7 +84,7 @@
                   y="{pixelToViewBox(_handle-Offset)}"
                   width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
 
-        <svg:g selected="{isRotatable()}" class="configuration-handle-icon"
+        <svg:g selected="{isRotatable()}" class="configuration-handle-icon rotate"
                scaleX="{pixelToViewBox(_handleIconScale)}" scaleY="{scaleX}"
                translateX="{_rotateHandle.x}" translateY="{_rotateHandle.y}"
                style="pointer-events: none">
@@ -95,7 +95,7 @@
             </svg:g>
         </svg:g>
 
-        <svg:g visible="{configuration._isDeletable}">
+        <svg:g visible="{configuration._isDeletable}" class="configuration-handle delete">
             <svg:rect cid="_deleteHandle" class="configuration-handle delete"
                       selected="{isRemovable()}"
                       onpointerdown="deleteConfiguration"
