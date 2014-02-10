@@ -1,5 +1,5 @@
 define(["xaml!js/ui/Dialog"], function (Dialog) {
-    return Dialog.inherit("sprd.window.MessageDialog", {
+    return Dialog.inherit("sprd.window.MessageDialogClass", {
         defaults: {
             buttons: null,
             closable: false,
