@@ -11,6 +11,8 @@
     <element name="ArticleImage" type="ns:ArticleImage"/>
     <element name="ColorSelector" type="ns:ColorSelector"/>
     <element name="ColorSelectorClass" type="ns:ColorSelectorClass"/>
+    <element name="ConfigurationColorSelector" type="ns:ConfigurationColorSelector"/>
+    <element name="ConfigurationColorSelectorClass" type="ns:ConfigurationColorSelectorClass"/>
     <element name="DesignImage" type="ns:DesignImage"/>
     <element name="DropDownSizeSelector" type="ns:DropDownSizeSelector"/>
     <element name="DropDownSizeSelectorClass" type="ns:DropDownSizeSelectorClass"/>
@@ -144,6 +146,46 @@
                 <attribute name="colorWidth" default="25"/>
                 <attribute name="productType"/>
                 <attribute name="onappearanceSelect" default="_onAppearanceSelectHandler" type="string"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ConfigurationColorSelector">
+        <complexContent>
+            <extension base="ns:ConfigurationColorSelectorClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ConfigurationColorSelector"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="configuration">
+                    <annotation>
+                        <documentation>
+                        the configuration, to switch the color
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="layerIndex"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ConfigurationColorSelectorClass">
+        <complexContent>
+            <extension base="ns1:View">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ConfigurationColorSelectorClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="configuration">
+                    <annotation>
+                        <documentation>
+                        the configuration, to switch the color
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="layerIndex"/>
             </extension>
         </complexContent>
     </complexType>

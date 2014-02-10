@@ -10,6 +10,7 @@
     <element name="FeatureManager" type="ns:FeatureManager"/>
     <element name="IBasketManager" type="ns:IBasketManager"/>
     <element name="IProductInitializer" type="ns:IProductInitializer"/>
+    <element name="ProductCreationErrorManager" type="ns:ProductCreationErrorManager"/>
     <element name="ProductInitializer" type="ns:ProductInitializer"/>
     <element name="TrackingManagerBase" type="ns:TrackingManagerBase"/>
     <complexType name="ApiBasketManager">
@@ -163,6 +164,20 @@ BasketItem
                 <attribute name="productManager"/>
                 <attribute name="designConfigurationManager"/>
                 <attribute name="textConfigurationManager"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ProductCreationErrorManager">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.ProductCreationErrorManager"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="errorMessage"/>
+                <attribute name="copyrightErrorMessage"/>
             </extension>
         </complexContent>
     </complexType>
