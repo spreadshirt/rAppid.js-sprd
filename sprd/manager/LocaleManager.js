@@ -1,4 +1,4 @@
-define(['js/core/Component'], function (Component) {
+define(['js/core/Component', 'underscore'], function (Component, _) {
 
     var Languages = {
         EU: ["de", "dk", "en", "es", "fi", "fr", "it", "nl", "no", "pl", "se"],
@@ -11,7 +11,8 @@ define(['js/core/Component'], function (Component) {
             fallbackLanguage: 'en',
             fallbackCountry: 'EU',
             supportedLanguages: null,
-            supportedCountries: null
+            supportedCountries: null,
+            platform: 'EU'
         },
 
         $languageMap: {
@@ -54,9 +55,19 @@ define(['js/core/Component'], function (Component) {
             com: "US"
         },
 
-        getLanguage: function () {
+        _commitPlatform: function(platform) {
+            this.set("supportedLanguages", Languages[platform]);
+        },
+
+        getLanguage: function (language) {
+            var supportedLanguages = this.$.supportedLanguages;
+
+            if (supportedLanguages && _.indexOf(supportedLanguages, language)) {
+                return language;
+            }
+
             var browserLanguage = (navigator.language || navigator.browserLanguage || navigator.systemLanguage || navigator.userLanguage).split("-")[0];
-            return this.determinateLanguage(this.getHost(), browserLanguage, this.$.supportedLanguages, this.$.fallbackLanguage);
+            return this.determinateLanguage(this.getHost(), browserLanguage, supportedLanguages, this.$.fallbackLanguage);
         },
 
         getCountry: function () {
