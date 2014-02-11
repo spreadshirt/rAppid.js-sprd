@@ -15,7 +15,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             platform: 'EU'
         },
 
-        $languageMap: {
+        $domainLanguageMap: {
             de: 'de',
             fr: 'fr',
             'co.uk': 'en',
@@ -35,7 +35,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             com: null
         },
 
-        $countryMap: {
+        domainCountryMap: {
             de: 'DE',
             fr: 'FR',
             'co.uk': 'GB',
@@ -59,15 +59,19 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             this.set("supportedLanguages", Languages[platform]);
         },
 
-        getLanguage: function (language) {
+        supportsLanguage: function(language) {
             var supportedLanguages = this.$.supportedLanguages;
+            return supportedLanguages && _.indexOf(supportedLanguages, language) !== -1;
+        },
 
-            if (supportedLanguages && _.indexOf(supportedLanguages, language)) {
+        getLanguage: function (language) {
+
+            if (language && this.supportsLanguage(language)) {
                 return language;
             }
 
             var browserLanguage = (navigator.language || navigator.browserLanguage || navigator.systemLanguage || navigator.userLanguage).split("-")[0];
-            return this.determinateLanguage(this.getHost(), browserLanguage, supportedLanguages, this.$.fallbackLanguage);
+            return this.determinateLanguage(this.getHost(), browserLanguage, this.$.supportedLanguages, this.$.fallbackLanguage);
         },
 
         getCountry: function () {
@@ -75,7 +79,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         },
 
         getHost: function () {
-            return this.runsInBrowser() ? this.$stage.$window.location.host : null;
+            return this.runsInBrowser() ? this.$stage.$window.location.hostname : null;
         },
 
         getLocale: function () {
@@ -95,20 +99,15 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
                 // determinate by domain
                 var domain = /\.v?([a-z]{2,4})$/.exec(hostname);
                 if (domain) {
-                    language = this.$languageMap[domain[1]];
+                    language = this.$domainLanguageMap[domain[1]];
                 }
-
-                language = language || browserLanguage;
 
             }
 
             language = language || browserLanguage;
 
-            for (var key in this.$languageMap) {
-                if (this.$languageMap.hasOwnProperty(key) &&
-                    (key && key === this.$languageMap[key] && (!supportedLanguages || supportedLanguages[key]))) {
-                        return language;
-                }
+            if (this.supportsLanguage(language)) {
+                return language;
             }
 
             return fallbackLanguage;
@@ -127,13 +126,13 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
                 // determinate by domain
                 var domain = /\.v?([a-z]{2,4})$/.exec(hostname);
                 if (domain) {
-                    country = this.$countryMap[domain[1]];
+                    country = this.domainCountryMap[domain[1]];
                 }
             }
 
-            for (var key in this.$countryMap) {
-                if (this.$countryMap.hasOwnProperty(key) &&
-                    (key && key === this.$countryMap[key] && (!supportedCountries || supportedCountries[key]))) {
+            for (var key in this.domainCountryMap) {
+                if (this.domainCountryMap.hasOwnProperty(key) &&
+                    (key && key === this.domainCountryMap[key] && (!supportedCountries || supportedCountries[key]))) {
                         return country;
                 }
             }
