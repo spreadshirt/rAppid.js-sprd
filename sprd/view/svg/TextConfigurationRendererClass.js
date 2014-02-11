@@ -61,6 +61,14 @@ define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (Configu
 
         handleKeyDown: function (e) {
             this.$.textArea.handleKeyDown(e);
+        },
+
+        _focus: function() {
+            var textArea = this.$.textArea;
+            if (textArea) {
+                textArea.focus();
+            }
+
         }
 
     });
