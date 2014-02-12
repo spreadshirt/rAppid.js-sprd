@@ -8,10 +8,8 @@ define(["sprd/data/SprdModel", "sprd/entity/ArticleCategoryEntity"], function (M
             return this.articleCategories;
         },
         getSubCategoryById: function(id){
-            return this.$.articleCategories.each(function(val){
-                if(val.$.id == id){
-                    this['return'](val);
-                }
+            return this.$.articleCategories.find(function(val){
+                return val.$.id == id;
             });
         }
     });

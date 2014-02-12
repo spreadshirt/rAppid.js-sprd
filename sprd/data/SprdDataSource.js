@@ -53,7 +53,8 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
             needsSignature = signatureRequired || sessionRequired;
 
             if (this.$.session && sessionRequired) {
-                params = _.defaults({
+                params = _.defaults(params, {
+                    // TODO: change session id to token for translation service
                     sessionId: this.$.session.$.id
                 });
             }
@@ -65,7 +66,7 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
 
                 var data = method + " " + url + " " + time + " " + secret;
 
-                params = _.defaults({
+                params = _.defaults(params, {
                     sig: SprdDataSource.SHA1(data),
                     time: time,
                     apiKey: apiKey

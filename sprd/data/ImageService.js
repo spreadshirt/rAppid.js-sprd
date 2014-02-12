@@ -12,7 +12,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
         productTypeImage: function (productTypeId, viewId, appearanceId, options) {
             return this.buildUrl(['productTypes', productTypeId, 'views', viewId, 'appearances', appearanceId],
-                ImageService.getImageSizeParameter(options), productTypeId);
+                ImageService.getImageSizeParameter(options), parseInt(productTypeId || 0) + parseInt(viewId || 0) + parseInt(appearanceId || 0));
         },
 
         productTypeSizeImage: function (productTypeId, options) {
@@ -20,6 +20,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         },
 
         designImage: function (designId, options) {
+            options = options || {};
             var parameter = ImageService.getImageSizeParameter(options) || {};
 
             var printColors = options.printColors;
@@ -29,7 +30,8 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
                 }
             }
 
-            return this.buildUrl(['designs', designId], parameter, (designId || "").replace(/^.*?(\d+).*/, "$1"));
+            var cacheId = options.cacheId || (designId || "").replace(/^.*?(\d+).*/, "$1");
+            return this.buildUrl(['designs', designId], parameter, cacheId);
         },
 
         appearanceImage: function (appearanceId, options) {

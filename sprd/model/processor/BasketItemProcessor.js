@@ -6,9 +6,11 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
     return DefaultProcessor.inherit("sprd.model.processor.BasketItemProcessor", {
 
         parse: function (model, payload, action, options) {
-            var element = payload.element;
+            var element = payload.element,
+                properties = element.properties,
+                prop,
+                elementPayload = {};
 
-            var properties = element.properties, prop, elementPayload = {};
             for (var i = 0; i < properties.length; i++) {
                 prop = properties[i];
                 if (prop.key === "size" || prop.key === "appearance") {
@@ -54,10 +56,19 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
 
             var element = payload.element;
             var elementPayload = {};
-            elementPayload['properties'] = [
+            var properties = elementPayload['properties'] = [
                 {key: "appearance", value: element.appearance.id},
                 {key: "size", value: element.size.id}
             ];
+
+            var baseArticleId = model.get("element.article.id");
+
+            if (baseArticleId) {
+                properties.push({
+                    key: "article",
+                    value: baseArticleId
+                });
+            }
 
             var links = [];
 
@@ -77,6 +88,9 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                     href: editLink
                 });
             }
+
+
+
 
             if (links.length > 0) {
                 elementPayload['links'] = links;

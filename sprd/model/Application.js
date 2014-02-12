@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "js/data/Entity", 'js/core/List'], function (Model, Entity, List) {
+define(["sprd/data/SprdModel", "js/data/Entity", 'js/core/Bindable'], function (Model, Entity, Bindable) {
     var Property = Entity.inherit('sprd.model.Application.Property', {
         defaults: {
             key: null,
@@ -25,24 +25,52 @@ define(["sprd/data/SprdModel", "js/data/Entity", 'js/core/List'], function (Mode
     var Application = Model.inherit('sprd.model.Application', {
         defaults: {
             name: '',
-            properties: List
+            settings: Bindable
         },
+
         schema: {
             name: String,
             properties: [Property]
         },
 
-        getProperty: function (key) {
-            for (var i = 0; i < this.$.properties.length; i++) {
-                var property = this.$.properties[i];
+        idField: "name",
 
-                if (property.$.key === key) {
-                    return property;
+        parse: function() {
+            var ret = this.callBase();
+
+            var propertyObject = {};
+
+            ret.properties.each(function(property) {
+                propertyObject[property.$.key] = property.$.value;
+            });
+
+            ret.settings = new this.defaults.settings(propertyObject);
+            delete ret.properties;
+
+            return ret;
+        },
+
+        compose: function() {
+            var ret = this.callBase(),
+                properties = [],
+                settings = this.get("settings.$");
+
+            if (settings) {
+                for (var key in settings) {
+                    if (settings.hasOwnProperty(key)) {
+                        properties.push({
+                            key: key,
+                            value: settings[key]
+                        });
+                    }
                 }
             }
 
-            return null;
+            ret.properties = properties;
+
+            return ret;
         }
+
     });
 
     Application.Property = Property;

@@ -11,6 +11,10 @@ define(['js/svg/SvgElement'], function(SvgElement) {
             imageService: null
         },
 
-        $classAttributes: ["configuration","productViewer", "configurationViewer","textArea","showSelection","focused", "imageService"]
+        $classAttributes: ["configuration","productViewer", "configurationViewer","textArea","showSelection","focused", "imageService"],
+
+        _focus: function() {
+            // hook: invoked after configuration viewer move, scale, rotate finished
+        }
     })
 });

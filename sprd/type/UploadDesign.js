@@ -13,8 +13,23 @@ define(["js/core/Bindable"], function (Bindable) {
             design: null,
             image: null,
             uploadProgress: 0,
+            xhr: null,
 
             state: State.NONE
+        },
+
+        cancelUpload: function () {
+            var xhr = this.$.xhr,
+                self = this;
+
+            if (xhr) {
+                xhr.abort();
+            } else {
+                this.bind('change:xhr', function abortXhr () {
+                    xhr.abort();
+                    self.unbind('change:xhr', abortXhr);
+                });
+            }
         }
     });
 

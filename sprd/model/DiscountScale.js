@@ -1,10 +1,5 @@
 define(["sprd/data/SprdModel", "js/data/Entity"], function (Model, Entity) {
 
-    var Discount = Entity.inherit('sprd.entity.Discount', {
-
-
-    });
-
     return Model.inherit('sprd.model.DiscountScale', {
         schema: {
             discounts: [Entity]
@@ -19,11 +14,8 @@ define(["sprd/data/SprdModel", "js/data/Entity"], function (Model, Entity) {
         getDiscountById: function (discountId) {
             var currentDiscount = null;
             if (discountId && this.$.discounts) {
-                this.$.discounts.each(function (discountItem) {
-                    if (discountItem.$.id === discountId) {
-                        currentDiscount = discountItem;
-                        this["break"]();
-                    }
+                currentDiscount = this.$.discounts.find(function (discountItem) {
+                    return discountItem.$.id === discountId;
                 });
             }
 
@@ -32,5 +24,4 @@ define(["sprd/data/SprdModel", "js/data/Entity"], function (Model, Entity) {
 
     });
 
-})
-;
+});

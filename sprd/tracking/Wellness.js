@@ -60,10 +60,8 @@ define(["js/core/Component", "underscore", "flow", "js/lib/extension"], function
                     window[callbackName] = removeScriptNode;
 
                     for (var key in data) {
-                        if (data.hasOwnProperty(key)) {
-                            if (data[key] === null || data[key] === undefined) {
+                        if (data.hasOwnProperty(key) && (data[key] === null || data[key] === undefined)) {
                                 data[key] = "";
-                            }
                         }
                     }
 

@@ -12,9 +12,13 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
             },
 
 
-            upload: function (data, callback) {
-
+            upload: function (data, restrictions, callback) {
                 var image;
+
+                if (restrictions instanceof Function) {
+                    callback = restrictions;
+                    restrictions = null;
+                }
 
                 if (data instanceof Image) {
                     image = data;
@@ -28,14 +32,22 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                     });
                 }
 
-
-                this._uploadDesign(new UploadDesign({
+                var uploadDesign = new UploadDesign({
                     image: image
-                }), callback);
+                });
+
+                this._uploadDesign(uploadDesign, restrictions, callback);
+
+                return uploadDesign;
             },
 
 
-            _uploadDesign: function (uploadDesign, callback) {
+            _uploadDesign: function (uploadDesign, restrictions, callback) {
+                if (restrictions instanceof Function) {
+                    callback = restrictions;
+                    restrictions = null;
+                }
+
                 callback = callback || this.emptyCallback();
 
                 var uploadContext = this.$.uploadContext,
@@ -68,6 +80,11 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                     .seq("design", function () {
                         var design = uploadContext.getCollection("designs").createItem();
                         design.set("name", uploadDesign.get("image.name"));
+
+                        if (restrictions) {
+                            design.set('restrictions', restrictions);
+                        }
+
                         return design;
                     })
                     .seq(function (cb) {
@@ -85,6 +102,8 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
 
                         uploadImage.save({
                             xhrBeforeSend: function (xhr) {
+                                uploadDesign.set('xhr', xhr);
+
                                 if (xhr && xhr.upload) {
                                     xhr.upload.onprogress = function (e) {
                                         uploadDesign.set('uploadProgress', 100 / e.total * e.loaded);
@@ -103,10 +122,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                         callback && callback(err, uploadDesign);
 
                     });
-
             }
-
-
         });
 
     });

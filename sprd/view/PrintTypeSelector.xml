@@ -1,0 +1,18 @@
+<view:PrintTypeSelectorClass
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:view="sprd.view"
+        xmlns:ui="js.ui"
+        xmlns:js="js.core"
+        componentClass="print-type-selector">
+
+    <ui:SelectionView items="{possiblePrintTypes}" itemKey="printType" selectedItem="{configuration.printType}">
+        <js:Template name="item">
+            <div class="print-type-item print-type-{printType.id}">
+                <a onclick="_selectPrintType(printType)" enabled="{configuration.isPrintTypeAvailable(printType)}">
+                    <span class="icon"/>
+                    <span class="label">${labelForPrintType(printType)}</span>
+                </a>
+            </div>
+        </js:Template>
+    </ui:SelectionView>
+</view:PrintTypeSelectorClass>

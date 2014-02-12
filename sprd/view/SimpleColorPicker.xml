@@ -1,0 +1,32 @@
+<view:SimpleColorPickerClass xmlns:ui="js.ui"
+                             xmlns="http://www.w3.org/1999/xhtml"
+                             xmlns:js="js.core"
+                             componentClass="simple-color-picker"
+                             xmlns:view="sprd.view">
+    <js:Template name="color-item">
+        <div backgroundColor="${item.toString()}"/>
+    </js:Template>
+
+    <js:Template name="preview-item">
+        <div backgroundColor="{item.toString()}"/>
+    </js:Template>
+
+    <div onpointerdown="_onPointerDown" class="simple-color-picker-container">
+        <ui:SelectionView items="{colors}" itemKey="c" tagName="ul"
+                          cid="colorListView"
+                          class="simple-color-picker-list"
+                          selectedItem="{color}" forceSelectable="false">
+            <js:Template name="item">
+                <ui:TemplatePlaceHolder templateName="color-item" item="${c}" height="{itemHeight}"
+                                        tagName="li"/>
+            </js:Template>
+        </ui:SelectionView>
+
+    </div>
+    <ui:TemplatePlaceHolder cid="colorPickerZoom"
+                            selected="{_showPreview}"
+                            position="absolute"
+                            class="simple-color-picker-zoom"
+                            templateName="preview-item"
+                            item="{_previewColor}"/>
+</view:SimpleColorPickerClass>

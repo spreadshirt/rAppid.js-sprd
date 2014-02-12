@@ -1,7 +1,7 @@
 define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd/entity/DesignColor', 'sprd/entity/Price', 'js/data/Entity'], function (SprdModel, PrintType, Size, DesignColor, Price, Entity) {
 
     var DENY_ON = {
-        No: "no",
+        No: "NO",
         OnPrintArea: "onPrintArea",
         OnProduct: "onProduct"
     };

@@ -1,4 +1,6 @@
-define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/data/SprdApiDataSource", "js/data/LocalStorage", "js/data/Entity"], function (IBasketManager, flow, Basket, SprdApiDataSource, LocalStorage, Entity) {
+define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/data/SprdApiDataSource",
+        "js/data/LocalStorage", "js/data/Entity"],
+    function (IBasketManager, flow, Basket, SprdApiDataSource, LocalStorage, Entity) {
 
     /***
      * @summary A BasketManager to interact with the Spreadshirt Basket API
@@ -46,6 +48,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
              */
             editBasketItemLinkTemplate: null,
 
+            editBasketItemLinkHook: null,
+
             /***
              * the origin id used for basked items
              * @type {Number|String}
@@ -90,12 +94,23 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 var continueShoppingLink = this.$.continueShoppingLink;
 
                 if (continueShoppingLink) {
-                    element.set("continueShoppingLink", continueShoppingLink)
+                    element.set("continueShoppingLink", continueShoppingLink);
+                }
+
+                var editBasketItemLinkHook = this.$.editBasketItemLinkHook,
+                    editLink = null;
+
+                if (editBasketItemLinkHook) {
+                    editLink = editBasketItemLinkHook(basketItem);
                 }
 
                 var editBasketItemLinkTemplate = this.$.editBasketItemLinkTemplate;
-                if (editBasketItemLinkTemplate) {
-                    element.set("editLink", editBasketItemLinkTemplate.replace("$productId", element.get("item.id")))
+                if (!editLink && editBasketItemLinkTemplate) {
+                    editLink = editBasketItemLinkTemplate.replace("$productId", element.get("item.id"));
+                }
+
+                if (editLink) {
+                    element.set("editLink", editLink);
                 }
             }
 
@@ -134,12 +149,17 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             var basketSaveCallback = function (err) {
                 if (!err) {
                     self.set("apiBasketId", basketId);
-                    self.$.localStorage.setItem("basketId", basket.$.id);
-                    self._triggerBasketChanged();
-                    self.fetchBasketDiscounts(callback);
+                    try {
+                        self.$.localStorage.setItem("basketId", basket.$.id);
+                        self._triggerBasketChanged();
+                        self.fetchBasketDiscounts(callback);
+                    } catch (e) {
+                        callback && callback(e);
+                    }
+
                 } else {
                     console.warn(err);
-                    callback(err);
+                    callback && callback(err);
                 }
 
             };
@@ -158,7 +178,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         basket.fetch({
                             noCache: true,
                             fetchSubModels: ["currency"]
-                        }, cb)
+                        }, cb);
                     })
                     .seq(function (cb) {
                         self.fetchBasketDiscounts(cb);
@@ -168,16 +188,29 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                             // something went wrong
                             basket.set('id', undefined);
                             basket.save(null, basketSaveCallback);
-                            console.warn(err)
+                            console.warn(err);
                         } else {
 
                             self.set("shop", basket.$.shop);
 
                             flow()
                                 .parEach(basket.$.basketItems.toArray(), function (item, cb) {
-                                    item.$.element.getProduct().fetch({
-                                        fetchSubModels: ["productType"]
-                                    }, cb);
+                                    flow()
+                                        .seq(function (cb) {
+                                            item.$.element.init(cb);
+                                        })
+                                        .seq(function (cb) {
+                                            item.$.element.getProduct().fetch({
+                                                fetchSubModels: ["productType"]
+                                            }, cb);
+                                        })
+                                        .exec(function (err) {
+                                            if (err) {
+                                                basket.$.basketItems.remove(item);
+                                            }
+
+                                            cb();
+                                        });
                                 })
                                 .exec(callback);
                         }

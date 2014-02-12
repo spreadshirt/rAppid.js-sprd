@@ -3,13 +3,14 @@ define([
     'js/data/Collection',
     'sprd/model/Basket',
     'sprd/model/Currency',
+    'sprd/model/Address',
     'sprd/model/Design',
     'sprd/model/ProductType',
     'sprd/model/ProductTypeDepartment',
     'sprd/model/ArticleCategory',
     'sprd/model/DesignCategory',
     'sprd/model/Article', 'sprd/model/Country', 'sprd/model/PrintType', 'sprd/model/FontFamily', "sprd/model/Product", "sprd/model/DiscountScale", 'sprd/model/Application'],
-    function (SprdModel, Collection, Basket, Currency, Design, ProductType, ProductTypeDepartment, ArticleCategory, DesignCategory, Article, Country, PrintType, FontFamily, Product, DiscountScale, Application) {
+    function (SprdModel, Collection, Basket, Currency, Address, Design, ProductType, ProductTypeDepartment, ArticleCategory, DesignCategory, Article, Country, PrintType, FontFamily, Product, DiscountScale, Application) {
 
         return SprdModel.inherit("sprd.model.AbstractShop", {
             schema: {
@@ -19,7 +20,7 @@ define([
 //            language: SprdModel,
                 currency: Currency,
 //            address: SprdModel,
-
+                address: Address,
                 productTypes: Collection.of(ProductType),
                 printTypes: Collection.of(PrintType),
                 fontFamilies: Collection.of(FontFamily),

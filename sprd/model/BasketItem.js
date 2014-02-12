@@ -34,14 +34,18 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement", "sprd/entity/Price
             if (this.$.priceItem) {
                 return this.$.priceItem.$.vatIncluded;
             }
-            return this.get('element.item.price().vatIncluded') || 0;
+
+            return (this.get('element.item.price().vatIncluded') || 0) +
+                (this.get('element.article.commission.vatIncluded') || 0);
         },
 
         vatExcluded: function () {
             if (this.$.priceItem) {
                 return this.$.priceItem.$.vatExcluded;
             }
-            return this.get('element.item.price().vatExcluded') || 0;
+
+            return (this.get('element.item.price().vatExcluded') || 0) + +
+                (this.get('element.article.commission.vatExcluded') || 0);
         },
 
         discountPriceVatIncluded: function(){
