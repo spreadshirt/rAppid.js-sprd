@@ -92,6 +92,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 this.bind('productViewer', 'change:width', this._productViewerSizeChanged, this);
+                this.bind(["productViewer", "change:selectedConfiguration"], function() {
+                    if (this.isSelectedConfiguration()) {
+                        this.focus();
+                    }
+                }, this);
             },
 
             _initializationComplete: function () {
@@ -348,7 +353,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
                 var selected = this.$.selected;
                 this.$.productViewer.set("selectedConfiguration", this.$.configuration);
-                this.$stage.focus();
+//                this.$stage.focus();
 
                 if (e.defaultPrevented) {
                     return;
@@ -801,7 +806,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
                 }
 
+                this.focus();
+
                 this._stopTransformation();
+            },
+
+            focus: function() {
+                if (this.$asset) {
+                    this.$asset._focus();
+                }
             },
 
             _keyDown: function (e, mode) {
