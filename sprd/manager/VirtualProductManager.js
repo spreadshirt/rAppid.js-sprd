@@ -159,6 +159,10 @@ define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User"]
 
         generateVPString: function (originalProduct, newProductType, callback) {
             this._generate("generateVirtualProductString", originalProduct, newProductType, callback);
+        },
+
+        generateVirtualProduct: function(originalProduct, newProductType, callback) {
+            this._generate("generateVirtualProduct", originalProduct, newProductType, callback);
         }
 
     });
