@@ -22,7 +22,7 @@ define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User"]
                 return;
             }
 
-            this.synchronizeFunctionCall(this._initializeVPLib, callback, this);
+            this.synchronizeFunctionCall(this._initializeVPLib, "initializeVPLib", callback, this);
         },
 
         _initializeVPLib: function (callback) {
@@ -130,7 +130,7 @@ define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User"]
                         newProductType.fetch(cb);
                     },
                     vpCreator: function (cb) {
-                        self._initializeVPLib(cb);
+                        self.initializeVPLib(cb);
                     }
                 })
                 .seq("result", function () {
