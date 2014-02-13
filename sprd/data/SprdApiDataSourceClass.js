@@ -6,7 +6,8 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
             defaults: {
                 locale: "en_EU",
                 parsePayloadOnCreate: false,
-                parsePayloadOnUpdate: false
+                parsePayloadOnUpdate: false,
+                keepRawData: false
             },
 
             $defaultProcessorFactory: DefaultProcessor,
