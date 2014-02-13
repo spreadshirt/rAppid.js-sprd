@@ -1,11 +1,11 @@
-define(['js/data/DataSource'], function (DataSource) {
+define(['js/data/DataSource', 'underscore'], function (DataSource, _) {
 
     return DataSource.Processor.inherit("sprd.model.processor.DefaultProcessor", {
 
         parse: function(model, data, action, options) {
 
             if (this.$dataSource.$.keepRawData) {
-                model.$data = data;
+                model.$data = _.extend({}, model.$data, data);
             }
 
             return this.callBase();
