@@ -10,6 +10,15 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             gateway: '/image-server/v1'
         },
 
+        virtualProductImage: function(product, vpString, viewId, options) {
+            return this.buildUrl([
+                'products',
+                vpString,
+                'views',
+                viewId
+            ], ImageService.getImageSizeParameter(options), parseInt(product ? product.$.id : 0));
+        },
+
         productTypeImage: function (productTypeId, viewId, appearanceId, options) {
             return this.buildUrl(['productTypes', productTypeId, 'views', viewId, 'appearances', appearanceId],
                 ImageService.getImageSizeParameter(options), parseInt(productTypeId || 0) + parseInt(viewId || 0) + parseInt(appearanceId || 0));
