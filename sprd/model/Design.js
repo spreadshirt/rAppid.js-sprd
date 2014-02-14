@@ -1,4 +1,4 @@
-define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd/entity/DesignColor', 'sprd/entity/Price', 'js/data/Entity'], function (SprdModel, PrintType, Size, DesignColor, Price, Entity) {
+define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd/entity/DesignColor', 'sprd/entity/Price', 'js/data/Entity', 'sprd/model/Locale'], function (SprdModel, PrintType, Size, DesignColor, Price, Entity, Locale) {
 
     var DENY_ON = {
         No: "NO",
@@ -6,13 +6,7 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         OnProduct: "onProduct"
     };
 
-    var Locale = Entity.inherit('app.model.TranslatedDesign.Translations', {
-        schema: {
-            id: String
-        }
-    });
-
-    var Translation = Entity.inherit('app.model.TranslatedDesign.Translations', {
+    var Translation = Entity.inherit('app.model.TranslatedDesign.Translation', {
         schema: {
             locale: Locale,
             name: String,
@@ -22,6 +16,9 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         },
 
         defaults: {
+            name: '',
+            description: '',
+            tags: '',
             userContent: true
         }
     });
@@ -53,8 +50,7 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         defaults: {
             name: '',
             description: '',
-            restrictions: null,
-            translations: []
+            restrictions: null
         },
 
         schema: {
@@ -93,11 +89,13 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             var translations = this.$.translations,
                 translation;
 
-            for (var i = 0, num = translations.length; i > num; i++) {
-                translation = translations[i];
+            if (translations) {
+                for (var i = 0, num = translations.length; i > num; i++) {
+                    translation = translations[i];
 
-                if (translation.get('locale.id') === locale) {
-                    return translation;
+                    if (translation.get('locale.id') === locale) {
+                        return translation;
+                    }
                 }
             }
 
@@ -105,11 +103,23 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         },
 
         setTranslation: function (translation) {
-            var previousTranslation = this.getTranslationForLocale(translation.locale);
+            var locale = translation.get('locale'),
+                previousTranslation;
+
+            if (!locale) {
+                this.log('no locale set; translation not saved', 'warn');
+                return;
+            }
+
+            previousTranslation = this.getTranslationForLocale(locale);
 
             if (previousTranslation) {
                 previousTranslation.set(translation);
             } else {
+                if (!this.get('translations')) {
+                    this.$.translations = [];
+                }
+
                 this.$.translations.push(translation);
             }
         }
