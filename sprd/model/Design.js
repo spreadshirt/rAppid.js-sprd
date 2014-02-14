@@ -1,10 +1,27 @@
-define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd/entity/DesignColor', 'sprd/entity/Price', 'js/data/Entity'], function (SprdModel, PrintType, Size, DesignColor, Price, Entity) {
+define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd/entity/DesignColor', 'sprd/entity/Price', 'js/data/Entity', 'sprd/model/Locale'], function (SprdModel, PrintType, Size, DesignColor, Price, Entity, Locale) {
 
     var DENY_ON = {
         No: "NO",
         OnPrintArea: "onPrintArea",
         OnProduct: "onProduct"
     };
+
+    var Translation = Entity.inherit('app.model.TranslatedDesign.Translation', {
+        schema: {
+            locale: Locale,
+            name: String,
+            description: String,
+            tags: String,
+            userContent: Boolean
+        },
+
+        defaults: {
+            name: '',
+            description: '',
+            tags: '',
+            userContent: true
+        }
+    });
 
     var Restrictions = Entity.inherit('sprd.model.Design.Restrictions', {
 
@@ -48,7 +65,9 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             price: Price,
 
             restrictions: Restrictions,
-            user: "sprd/model/User"
+            user: "sprd/model/User",
+
+            translations: [Translation]
         },
 
         parse: function (data) {
@@ -64,13 +83,52 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
 
         isVectorDesign: function() {
             return this.$.colors.length > 0;
+        },
+
+        getTranslationForLocale: function (locale) {
+            var translations = this.$.translations,
+                translation;
+
+            if (translations) {
+                for (var i = 0, num = translations.length; i > num; i++) {
+                    translation = translations[i];
+
+                    if (translation.get('locale.id') === locale) {
+                        return translation;
+                    }
+                }
+            }
+
+            return null;
+        },
+
+        setTranslation: function (translation) {
+            var locale = translation.get('locale'),
+                previousTranslation;
+
+            if (!locale) {
+                this.log('no locale set; translation not saved', 'warn');
+                return;
+            }
+
+            previousTranslation = this.getTranslationForLocale(locale);
+
+            if (previousTranslation) {
+                previousTranslation.set(translation);
+            } else {
+                if (!this.get('translations')) {
+                    this.$.translations = [];
+                }
+
+                this.$.translations.push(translation);
+            }
         }
     });
 
 
     Design.Restrictions = Restrictions;
-
-
+    Design.Translation = Translation;
+    Design.Locale = Locale;
 
     return Design;
 
