@@ -6,6 +6,26 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         OnProduct: "onProduct"
     };
 
+    var Locale = Entity.inherit('app.model.TranslatedDesign.Translations', {
+        schema: {
+            id: String
+        }
+    });
+
+    var Translation = Entity.inherit('app.model.TranslatedDesign.Translations', {
+        schema: {
+            locale: Locale,
+            name: String,
+            description: String,
+            tags: String,
+            userContent: Boolean
+        },
+
+        defaults: {
+            userContent: true
+        }
+    });
+
     var Restrictions = Entity.inherit('sprd.model.Design.Restrictions', {
 
         defaults: {
@@ -33,7 +53,8 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         defaults: {
             name: '',
             description: '',
-            restrictions: null
+            restrictions: null,
+            translations: []
         },
 
         schema: {
@@ -48,7 +69,9 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             price: Price,
 
             restrictions: Restrictions,
-            user: "sprd/model/User"
+            user: "sprd/model/User",
+
+            translations: [Translation]
         },
 
         parse: function (data) {
@@ -64,13 +87,38 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
 
         isVectorDesign: function() {
             return this.$.colors.length > 0;
+        },
+
+        getTranslationForLocale: function (locale) {
+            var translations = this.$.translations,
+                translation;
+
+            for (var i = 0, num = translations.length; i > num; i++) {
+                translation = translations[i];
+
+                if (translation.get('locale.id') === locale) {
+                    return translation;
+                }
+            }
+
+            return null;
+        },
+
+        setTranslation: function (translation) {
+            var previousTranslation = this.getTranslationForLocale(translation.locale);
+
+            if (previousTranslation) {
+                previousTranslation.set(translation);
+            } else {
+                this.$.translations.push(translation);
+            }
         }
     });
 
 
     Design.Restrictions = Restrictions;
-
-
+    Design.Translation = Translation;
+    Design.Locale = Locale;
 
     return Design;
 
