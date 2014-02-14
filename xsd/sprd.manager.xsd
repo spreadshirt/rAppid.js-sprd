@@ -14,6 +14,7 @@
     <element name="ProductCreationErrorManager" type="ns:ProductCreationErrorManager"/>
     <element name="ProductInitializer" type="ns:ProductInitializer"/>
     <element name="TrackingManagerBase" type="ns:TrackingManagerBase"/>
+    <element name="VirtualProductManager" type="ns:VirtualProductManager"/>
     <complexType name="ApiBasketManager">
         <complexContent>
             <extension base="ns:IBasketManager">
@@ -220,6 +221,22 @@ BasketItem
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="VirtualProductManager">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.VirtualProductManager">
+                                 necessary dependency
+                            </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="context"/>
+                <attribute name="platform" default="EU"/>
             </extension>
         </complexContent>
     </complexType>

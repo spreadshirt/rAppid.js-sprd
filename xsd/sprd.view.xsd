@@ -40,6 +40,7 @@
     <element name="SizeSelector" type="ns:SizeSelector"/>
     <element name="SizeSelectorClass" type="ns:SizeSelectorClass"/>
     <element name="UserImage" type="ns:UserImage"/>
+    <element name="VirtualProductImage" type="ns:VirtualProductImage"/>
     <complexType name="AppearanceColor">
         <complexContent>
             <extension base="ns:AppearanceColorClass">
@@ -791,6 +792,20 @@ set the default appearance of the product is used.
                     </documentation>
                     </annotation>
                 </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="VirtualProductImage">
+        <complexContent>
+            <extension base="ns:Image">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.VirtualProductImage"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="virtualProduct"/>
+                <attribute name="viewId"/>
             </extension>
         </complexContent>
     </complexType>
