@@ -1,6 +1,8 @@
 define(['js/core/Component', 'underscore'], function (Component, _) {
 
-    var exceptionSizes = [120, 178];
+    var exceptionSizes = [120, 178],
+        PRODUCT = "product",
+        COMPOSITION = "composition";
 
     var ImageService = Component.inherit('sprd.data.ImageService', {
 
@@ -25,7 +27,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         },
 
         productTypeSizeImage: function (productTypeId, options) {
-            return this.buildUrl(["productTypes", productTypeId, "variants", "size"], ImageService.getImageSizeParameter(options), productTypeId)
+            return this.buildUrl(["productTypes", productTypeId, "variants", "size"], ImageService.getImageSizeParameter(options), productTypeId);
         },
 
         designImage: function (designId, options) {
@@ -124,6 +126,11 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         if (ret.length) {
             return ret.join('&');
         }
+    };
+
+    ImageService.ProductImageType = {
+        PRODUCT: PRODUCT,
+        COMPOSITION: COMPOSITION
     };
 
     return ImageService;

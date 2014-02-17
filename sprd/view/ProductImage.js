@@ -1,8 +1,6 @@
 define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, ImageService) {
 
-    var PRODUCT = "product",
-        COMPOSITION = "composition",
-        viewIdExtractor = /\/views\/(\d+)/;
+    var viewIdExtractor = /\/views\/(\d+)/;
 
     var ProductImage = Image.inherit("sprd.view.ProductImage", {
 
@@ -27,7 +25,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
              */
             appearance: null,
 
-            type: PRODUCT
+            type: ImageService.ProductImageType.PRODUCT
         },
 
         inject: {
@@ -42,22 +40,10 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
         },
 
         imageUrl: function () {
-            var url = null;
-            var imageService = this.$.imageService;
-
             if (this.$.product) {
-                var product = this.$.product;
-
-                if (this.$.type != COMPOSITION) {
-                    // use product
-                    url = imageService.$.endPoint + "/products/" + product.$.id;
-                } else {
-                    url = imageService.$.endPoint + "/compositions/" + product.$.id;
-                }
-
-                var viewId = this.$.view ? this.$.view.$.id : product.getDefaultViewId();
-
-                var resources = product.$.resources;
+                var product = this.$.product,
+                    viewId = this.$.view ? this.$.view.$.id : product.getDefaultViewId(),
+                    resources = product.$.resources;
 
                 if (!viewId && resources instanceof Array) {
                     // get view id from resource -> this is a hack, because image server
@@ -70,27 +56,18 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
                             break;
                         }
                     }
-
                 }
 
-                url += '/views/' + viewId;
-
-                url = this.extendUrlWithSizes(url);
-
-                if (this.$.appearance) {
-                    url += ",appearanceId=" + this.$.appearance.$.id;
-                }
-
-                return url;
+                return this.$.imageService.productImage(product.$.id, viewId, this.get("appearance.id"), this.$.type, {
+                    width: this.$.width,
+                    height: this.$.height
+                });
             }
-            return url;
+            return null;
 
         }.onChange('product', 'width', 'height', 'type', 'view', 'appearance')
 
     });
-
-    ProductImage.TYPE_COMPOSITION = COMPOSITION;
-    ProductImage.TYPE_PRODUCT = PRODUCT;
 
     return ProductImage;
 });
