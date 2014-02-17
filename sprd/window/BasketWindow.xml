@@ -18,7 +18,7 @@
                             </div>
                             <div class="basket-item-size">
                                 <select items="{item.element.getProduct().productType.getAvailableSizesForAppearance(item.element.appearance)}"
-                                        selectedItem="{{item.element.size}}" class="input-small" itemKey="size"
+                                        selectedItem="{{item.element.size}}" class="input-small dropdown-toggle btn" itemKey="size"
                                         keyPath="id"
                                         needsSelection="false"
                                         onchange="onSizeChange">
