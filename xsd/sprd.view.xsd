@@ -23,6 +23,7 @@
     <element name="MiniBasket" type="ns:MiniBasket"/>
     <element name="MiniBasketClass" type="ns:MiniBasketClass"/>
     <element name="PrintColorImage" type="ns:PrintColorImage"/>
+    <element name="PrintColorImageClass" type="ns:PrintColorImageClass"/>
     <element name="PrintTypePanelBase" type="ns:PrintTypePanelBase"/>
     <element name="PrintTypeSelector" type="ns:PrintTypeSelector"/>
     <element name="PrintTypeSelectorClass" type="ns:PrintTypeSelectorClass"/>
@@ -459,14 +460,32 @@
     </complexType>
     <complexType name="PrintColorImage">
         <complexContent>
-            <extension base="ns:Image">
+            <extension base="ns:PrintColorImageClass">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.view.PrintColorImage"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+                <attribute name="data-print-color-id" default="{printColor.id}"/>
                 <attribute name="printColor"/>
+                <attribute name="loaded"/>
+                <attribute name="backgroundColor" default="{backgroundColor()}"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="PrintColorImageClass">
+        <complexContent>
+            <extension base="ns1:View">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.PrintColorImageClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="printColor"/>
+                <attribute name="loaded"/>
+                <attribute name="backgroundColor" default="{backgroundColor()}"/>
             </extension>
         </complexContent>
     </complexType>
