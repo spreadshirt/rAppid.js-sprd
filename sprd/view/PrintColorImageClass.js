@@ -29,7 +29,7 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType"], functio
 
             return this.get("printColor.toHexString()");
 
-        }.onChange("printColor.toHexString()"),
+        }.onChange("printColor", "printColor.toHexString()"),
 
         alt: function() {
             // TODO: translate colors
