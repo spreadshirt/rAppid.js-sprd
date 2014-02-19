@@ -50,7 +50,7 @@ define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User"]
                             cb();
                         };
 
-                        require(["/vplib/vplib.nocache.js"], function () {
+                        require(["/sprd-vplib/vplib/vplib.nocache.js"], function () {
                             // complete will be called via onSprdLoad
 
                                 var vpLib = window.vplib;
