@@ -89,7 +89,7 @@ define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User",
 
         },
 
-        _generate: function (originalProduct, newProductType, callback) {
+        _generate: function (originalProduct, newProductType, appearanceId, callback) {
 
             var self = this;
 
@@ -140,11 +140,16 @@ define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User",
                         }),
                         productType = originalProduct.$.productType;
 
-                    var productPayload = vpCreator["generateVirtualProduct"](originalProduct.$data, newProductType.$.id, null, designs, [
+                    var originalProductPayload = _.clone(originalProduct.$data);
+                    if (appearanceId) {
+                        originalProductPayload.appearance.id = appearanceId;
+                    }
+
+                    var productPayload = vpCreator["generateVirtualProduct"](originalProductPayload, newProductType.$.id, null, designs, [
                         productType.$data,
                         newProductType.$data
                     ]);
-                    var vpString = vpCreator["generateVirtualProductString"](originalProduct.$data, newProductType.$.id, null, designs, [
+                    var vpString = vpCreator["generateVirtualProductString"](originalProductPayload, newProductType.$.id, null, designs, [
                         productType.$data,
                         newProductType.$data
                     ]);
@@ -168,8 +173,8 @@ define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User",
 
         },
 
-        generate: function(originalProduct, newProductType, callback) {
-            this._generate(originalProduct, newProductType, callback);
+        generate: function(originalProduct, newProductType, appearanceId, callback) {
+            this._generate(originalProduct, newProductType, appearanceId, callback);
         }
 
     });
