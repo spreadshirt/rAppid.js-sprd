@@ -1,7 +1,7 @@
 define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType'],
     function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType) {
 
-    var undef;
+    var undefined;
 
     return ProductBase.inherit("sprd.model.Product", {
 
@@ -315,7 +315,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
             if (this.$originalProduct) {
                 if (this.hasChanges()) {
-                    this.set('id', undef);
+                    this.set('id', undefined);
                 } else {
                     this.set({
                         id: this.$originalProduct.$.id,
