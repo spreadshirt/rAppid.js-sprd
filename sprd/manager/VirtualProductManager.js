@@ -1,4 +1,4 @@
-define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User"], function (Component, require, flow, _, User) {
+define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User", "sprd/bindable/VirtualProduct"], function (Component, require, flow, _, User, VirtualProduct) {
 
     // necessary dependency
     var U = User;
@@ -89,7 +89,7 @@ define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User"]
 
         },
 
-        _generate: function (method, originalProduct, newProductType, callback) {
+        _generate: function (originalProduct, newProductType, callback) {
 
             var self = this;
 
@@ -140,16 +140,27 @@ define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User"]
                         }),
                         productType = originalProduct.$.productType;
 
-                    var result = vpCreator[method](originalProduct.$data, newProductType.$.id, null, designs, [
+                    var productPayload = vpCreator["generateVirtualProduct"](originalProduct.$data, newProductType.$.id, null, designs, [
+                        productType.$data,
+                        newProductType.$data
+                    ]);
+                    var vpString = vpCreator["generateVirtualProductString"](originalProduct.$data, newProductType.$.id, null, designs, [
                         productType.$data,
                         newProductType.$data
                     ]);
 
-                    if (!result) {
+                    if (!productPayload) {
                         throw new Error("No result returned");
                     }
 
-                    return result;
+                    return new VirtualProduct({
+                        originalProduct: originalProduct,
+                        productPayload: productPayload,
+                        vpString: vpString,
+                        productType: newProductType,
+                        viewId: productPayload.defaultValues.defaultView.id
+                    });
+
                 })
                 .exec(function (err, results) {
                     callback && callback(err, results.result);
@@ -157,12 +168,8 @@ define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User"]
 
         },
 
-        generateVPString: function (originalProduct, newProductType, callback) {
-            this._generate("generateVirtualProductString", originalProduct, newProductType, callback);
-        },
-
-        generateVirtualProduct: function(originalProduct, newProductType, callback) {
-            this._generate("generateVirtualProduct", originalProduct, newProductType, callback);
+        generate: function(originalProduct, newProductType, callback) {
+            this._generate(originalProduct, newProductType, callback);
         }
 
     });
