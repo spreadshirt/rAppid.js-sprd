@@ -24,11 +24,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
                 });
             }
 
-        }.onChange("virtualProduct.vpString", "viewId"),
-
-        alt: function () {
-            return this.get("virtualProduct.name()");
-        }.onChange("virtualProduct.name()")
+        }.onChange("virtualProduct.vpString", "viewId")
 
     });
 });
