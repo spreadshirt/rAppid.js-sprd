@@ -16,6 +16,12 @@ define(["js/core/Bindable"], function(Bindable) {
             product: null,
 
             /***
+             * the transformed product payload
+             * @type String
+             */
+            productPayload: null,
+
+            /***
              * the new product type
              * @type sprd.model.ProductType
              */
