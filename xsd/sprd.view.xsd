@@ -42,6 +42,8 @@
     <element name="SizeSelectorClass" type="ns:SizeSelectorClass"/>
     <element name="UserImage" type="ns:UserImage"/>
     <element name="VirtualProductImage" type="ns:VirtualProductImage"/>
+    <element name="VirtualProductView" type="ns:VirtualProductView"/>
+    <element name="VirtualProductViewClass" type="ns:VirtualProductViewClass"/>
     <complexType name="AppearanceColor">
         <complexContent>
             <extension base="ns:AppearanceColorClass">
@@ -825,6 +827,40 @@ set the default appearance of the product is used.
                 </sequence>
                 <attribute name="virtualProduct"/>
                 <attribute name="viewId"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="VirtualProductView">
+        <complexContent>
+            <extension base="ns:VirtualProductViewClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.VirtualProductView"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="virtualProduct"/>
+                <attribute name="perspective"/>
+                <attribute name="editable"/>
+                <attribute name="width" default="200"/>
+                <attribute name="height" default="200"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="VirtualProductViewClass">
+        <complexContent>
+            <extension base="ns1:View">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.VirtualProductViewClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="virtualProduct"/>
+                <attribute name="perspective"/>
+                <attribute name="editable"/>
+                <attribute name="width" default="200"/>
+                <attribute name="height" default="200"/>
             </extension>
         </complexContent>
     </complexType>
