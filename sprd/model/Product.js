@@ -113,6 +113,17 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             return null;
         }.onChange('appearance', 'productType'),
 
+        getDefaultView: function() {
+            var productType = this.$.productType,
+                viewId = this.get("defaultValues.defaultView.id");
+
+            if (productType) {
+                return productType.getViewById(viewId) || productType.getDefaultView();
+            }
+
+            return null;
+        },
+
         _onConfigurationOffsetChanged: function(e) {
 
             var manager = this.$.manager,
