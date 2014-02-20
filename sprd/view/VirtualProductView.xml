@@ -1,0 +1,10 @@
+<view:VirtualProductViewClass xmlns:view="sprd.view" xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="js.ui">
+    <view:VirtualProductImage virtualProduct="{virtualProduct}" viewId="{viewId()}"
+                              width="{width}" height="{height}" visible="{not(loader.instance)}"/>
+
+    <ui:ComponentLoader cid="loader" type="sprd.view.ProductViewer"
+                        product="{virtualProduct.product}" view="{view()}" editable="{editable}"
+                        width="{width}" height="height"
+                        load="false" visible="{instance}"/>
+
+</view:VirtualProductViewClass>
