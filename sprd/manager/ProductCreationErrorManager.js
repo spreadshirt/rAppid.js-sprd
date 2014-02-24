@@ -8,7 +8,8 @@ define(['js/core/Component', "sprd/error/ProductCreationError"],
 
             getErrorMessages: function (err) {
                 var customerErrorMessage,
-                    detailedErrorMessage;
+                    detailedErrorMessage,
+                    copyrightWord;
 
                 if (err instanceof ProductCreationError) {
                     if (err.baseError && err.baseError.xhr) {
@@ -28,6 +29,7 @@ define(['js/core/Component', "sprd/error/ProductCreationError"],
                 if (detailedErrorMessage && detailedErrorMessage.indexOf("blacklisted terms") !== -1) {
                     var matches = /.*'(.+)'.*\[(.+)\]/.exec(detailedErrorMessage);
                     // copy right error
+                    copyrightWord = matches[1];
                     customerErrorMessage = this.$.copyrightErrorMessage.replace("%0", matches[1]).replace("%1", matches[2]);
                 } else {
                     customerErrorMessage = this.$.errorMessage;
@@ -35,7 +37,8 @@ define(['js/core/Component', "sprd/error/ProductCreationError"],
 
                 return {
                     customerErrorMessage: customerErrorMessage,
-                    detailedErrorMessage: detailedErrorMessage
+                    detailedErrorMessage: detailedErrorMessage,
+                    copyrightWord: copyrightWord
                 };
             }
         });
