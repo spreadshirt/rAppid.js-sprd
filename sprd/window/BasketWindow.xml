@@ -47,7 +47,7 @@
     </div>
 
     <div class="basket-footer">
-        <a onclick="close" class="btn left">
+        <a onclick="close" class="btn left continue-shopping">
             <span>${i18n.t('basket.continueShopping')}</span>
         </a>
         <div class="basket-summary">
