@@ -28,11 +28,11 @@
                                 </select>
                             </div>
                             <div class="basket-item-quantity">
-                                <a class="basket-item-remove round-action btn" onclick="removeBasketItem" visible="{eql(item.quantity,1)}">b</a>
-                                <a class="round-action removeArticle btn" onclick="decreaseQuantity" visible="{gt(item.quantity,1)}">-</a>
+                                <a class="basket-item-remove round-action btn" onclick="removeBasketItem" visible="{eql(item.quantity,1)}"></a>
+                                <a class="round-action removeArticle btn" onclick="decreaseQuantity" visible="{gt(item.quantity,1)}"></a>
                                 <input type="text" value="{item.quantity}" class="input-mini quantity-input"
                                        onchange="onQuantityChange"/>
-                                <a class="round-action addArticle btn" onclick="increaseQuantity">+</a>
+                                <a class="round-action addArticle btn" onclick="increaseQuantity"></a>
                             </div>
                             <div class="basket-item-price">
                                 {context.currency.formatValue(item.totalVatIncluded())}
@@ -47,6 +47,9 @@
     </div>
 
     <div class="basket-footer">
+        <a onclick="close" class="btn left">
+            <span>${i18n.t('basket.continueShopping')}</span>
+        </a>
         <div class="basket-summary">
             <div class="basket-discount" visible="{basket.discountVatIncluded()}">
                 {basket.discounts.at(0).discountScale.getDiscountById(basket.discounts.at(0).currentDiscount.id).credit.value}% ${i18n.t('basket.volumeDiscount')}:
