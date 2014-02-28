@@ -303,9 +303,11 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
         },
 
         fetch: function (options, callback) {
-            var self = this;
+            var self = this,
+                fetchState = this._fetch.state;
+
             this.callBase(options, function (err) {
-                if (!err) {
+                if (!err && fetchState !== 2) {
                     self.$originalProduct = self.clone();
                 }
                 callback && callback(err, self);
