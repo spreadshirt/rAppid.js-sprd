@@ -149,7 +149,8 @@ define(["js/core/Component", "require", "flow", "underscore", "sprd/model/User",
                         productType.$data,
                         newProductType.$data
                     ]);
-                    var vpString = vpCreator["generateVirtualProductString"](originalProductPayload, newProductType.$.id, null, designs, [
+                    var vpStringFunction = vpCreator["generateVirtualProductString"];
+                    var vpString = vpStringFunction && vpStringFunction(originalProductPayload, newProductType.$.id, null, designs, [
                         productType.$data,
                         newProductType.$data
                     ]);
