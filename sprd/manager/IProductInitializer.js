@@ -24,6 +24,11 @@ define(["js/core/Component", "js/core/Injection", "flow", "js/core/Bus", "sprd/m
             // hook
         },
 
+        getProductManager: function () {
+            var injection = this.$injection;
+            return injection.getInstance(IProductManager);
+        },
+
         _initializationComplete: function() {
 
             this.callBase();
@@ -31,7 +36,7 @@ define(["js/core/Component", "js/core/Injection", "flow", "js/core/Bus", "sprd/m
             var bus = this.$.bus,
                 injection = this.$injection;
 
-            var productManager = injection.getInstance(IProductManager);
+            var productManager = this.getProductManager();
             var designConfigurationManager;
             var textConfigurationManager;
 
