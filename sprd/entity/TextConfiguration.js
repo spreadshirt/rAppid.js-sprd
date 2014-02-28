@@ -34,7 +34,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.callBase(attributes);
 
                 copyrightWordList.bind("add", function () {
-
+                    this.validateText();
                 }, this);
             },
 
