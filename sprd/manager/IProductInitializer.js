@@ -58,7 +58,18 @@ define(["js/core/Component", "js/core/Injection", "flow", "js/core/Bus", "sprd/m
             });
         },
 
-        initializeArticle: function(article, callback) {
+        /***
+         * @param {sprd.model.Article} article
+         * @param {Object} [options]
+         * @param {Function} callback
+         */
+        initializeArticle: function(article, options, callback) {
+
+            if (arguments.length === 2) {
+                callback = options;
+                options = null;
+            }
+
             var self = this;
 
             //noinspection JSValidateTypes
@@ -67,14 +78,29 @@ define(["js/core/Component", "js/core/Injection", "flow", "js/core/Bus", "sprd/m
                     article.fetch(null, cb);
                 })
                 .seq("product", function(cb) {
-                    self.initializeProduct(article.$.product, cb);
+                    self.initializeProduct(article.$.product, options, cb);
                 })
                 .exec(function(err, results) {
                     callback && callback(err, results.product);
                 });
         },
 
-        initializeProduct: function(product, callback) {
+        /***
+         *
+         * @param {sprd.model.Product} product
+         * @param {Object} [options]
+         * @param {Function} callback
+         */
+        initializeProduct: function(product, options, callback) {
+
+            if (arguments.length === 2) {
+                callback = options;
+                options = null;
+            }
+
+            if (options && options.clone) {
+                product = product.clone(options.clone);
+            }
 
             var bus = this.$.bus,
                 self = this;
