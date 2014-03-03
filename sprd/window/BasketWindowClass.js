@@ -108,8 +108,14 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
         },
 
         removeBasketItem: function (e, el) {
-            var basketItem = el.find('item');
-            this.$.basketManager.removeBasketItem(basketItem);
+            var basketItem = el.find('item'),
+                basketManager = this.$.basketManager;
+
+            basketManager.removeBasketItem(basketItem);
+
+            if (basketManager.$.basket.$.basketItems.$items.length === 0) {
+                this._emptyBasket();
+            }
         },
 
         decreaseQuantity: function (e) {
