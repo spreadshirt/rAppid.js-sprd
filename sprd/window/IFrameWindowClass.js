@@ -8,7 +8,8 @@ define(["xaml!js/ui/Dialog", "js/core/History", "js/core/I18n"], function (Dialo
             src: null,
             closable: true,
             closeOnBackdrop: true,
-            "class": "iframe-window"
+            "class": "iframe-window",
+            loaded: false
         },
 
         inject: {
@@ -26,6 +27,10 @@ define(["xaml!js/ui/Dialog", "js/core/History", "js/core/I18n"], function (Dialo
 
         navigateTo: function () {
             // HOOK: Will be overwritten.
+        },
+
+        loaded: function () {
+            this.set("loaded", true);
         },
 
         _onbackdropClick: function() {
