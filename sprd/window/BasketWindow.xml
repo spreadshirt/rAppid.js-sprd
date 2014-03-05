@@ -28,7 +28,7 @@
                                 </select>
                             </div>
                             <div class="basket-item-quantity">
-                                <a class="basket-item-remove round-action btn" onclick="removeBasketItem" visible="{eql(item.quantity,1)}"></a>
+                                <a class="basket-item-remove round-action btn" onclick="removeBasketItem(item)" visible="{eql(item.quantity,1)}"></a>
                                 <a class="round-action removeArticle btn" onclick="decreaseQuantity" visible="{gt(item.quantity,1)}"></a>
                                 <input type="text" value="{item.quantity}" class="input-mini quantity-input"
                                        onchange="onQuantityChange"/>
