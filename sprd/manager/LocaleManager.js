@@ -66,11 +66,13 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
         getLanguage: function (language) {
 
+            var navigator = this.$stage.$window.navigator || {};
+
             if (language && this.supportsLanguage(language)) {
                 return language;
             }
 
-            var browserLanguage = (navigator.language || navigator.browserLanguage || navigator.systemLanguage || navigator.userLanguage).split("-")[0];
+            var browserLanguage = (navigator.language || navigator.browserLanguage || navigator.systemLanguage || navigator.userLanguage || "").split("-")[0];
             return this.determinateLanguage(this.getHost(), browserLanguage, this.$.supportedLanguages, this.$.fallbackLanguage);
         },
 
