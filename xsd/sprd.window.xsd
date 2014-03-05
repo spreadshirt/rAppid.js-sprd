@@ -58,6 +58,7 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="src"/>
+                <attribute name="loaded"/>
             </extension>
         </complexContent>
     </complexType>
@@ -71,6 +72,7 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="src"/>
+                <attribute name="loaded"/>
             </extension>
         </complexContent>
     </complexType>
