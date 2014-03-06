@@ -59,11 +59,21 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
             "on:colorSelected"
         ],
 
+        ctor: function() {
+            this.callBase();
+
+            this.bind("colorPicker", "change:menuVisible", function() {
+                if (!this.$.colorPicker.$.menuVisible) {
+                    this.set("selectedLayer", null);
+                }
+            }, this);
+        },
+
         _commitLayers: function(layers) {
 
-            if (!layers) {
-                this.set("selectedLayer", null);
-            } else if (this.$.autoSelectLayer) {
+            this.set("selectedLayer", null);
+
+            if (layers && this.$.autoSelectLayer) {
                 var configuration = this.$.configuration,
                     layerIndex = 0;
                 if (configuration && configuration.$lastLayerIndex) {
