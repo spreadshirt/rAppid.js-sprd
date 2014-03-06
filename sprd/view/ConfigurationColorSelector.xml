@@ -1,22 +1,21 @@
 <view:ConfigurationColorSelectorClass xmlns="http://www.w3.org/1999/xhtml"
                                       xmlns:view="sprd.view" xmlns:js="js.core" xmlns:ui="js.ui">
-    <ui:SelectionView items="{layers()}" indexKey="layer" class="layer-buttons"
+    <ui:SelectionView items="{layers}" itemKey="layer" class="layer-buttons"
                       allowDeselection="true"
-                      selectedItem="{layerIndex}">
+                      selectedItem="{selectedLayer}">
         <js:Template name="item">
-            <a class="round-btn layer-button layer-button-${layer}"
-               onclick="_handleLayerSelect">
+            <a class="round-btn layer-button layer-button-${layer.index}" onclick="selectLayer(event,layer)">
                 <view:PrintColorImage class="icon"
-                                          printColor="{configuration.printColors.at(layer)}"
+                                          printColor="{configuration.printColors.at(layer.index)}"
                                           display="block"/>
             </a>
         </js:Template>
     </ui:SelectionView>
 
-    <ui:MenuButton cid="colorPicker" class="design-color-picker-button for-layer-{layerIndex}" menuVisible="{isLayerSelected()}">
+    <ui:MenuButton cid="colorPicker" class="design-color-picker-button for-layer-{selectedLayer.index}" menuVisible="{boolean(selectedLayer)}">
         <view:SimpleColorPicker
                 class="design-color-picker"
-                color="{configuration.printColors.at(layerIndex)}"
+                color="{configuration.printColors.at(selectedLayer.index)}"
                 colors="{_printTypeToColors(configuration.printType)}"
                 oncolorSelect="_handleColorSelect">
             <js:Template name="color-item">

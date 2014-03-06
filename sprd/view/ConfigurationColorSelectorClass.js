@@ -43,7 +43,11 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
              */
             configuration: null,
 
-            layerIndex: null
+            layers: "{layers()}",
+
+            autoSelectLayer: false,
+
+            selectedLayer: null
         },
 
         inject: {
@@ -51,23 +55,41 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
             i18n: I18n
         },
 
-        _handleLayerSelect: function (e) {
-            e.stopPropagation();
-            if (e.target.$.selected) {
-                var layer = e.target.find('layer');
-                this.set({
-                    layerIndex: layer,
-                    showAppearanceSelector: false
-                });
+        events: [
+            "on:colorSelected"
+        ],
 
-            } else {
-                this.set('layerIndex', null);
+        _commitLayers: function(layers) {
+
+            if (!layers) {
+                this.set("selectedLayer", null);
+            } else if (this.$.autoSelectLayer) {
+                this.set("selectedLayer", layers[0]);
             }
+
+        },
+
+        selectLayer: function(e, layer) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (layer !== this.$.selectedLayer) {
+                this.set("selectedLayer", layer);
+            } else {
+                this.set("selectedLayer", null)
+            }
+
+        },
+
+        boolean: function(v) {
+            return !!v;
         },
 
         _handleColorSelect: function (e) {
             if (this.$.configuration) {
-                this.$.configuration.setColor(this.$.layerIndex, e.$);
+                this.$.configuration.setColor(this.$.selectedLayer.index, e.$);
+                this.trigger("on:colorSelected");
 
                 // TODO: trigger custom event
                 this.$.bus.trigger('Application.productChanged', this.$.product);
@@ -95,13 +117,19 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
             }
 
             if (configuration instanceof TextConfiguration) {
-                return [0];
+                return [{
+                    index: 0
+                }];
             } else if (configuration instanceof DesignConfiguration) {
                 if (configuration.$.printType.$.id === PrintType.Mapping.SpecialFlex) {
-                    return [0];
+                    return [{
+                        index: 0
+                    }];
                 }
                 return configuration.$.printColors.toArray(function (item, index) {
-                    return index;
+                    return {
+                        index: index
+                    };
                 });
             }
         }.onChange("configuration").on(["configuration", "change:printType"]),
@@ -129,13 +157,7 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
             }
 
             return null;
-        },
-
-        isLayerSelected: function () {
-            return this.$.layerIndex != null;
-        }.onChange("layerIndex"),
-
-
+        }
     });
 
 });
