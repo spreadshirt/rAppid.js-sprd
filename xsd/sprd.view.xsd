@@ -169,7 +169,9 @@
                     </documentation>
                     </annotation>
                 </attribute>
-                <attribute name="layerIndex"/>
+                <attribute name="layers" default="{layers()}"/>
+                <attribute name="autoSelectLayer"/>
+                <attribute name="selectedLayer"/>
             </extension>
         </complexContent>
     </complexType>
@@ -189,7 +191,10 @@
                     </documentation>
                     </annotation>
                 </attribute>
-                <attribute name="layerIndex"/>
+                <attribute name="layers" default="{layers()}"/>
+                <attribute name="autoSelectLayer"/>
+                <attribute name="selectedLayer"/>
+                <attribute name="oncolorSelected" default="_onColorSelectedHandler" type="string"/>
             </extension>
         </complexContent>
     </complexType>
