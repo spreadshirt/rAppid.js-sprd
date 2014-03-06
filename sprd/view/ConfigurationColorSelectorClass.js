@@ -64,7 +64,13 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
             if (!layers) {
                 this.set("selectedLayer", null);
             } else if (this.$.autoSelectLayer) {
-                this.set("selectedLayer", layers[0]);
+                var configuration = this.$.configuration,
+                    layerIndex = 0;
+                if (configuration && configuration.$lastLayerIndex) {
+                    layerIndex = configuration.$lastLayerIndex;
+                }
+
+                this.set("selectedLayer", layers[layerIndex]);
             }
 
         },
@@ -73,6 +79,11 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
 
             e.preventDefault();
             e.stopPropagation();
+
+            var configuration = this.$.configuration;
+            if (configuration && layer) {
+                configuration.$lastLayerIndex = layer.index;
+            }
 
             if (layer !== this.$.selectedLayer) {
                 this.set("selectedLayer", layer);
