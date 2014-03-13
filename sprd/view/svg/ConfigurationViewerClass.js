@@ -806,8 +806,18 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
                 }
 
-                this.focus();
 
+                var window = this.dom(this.$stage.$window),
+                    f = function (e) {
+                        // capture phase event to prevent click
+                        // which closes menus etc.
+                        e.stopPropagation();
+                        window.unbindDomEvent("click", f, true);
+                    };
+
+                window.bindDomEvent("click", f, true);
+
+                this.focus();
                 this._stopTransformation();
             },
 
