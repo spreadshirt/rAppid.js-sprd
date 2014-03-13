@@ -156,11 +156,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
         _clickHandler: function (e) {
             if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent && e.domEvent.target !== this.$.textArea.$el) {
-                if (!this.doNotDeselectConfiguration) {
-                    this.set('selectedConfiguration', null);
-                }
+                this.set('selectedConfiguration', null);
             }
-
             e.preventDefault();
             this.set('focused', true);
         },

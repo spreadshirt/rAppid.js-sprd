@@ -806,21 +806,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
                 }
 
-                var productViewer = this.$.productViewer;
-
-                if (productViewer) {
-                    productViewer = productViewer.$parent;
-
-                    // chrome mouse up bug, also triggers click event on product viewer
-                    // which causes a deselection of the configuration
-                    productViewer.doNotDeselectConfiguration = true;
-
-                    setTimeout(function() {
-                        productViewer.doNotDeselectConfiguration = false;
-                    }, 100);
-                }
-
                 this.focus();
+
                 this._stopTransformation();
             },
 
