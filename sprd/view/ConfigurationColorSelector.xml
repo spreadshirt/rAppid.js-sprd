@@ -24,7 +24,9 @@
 
             <js:Template name="preview-item">
                 <view:PrintColorImage printColor="{item}"/>
-                <span>{nameForColor(item)}</span>
+                <p>
+                    <span>{nameForColor(item)}</span>
+                </p>
             </js:Template>
         </view:SimpleColorPicker>
 
