@@ -817,6 +817,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 window.bindDomEvent("click", f, true);
 
+                // chrome does it right and dispatches a click, but
+                // the mobile devices and also ff, safari needs to unbind it time based. sucks.
+                setTimeout(function() {
+                    window.unbindDomEvent("click", f, true);
+                }, 100);
+
                 this.focus();
                 this._stopTransformation();
             },
