@@ -1,7 +1,7 @@
 define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType'],
     function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType) {
 
-    var undef;
+    var undefined;
 
     return ProductBase.inherit("sprd.model.Product", {
 
@@ -112,6 +112,17 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
             return null;
         }.onChange('appearance', 'productType'),
+
+        getDefaultView: function() {
+            var productType = this.$.productType,
+                viewId = this.get("defaultValues.defaultView.id");
+
+            if (productType) {
+                return productType.getViewById(viewId) || productType.getDefaultView();
+            }
+
+            return null;
+        },
 
         _onConfigurationOffsetChanged: function(e) {
 
@@ -292,9 +303,11 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
         },
 
         fetch: function (options, callback) {
-            var self = this;
+            var self = this,
+                fetchState = this._fetch.state;
+
             this.callBase(options, function (err) {
-                if (!err) {
+                if (!err && fetchState !== 2) {
                     self.$originalProduct = self.clone();
                 }
                 callback && callback(err, self);
@@ -315,7 +328,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
             if (this.$originalProduct) {
                 if (this.hasChanges()) {
-                    this.set('id', undef);
+                    this.set('id', undefined);
                 } else {
                     this.set({
                         id: this.$originalProduct.$.id,

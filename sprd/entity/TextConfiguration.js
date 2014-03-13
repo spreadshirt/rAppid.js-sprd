@@ -1,13 +1,16 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager"],
-    function (Configuration, flow, Size, _, PrintType, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager", "js/core/List"],
+    function (Configuration, flow, Size, _, PrintType, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager, List) {
 
-        return Configuration.inherit('sprd.entity.TextConfiguration', {
+        var copyrightWordList;
+
+        var TextConfiguration = Configuration.inherit('sprd.entity.TextConfiguration', {
             defaults: {
                 textArea: null,
                 textFlow: null,
                 composedTextFlow: null,
                 selection: null,
-                bound: null
+                bound: null,
+                copyrightWordList: null
             },
 
             inject: {
@@ -19,6 +22,21 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
             type: "text",
+
+            ctor: function (attributes) {
+
+                attributes = attributes || {};
+
+                _.defaults(attributes, {
+                    copyrightWordList: TextConfiguration.getCopyrightWordList()
+                });
+
+                this.callBase(attributes);
+
+                copyrightWordList.bind("add", function () {
+                    this.validateText();
+                }, this);
+            },
 
             init: function (callback) {
 
@@ -63,6 +81,9 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             _onTextFlowChange: function () {
                 var self = this;
+
+                this.validateText();
+
                 this._composeText(false, function () {
                     self._debounceFunctionCall(function () {
                         self.$.bus && self.$.bus.trigger('Application.productChanged', null, self);
@@ -110,6 +131,28 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                     callback && callback(err);
                 });
+            },
+
+            validateText: function () {
+                this._debounceFunctionCall(this._validateText, "validateText", 300);
+            },
+
+            _validateText: function () {
+                var textFlow = this.$.textFlow,
+                    badWord;
+
+                if (textFlow && copyrightWordList && copyrightWordList.size()) {
+                    var text = (textFlow.text() || "").toLowerCase();
+
+                    if (text.length > 1) {
+                        // check that we don't contain copyright content
+                        badWord = copyrightWordList.find(function (word) {
+                            return text.indexOf(word.toLowerCase()) !== -1;
+                        });
+                    }
+                }
+
+                this._setError("copyright", badWord);
             },
 
             _validatePrintTypeSize: function (printType, width, height, scale) {
@@ -384,7 +427,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     unit: "mm",
                     svg: {
                         text: text,
-                        viewBox: [0,0,text.width,text.height].join(" ")
+                        viewBox: [0, 0, text.width, text.height].join(" ")
                     }
                 };
 
@@ -515,7 +558,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             isReadyForCompose: function () {
                 return !!this.$.composedTextFlow;
             },
-            isDeepEqual: function(b){
+            isDeepEqual: function (b) {
                 var comparableProperties = ['offset', 'rotation', 'printType', 'printColors', 'scale', 'printArea'],
                     i,
                     property,
@@ -528,14 +571,14 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     originalProperty = b.$[property];
 
                     if (this.$.hasOwnProperty(property)) {
-                        if (newProperty === null && originalProperty !== null){
+                        if (newProperty === null && originalProperty !== null) {
                             return false;
                         } else if (newProperty !== null && originalProperty === null) {
                             return false;
                         } else if (newProperty.isDeepEqual && newProperty.isDeepEqual instanceof Function) {
                             if (!newProperty.isDeepEqual(originalProperty)) {
                                 return false;
-                            };
+                            }
                         } else {
                             if (newProperty !== originalProperty) {
                                 return false;
@@ -544,13 +587,23 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     }
                 }
 
-                if(this.$.textFlow === null && b.$.textFlow === null){
+                if (this.$.textFlow === null && b.$.textFlow === null) {
                     return true;
-                } else if(this.$.textFlow){
+                } else if (this.$.textFlow) {
                     return this.$.textFlow.isDeepEqual(b.$.textFlow);
                 }
                 return false;
             }
 
+        }, {
+
+            getCopyrightWordList: function() {
+                copyrightWordList = copyrightWordList || new List();
+                return copyrightWordList;
+            }
+
         });
+
+
+        return TextConfiguration;
     });

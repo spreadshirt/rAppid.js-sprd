@@ -11,6 +11,8 @@
     <element name="ArticleImage" type="ns:ArticleImage"/>
     <element name="ColorSelector" type="ns:ColorSelector"/>
     <element name="ColorSelectorClass" type="ns:ColorSelectorClass"/>
+    <element name="ConfigurationColorSelector" type="ns:ConfigurationColorSelector"/>
+    <element name="ConfigurationColorSelectorClass" type="ns:ConfigurationColorSelectorClass"/>
     <element name="DesignImage" type="ns:DesignImage"/>
     <element name="DropDownSizeSelector" type="ns:DropDownSizeSelector"/>
     <element name="DropDownSizeSelectorClass" type="ns:DropDownSizeSelectorClass"/>
@@ -21,6 +23,7 @@
     <element name="MiniBasket" type="ns:MiniBasket"/>
     <element name="MiniBasketClass" type="ns:MiniBasketClass"/>
     <element name="PrintColorImage" type="ns:PrintColorImage"/>
+    <element name="PrintColorImageClass" type="ns:PrintColorImageClass"/>
     <element name="PrintTypePanelBase" type="ns:PrintTypePanelBase"/>
     <element name="PrintTypeSelector" type="ns:PrintTypeSelector"/>
     <element name="PrintTypeSelectorClass" type="ns:PrintTypeSelectorClass"/>
@@ -38,6 +41,9 @@
     <element name="SizeSelector" type="ns:SizeSelector"/>
     <element name="SizeSelectorClass" type="ns:SizeSelectorClass"/>
     <element name="UserImage" type="ns:UserImage"/>
+    <element name="VirtualProductImage" type="ns:VirtualProductImage"/>
+    <element name="VirtualProductView" type="ns:VirtualProductView"/>
+    <element name="VirtualProductViewClass" type="ns:VirtualProductViewClass"/>
     <complexType name="AppearanceColor">
         <complexContent>
             <extension base="ns:AppearanceColorClass">
@@ -144,6 +150,46 @@
                 <attribute name="colorWidth" default="25"/>
                 <attribute name="productType"/>
                 <attribute name="onappearanceSelect" default="_onAppearanceSelectHandler" type="string"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ConfigurationColorSelector">
+        <complexContent>
+            <extension base="ns:ConfigurationColorSelectorClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ConfigurationColorSelector"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="configuration">
+                    <annotation>
+                        <documentation>
+                        the configuration, to switch the color
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="layerIndex"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ConfigurationColorSelectorClass">
+        <complexContent>
+            <extension base="ns1:View">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ConfigurationColorSelectorClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="configuration">
+                    <annotation>
+                        <documentation>
+                        the configuration, to switch the color
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="layerIndex"/>
             </extension>
         </complexContent>
     </complexType>
@@ -416,14 +462,32 @@
     </complexType>
     <complexType name="PrintColorImage">
         <complexContent>
-            <extension base="ns:Image">
+            <extension base="ns:PrintColorImageClass">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.view.PrintColorImage"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+                <attribute name="data-print-color-id" default="{printColor.id}"/>
                 <attribute name="printColor"/>
+                <attribute name="loaded"/>
+                <attribute name="backgroundColor" default="{backgroundColor()}"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="PrintColorImageClass">
+        <complexContent>
+            <extension base="ns1:View">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.PrintColorImageClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="printColor"/>
+                <attribute name="loaded"/>
+                <attribute name="backgroundColor" default="{backgroundColor()}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -749,6 +813,54 @@ set the default appearance of the product is used.
                     </documentation>
                     </annotation>
                 </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="VirtualProductImage">
+        <complexContent>
+            <extension base="ns:Image">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.VirtualProductImage"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="virtualProduct"/>
+                <attribute name="viewId"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="VirtualProductView">
+        <complexContent>
+            <extension base="ns:VirtualProductViewClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.VirtualProductView"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="virtualProduct"/>
+                <attribute name="perspective"/>
+                <attribute name="editable"/>
+                <attribute name="width" default="200"/>
+                <attribute name="height" default="200"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="VirtualProductViewClass">
+        <complexContent>
+            <extension base="ns1:View">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.VirtualProductViewClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="virtualProduct"/>
+                <attribute name="perspective"/>
+                <attribute name="editable"/>
+                <attribute name="width" default="200"/>
+                <attribute name="height" default="200"/>
             </extension>
         </complexContent>
     </complexType>

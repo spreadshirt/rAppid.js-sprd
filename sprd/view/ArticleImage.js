@@ -1,4 +1,4 @@
-define(["sprd/view/ProductImage"], function (ProductImage) {
+define(["sprd/view/ProductImage", "sprd/data/ImageService"], function (ProductImage, ImageService) {
 
     return ProductImage.inherit("sprd.view.ArticleImage", {
 
@@ -18,7 +18,7 @@ define(["sprd/view/ProductImage"], function (ProductImage) {
                 id = Math.floor(parseInt(id.substr(id.length - 2)) / 5);
                 url = url.replace(/:\/\/image/, '://image' + id);
 
-                if (this.$.type === ProductImage.TYPE_COMPOSITION) {
+                if (this.$.type === ImageService.ProductImageType.COMPOSITION) {
                     url = url.replace("products", "compositions");
                 }
 

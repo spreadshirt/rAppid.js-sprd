@@ -1,6 +1,8 @@
 define(['js/core/Component', 'underscore'], function (Component, _) {
 
-    var exceptionSizes = [120, 178];
+    var exceptionSizes = [120, 178],
+        PRODUCT = "product",
+        COMPOSITION = "composition";
 
     var ImageService = Component.inherit('sprd.data.ImageService', {
 
@@ -10,13 +12,33 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             gateway: '/image-server/v1'
         },
 
+        virtualProductImage: function(product, vpString, viewId, options) {
+            return this.buildUrl([
+                'products',
+                vpString,
+                'views',
+                viewId
+            ], ImageService.getImageSizeParameter(options), parseInt(product ? product.$.id : 0));
+        },
+
+        productImage: function (productId, viewId, appearanceId, type, options) {
+            return this.buildUrl([
+                type === PRODUCT ? "products" : "compositions",
+                productId,
+                "views",
+                viewId
+            ],
+            _.extend({ appearanceId: appearanceId}, ImageService.getImageSizeParameter(options)),
+            parseInt(productId || 0) + parseInt(viewId || 0) + parseInt(appearanceId || 0));
+        },
+
         productTypeImage: function (productTypeId, viewId, appearanceId, options) {
             return this.buildUrl(['productTypes', productTypeId, 'views', viewId, 'appearances', appearanceId],
                 ImageService.getImageSizeParameter(options), parseInt(productTypeId || 0) + parseInt(viewId || 0) + parseInt(appearanceId || 0));
         },
 
         productTypeSizeImage: function (productTypeId, options) {
-            return this.buildUrl(["productTypes", productTypeId, "variants", "size"], ImageService.getImageSizeParameter(options), productTypeId)
+            return this.buildUrl(["productTypes", productTypeId, "variants", "size"], ImageService.getImageSizeParameter(options), productTypeId);
         },
 
         designImage: function (designId, options) {
@@ -115,6 +137,11 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         if (ret.length) {
             return ret.join('&');
         }
+    };
+
+    ImageService.ProductImageType = {
+        PRODUCT: PRODUCT,
+        COMPOSITION: COMPOSITION
     };
 
     return ImageService;

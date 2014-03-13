@@ -20,6 +20,7 @@ define(["js/core/Component", "js/core/ExternalInterface", "js/core/Bus", "sprd/m
             externalInterface.addCallback("getStartParameter", this.getStartParameter, this);
             externalInterface.addCallback("setFeatureState", this.setFeatureState, this);
             externalInterface.addCallback("getFeatureState", this.getFeatureState, this);
+            externalInterface.addCallback("supportsSvg", this.supportsSvg, this);
 
         },
 
@@ -42,6 +43,10 @@ define(["js/core/Component", "js/core/ExternalInterface", "js/core/Bus", "sprd/m
 
         getFeatureState: function (featureName) {
             return this.$.featureManager.getFeatureState(featureName);
+        },
+
+        supportsSvg: function() {
+            return (!!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', "svg").createSVGRect);
         }
 
     });

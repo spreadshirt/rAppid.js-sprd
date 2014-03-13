@@ -86,8 +86,10 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
                     value = parseInt(value);
                 }
 
-                if (isNaN(value) || value < 1) {
+                if (isNaN(value)) {
                     e.target.set("value", basketItem.$.quantity);
+                } else if (value === 0) {
+                    this.removeBasketItem(basketItem)
                 } else {
                     basketItem.set('quantity', value);
                     this.updateBasket();
@@ -107,9 +109,14 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
             this.$.basketManager.saveBasketDebounced();
         },
 
-        removeBasketItem: function (e, el) {
-            var basketItem = el.find('item');
-            this.$.basketManager.removeBasketItem(basketItem);
+        removeBasketItem: function (basketItem) {
+            var basketManager = this.$.basketManager;
+
+            basketManager.removeBasketItem(basketItem);
+
+            if (basketManager.$.basket.$.basketItems.$items.length === 0) {
+                this._emptyBasket();
+            }
         },
 
         decreaseQuantity: function (e) {

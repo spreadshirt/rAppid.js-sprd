@@ -10,8 +10,11 @@
     <element name="FeatureManager" type="ns:FeatureManager"/>
     <element name="IBasketManager" type="ns:IBasketManager"/>
     <element name="IProductInitializer" type="ns:IProductInitializer"/>
+    <element name="LocaleService" type="ns:LocaleService"/>
+    <element name="ProductCreationErrorManager" type="ns:ProductCreationErrorManager"/>
     <element name="ProductInitializer" type="ns:ProductInitializer"/>
     <element name="TrackingManagerBase" type="ns:TrackingManagerBase"/>
+    <element name="VirtualProductManager" type="ns:VirtualProductManager"/>
     <complexType name="ApiBasketManager">
         <complexContent>
             <extension base="ns:IBasketManager">
@@ -166,6 +169,37 @@ BasketItem
             </extension>
         </complexContent>
     </complexType>
+    <complexType name="LocaleService">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.util.LocaleService"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="fallbackLanguage" default="en"/>
+                <attribute name="fallbackCountry" default="EU"/>
+                <attribute name="supportedLanguages"/>
+                <attribute name="supportedCountries"/>
+                <attribute name="platform" default="EU"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ProductCreationErrorManager">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.ProductCreationErrorManager"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="errorMessage"/>
+                <attribute name="copyrightErrorMessage"/>
+            </extension>
+        </complexContent>
+    </complexType>
     <complexType name="ProductInitializer">
         <complexContent>
             <extension base="ns:DesignProductInitializer">
@@ -187,6 +221,22 @@ BasketItem
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="VirtualProductManager">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.VirtualProductManager">
+                                 necessary dependency
+                            </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="context"/>
+                <attribute name="platform" default="EU"/>
             </extension>
         </complexContent>
     </complexType>

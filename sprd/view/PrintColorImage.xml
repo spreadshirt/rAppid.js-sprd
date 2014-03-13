@@ -1,0 +1,3 @@
+<view:PrintColorImageClass xmlns:view="sprd.view" xmlns:sprd="sprd.view" data-print-color-id="{printColor.id}">
+    <sprd:Image src="{url()}" alt="{alt()}" visible="{isImagePrintColor()}"/>
+</view:PrintColorImageClass>

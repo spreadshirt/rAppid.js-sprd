@@ -96,6 +96,7 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="locale" default="en_EU"/>
+                <attribute name="keepRawData"/>
             </extension>
         </complexContent>
     </complexType>
@@ -109,6 +110,7 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="locale" default="en_EU"/>
+                <attribute name="keepRawData"/>
             </extension>
         </complexContent>
     </complexType>

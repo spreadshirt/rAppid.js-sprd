@@ -18,7 +18,7 @@
                             </div>
                             <div class="basket-item-size">
                                 <select items="{item.element.getProduct().productType.getAvailableSizesForAppearance(item.element.appearance)}"
-                                        selectedItem="{{item.element.size}}" class="input-small" itemKey="size"
+                                        selectedItem="{{item.element.size}}" class="input-small dropdown-toggle btn" itemKey="size"
                                         keyPath="id"
                                         needsSelection="false"
                                         onchange="onSizeChange">
@@ -28,11 +28,11 @@
                                 </select>
                             </div>
                             <div class="basket-item-quantity">
-                                <a class="basket-item-remove round-action" onclick="removeBasketItem" visible="{eql(item.quantity,1)}">b</a>
-                                <a class="round-action removeArticle" onclick="decreaseQuantity" visible="{gt(item.quantity,1)}">-</a>
+                                <a class="basket-item-remove round-action btn" onclick="removeBasketItem(item)" visible="{eql(item.quantity,1)}"/>
+                                <a class="round-action removeArticle btn" onclick="decreaseQuantity" visible="{gt(item.quantity,1)}"/>
                                 <input type="text" value="{item.quantity}" class="input-mini quantity-input"
                                        onchange="onQuantityChange"/>
-                                <a class="round-action addArticle" onclick="increaseQuantity">+</a>
+                                <a class="round-action addArticle btn" onclick="increaseQuantity"/>
                             </div>
                             <div class="basket-item-price">
                                 {context.currency.formatValue(item.totalVatIncluded())}
@@ -47,6 +47,9 @@
     </div>
 
     <div class="basket-footer">
+        <a onclick="close" class="btn left continue-shopping">
+            <span>${i18n.t('basket.continueShopping')}</span>
+        </a>
         <div class="basket-summary">
             <div class="basket-discount" visible="{basket.discountVatIncluded()}">
                 {basket.discounts.at(0).discountScale.getDiscountById(basket.discounts.at(0).currentDiscount.id).credit.value}% ${i18n.t('basket.volumeDiscount')}:
@@ -66,7 +69,7 @@
                 </li>
             </ul>
         </div>
-        <a onclick="checkout" class="btn-success go-to-checkout" enabled="{checkoutEnabled()}">
+        <a onclick="checkout" class="btn-success btn prio go-to-checkout" enabled="{checkoutEnabled()}">
             <i/>
             <span>${i18n.t('basket.checkout')}</span>
         </a>

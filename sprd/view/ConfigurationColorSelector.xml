@@ -1,0 +1,33 @@
+<view:ConfigurationColorSelectorClass xmlns="http://www.w3.org/1999/xhtml"
+                                      xmlns:view="sprd.view" xmlns:js="js.core" xmlns:ui="js.ui">
+    <ui:SelectionView items="{layers}" itemKey="layer" class="layer-buttons"
+                      allowDeselection="true"
+                      selectedItem="{selectedLayer}">
+        <js:Template name="item">
+            <a class="round-btn layer-button layer-button-${layer.index}" onclick="selectLayer(event,layer)">
+                <view:PrintColorImage class="icon"
+                                          printColor="{configuration.printColors.at(layer.index)}"
+                                          display="block"/>
+            </a>
+        </js:Template>
+    </ui:SelectionView>
+
+    <ui:MenuButton cid="colorPicker" class="design-color-picker-button for-layer-{selectedLayer.index}" menuVisible="{boolean(selectedLayer)}">
+        <view:SimpleColorPicker
+                class="design-color-picker"
+                color="{configuration.printColors.at(selectedLayer.index)}"
+                colors="{_printTypeToColors(configuration.printType)}"
+                oncolorSelect="_handleColorSelect">
+            <js:Template name="color-item">
+                <view:PrintColorImage printColor="{item}" display="block"/>
+            </js:Template>
+
+            <js:Template name="preview-item">
+                <view:PrintColorImage printColor="{item}"/>
+                <span>{nameForColor(item)}</span>
+            </js:Template>
+        </view:SimpleColorPicker>
+
+    </ui:MenuButton>
+
+</view:ConfigurationColorSelectorClass>

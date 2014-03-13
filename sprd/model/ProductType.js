@@ -20,6 +20,11 @@ define(["sprd/data/SprdModel", "sprd/entity/ProductTypeView", "js/data/Entity", 
         },
 
         getViewById: function (id) {
+
+            if (!id) {
+                return null;
+            }
+
             if (this.$.views) {
                 for (var i = 0; i < this.$.views.$items.length; i++) {
                     var view = this.$.views.$items[i];
