@@ -683,7 +683,7 @@ set the default appearance of the product is used.
                 <attribute name="textAreaPosition"/>
                 <attribute name="removeEmptyTextConfiguration" default="true"/>
                 <attribute name="imageService"/>
-                <attribute name="errorKey" default="{product.configurationsOnViewErrorKey(view)}"/>
+                <attribute name="error" default="{product.configurationsOnViewError(view)}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -708,7 +708,7 @@ set the default appearance of the product is used.
                 <attribute name="textAreaPosition"/>
                 <attribute name="removeEmptyTextConfiguration" default="true"/>
                 <attribute name="imageService"/>
-                <attribute name="errorKey" default="{product.configurationsOnViewErrorKey(view)}"/>
+                <attribute name="error" default="{product.configurationsOnViewError(view)}"/>
                 <attribute name="onconfigurationSelect" default="_onConfigurationSelectHandler" type="string"/>
             </extension>
         </complexContent>
