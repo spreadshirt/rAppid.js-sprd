@@ -134,9 +134,9 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             }
         },
 
-        configurationsOnViewErrorKey: function(view) {
+        configurationsOnViewError: function(view) {
 
-            var errorKey = null,
+            var errorValue = null,
                 configurations;
 
             if (!view) {
@@ -163,19 +163,19 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
                     for (var key in configuration.$errors.$) {
                         if (configuration.$errors.$.hasOwnProperty(key)) {
-                            errorKey = configuration.$errors.$[key];
-                            if (errorKey) {
-                                errorKey = key;
-                                break;
+                            errorValue = configuration.$errors.$[key];
+                            if (errorValue) {
+                                return {
+                                    key: key,
+                                    value: errorValue
+                                };
                             }
                         }
                     }
                 }
             }
 
-            this.configurationsOnViewCache[viewId].errorKey = errorKey;
-
-            return errorKey;
+            return null;
 
         }.on("configurationValidChanged"),
 
