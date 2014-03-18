@@ -18,7 +18,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
             imageService: null,
 
-            errorKey: "{product.configurationsOnViewErrorKey(view)}",
+            error: "{product.configurationsOnViewError(view)}",
             componentClass: "product-viewer"
         },
 
