@@ -7,7 +7,7 @@
                                componentClass="product-view-selector"
                                product="null" viewHeight="50" viewWidth="50">
     <js:Template name="item">
-        <li class="{hasErrorClass(product.configurationsOnViewErrorKey(view))}">
+        <li class="{hasErrorClass(product.configurationsOnViewError(view))}">
             <view:ProductViewer view="{view}" product="{product}" width="{viewWidth}" height="{viewHeight}" editable="false"/>
         </li>
     </js:Template>
