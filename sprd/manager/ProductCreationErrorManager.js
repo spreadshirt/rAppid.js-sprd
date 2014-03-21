@@ -11,7 +11,7 @@ define(['js/core/Component', "sprd/error/ProductCreationError"],
                 var ret = message;
                 try {
                     var payload = JSON.parse(message);
-                    message = payload.message;
+                    ret = payload.message;
                 } catch (e) {
                 }
 
