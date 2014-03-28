@@ -22,8 +22,6 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
 
                 if (data instanceof Image) {
                     image = data;
-                } else if (data.$el && data.$el instanceof HTMLInputElement) {
-                    image = data;
                 } else if (_.isString(data)) {
                     image = new RemoteImage({
                         src: data
@@ -45,8 +43,6 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
 
 
             _uploadDesign: function (uploadDesign, restrictions, callback) {
-                var self = this;
-
                 if (restrictions instanceof Function) {
                     callback = restrictions;
                     restrictions = null;
@@ -118,9 +114,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                                     uploadDesign.set('uploadProgress', 100);
                                 };
 
-                            },
-                            imageServerEndPoint: self.get('imageServer.endPoint'),
-                            apiKey: self.get('imageServer.apiKey')
+                            }
                         }, cb);
                     })
                     .exec(function (err) {
