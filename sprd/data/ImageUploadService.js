@@ -43,6 +43,8 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
 
 
             _uploadDesign: function (uploadDesign, restrictions, callback) {
+                var self = this;
+
                 if (restrictions instanceof Function) {
                     callback = restrictions;
                     restrictions = null;
