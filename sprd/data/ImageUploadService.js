@@ -161,7 +161,6 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                             frameBody = frameContent.getElementsByTagName('body')[0];
 
                         if (frameBody.children.length === 0) {
-                            console.log('uploaded via iframe');
                             callback(null);
                         } else {
                             callback('Image Upload Error');
