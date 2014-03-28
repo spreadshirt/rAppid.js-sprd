@@ -20,7 +20,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                     restrictions = null;
                 }
 
-                if (data instanceof Image) {
+                if (data instanceof Image || data instanceof HTMLInputElement) {
                     image = data;
                 } else if (_.isString(data)) {
                     image = new RemoteImage({
@@ -100,29 +100,80 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                             id: design.$.id
                         });
 
-                        uploadImage.save({
-                            xhrBeforeSend: function (xhr) {
-                                uploadDesign.set('xhr', xhr);
+                        if (uploadDesign.$.image instanceof HTMLInputElement) {
+                            self._uploadViaIframe(uploadDesign.$.image, cb);
+                        } else {
+                            uploadImage.save({
+                                xhrBeforeSend: function (xhr) {
+                                    uploadDesign.set('xhr', xhr);
 
-                                if (xhr && xhr.upload) {
-                                    xhr.upload.onprogress = function (e) {
-                                        uploadDesign.set('uploadProgress', 100 / e.total * e.loaded);
+                                    if (xhr && xhr.upload) {
+                                        xhr.upload.onprogress = function (e) {
+                                            uploadDesign.set('uploadProgress', 100 / e.total * e.loaded);
+                                        };
+                                    }
+
+                                    xhr.onload = function () {
+                                        uploadDesign.set('uploadProgress', 100);
                                     };
                                 }
-
-                                xhr.onload = function () {
-                                    uploadDesign.set('uploadProgress', 100);
-                                };
-
-                            }
-                        }, cb);
+                            }, cb);
+                        }
                     })
                     .exec(function (err) {
                         uploadDesign.set('state', err ? UploadDesign.State.ERROR : UploadDesign.State.LOADED);
                         callback && callback(err, uploadDesign);
 
                     });
+            },
+
+            _uploadViaIframe: function (fileInputField, callback) {
+                var body = document.getElementsByTagName('body')[0],
+                    frame = document.createElement('iframe'),
+                    self = this,
+                    queryParameters,
+                    imageServer = self.$.imageServer;
+
+                // hide iframe
+                frame.width = 0;
+                frame.height = 0;
+                frame.style.position = 'absolute';
+                frame.style.visibility = 'hidden';
+
+                frame.onload = function () {
+                    var frameContent = this.contentDocument,
+                        frameBody = frameContent.getElementsByTagName('body')[0],
+                        uploadForm = document.createElement('form');
+
+                    queryParameters = '/designs/'+ self.get('id') + '?method=put&apiKey=' + imageServer.$.apiKey;
+
+                    fileInputField.name = 'upload_field';
+
+                    uploadForm.method = 'post';
+                    uploadForm.enctype = 'multipart/form-data';
+                    uploadForm.action = imageServer.$.endPoint + queryParameters;
+
+                    uploadForm.appendChild(fileInputField);
+                    frameBody.appendChild(uploadForm);
+
+                    this.onload = function () {
+                        var frameContent = this.contentDocument,
+                            frameBody = frameContent.getElementsByTagName('body')[0];
+
+                        if (frameBody.children.length === 0) {
+                            console.log('uploaded via iframe');
+                            callback(null);
+                        } else {
+                            callback('Image Upload Error');
+                        }
+
+                        this.parentNode.removeChild(this);
+                    };
+
+                    uploadForm.submit();
+                };
+
+                body.appendChild(frame);
             }
         });
-
     });
