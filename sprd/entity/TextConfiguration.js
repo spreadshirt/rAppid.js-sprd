@@ -446,7 +446,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                     }
                     new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new this.$.Style({printTypeColor: color})).doOperation();
+
+                    this.$.printColors.reset([color]);
                 }
+
             },
 
             getPossiblePrintTypes: function (appearance) {
