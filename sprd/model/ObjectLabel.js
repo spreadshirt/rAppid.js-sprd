@@ -2,7 +2,7 @@ define(['sprd/data/SprdModel', 'sprd/model/Label', 'sprd/model/ObjectType', 'spr
     return SprdModel.inherit('sprd.model.ObjectLabel', {
         schema: {
             label: Label,
-            type: ObjectType,
+            objectType: ObjectType,
             object: LabelObject
         }
     });

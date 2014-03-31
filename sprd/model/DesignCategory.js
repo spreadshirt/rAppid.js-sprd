@@ -37,6 +37,20 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], funct
 
         hasSubCategories: function () {
             return this.$.designCategories && this.$.designCategories.size();
+        },
+
+        entryCount: function() {
+            var ret = this.$.entryCount || 0;
+
+            var designCategories = this.$.designCategories;
+            if (designCategories) {
+                designCategories.each(function(category) {
+                    ret += (category.$.entryCount || 0)
+                });
+            }
+
+            return ret;
+
         }
 
     });

@@ -70,7 +70,25 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         if (svg.image[key]) {
                             values = svg.image[key].split(" ");
                             for (i = 0; i < values.length; i++) {
-                                printColors.push(printType[method](values[i]));
+                                printColor = printType[method](values[i]);
+
+                                if (!printColor && method === "getPrintColorById") {
+                                    printColor = printType.getClosestPrintColor(svg.image["printColorRGBs"].split(" ")[i]);
+                                }
+
+                                if (!printColor) {
+                                    if (printType.isPrintColorColorSpace()) {
+                                        printColor = printType.$.colors.at(0);
+                                    } else {
+                                        printColor = printType.getClosestPrintColor("#000000");
+                                    }
+                                }
+
+                                if (!printColor) {
+                                    console.log("No print color found for print type " + printType.$.id + " " + values[i]);
+                                }
+
+                                printColors.push(printColor);
                             }
 
                             colorsSet = true;

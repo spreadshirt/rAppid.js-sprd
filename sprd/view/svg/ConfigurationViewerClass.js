@@ -806,8 +806,24 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
                 }
 
-                this.focus();
 
+                var window = this.dom(this.$stage.$window),
+                    f = function (e) {
+                        // capture phase event to prevent click
+                        // which closes menus etc.
+                        e.stopPropagation();
+                        window.unbindDomEvent("click", f, true);
+                    };
+
+                window.bindDomEvent("click", f, true);
+
+                // chrome does it right and dispatches a click, but
+                // the mobile devices and also ff, safari needs to unbind it time based. sucks.
+                setTimeout(function() {
+                    window.unbindDomEvent("click", f, true);
+                }, 100);
+
+                this.focus();
                 this._stopTransformation();
             },
 
@@ -905,7 +921,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return 0.1 * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
-            deleteConfiguration: function () {
+            deleteConfiguration: function (e) {
+
+                if (!this.$hasTouch && e.domEvent.which !== 1) {
+                    // not a first mouse button click
+                    return;
+                }
+
                 if (this.$.product) {
                     var configuration = this.$.configuration,
                         productViewer = this.$.productViewer;

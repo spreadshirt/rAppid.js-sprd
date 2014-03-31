@@ -169,7 +169,9 @@
                     </documentation>
                     </annotation>
                 </attribute>
-                <attribute name="layerIndex"/>
+                <attribute name="layers" default="{layers()}"/>
+                <attribute name="autoSelectLayer"/>
+                <attribute name="selectedLayer"/>
             </extension>
         </complexContent>
     </complexType>
@@ -189,7 +191,10 @@
                     </documentation>
                     </annotation>
                 </attribute>
-                <attribute name="layerIndex"/>
+                <attribute name="layers" default="{layers()}"/>
+                <attribute name="autoSelectLayer"/>
+                <attribute name="selectedLayer"/>
+                <attribute name="oncolorSelected" default="_onColorSelectedHandler" type="string"/>
             </extension>
         </complexContent>
     </complexType>
@@ -678,7 +683,7 @@ set the default appearance of the product is used.
                 <attribute name="textAreaPosition"/>
                 <attribute name="removeEmptyTextConfiguration" default="true"/>
                 <attribute name="imageService"/>
-                <attribute name="errorKey" default="{product.configurationsOnViewErrorKey(view)}"/>
+                <attribute name="error" default="{product.configurationsOnViewError(view)}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -703,7 +708,7 @@ set the default appearance of the product is used.
                 <attribute name="textAreaPosition"/>
                 <attribute name="removeEmptyTextConfiguration" default="true"/>
                 <attribute name="imageService"/>
-                <attribute name="errorKey" default="{product.configurationsOnViewErrorKey(view)}"/>
+                <attribute name="error" default="{product.configurationsOnViewError(view)}"/>
                 <attribute name="onconfigurationSelect" default="_onConfigurationSelectHandler" type="string"/>
             </extension>
         </complexContent>

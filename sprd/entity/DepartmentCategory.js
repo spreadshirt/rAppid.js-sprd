@@ -6,7 +6,7 @@ define(["js/data/Entity","sprd/model/ProductType"], function (Entity, ProductTyp
 
             var productTypes = this.$.productTypes;
             if (productTypes) {
-                return productTypes.find(function(pt) {
+                return !!productTypes.find(function(pt) {
                     return pt.$.id === productTypeId;
                 });
             }

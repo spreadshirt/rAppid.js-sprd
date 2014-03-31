@@ -400,6 +400,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                 })
                 .exec(function (err) {
 
+                    self.trigger("productInitialized");
                     self.trigger("priceChanged");
 
                     if (err) {
