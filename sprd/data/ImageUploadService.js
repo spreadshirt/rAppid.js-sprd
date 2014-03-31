@@ -1,5 +1,5 @@
-define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sprd/model/UploadImage", "sprd/type/UploadDesign", "underscore", 'sprd/entity/FileSystemImage', 'sprd/entity/RemoteImage', "sprd/entity/Image"],
-    function (Component, ImageServerDataSource, flow, UploadImage, UploadDesign, _, FileSystemImage, RemoteImage, Image) {
+define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sprd/model/UploadImage", "sprd/type/UploadDesign", "underscore", 'sprd/entity/FileSystemImage', 'sprd/entity/RemoteImage', "sprd/entity/Image", 'js/data/IframeUpload'],
+    function (Component, ImageServerDataSource, flow, UploadImage, UploadDesign, _, FileSystemImage, RemoteImage, Image, IframeUpload) {
 
         return Component.inherit('sprd.data.ImageUploadService', {
 
@@ -20,7 +20,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                     restrictions = null;
                 }
 
-                if (data instanceof Image || data instanceof HTMLInputElement) {
+                if (data instanceof Image || data instanceof IframeUpload) {
                     image = data;
                 } else if (_.isString(data)) {
                     image = new RemoteImage({
@@ -102,8 +102,11 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                             id: design.$.id
                         });
 
-                        if (uploadDesign.$.image instanceof HTMLInputElement) {
-                            self._uploadViaIframe(uploadDesign.$.image, cb);
+                        if (uploadDesign.$.image instanceof IframeUpload) {
+                            uploadDesign.$.image.upload({
+                                url : self.$.imageServer.$.endPoint + '/designs/' + uploadDesign.$.id,
+                                queryParams: '?method=put&apiKey=' + self.$.imageServer.$.apiKey
+                            }, cb);
                         } else {
                             uploadImage.save({
                                 xhrBeforeSend: function (xhr) {
@@ -127,54 +130,6 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                         callback && callback(err, uploadDesign);
 
                     });
-            },
-
-            _uploadViaIframe: function (fileInputField, callback) {
-                var body = document.getElementsByTagName('body')[0],
-                    frame = document.createElement('iframe'),
-                    self = this,
-                    queryParameters,
-                    imageServer = self.$.imageServer;
-
-                // hide iframe
-                frame.width = 0;
-                frame.height = 0;
-                frame.style.position = 'absolute';
-                frame.style.visibility = 'hidden';
-
-                frame.onload = function () {
-                    var frameContent = this.contentDocument,
-                        frameBody = frameContent.getElementsByTagName('body')[0],
-                        uploadForm = document.createElement('form');
-
-                    queryParameters = '/designs/'+ self.get('id') + '?method=put&apiKey=' + imageServer.$.apiKey;
-
-                    fileInputField.name = 'upload_field';
-
-                    uploadForm.method = 'post';
-                    uploadForm.enctype = 'multipart/form-data';
-                    uploadForm.action = imageServer.$.endPoint + queryParameters;
-
-                    uploadForm.appendChild(fileInputField);
-                    frameBody.appendChild(uploadForm);
-
-                    this.onload = function () {
-                        var frameContent = this.contentDocument,
-                            frameBody = frameContent.getElementsByTagName('body')[0];
-
-                        if (frameBody.children.length === 0) {
-                            callback(null);
-                        } else {
-                            callback('Image Upload Error');
-                        }
-
-                        this.parentNode.removeChild(this);
-                    };
-
-                    uploadForm.submit();
-                };
-
-                body.appendChild(frame);
             }
         });
     });
