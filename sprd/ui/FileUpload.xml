@@ -1,0 +1,16 @@
+<parent:FileUploadClass xmlns="http://www.w3.org/1999/xhtml"
+                        xmlns:parent="sprd.ui" xmlns:js="js.core">
+
+    <js:Template name="iframe">
+        <iframe cid="uploadIframe" width="0" height="0" />
+    </js:Template>
+
+
+    <js:Template name="iframeContent">
+        <div>
+            <form cid="uploadForm" method="post" enctype="multipart/form-data">
+                <input name="upload_field" cid="iframeInput" type="file" />
+            </form>
+        </div>
+    </js:Template>
+</parent:FileUploadClass>
