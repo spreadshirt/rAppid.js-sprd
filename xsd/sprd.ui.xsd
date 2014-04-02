@@ -1,0 +1,32 @@
+<schema targetNamespace="sprd.ui"
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:ns1="js.ui"
+    xmlns:ns="sprd.ui">
+    <import/>
+    <element name="FileUpload" type="ns:FileUpload"/>
+    <element name="FileUploadClass" type="ns:FileUploadClass"/>
+    <complexType name="FileUpload">
+        <complexContent>
+            <extension base="ns:FileUploadClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.ui.FileUpload"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="FileUploadClass">
+        <complexContent>
+            <extension base="ns1:FileUpload">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.ui.FileUploadClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>
