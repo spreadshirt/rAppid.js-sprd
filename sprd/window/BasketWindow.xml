@@ -52,7 +52,7 @@
         </a>
         <div class="basket-summary">
             <div class="basket-discount" visible="{basket.discountVatIncluded()}">
-                {basket.discounts.at(0).discountScale.getDiscountById(basket.discounts.at(0).currentDiscount.id).credit.value}% ${i18n.t('basket.volumeDiscount')}:
+                ${i18n.t('basket.volumeDiscount')}:
                 <span class="basket-discount-value">
                     {context.currency.formatValue(basket.discountVatIncluded())}
                 </span>
