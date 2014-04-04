@@ -13,7 +13,7 @@
     <element name="LocaleService" type="ns:LocaleService"/>
     <element name="ProductCreationErrorManager" type="ns:ProductCreationErrorManager"/>
     <element name="ProductInitializer" type="ns:ProductInitializer"/>
-    <element name="TrackingManagerBase" type="ns:TrackingManagerBase"/>
+    <element name="TrackingManager" type="ns:TrackingManager"/>
     <element name="VirtualProductManager" type="ns:VirtualProductManager"/>
     <complexType name="ApiBasketManager">
         <complexContent>
@@ -212,11 +212,11 @@ BasketItem
             </extension>
         </complexContent>
     </complexType>
-    <complexType name="TrackingManagerBase">
+    <complexType name="TrackingManager">
         <complexContent>
             <extension base="ns1:Component">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.TrackingManagerBase"></documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.TrackingManager"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>

@@ -51,6 +51,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     })
                     .seq(function () {
+
+                        // remove example configuration
+                        if (product && product.get("restrictions.example") === true && product.$.configurations.size() > 0) {
+                            product.$.restrictions.example = false;
+                            var configuration = product.$.configurations.at(0);
+                            product.$.configurations.remove(configuration);
+                        }
+
                         self.convertConfigurations(product, productType, appearance);
                     })
                     .seq(function () {

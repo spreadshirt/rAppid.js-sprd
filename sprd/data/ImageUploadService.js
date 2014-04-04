@@ -1,5 +1,5 @@
-define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sprd/model/UploadImage", "sprd/type/UploadDesign", "underscore", 'sprd/entity/FileSystemImage', 'sprd/entity/RemoteImage', "sprd/entity/Image", 'sprd/data/IframeUpload'],
-    function (Component, ImageServerDataSource, flow, UploadImage, UploadDesign, _, FileSystemImage, RemoteImage, Image, IframeUpload) {
+define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sprd/model/UploadImage", "sprd/type/UploadDesign", "underscore", 'sprd/entity/FileSystemImage', 'sprd/entity/RemoteImage', "sprd/entity/Image", 'sprd/data/IframeUpload', 'sprd/manager/TrackingManager'],
+    function (Component, ImageServerDataSource, flow, UploadImage, UploadDesign, _, FileSystemImage, RemoteImage, Image, iFrameUpload, TrackingManager) {
 
         return Component.inherit('sprd.data.ImageUploadService', {
 
@@ -8,9 +8,9 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
             },
 
             inject: {
-                imageServer: ImageServerDataSource
+                imageServer: ImageServerDataSource,
+                trackingManager: TrackingManager
             },
-
 
             upload: function (data, restrictions, callback) {
                 var image;
@@ -20,7 +20,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                     restrictions = null;
                 }
 
-                if (data instanceof Image || data instanceof IframeUpload) {
+                if (data instanceof Image || data instanceof iFrameUpload) {
                     image = data;
                 } else if (_.isString(data)) {
                     image = new RemoteImage({
@@ -43,7 +43,8 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
 
 
             _uploadDesign: function (uploadDesign, restrictions, callback) {
-                var self = this;
+                var self = this,
+                    trackingManager = this.$.trackingManager;
 
                 if (restrictions instanceof Function) {
                     callback = restrictions;
@@ -53,7 +54,8 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                 callback = callback || this.emptyCallback();
 
                 var uploadContext = this.$.uploadContext,
-                    imageServer = this.$.imageServer;
+                    imageServer = this.$.imageServer,
+                    errorTracked = false;
 
                 var message;
 
@@ -90,7 +92,14 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                         return design;
                     })
                     .seq(function (cb) {
-                        this.vars["design"].save(null, cb);
+                        this.vars["design"].save(null, function(err) {
+                            if (err && trackingManager) {
+                                trackingManager.trackUploadDesignCreationFailed(err);
+                                errorTracked = true;
+                            }
+
+                            cb(err);
+                        });
                     })
                     .seq(function (cb) {
                         var design = this.vars["design"];
@@ -102,7 +111,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                             id: design.$.id
                         });
 
-                        if (uploadDesign.$.image instanceof IframeUpload) {
+                        if (uploadDesign.$.image instanceof iFrameUpload) {
                             uploadDesign.$.image.upload({
                                 url : self.$.imageServer.$.endPoint + '/designs/' + uploadDesign.$.id,
                                 queryParams: '?method=put&apiKey=' + self.$.imageServer.$.apiKey
@@ -126,6 +135,15 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                         }
                     })
                     .exec(function (err) {
+
+                        if (trackingManager) {
+                            if (!err) {
+                                trackingManager.trackUploadSuccess();
+                            } else if (!errorTracked) {
+                                trackingManager.trackUploadFailed(err);
+                            }
+                        }
+
                         uploadDesign.set('state', err ? UploadDesign.State.ERROR : UploadDesign.State.LOADED);
                         callback && callback(err, uploadDesign);
 
