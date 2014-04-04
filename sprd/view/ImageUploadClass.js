@@ -84,6 +84,39 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 this._addUploadDesign(uploadDesign);
             },
 
+            _addAndUploadFallbackFile: function(iFrameUpload, callback) {
+
+                var self = this;
+
+                var uploadDesign = new UploadDesign({
+                    image: iFrameUpload
+                });
+
+                this.$.imageUploadService._uploadDesign(uploadDesign, function (err) {
+                    if (!err) {
+
+                        uploadDesign.set('state', UploadDesign.State.LOADED);
+                        self.trigger("uploadComplete", {
+                            uploadDesign: uploadDesign
+                        });
+
+                        uploadDesign.trigger("imageUrlChanged");
+
+                    } else {
+                        self.trigger("uploadError", {
+                            error: err,
+                            uploadDesign: uploadDesign
+                        });
+                    }
+
+                    callback && callback(err, uploadDesign);
+                });
+
+
+                this._addUploadDesign(uploadDesign);
+
+            },
+
             uploadFile: function (file, callback) {
 
                 var self = this,

@@ -2,7 +2,7 @@
                         xmlns:parent="sprd.ui" xmlns:js="js.core">
 
     <js:Template name="iframe">
-        <iframe cid="uploadIframe" width="0" height="0" />
+        <iframe cid="uploadIframe" width="0" height="0" visibility="hidden"/>
     </js:Template>
 
 
