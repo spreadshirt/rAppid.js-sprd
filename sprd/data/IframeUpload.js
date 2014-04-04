@@ -22,9 +22,9 @@ define(['js/core/Bindable'], function (Bindable) {
 
             this.$.form.$el.setAttribute('action', url + params);
 
-            this.$.iframe.$el.onload = function () {
+            this.$.iframe.bind('on:load', function () {
                 rAppid.ajax(url, {}, callback);
-            };
+            });
 
             this.$.form.$el.submit();
         }

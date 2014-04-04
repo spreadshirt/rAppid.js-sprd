@@ -5,22 +5,27 @@ define(['js/ui/FileUpload', 'sprd/data/IframeUpload'], function(FileUpload, Ifra
         _initializationComplete: function () {
             var iframe,
                 iframeContent,
-                self = this;
+                self = this,
+                stageDocument = this.$stage.$document;
 
             if (!window.FileReader) {
                 iframe = this.$templates.iframe.createInstance();
-                iframeContent = this.$templates.iframeContent.createInstance();
 
-                iframe.bind('on:load', function (e) {
-                    var target = e.target,
-                        iframeInput;
+                iframe.bind('on:load', function initIframe (e) {
+                    var iframeInput,
+                        iframeDocument = e.target.$el.contentDocument,
+                        iframeBody = iframeDocument.getElementsByTagName('body')[0];
 
-                    target.$el.contentDocument.body.appendChild(iframeContent.render());
+                    iframeContent = self.$templates.iframeContent.createInstance();
+
+                    self.$stage.$document = iframeDocument;
+                    iframeBody.appendChild(iframeContent.render());
+                    self.$stage.$document = stageDocument;
 
                     iframeInput = self.$.iframeInput;
 
                     iframeInput.bind('on:change', function () {
-                        self.trigger('on:change', {iframeUpload: new IframeUpload(self)});
+                        self.trigger('on:change', { iframeUpload: new IframeUpload(self) } );
                     });
 
                     self.bind('on:click', function (ev) {
