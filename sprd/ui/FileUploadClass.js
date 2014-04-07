@@ -11,16 +11,14 @@ define(['js/ui/FileUpload', 'sprd/data/IframeUpload'], function(FileUpload, Ifra
             if (!window.FileReader) {
                 iframe = this.$templates.iframe.createInstance();
 
-                iframe.bind('on:load', function initIframe (e) {
+                iframe.bind('on:load', function (e) {
                     var iframeInput,
                         iframeDocument = e.target.$el.contentDocument,
                         iframeBody = iframeDocument.getElementsByTagName('body')[0];
 
                     iframeContent = self.$templates.iframeContent.createInstance();
 
-                    self.$stage.$document = iframeDocument;
                     iframeBody.appendChild(iframeContent.render());
-                    self.$stage.$document = stageDocument;
 
                     iframeInput = self.$.iframeInput;
 
