@@ -79,7 +79,7 @@ function isEmptyObject (obj) {
 
 mergeObj = (function getMerge (obj1, obj2) {
     var key, value1, value2,
-        merge = {},
+        merge = obj1,
         tmp;
 
     for (i in obj2) {
@@ -97,7 +97,7 @@ mergeObj = (function getMerge (obj1, obj2) {
             if (!value1) {
                 // if key not in object1, add it
                 merge[key] = value2;
-            } else if (typeof value1 === 'object') {
+            } else if (typeof value2 === 'object') {
                 tmp = getMerge(value1, value2);
 
                 // when type of object, iterate over children
