@@ -101,7 +101,7 @@ diffObj = (function getDiff (obj1, obj2) {
 
                 // when type of object iterate over children
                 if (tmp) {
-                    diff[key] = getDiff(value1, value2);
+                    diff[key] = tmp;
                 }
             } else if (value1 !== value2) {
                 diff[key] = value1;
