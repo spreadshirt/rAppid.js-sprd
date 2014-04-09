@@ -44,20 +44,20 @@
                 </li>
             </js:Template>
         </ui:ItemsView>
+        <div class="basket-summary">
+            <div class="basket-discount" visible="{basket.discountVatIncluded()}">
+                ${i18n.t('basket.volumeDiscount')}:
+                <span class="basket-discount-value">
+                    {context.currency.formatValue(basket.discountVatIncluded())}
+                </span>
+            </div>
+        </div>
     </div>
 
     <div class="basket-footer">
         <a onclick="close" class="btn left continue-shopping">
             <span>${i18n.t('basket.continueShopping')}</span>
         </a>
-        <div class="basket-summary">
-            <div class="basket-discount" visible="{basket.discountVatIncluded()}">
-                {basket.discounts.at(0).discountScale.getDiscountById(basket.discounts.at(0).currentDiscount.id).credit.value}% ${i18n.t('basket.volumeDiscount')}:
-                <span class="basket-discount-value">
-                    {context.currency.formatValue(basket.discountVatIncluded())}
-                </span>
-            </div>
-        </div>
         <div class="price-container">
             <p class="price">{context.currency.formatValue(basket.totalVatIncluded())}</p>
             <ul class="price-infos">
