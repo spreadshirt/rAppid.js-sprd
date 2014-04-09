@@ -373,7 +373,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                                     var lineElement = line.children[l].item;
 
                                     var tspan = {
-                                        content: [lineElement.$.text]
+                                        content: [lineElement.$.text],
+                                        lineWidth: text.width
                                     };
 
                                     var style = lineElement.$.style.serialize();
@@ -426,8 +427,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     dpi: "25.4",
                     unit: "mm",
                     svg: {
-                        text: text,
-                        viewBox: [0, 0, text.width, text.height].join(" ")
+                        text: text
                     }
                 };
 
@@ -600,7 +600,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
         }, {
 
-            getCopyrightWordList: function() {
+            getCopyrightWordList: function () {
                 copyrightWordList = copyrightWordList || new List();
                 return copyrightWordList;
             }
