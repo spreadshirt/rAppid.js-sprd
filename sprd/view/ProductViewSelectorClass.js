@@ -1,9 +1,15 @@
-define(["js/ui/SelectionView"], function(SelectionView) {
+define(["js/ui/SelectionView", "sprd/manager/FeatureManager"], function (SelectionView, FeatureManager) {
     return SelectionView.inherit("sprd.view.ProductViewSelectorClass", {
+        defaults: {
+            showViewNames: false
+        },
 
-        hasErrorClass: function(error) {
+        inject: {
+            featureManager: FeatureManager
+        },
+
+        hasErrorClass: function (error) {
             return error ? "error" : "";
         }
-
     });
 });

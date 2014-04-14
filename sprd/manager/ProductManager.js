@@ -51,6 +51,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     })
                     .seq(function () {
+
+                        // remove example configuration
+                        if (product && product.get("restrictions.example") === true && product.$.configurations.size() > 0) {
+                            product.$.restrictions.example = false;
+                            var configuration = product.$.configurations.at(0);
+                            product.$.configurations.remove(configuration);
+                        }
+
                         self.convertConfigurations(product, productType, appearance);
                     })
                     .seq(function () {
@@ -370,7 +378,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     fontStyle: "normal",
                     fontWeight: "normal",
                     printTypeId: null,
-                    fontFamilyId: null
+                    fontFamilyId: null,
+                    fontFamilyName: "Arial"
                 });
 
                 var self = this,
@@ -430,9 +439,16 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                     break;
                                 }
                             }
-                        } else {
-                            fontFamily = fontFamilies.at(0);
+                        } else if (params.fontFamilyName) {
+                            fontFamily = fontFamilies.find(function(fontFamily) {
+                                return fontFamily.$.name === params.fontFamilyName;
+                            });
                         }
+
+                        // use first font that is not deprecated
+                        fontFamily = fontFamily || fontFamilies.find(function(fontFamily) {
+                            return !fontFamily.$.deprecated
+                        });
 
                         if (!fontFamily) {
                             throw new Error("No found");

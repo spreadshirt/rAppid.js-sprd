@@ -647,6 +647,7 @@ set the default appearance of the product is used.
                 <attribute name="product" default="null"/>
                 <attribute name="viewHeight" default="50"/>
                 <attribute name="viewWidth" default="50"/>
+                <attribute name="showViewNames"/>
             </extension>
         </complexContent>
     </complexType>
@@ -659,6 +660,7 @@ set the default appearance of the product is used.
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+                <attribute name="showViewNames"/>
             </extension>
         </complexContent>
     </complexType>
