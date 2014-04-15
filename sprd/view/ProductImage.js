@@ -25,7 +25,9 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
              */
             appearance: null,
 
-            type: ImageService.ProductImageType.PRODUCT
+            type: ImageService.ProductImageType.PRODUCT,
+
+            mediaType: null
         },
 
         inject: {
@@ -60,7 +62,8 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
 
                 return this.$.imageService.productImage(product.$.id, viewId, this.get("appearance.id"), this.$.type, {
                     width: this.$.width,
-                    height: this.$.height
+                    height: this.$.height,
+                    mediaType: this.$.mediaType
                 });
             }
             return null;
