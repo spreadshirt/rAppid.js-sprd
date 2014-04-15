@@ -24,6 +24,11 @@ define(["sprd/view/ProductImage", "sprd/data/ImageService"], function (ProductIm
 
                 url = this.extendUrlWithSizes(url);
 
+                var mediaType = this.$.mediaType;
+                if (mediaType) {
+                    url += "." + mediaType;
+                }
+
                 return url;
             }
 

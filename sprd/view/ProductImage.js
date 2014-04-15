@@ -2,7 +2,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
 
     var viewIdExtractor = /\/views\/(\d+)/;
 
-    var ProductImage = Image.inherit("sprd.view.ProductImage", {
+    return Image.inherit("sprd.view.ProductImage", {
 
         defaults: {
             /***
@@ -25,7 +25,9 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
              */
             appearance: null,
 
-            type: ImageService.ProductImageType.PRODUCT
+            type: ImageService.ProductImageType.PRODUCT,
+
+            mediaType: null
         },
 
         inject: {
@@ -60,7 +62,8 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
 
                 return this.$.imageService.productImage(product.$.id, viewId, this.get("appearance.id"), this.$.type, {
                     width: this.$.width,
-                    height: this.$.height
+                    height: this.$.height,
+                    mediaType: this.$.mediaType
                 });
             }
             return null;
@@ -68,6 +71,4 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
         }.onChange('product', 'width', 'height', 'type', 'view', 'appearance')
 
     });
-
-    return ProductImage;
 });
