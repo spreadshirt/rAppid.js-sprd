@@ -13,8 +13,6 @@ define(["js/core/Component"], function(Component) {
             this.callBase();
         },
 
-
-
         trackError: function (error, data) {
             this._queueOrExecute(function () {
                 this.trackEvent(error, data);

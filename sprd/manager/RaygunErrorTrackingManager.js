@@ -1,4 +1,4 @@
-define(["sprd/manager/IErrorTrackingManager", "sprd/lib/raygun"], function(IErrorTrackingManager, Raygun) {
+define(["sprd/manager/IErrorTrackingManager", "require"], function(IErrorTrackingManager, require) {
 
     return IErrorTrackingManager.inherit("sprd.manager.RaygunErrorTrackingManager", {
 
@@ -11,8 +11,7 @@ define(["sprd/manager/IErrorTrackingManager", "sprd/lib/raygun"], function(IErro
                 return;
             }
 
-            if (!Raygun) {
-                this.log("Raygun not found", "warn");
+            if (!this.runsInBrowser()) {
                 return;
             }
 
@@ -22,14 +21,26 @@ define(["sprd/manager/IErrorTrackingManager", "sprd/lib/raygun"], function(IErro
                 return;
             }
 
-            Raygun.init(apiKey, {
-                allowInsecureSubmissions: true  // IE8
-            }).attach();
+            var self = this;
+            require(["sprd/lib/raygun"], function(Raygun) {
 
-            var version = this.$stage.$parameter.version;
-            if (version) {
-                Raygun.setVersion(version);
-            }
+                if (!Raygun) {
+                    self.log("Raygun not found", "warn");
+                    return;
+                }
+
+                Raygun.init(apiKey, {
+                    allowInsecureSubmissions: true  // IE8
+                }).attach();
+
+                var version = self.$stage.$parameter.version;
+                if (version) {
+                    Raygun.setVersion(version);
+                }
+
+                self._setTracker(Raygun);
+            });
+
         }
 
     });
