@@ -22,7 +22,9 @@ define(["sprd/manager/IErrorTrackingManager", "sprd/lib/raygun"], function(IErro
                 return;
             }
 
-            Raygun.init(apiKey).attach();
+            Raygun.init(apiKey, {
+                allowInsecureSubmissions: true  // IE8
+            }).attach();
 
             var version = this.$stage.$parameter.version;
             if (version) {
