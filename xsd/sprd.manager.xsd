@@ -9,10 +9,12 @@
     <element name="ExternalBasketManager" type="ns:ExternalBasketManager"/>
     <element name="FeatureManager" type="ns:FeatureManager"/>
     <element name="IBasketManager" type="ns:IBasketManager"/>
+    <element name="IErrorTrackingManager" type="ns:IErrorTrackingManager"/>
     <element name="IProductInitializer" type="ns:IProductInitializer"/>
     <element name="LocaleService" type="ns:LocaleService"/>
     <element name="ProductCreationErrorManager" type="ns:ProductCreationErrorManager"/>
     <element name="ProductInitializer" type="ns:ProductInitializer"/>
+    <element name="RaygunErrorTrackingManager" type="ns:RaygunErrorTrackingManager"/>
     <element name="TrackingManager" type="ns:TrackingManager"/>
     <element name="VirtualProductManager" type="ns:VirtualProductManager"/>
     <complexType name="ApiBasketManager">
@@ -154,6 +156,19 @@ BasketItem
             </extension>
         </complexContent>
     </complexType>
+    <complexType name="IErrorTrackingManager">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.IErrorTrackingManager"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="enabled" default="true"/>
+            </extension>
+        </complexContent>
+    </complexType>
     <complexType name="IProductInitializer">
         <complexContent>
             <extension base="ns1:Component">
@@ -209,6 +224,19 @@ BasketItem
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="RaygunErrorTrackingManager">
+        <complexContent>
+            <extension base="ns:IErrorTrackingManager">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.RaygunErrorTrackingManager"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="apiKey"/>
             </extension>
         </complexContent>
     </complexType>
