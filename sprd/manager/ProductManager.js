@@ -123,8 +123,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         var targetPrintAreaHeight = targetPrintArea.get("boundary.size.height");
 
                         var preferredPrintType = null;
-                        var preferredScale;
-                        var preferredOffset;
+                        var preferredScale = null;
+                        var preferredOffset = null;
 
                         var currentConfigurationWidth = configuration.width();
                         var currentConfigurationHeight = configuration.height();
@@ -155,9 +155,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
 
                         var optimalScale = Math.min(
-                            targetPrintAreaWidth / currentPrintAreaWidth,
-                            targetPrintAreaHeight / currentPrintAreaHeight
+                                targetPrintAreaWidth / currentPrintAreaWidth,
+                                targetPrintAreaHeight / currentPrintAreaHeight
                         ) * Math.abs(configuration.$.scale.x);
+
+                        preferredScale = {
+                            x: optimalScale,
+                            y: optimalScale
+                        };
 
                         var allowScale = configuration.allowScale(),
                             printTypeFallback;
@@ -175,8 +180,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             var configurationPrintTypeSize = configuration.getSizeForPrintType(printType);
 
                             var maximumScale = Math.min(
-                                printType.get("size.width") / configurationPrintTypeSize.$.width,
-                                printType.get("size.height") / configurationPrintTypeSize.$.height);
+                                    printType.get("size.width") / configurationPrintTypeSize.$.width,
+                                    printType.get("size.height") / configurationPrintTypeSize.$.height);
 
                             if (printType.isShrinkable()) {
                                 maximumScale = 1;
@@ -440,13 +445,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 }
                             }
                         } else if (params.fontFamilyName) {
-                            fontFamily = fontFamilies.find(function(fontFamily) {
+                            fontFamily = fontFamilies.find(function (fontFamily) {
                                 return fontFamily.$.name === params.fontFamilyName;
                             });
                         }
 
                         // use first font that is not deprecated
-                        fontFamily = fontFamily || fontFamilies.find(function(fontFamily) {
+                        fontFamily = fontFamily || fontFamilies.find(function (fontFamily) {
                             return !fontFamily.$.deprecated
                         });
 
