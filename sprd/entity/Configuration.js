@@ -53,8 +53,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 validate($);
                 this.trigger('configurationChanged');
             } else if ($.hasOwnProperty("offset") && $.offset && !$.offset.isDeepEqual(this.$previousAttributes["offset"])) {
-                    validate($);
-                    this.trigger('configurationChanged');
+                validate($);
+                this.trigger('configurationChanged');
             }
 
             function validate(attributes) {
@@ -102,20 +102,34 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 _.extend(ret, this._validatePrintTypeSize(printType, width, height, scale));
             }
 
-            if (ret.minBound && this.$context && this.$context.$contextModel && !printTypeChanged) {
+
+            // when configuration is too small for print type or it is a DD print type try to find another print type that fits better
+            if (printType && (ret.minBound || !printType.isPrintColorColorSpace()) && this.$context && this.$context.$contextModel && !printTypeChanged) {
                 var printTypes = this.getPossiblePrintTypesForPrintArea(this.$.printArea, this.$context.$contextModel.get('appearance.id'));
+                var preferredPrintType = null,
+                    val,
+                    newPrintType;
+
                 for (var i = 0; i < printTypes.length; i++) {
-                    if (!printTypes[i].isPrintColorColorSpace()) {
-
-                        this.$.bus && this.$.bus.trigger("Configuration.automaticallyPrintTypeChange", {
-                            printType: printTypes[i]
-                        });
-
-                        this.set('printType', printTypes[i]);
-                        ret.minBound = false;
-                        break;
+                    newPrintType = printTypes[i];
+                    val = this._validatePrintTypeSize(newPrintType, width, height, scale);
+                    if (!(val.printTypeScaling || val.maxBound || val.minBound)) {
+                        if (newPrintType.isPrintColorColorSpace()) {
+                            preferredPrintType = newPrintType;
+                            break;
+                        } else if (!preferredPrintType) {
+                            preferredPrintType = newPrintType;
+                        }
                     }
+                }
 
+                if (preferredPrintType && preferredPrintType !== printType) {
+                    this.$.bus && this.$.bus.trigger("Configuration.automaticallyPrintTypeChange", {
+                        printType: preferredPrintType
+                    });
+
+                    this.set('printType', preferredPrintType);
+                    ret.minBound = false;
                 }
             }
 
