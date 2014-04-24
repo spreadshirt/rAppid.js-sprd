@@ -251,6 +251,25 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 product.$.configurations.remove(removeConfigurations);
             },
+
+            _getPreferredPrintType: function (product, printArea, possiblePrintTypes) {
+                var size = product.$.configurations.size();
+                if (size) {
+                    var configurations = product.$.configurations.toArray();
+                    for (var i = 0; i < configurations.length; i++) {
+                        var config = configurations[i];
+                        // if config on same printarea
+                        // AND has DD print type
+                        // AND this print type is supported
+                        // use this print type
+                        if (config.$.printArea === printArea && !config.$.printType.isPrintColorColorSpace() && possiblePrintTypes.indexOf(config.$.printType) > -1) {
+                            return config.$.printType;
+                        }
+                    }
+                }
+                return null;
+            },
+
             /**
              * Adds a design to a given Product
              * @param {sprd.model.Product} product
@@ -337,26 +356,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             throw new Error("PrintType not possible for design and printArea");
                         }
 
-                        printType = printType || possiblePrintTypes[0];
+                        printType = self._getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
 
                         if (!printType) {
                             throw new Error("No printType available");
-                        }
-
-                        var size = product.$.configurations.size();
-                        if (size) {
-                            var configurations = product.$.configurations.toArray();
-                            for (var i = 0; i < configurations.length; i++) {
-                                var config = configurations[i];
-                                // if config on same printarea
-                                // AND has DD print type
-                                // AND this print type is supported
-                                // use this print type
-                                if (config.$.printArea === printArea && !config.$.printType.isPrintColorColorSpace() && possiblePrintTypes.indexOf(config.$.printType) > -1) {
-                                    printType = config.$.printType;
-                                    break;
-                                }
-                            }
                         }
 
                         return printType;
@@ -542,7 +545,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             }
                         }
 
-                        printType = printType || possiblePrintTypes[0];
+                        printType = self._getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
 
                         if (!printType) {
                             throw new Error("No printType available");
