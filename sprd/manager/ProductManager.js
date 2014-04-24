@@ -2,6 +2,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
     function (IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus) {
 
 
+        var PREVENT_VALIDATION_OPTIONS = {
+            preventValidation: true
+        };
+
         return IProductManager.inherit("sprd.manager.ProductManager", {
 
             inject: {
@@ -271,7 +275,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printArea = params.printArea,
                     view = params.view,
                     appearance = product.$.appearance,
-                    printType = params.printType;
+                    printType = params.printType,
+                    possiblePrintTypes;
 
                 if (!design) {
                     callback(new Error("No design"));
@@ -326,7 +331,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         return printArea;
                     })
                     .seq("printType", function () {
-                        var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
+                        possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
 
                         if (printType && !_.contains(possiblePrintTypes, printType)) {
                             throw new Error("PrintType not possible for design and printArea");
@@ -336,6 +341,22 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         if (!printType) {
                             throw new Error("No printType available");
+                        }
+
+                        var size = product.$.configurations.size();
+                        if (size) {
+                            var configurations = product.$.configurations.toArray();
+                            for (var i = 0; i < configurations.length; i++) {
+                                var config = configurations[i];
+                                // if config on same printarea
+                                // AND has DD print type
+                                // AND this print type is supported
+                                // use this print type
+                                if (config.$.printArea === printArea && !config.$.printType.isPrintColorColorSpace() && possiblePrintTypes.indexOf(config.$.printType) > -1) {
+                                    printType = config.$.printType;
+                                    break;
+                                }
+                            }
                         }
 
                         return printType;
@@ -351,7 +372,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             design: design,
                             designColorIds: params.designColorIds,
                             designColorRGBs: params.designColorRGBs
-                        });
+                        }, PREVENT_VALIDATION_OPTIONS);
                         return entity;
                     })
                     .seq(function (cb) {
@@ -639,7 +660,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 offset.set({
                     x: defaultBoxCenterX - boundingBox.width / 2,
                     y: defaultBox.y
-                });
+                }, PREVENT_VALIDATION_OPTIONS);
 
                 if (offset.$.x < 0 || offset.$.x + boundingBox.width > printAreaWidth) {
 
@@ -668,7 +689,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     offset.set({
                         x: defaultBoxCenterX - boundingBox.width / 2,
                         y: defaultBox.y
-                    });
+                    }, PREVENT_VALIDATION_OPTIONS);
                 }
 
                 if (boundingBox.height > printAreaHeight) {
@@ -692,7 +713,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     offset.set({
                         x: defaultBoxCenterX - boundingBox.width / 2,
                         y: defaultBoxCenterY - boundingBox.height / 2
-                    });
+                    }, PREVENT_VALIDATION_OPTIONS);
 
                 }
 
@@ -707,7 +728,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 configuration.set({
                     offset: offset
-                });
+                }, PREVENT_VALIDATION_OPTIONS);
 
             },
 
