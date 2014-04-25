@@ -146,7 +146,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                         var config = configurations[j];
 
                         if (config !== this && config.$.printArea === printArea && !config.$.printType.isPrintColorColorSpace()) {
-                            return;
+                            return ret;
                         }
 
                     }
