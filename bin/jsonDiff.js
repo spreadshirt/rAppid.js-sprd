@@ -4,16 +4,16 @@
 
 /**
  * This script gets the difference of two json files and stores it into a new file
- * 
+ *
  * It accepts 3 input arguments:
- * 
+ *
  * file1: first json file
  * file2: second json file
- * [outputFile]: file to store the difference in; 
+ * [outputFile]: file to store the difference in;
  *               when not given, diff gets stored in a file named filename1_diff_filename2.json
  *
  * @author mapf
- * 
+ *
 */
 var fs = require('fs'),
     nodeCommand = process.title,
@@ -21,17 +21,8 @@ var fs = require('fs'),
     outputFilename,
     json1, json2,
     obj1, obj2, diffObj = {},
-    args = process.argv,
+    args = process.argv.splice(2),
     i;
-
-// throw out node command and script file parameter
-if (args[0] === nodeCommand) {
-    args.shift();
-}
-
-if (args[0] === __filename) {
-    args.shift();
-}
 
 // get input file parameters
 filename1 = args.shift();
