@@ -82,8 +82,9 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
          * @private
          */
         _convertOtherPrintTypes: function () {
-            var printType = this.$.printType;
-            if (printType) {
+            var printType = this.$.printType,
+                printArea = this.$.printArea;
+            if (printType && printArea) {
 
                 var product = this.$context ? this.$context.$contextModel : null;
                 if (product) {
@@ -92,8 +93,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
                     for (var i = 0; i < configurations.length; i++) {
                         config = configurations[i];
-                        if (config !== this && config.$.printArea === this.$.printArea) {
-                            var possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(this.$.printArea, product.get('appearance.id'));
+                        if (config !== this && config.$.printArea === printArea) {
+                            var possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(printArea, product.get('appearance.id'));
                             if (possiblePrintTypes.indexOf(printType) > -1) {
                                 config.set('printType', printType);
                             }
