@@ -50,11 +50,18 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             this.callBase();
 
             if (this._hasSome($, ["scale", "rotation", "printArea", "printColors", "printArea", "printType"])) {
-                validate($);
+                if ($.printType) {
+                    this._convertOtherPrintTypes();
+                }
+                if (!options.preventValidation && !options.initial) {
+                    validate($);
+                }
                 this.trigger('configurationChanged');
             } else if ($.hasOwnProperty("offset") && $.offset && !$.offset.isDeepEqual(this.$previousAttributes["offset"])) {
+                if (!options.preventValidation && !options.initial) {
                     validate($);
-                    this.trigger('configurationChanged');
+                }
+                this.trigger('configurationChanged');
             }
 
             function validate(attributes) {
@@ -67,6 +74,33 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 combinedAttributes = {};
             }
 
+        },
+
+        /**
+         * Converts all configurations on same print area to same print type
+         *
+         * @private
+         */
+        _convertOtherPrintTypes: function () {
+            var printType = this.$.printType;
+            if (printType) {
+
+                var product = this.$context ? this.$context.$contextModel : null;
+                if (product) {
+                    var configurations = product.$.configurations.toArray();
+                    var config;
+
+                    for (var i = 0; i < configurations.length; i++) {
+                        config = configurations[i];
+                        if (config !== this && config.$.printArea === this.$.printArea) {
+                            var possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(this.$.printArea, product.get('appearance.id'));
+                            if (possiblePrintTypes.indexOf(printType) > -1) {
+                                config.set('printType', printType);
+                            }
+                        }
+                    }
+                }
+            }
         },
 
         _validateTransform: function ($) {
@@ -102,20 +136,47 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 _.extend(ret, this._validatePrintTypeSize(printType, width, height, scale));
             }
 
-            if (ret.minBound && this.$context && this.$context.$contextModel && !printTypeChanged) {
-                var printTypes = this.getPossiblePrintTypesForPrintArea(this.$.printArea, this.$context.$contextModel.get('appearance.id'));
-                for (var i = 0; i < printTypes.length; i++) {
-                    if (!printTypes[i].isPrintColorColorSpace()) {
 
-                        this.$.bus && this.$.bus.trigger("Configuration.automaticallyPrintTypeChange", {
-                            printType: printTypes[i]
-                        });
+            // when configuration is too small for print type or it is a DD print type try to find another print type that fits better
+            if (printType && (ret.minBound || !printType.isPrintColorColorSpace()) && this.$context && this.$context.$contextModel && !printTypeChanged) {
+                var product = this.$context.$contextModel;
+                if (product.$.configurations.size() > 0 && !ret.minBound) {
+                    var configurations = product.$.configurations.toArray();
+                    for (var j = 0; j < configurations.length; j++) {
+                        var config = configurations[j];
 
-                        this.set('printType', printTypes[i]);
-                        ret.minBound = false;
-                        break;
+                        if (config !== this && config.$.printArea === printArea && !config.$.printType.isPrintColorColorSpace()) {
+                            return ret;
+                        }
+
                     }
+                }
 
+                var printTypes = this.getPossiblePrintTypesForPrintArea(this.$.printArea, this.$context.$contextModel.get('appearance.id'));
+                var preferredPrintType = null,
+                    val,
+                    newPrintType;
+
+                for (var i = 0; i < printTypes.length; i++) {
+                    newPrintType = printTypes[i];
+                    val = this._validatePrintTypeSize(newPrintType, width, height, scale);
+                    if (!(val.printTypeScaling || val.maxBound || val.minBound)) {
+                        if (newPrintType.isPrintColorColorSpace()) {
+                            preferredPrintType = newPrintType;
+                            break;
+                        } else if (!preferredPrintType) {
+                            preferredPrintType = newPrintType;
+                        }
+                    }
+                }
+
+                if (preferredPrintType && preferredPrintType !== printType) {
+                    this.$.bus && this.$.bus.trigger("Configuration.automaticallyPrintTypeChange", {
+                        printType: preferredPrintType
+                    });
+
+                    this.set('printType', preferredPrintType);
+                    ret.minBound = false;
                 }
             }
 

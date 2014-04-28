@@ -576,6 +576,7 @@ set the default appearance of the product is used.
                     </annotation>
                 </attribute>
                 <attribute name="type"/>
+                <attribute name="mediaType"/>
             </extension>
         </complexContent>
     </complexType>
