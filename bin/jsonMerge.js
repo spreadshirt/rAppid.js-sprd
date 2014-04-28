@@ -1,4 +1,4 @@
-#!/usr/bin/node
+#!/usr/local/bin/node
 
 'use strict';
 
@@ -21,17 +21,8 @@ var fs = require('fs'),
     outputFilename,
     json1, json2,
     obj1, obj2, mergeObj,
-    args = process.argv,
+    args = process.argv.splice(2),
     i;
-
-// throw out node command and script file parameter
-if (args[0] === nodeCommand) {
-    args.shift();
-}
-
-if (args[0] === __filename) {
-    args.shift();
-}
 
 // get input file parameters
 filename1 = args.shift();
