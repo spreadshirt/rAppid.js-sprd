@@ -149,13 +149,26 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             var basketSaveCallback = function (err) {
                 if (!err) {
                     self.set("apiBasketId", basketId);
+
+                    // try to save basket id to local storage
+                    // this will fail in private browsing mode, but we can ignore this
+
+
                     try {
                         self.$.localStorage.setItem("basketId", basket.$.id);
+                    } catch (e) {
+                        // ignore this
+                    }
+
+                    try {
                         self._triggerBasketChanged();
                         self.fetchBasketDiscounts(callback);
                     } catch (e) {
                         callback && callback(e);
+                        return;
                     }
+
+                    callback && callback();
 
                 } else {
                     console.warn(err);
