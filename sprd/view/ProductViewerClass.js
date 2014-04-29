@@ -292,7 +292,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     self._positionTextArea();
                     self.$.textArea.set({
                         opacity: 1.0,
-                        value: self.$.selectedConfiguration ? self.$.selectedConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "") : ""
+                        value: self.$.selectedConfiguration ? self.$.selectedConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "") : "",
+                        _configuration: self.$.selectedConfiguration
                     });
                     self.$.textArea.set('opacity', 1.0);
                 }, 1000);
@@ -341,8 +342,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     self.$stage.set('height', '100%');
                 }, 200);
 
-                if (this.$.selectedConfiguration) {
-                    this.$.productManager.setTextForConfiguration(this.$.textArea.$.value, this.$.selectedConfiguration);
+                if (this.$.textArea.$._configuration) {
+                    this.$.productManager.setTextForConfiguration(this.$.textArea.$.value, this.$.textArea.$._configuration);
                 }
 
                 self.$.textArea.set('opacity', 0);
