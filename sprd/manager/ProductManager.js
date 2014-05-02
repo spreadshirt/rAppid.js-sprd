@@ -635,6 +635,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var operation = new ApplyStyleToElementOperation(textRange, textFlow, leafStyle, paragraphStyle);
                 operation.doOperation();
 
+                configuration.$.selection && configuration.$.selection.set({
+                    activeIndex: 0,
+                    anchorIndex: 0
+                });
                 configuration.set('textFlow', textFlow);
                 textFlow.trigger('operationComplete', null, textFlow);
                 this.$.bus.trigger('Application.productChanged', null);
