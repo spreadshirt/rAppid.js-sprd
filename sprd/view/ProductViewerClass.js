@@ -56,7 +56,10 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 }
             }
 
-            this._positionTextArea();
+            if (selectedConfiguration && this.$.textArea && this.$.textArea.isRendered()) {
+                this.$.textArea.$el.blur();
+                this._positionTextArea();
+            }
         },
 
         keyUp: function (e) {
