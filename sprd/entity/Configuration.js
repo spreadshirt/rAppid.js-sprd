@@ -166,7 +166,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                         if (newPrintType === this.$previousAttributes.printType) {
                             preferredPrintType = newPrintType;
                             break;
-                        } else if (!preferredPrintType) {
+                        } else if (newPrintType.isPrintColorColorSpace() !== printType.isPrintColorColorSpace()) {
                             preferredPrintType = newPrintType;
                         }
                     }
