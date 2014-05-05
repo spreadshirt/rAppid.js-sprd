@@ -23,7 +23,9 @@
         </ui:SelectionView>
 
     </div>
-    <ui:TemplatePlaceHolder class="simple-horizontal-color-picker-zoom" cid="colorPickerZoom"
+    <ui:TemplatePlaceHolder class="simple-horizontal-color-picker-zoom"
+                            onpointerdown="_onPointerDown"
+                            cid="colorPickerZoom"
                             templateName="preview-item"
                             item="{_previewColor}"
                             position="absolute"/>
