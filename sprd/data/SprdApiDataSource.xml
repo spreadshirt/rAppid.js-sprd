@@ -2,12 +2,12 @@
     <conf:DataSourceConfiguration>
         <conf:ResourceConfiguration path="languages" modelClassName="sprd.model.Language"/>
         <conf:ResourceConfiguration path="countries" modelClassName="sprd.model.Country"/>
-        <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop">
+        <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop" sessionRequired="true">
             <conf:ResourceConfiguration path="address" modelClassName="sprd.model.Address"/>
-            <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.Application"/>
-            <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.application.ShopApplication"/>
+            <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.Application" sessionRequired="true"/>
+            <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.application.ShopApplication" sessionRequired="true"/>
             <conf:ResourceConfiguration path="applications"
-                                        modelClassName="sprd.model.application.ConfomatApplication"/>
+                                        modelClassName="sprd.model.application.ConfomatApplication" sessionRequired="true"/>
             <conf:ResourceConfiguration path="articles" modelClassName="sprd.model.Article"/>
             <conf:ResourceConfiguration path="articleCategories" modelClassName="sprd.model.ArticleCategory"/>
             <conf:ResourceConfiguration path="designCategories" modelClassName="sprd.model.DesignCategory">
