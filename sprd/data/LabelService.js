@@ -25,8 +25,8 @@ define(["js/core/Component", "sprd/model/Label", "js/data/Collection", "js/data/
             },
 
             getObjectTypeIdForElement: function (element) {
-
-                var name = element.prototype.constructor.name.split(".").pop();
+                var constructor = element.constructor || element.prototype.constructor,
+                    name = constructor.name.split(".").pop();
 
                 return ObjectTypeMap[name];
             },
@@ -55,8 +55,8 @@ define(["js/core/Component", "sprd/model/Label", "js/data/Collection", "js/data/
                         return;
                     }
                     var query = new Query().in("objectIds", list.toArray(function (object) {
-                        return object.identifier();
-                    })).in('objectTypeId', objectType);
+                        return object && object.identifier();
+                    })).in('objectTypeId', [objectType]);
 
 
                     var labels = this.$.dataSource.createCollection(Collection.of(Label)).query(query);
@@ -66,6 +66,41 @@ define(["js/core/Component", "sprd/model/Label", "js/data/Collection", "js/data/
                     callback && callback();
                 }
             },
+
+            fetchLabelsForUserObjects: function (object, user, callback) {
+                var list;
+                if (object instanceof List) {
+                    list = object;
+                } else if (object instanceof Array) {
+                    list = new List(object);
+                } else {
+                    list = new List([object]);
+                }
+
+                if (list.size()) {
+                    var element = list.at(0);
+                    var objectType = this.getObjectTypeIdForElement(element);
+                    if (!objectType) {
+                        callback("Couldn't find label object type for " + element.prototype.constructor.name);
+                        return;
+                    }
+
+                    var query = new Query().in("objectIds", list.toArray(function (object) {
+                        return object && object.identifier();
+                    })).in('objectTypeId', [objectType]);
+
+                    query.query.extra = { attributeSet: 'labels' };
+
+                    var labels = user.getCollection('objectLabels').query(query);
+
+                    labels.set('pageSize', null);
+
+                    labels.fetch({limit: 1000, offset: null}, callback);
+                } else {
+                    callback && callback();
+                }
+            },
+
             /**
              * Labels an object with the given label
              *
@@ -84,9 +119,6 @@ define(["js/core/Component", "sprd/model/Label", "js/data/Collection", "js/data/
                 });
 
                 labelObject.save(callback);
-
             }
-
-
         });
     });
