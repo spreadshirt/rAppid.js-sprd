@@ -81,6 +81,7 @@
                 </sequence>
                 <attribute name="appearance"/>
                 <attribute name="productType"/>
+                <attribute name="product"/>
             </extension>
         </complexContent>
     </complexType>
@@ -95,6 +96,7 @@
                 </sequence>
                 <attribute name="appearance"/>
                 <attribute name="productType"/>
+                <attribute name="product"/>
                 <attribute name="onappearanceSelect" default="_onAppearanceSelectHandler" type="string"/>
             </extension>
         </complexContent>
