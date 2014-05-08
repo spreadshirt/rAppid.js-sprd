@@ -89,7 +89,7 @@ define(["js/core/Component", "sprd/model/Label", "js/data/Collection", "js/data/
                         return object && object.identifier();
                     })).in('objectTypeId', [objectType]);
 
-                    query.query.extra = { attributeSet: 'labels' };
+                    query.query.extra = { attributeSet: 'labels'};
 
                     var labels = user.getCollection('objectLabels').query(query);
 
