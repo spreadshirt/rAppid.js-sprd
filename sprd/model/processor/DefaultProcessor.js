@@ -16,7 +16,16 @@ define(['js/data/DataSource', 'underscore'], function (DataSource, _) {
             return {
                 id: model.$.id
             }
-        }
+        },
 
+        compose: function () {
+            var model = this.callBase();
+
+            if (model.hasOwnProperty('created')) {
+                delete(model.created);
+            }
+
+            return model;
+        }
     });
 });
