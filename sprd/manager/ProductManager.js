@@ -181,8 +181,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
 
                         var optimalScale = Math.min(
-                                targetPrintAreaWidth / currentPrintAreaWidth,
-                                targetPrintAreaHeight / currentPrintAreaHeight
+                            targetPrintAreaWidth / currentPrintAreaWidth,
+                            targetPrintAreaHeight / currentPrintAreaHeight
                         ) * Math.abs(configuration.$.scale.x);
 
                         preferredScale = {
@@ -207,7 +207,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                             var maximumScale = Math.min(
                                     printType.get("size.width") / configurationPrintTypeSize.$.width,
-                                    printType.get("size.height") / configurationPrintTypeSize.$.height);
+                                    printType.get("size.height") / configurationPrintTypeSize.$.height,
+                                    targetPrintAreaWidth / configurationPrintTypeSize.$.width,
+                                    targetPrintAreaHeight / configurationPrintTypeSize.$.height
+                            );
 
                             if (printType.isShrinkable()) {
                                 maximumScale = Math.min(1, maximumScale);
