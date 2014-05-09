@@ -62,7 +62,7 @@ define(["js/ui/View", "js/core/List"], function (View, List) {
                 var pos = this.$.colorList.globalToLocal({x: e.pageX, y: e.pageY});
 
                 var numColors = this.$._numColors,
-                    colorIndex = Math.floor((pos.x / this.$tableWidth) * numColors);
+                    colorIndex = Math.max(Math.min(this.$._numColors-1,Math.floor((pos.x / this.$tableWidth) * numColors)),0);
 
                 this.set({
                     '_previewColor': this.$.colors.at(colorIndex)

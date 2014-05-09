@@ -5,6 +5,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
         var PREVENT_VALIDATION_OPTIONS = {
             preventValidation: true
         };
+        // factor * print area height = font size
+        var INITIAL_FONT_SIZE_SCALE_FACTOR = 0.07;
 
         return IProductManager.inherit("sprd.manager.ProductManager", {
 
@@ -569,10 +571,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq("configuration", function () {
 
                         var textFlow = TextFlow.initializeFromText(text);
+                        var fontSize = 25;
+
+                        if(!printType.isPrintColorColorSpace()){
+                           fontSize = INITIAL_FONT_SIZE_SCALE_FACTOR* printArea.get('_size.height');
+                        }
 
                         (new ApplyStyleToElementOperation(TextRange.createTextRange(0, textFlow.textLength()), textFlow, new Style({
                             font: font,
-                            fontSize: 25,
+                            fontSize: fontSize,
                             lineHeight: 1.2,
                             printTypeColor: this.vars["printTypeColor"]
                         }), new

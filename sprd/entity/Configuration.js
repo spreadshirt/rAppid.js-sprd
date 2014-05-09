@@ -162,10 +162,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                     newPrintType = printTypes[i];
                     val = this._validatePrintTypeSize(newPrintType, width, height, scale);
                     if (!(val.printTypeScaling || val.maxBound || val.minBound)) {
-                        if (newPrintType.isPrintColorColorSpace()) {
+                        // if the previous print type is valid, use it
+                        if (newPrintType === this.$previousAttributes.printType) {
                             preferredPrintType = newPrintType;
                             break;
-                        } else if (!preferredPrintType) {
+                        } else if (newPrintType.isPrintColorColorSpace() !== printType.isPrintColorColorSpace()) {
                             preferredPrintType = newPrintType;
                         }
                     }
@@ -175,7 +176,6 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                     this.$.bus && this.$.bus.trigger("Configuration.automaticallyPrintTypeChange", {
                         printType: preferredPrintType
                     });
-
                     this.set('printType', preferredPrintType);
                     ret.minBound = false;
                 }
