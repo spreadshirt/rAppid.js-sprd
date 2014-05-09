@@ -120,6 +120,26 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         targetPrintArea = productType.getDefaultPrintArea();
                     }
 
+                    var possiblePrintTypes;
+                    var printAreas = [targetPrintArea].concat(productType.$.printAreas.$items);
+
+                    targetPrintArea = null;
+
+                    // search for the best print area
+                    for (var p = 0; p < printAreas.length; p++) {
+                        var printArea = printAreas[p];
+
+                        if (printArea && configuration.isAllowedOnPrintArea(printArea)) {
+                            possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, appearance.$.id);
+
+                            if (possiblePrintTypes.length > 0) {
+                                targetPrintArea = printArea;
+                                break;
+                            }
+                        }
+
+                    }
+
                     if (targetPrintArea && configuration.isAllowedOnPrintArea(targetPrintArea)) {
                         configuration.set('printArea', targetPrintArea, setOptions);
 
@@ -136,7 +156,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         var currentConfigurationHeight = configuration.height();
 
                         // find new print type
-                        var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(targetPrintArea, appearance.$.id);
+
                         var printType = configuration.$.printType;
 
                         var center = {
