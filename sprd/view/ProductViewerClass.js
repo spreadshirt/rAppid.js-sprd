@@ -44,6 +44,12 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             this.bind('selectedConfiguration', 'change:offset', this._positionTextArea, this);
         },
 
+        _onDomAdded: function(){
+            this.callBase();
+            // focus stage to enable keyboard interaction
+            this.$stage.focus();
+        },
+
         _commitSelectedConfiguration: function (selectedConfiguration, oldSelectedConfiguration) {
 
             if (this.$.removeEmptyTextConfiguration && oldSelectedConfiguration &&
@@ -54,6 +60,12 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 if (/^[\s\n\r]*$/.test(text)) {
                     this.$.product.$.configurations.remove(oldSelectedConfiguration);
                 }
+            }
+
+            if(this.isRendered() && selectedConfiguration && !this.$stage.$browser.hasTouch){
+                // when the selection changes make sure to focus the stage to allow keyboard interaction
+                // only needed on desktop
+                this.$stage.focus();
             }
 
             if (selectedConfiguration && this.$.textArea && this.$.textArea.isRendered()) {
