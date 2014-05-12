@@ -139,7 +139,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
 
             // when configuration is too small for print type or it is a DD print type try to find another print type that fits better
-            if (printType && (ret.minBound || !printType.isPrintColorColorSpace()) && this.$context && this.$context.$contextModel && !printTypeChanged) {
+            if (printType && (ret.minBound || !printType.isPrintColorColorSpace()) && this.$context && this.$context.$contextModel && !printTypeChanged && sizeChanged) {
                 var product = this.$context.$contextModel;
                 if (product.$.configurations.size() > 0 && !ret.minBound) {
                     var configurations = product.$.configurations.toArray();
@@ -168,6 +168,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                             break;
                         } else if (newPrintType.isPrintColorColorSpace() !== printType.isPrintColorColorSpace()) {
                             preferredPrintType = newPrintType;
+                            break;
                         }
                     }
                 }

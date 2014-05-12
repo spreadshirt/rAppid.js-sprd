@@ -162,7 +162,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                             }
                         }
 
-                        configuration.set(ret);
+                        configuration.set(ret, {preventValidation: true});
                     }
                 })
                 .exec(callback);
