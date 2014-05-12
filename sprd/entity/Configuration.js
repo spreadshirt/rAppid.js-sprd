@@ -138,10 +138,12 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
 
+            var printTypeTooSmall = ret.minBound,
+                printTypeWasTransformed = this.$originalPrintType;
             // when configuration is too small for print type or it is a DD print type try to find another print type that fits better
-            if (printType && (ret.minBound || !printType.isPrintColorColorSpace()) && this.$context && this.$context.$contextModel && !printTypeChanged && sizeChanged) {
+            if (printType && (printTypeTooSmall || printTypeWasTransformed) && this.$context && this.$context.$contextModel && !printTypeChanged && sizeChanged) {
                 var product = this.$context.$contextModel;
-                if (product.$.configurations.size() > 0 && !ret.minBound) {
+                if (product.$.configurations.size() > 0 && !printTypeTooSmall) {
                     var configurations = product.$.configurations.toArray();
                     for (var j = 0; j < configurations.length; j++) {
                         var config = configurations[j];
@@ -163,11 +165,15 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                     val = this._validatePrintTypeSize(newPrintType, width, height, scale);
                     if (!(val.printTypeScaling || val.maxBound || val.minBound)) {
                         // if the previous print type is valid, use it
-                        if (newPrintType === this.$previousAttributes.printType) {
+                        if(printTypeWasTransformed){
+                            if(this.$originalPrintType === newPrintType){
+                                preferredPrintType = newPrintType;
+                                this.$originalPrintType = null;
+                                break;
+                            }
+                        } else if(printTypeTooSmall){
                             preferredPrintType = newPrintType;
-                            break;
-                        } else if (newPrintType.isPrintColorColorSpace() !== printType.isPrintColorColorSpace()) {
-                            preferredPrintType = newPrintType;
+                            this.$originalPrintType = printType;
                             break;
                         }
                     }
