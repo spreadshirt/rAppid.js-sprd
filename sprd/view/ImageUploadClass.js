@@ -155,7 +155,7 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
             },
 
             _addUploadDesign: function (uploadDesign) {
-                this.$.items.add(uploadDesign, 0);
+                this.$.items.unshift(uploadDesign);
             }
         });
     });
