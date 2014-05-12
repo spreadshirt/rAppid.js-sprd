@@ -120,6 +120,26 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         targetPrintArea = productType.getDefaultPrintArea();
                     }
 
+                    var possiblePrintTypes;
+                    var printAreas = [targetPrintArea].concat(productType.$.printAreas.$items);
+
+                    targetPrintArea = null;
+
+                    // search for the best print area
+                    for (var p = 0; p < printAreas.length; p++) {
+                        var printArea = printAreas[p];
+
+                        if (printArea && configuration.isAllowedOnPrintArea(printArea)) {
+                            possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, appearance.$.id);
+
+                            if (possiblePrintTypes.length > 0) {
+                                targetPrintArea = printArea;
+                                break;
+                            }
+                        }
+
+                    }
+
                     if (targetPrintArea && configuration.isAllowedOnPrintArea(targetPrintArea)) {
                         configuration.set('printArea', targetPrintArea, setOptions);
 
@@ -136,7 +156,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         var currentConfigurationHeight = configuration.height();
 
                         // find new print type
-                        var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(targetPrintArea, appearance.$.id);
+
                         var printType = configuration.$.printType;
 
                         var center = {
@@ -161,22 +181,22 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
 
                         var optimalScale = Math.min(
-                                targetPrintAreaWidth / currentPrintAreaWidth,
-                                targetPrintAreaHeight / currentPrintAreaHeight
+                            targetPrintAreaWidth / currentPrintAreaWidth,
+                            targetPrintAreaHeight / currentPrintAreaHeight
                         ) * Math.abs(configuration.$.scale.x);
-
-                        preferredScale = {
-                            x: optimalScale,
-                            y: optimalScale
-                        };
 
                         var allowScale = configuration.allowScale(),
                             printTypeFallback;
 
                         for (var j = 0; j < possiblePrintTypes.length; j++) {
                             printType = possiblePrintTypes[j];
-
                             var factor = optimalScale;
+
+                            if (!printType.isPrintColorColorSpace() && !configuration.$.printType.isPrintColorColorSpace()) {
+                                // digital to digital conversion
+                                factor = optimalScale * printType.$.dpi / configuration.get("printType.dpi");
+                            }
+
                             var minimumScale = null;
 
                             if (printType.isEnlargeable()) {
@@ -187,10 +207,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                             var maximumScale = Math.min(
                                     printType.get("size.width") / configurationPrintTypeSize.$.width,
-                                    printType.get("size.height") / configurationPrintTypeSize.$.height);
+                                    printType.get("size.height") / configurationPrintTypeSize.$.height,
+                                    targetPrintAreaWidth / configurationPrintTypeSize.$.width,
+                                    targetPrintAreaHeight / configurationPrintTypeSize.$.height
+                            );
 
                             if (printType.isShrinkable()) {
-                                maximumScale = 1;
+                                maximumScale = Math.min(1, maximumScale);
                             }
 
 
@@ -215,6 +238,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             if (!printTypeFallback) {
                                 printTypeFallback = printType
                             }
+
+                            preferredScale = {
+                                x: factor,
+                                y: factor
+                            };
+
                             var result = configuration._validatePrintTypeSize(printType, currentConfigurationWidth, currentConfigurationHeight, preferredScale);
                             if (result.minBound || result.maxBound) {
                                 continue;
