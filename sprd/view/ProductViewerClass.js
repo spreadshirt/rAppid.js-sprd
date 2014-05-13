@@ -190,6 +190,10 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 this.trigger('on:configurationSelect', configuration);
                 this.set('selectedConfigurationViewer', viewer);
                 if(viewer){
+                    // rearange configurations in list
+                    this.$.product.$.configurations.remove(configuration,{silent: true});
+                    this.$.product.$.configurations.add(configuration, {silent: true});
+                    // bring viewer to front
                     viewer.bringToFront();
                 }
 
