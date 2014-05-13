@@ -50,9 +50,6 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             this.callBase();
 
             if (this._hasSome($, ["scale", "rotation", "printArea", "printColors", "printArea", "printType"])) {
-                if ($.printType) {
-                    this._convertOtherPrintTypes();
-                }
                 if (!options.preventValidation && !options.initial) {
                     validate($);
                 }
@@ -74,34 +71,6 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 combinedAttributes = {};
             }
 
-        },
-
-        /**
-         * Converts all configurations on same print area to same print type
-         *
-         * @private
-         */
-        _convertOtherPrintTypes: function () {
-            var printType = this.$.printType,
-                printArea = this.$.printArea;
-            if (printType && printArea) {
-
-                var product = this.$context ? this.$context.$contextModel : null;
-                if (product) {
-                    var configurations = product.$.configurations.toArray();
-                    var config;
-
-                    for (var i = 0; i < configurations.length; i++) {
-                        config = configurations[i];
-                        if (config !== this && config.$.printArea === printArea) {
-                            var possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(printArea, product.get('appearance.id'));
-                            if (possiblePrintTypes.indexOf(printType) > -1) {
-                                config.set('printType', printType);
-                            }
-                        }
-                    }
-                }
-            }
         },
 
         _validateTransform: function ($) {
@@ -139,23 +108,31 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
 
             var printTypeTooSmall = ret.minBound,
-                printTypeWasTransformed = this.$originalPrintType;
+                printTypeWasTransformed = !!this.$.originalPrintType;
             // when configuration is too small for print type or it is a DD print type try to find another print type that fits better
             if (printType && (printTypeTooSmall || printTypeWasTransformed) && this.$context && this.$context.$contextModel && !printTypeChanged && sizeChanged) {
-                var product = this.$context.$contextModel;
+                var product = this.$context.$contextModel,
+                    apperaranceId = this.$context.$contextModel.get('appearance.id');
                 if (product.$.configurations.size() > 0 && !printTypeTooSmall) {
+                    var revertPossible = true;
                     var configurations = product.$.configurations.toArray();
                     for (var j = 0; j < configurations.length; j++) {
                         var config = configurations[j];
 
-                        if (config !== this && config.$.printArea === printArea && !config.$.printType.isPrintColorColorSpace()) {
-                            return ret;
+                        var possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(printArea, apperaranceId);
+
+                        if (config !== this && config.$.printArea === printArea && (possiblePrintTypes.indexOf(this.$.originalPrintType) === -1 || !config.isPrintTypeAvailable(this.$.originalPrintType))) {
+                            revertPossible = false;
                         }
 
                     }
+                    // don't transform
+                    if (!revertPossible) {
+                        return ret;
+                    }
                 }
 
-                var printTypes = this.getPossiblePrintTypesForPrintArea(this.$.printArea, this.$context.$contextModel.get('appearance.id'));
+                var printTypes = this.getPossiblePrintTypesForPrintArea(this.$.printArea, apperaranceId);
                 var preferredPrintType = null,
                     val,
                     newPrintType;
@@ -165,15 +142,13 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                     val = this._validatePrintTypeSize(newPrintType, width, height, scale);
                     if (!(val.printTypeScaling || val.maxBound || val.minBound)) {
                         // if the previous print type is valid, use it
-                        if(printTypeWasTransformed){
-                            if(this.$originalPrintType === newPrintType){
-                                preferredPrintType = newPrintType;
-                                this.$originalPrintType = null;
-                                break;
-                            }
-                        } else if(printTypeTooSmall){
+                        if (printTypeWasTransformed && this.$.originalPrintType === newPrintType) {
                             preferredPrintType = newPrintType;
-                            this.$originalPrintType = printType;
+                            this.$.originalPrintType = null;
+                            break;
+                        } else if (printTypeTooSmall) {
+                            preferredPrintType = newPrintType;
+                            this.$.originalPrintType = printType;
                             break;
                         }
                     }
@@ -184,6 +159,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                         printType: preferredPrintType
                     });
                     this.set('printType', preferredPrintType);
+                    this.trigger('printTypeTransformed', {printType: this}, this);
                     ret.minBound = false;
                 }
             }

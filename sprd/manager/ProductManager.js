@@ -1,5 +1,5 @@
-define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus'],
-    function (IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus) {
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer'],
+    function (IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
@@ -283,24 +283,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 product.$.configurations.remove(removeConfigurations);
             },
 
-            _getPreferredPrintType: function (product, printArea, possiblePrintTypes) {
-                var size = product.$.configurations.size();
-                if (size) {
-                    var configurations = product.$.configurations.toArray();
-                    for (var i = 0; i < configurations.length; i++) {
-                        var config = configurations[i];
-                        // if config on same printarea
-                        // AND has DD print type
-                        // AND this print type is supported
-                        // use this print type
-                        if (config.$.printArea === printArea && !config.$.printType.isPrintColorColorSpace() && possiblePrintTypes.indexOf(config.$.printType) > -1) {
-                            return config.$.printType;
-                        }
-                    }
-                }
-                return null;
-            },
-
             /**
              * Adds a design to a given Product
              * @param {sprd.model.Product} product
@@ -326,7 +308,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     view = params.view,
                     appearance = product.$.appearance,
                     printType = params.printType,
-                    possiblePrintTypes;
+                    possiblePrintTypes
 
                 if (!design) {
                     callback(new Error("No design"));
@@ -387,7 +369,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             throw new Error("PrintType not possible for design and printArea");
                         }
 
-                        printType = self._getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
+                        printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes, possiblePrintTypes[0]) || printType || possiblePrintTypes[0];
 
                         if (!printType) {
                             throw new Error("No printType available");
@@ -452,7 +434,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     font = null,
                     appearance = product.$.appearance,
                     printType = params.printType,
-                    printTypeId = params.printTypeId;
+                    printTypeId = params.printTypeId
 
                 if (!text) {
                     callback(new Error("No text"));
@@ -576,7 +558,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             }
                         }
 
-                        printType = self._getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
+                        printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
 
                         if (!printType) {
                             throw new Error("No printType available");
