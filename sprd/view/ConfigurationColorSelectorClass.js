@@ -69,6 +69,10 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
             }, this);
         },
 
+        _commitConfiguration: function() {
+            this.set("layers", null);
+        },
+
         _commitLayers: function(layers) {
 
             this.set("selectedLayer", null);
