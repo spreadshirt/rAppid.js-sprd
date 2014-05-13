@@ -60,6 +60,8 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
         ],
 
         ctor: function() {
+            var self = this;
+
             this.callBase();
 
             this.bind("colorPicker", "change:menuVisible", function() {
@@ -67,6 +69,10 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
                     this.set("selectedLayer", null);
                 }
             }, this);
+
+            window.onorientationchange = function () {
+                self.trigger("orientationChanged");
+            };
         },
 
         _commitConfiguration: function() {
@@ -102,10 +108,15 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
             if (layer !== this.$.selectedLayer) {
                 this.set("selectedLayer", layer);
             } else {
-                this.set("selectedLayer", null)
+                this.set("selectedLayer", null);
             }
-
         },
+
+        setItemHeight: function () {
+            var mediaQuery = window.matchMedia("(max-height: 650px)");
+
+            return mediaQuery.matches ? 10 : 15;
+        }.on("orientationChanged"),
 
         boolean: function(v) {
             return !!v;

@@ -17,7 +17,7 @@
                 class="design-color-picker"
                 color="{configuration.printColors.at(selectedLayer.index)}"
                 colors="{_printTypeToColors(configuration.printType)}"
-                oncolorSelect="_handleColorSelect">
+                oncolorSelect="_handleColorSelect" itemHeight="{setItemHeight()}">
             <js:Template name="color-item">
                 <view:PrintColorImage printColor="{item}" display="block"/>
             </js:Template>
