@@ -189,6 +189,9 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 }
                 this.trigger('on:configurationSelect', configuration);
                 this.set('selectedConfigurationViewer', viewer);
+                if(viewer){
+                    viewer.bringToFront();
+                }
 
             }
         },
