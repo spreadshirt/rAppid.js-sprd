@@ -121,6 +121,18 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             getPreferredPrintType: function (product, printArea, possiblePrintTypes) {
                 var configurations = product.getConfigurationsOnPrintAreas(printArea);
                 if (configurations && configurations.length) {
+                    // first sort the possible print types by the configurations that are on print area
+                    // so when the first configuration has flock then he returns flock
+                    var config,
+                        configPrintTypes;
+                    for (var k = configurations.length - 1; k >= 0; k--) {
+                        config = configurations[k];
+                        var index = possiblePrintTypes.indexOf(config.$.printType);
+                        if (index > 0) {
+                            possiblePrintTypes.unshift(config.$.printType);
+                            possiblePrintTypes.slice(index, 1);
+                        }
+                    }
 
                     var appearanceId = product.get('appearance.id'),
                         cache = {};
@@ -128,8 +140,8 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                         var possiblePrintType = possiblePrintTypes[j];
                         var fitsForAll = true;
                         for (var i = 0; i < configurations.length; i++) {
-                            var config = configurations[i],
-                                configPrintTypes = cache[config.$cid] || config.getPossiblePrintTypesForPrintArea(printArea, appearanceId);
+                            config = configurations[i];
+                            configPrintTypes = cache[config.$cid] || config.getPossiblePrintTypesForPrintArea(printArea, appearanceId);
                             // if config on same printarea
                             // AND has DD print type
                             // AND this print type is supported
