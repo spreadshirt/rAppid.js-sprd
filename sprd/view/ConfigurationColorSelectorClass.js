@@ -112,7 +112,7 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
             }
         },
 
-        setItemHeight: function () {
+        getItemHeight: function () {
             var mediaQuery = window.matchMedia("(max-height: 650px)");
 
             return mediaQuery.matches ? 10 : 15;
