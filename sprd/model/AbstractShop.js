@@ -39,7 +39,8 @@ define([
                 baskets: Collection.of(Basket),
                 applications: Collection.of(Application),
                 name: String,
-                description: String
+                description: String,
+                user: "sprd/model/User"
 
             }
         });

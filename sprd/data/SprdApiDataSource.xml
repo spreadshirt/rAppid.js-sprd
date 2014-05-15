@@ -38,7 +38,7 @@
                                         processor="BasketItemProcessor"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="users" modelClassName="sprd.model.User">
-            <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop">
+            <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop" sessionRequired="true">
                 <conf:ResourceConfiguration path="articles" modelClassName="sprd.model.Article"/>
             </conf:ResourceConfiguration>
 
