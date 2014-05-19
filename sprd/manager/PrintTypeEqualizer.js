@@ -105,9 +105,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     for (i = 0; i < configurations.length; i++) {
                         config = configurations[i];
                         if (excludedConfiguration !== config) {
-                            if (!config.$.originalPrintType) {
-                                config.set('originalPrintType', config.$.printType, {silent: true});
-                            }
+                            config.set('originalPrintType', config.$.printType, {silent: true});
                             config.set('printType', possiblePrintType, {
                                 printTypeEqualized: true,
                                 printTypeTransformed: true
