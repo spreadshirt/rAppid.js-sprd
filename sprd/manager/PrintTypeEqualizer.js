@@ -108,7 +108,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                             if (!config.$.originalPrintType) {
                                 config.set('originalPrintType', config.$.printType, {silent: true});
                             }
-                            config.set('printType', possiblePrintType);
+                            config.set('printType', possiblePrintType, {printTypeTransformed: true});
                         }
                     }
                 }

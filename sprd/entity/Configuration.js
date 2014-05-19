@@ -50,6 +50,9 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             this.callBase();
 
             if (this._hasSome($, ["scale", "rotation", "printArea", "printColors", "printArea", "printType"])) {
+                if (!options.printTypeTransformed) {
+                    this.set('originalPrintType', this.$.printType, {silent: true});
+                }
                 if (!options.preventValidation && !options.initial) {
                     validate($);
                 }
@@ -158,7 +161,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                     this.$.bus && this.$.bus.trigger("Configuration.automaticallyPrintTypeChange", {
                         printType: preferredPrintType
                     });
-                    this.set('printType', preferredPrintType);
+                    this.set('printType', preferredPrintType, {printTypeTransformed: true});
                     this.trigger('printTypeTransformed', {printType: this}, this);
                     ret.minBound = false;
                 }
