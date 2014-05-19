@@ -11,7 +11,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
 
                 this.$.concreteElement.bind('getProduct().configurations', 'add', this._handleConfigurationAdd, this);
                 this.$.concreteElement.bind('getProduct().configurations', 'remove', this._handleConfigurationRemove, this);
-                this.$.concreteElement.bind('getProduct().configurations', 'item:printTypeTransformed', this._handlePrintTypeTransformed, this);
+                this.$.concreteElement.bind('getProduct().configurations', 'item:printTypeSwitched', this._handlePrintTypeTransformed, this);
             },
 
 
@@ -20,7 +20,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
 
                 this.$.concreteElement.unbind('getProduct().configurations', 'add', this._handleConfigurationAdd, this);
                 this.$.concreteElement.unbind('getProduct().configurations', 'remove', this._handleConfigurationRemove, this);
-                this.$.concreteElement.unbind('getProduct().configurations', 'item:printTypeTransformed', this._handlePrintTypeTransformed, this);
+                this.$.concreteElement.unbind('getProduct().configurations', 'item:printTypeSwitched', this._handlePrintTypeTransformed, this);
             },
 
             _handleConfigurationAdd: function (e) {
@@ -108,7 +108,10 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                             if (!config.$.originalPrintType) {
                                 config.set('originalPrintType', config.$.printType, {silent: true});
                             }
-                            config.set('printType', possiblePrintType, {printTypeTransformed: true});
+                            config.set('printType', possiblePrintType, {
+                                printTypeEqualized: true,
+                                printTypeTransformed: true
+                            });
                         }
                     }
                 }

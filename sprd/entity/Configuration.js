@@ -50,8 +50,12 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             this.callBase();
 
             if (this._hasSome($, ["scale", "rotation", "printArea", "printColors", "printArea", "printType"])) {
-                if (!options.printTypeTransformed && $.printType) {
+
+                if ($.printType && !options.printTypeTransformed) {
                     this.set('originalPrintType', $.printType, {silent: true});
+                }
+                if ($.printType && !options.printTypeEqualized) {
+                    this.trigger('printTypeSwitched', {printType: $.printType}, this);
                 }
                 if (!options.preventValidation && !options.initial) {
                     validate($);
@@ -138,7 +142,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 var printTypes = this.getPossiblePrintTypesForPrintArea(this.$.printArea, apperaranceId);
                 var preferredPrintType = null,
                     val,
-                    newPrintType;
+                    newPrintType,
+                    mode;
 
                 for (var i = 0; i < printTypes.length; i++) {
                     newPrintType = printTypes[i];
@@ -147,10 +152,12 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                         // if the previous print type is valid, use it
                         if (printTypeWasTransformed && this.$.originalPrintType === newPrintType) {
                             preferredPrintType = newPrintType;
+                            mode = "SCALED_BACK";
                             this.$.originalPrintType = null;
                             break;
                         } else if (printTypeTooSmall) {
                             preferredPrintType = newPrintType;
+                            mode = "SCALED_DOWN";
                             this.$.originalPrintType = printType;
                             break;
                         }
@@ -162,7 +169,6 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                         printType: preferredPrintType
                     });
                     this.set('printType', preferredPrintType, {printTypeTransformed: true});
-                    this.trigger('printTypeTransformed', {printType: this}, this);
                     ret.minBound = false;
                 }
             }
