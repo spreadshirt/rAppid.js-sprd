@@ -10,7 +10,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 composedTextFlow: null,
                 selection: null,
                 bound: null,
-                copyrightWordList: null
+                copyrightWordList: null,
+                curve: 0
             },
 
             inject: {
@@ -448,6 +449,24 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new this.$.Style({printTypeColor: color})).doOperation();
 
                     this.$.printColors.reset([color]);
+                }
+
+            },
+
+            setCurve: function (curve) {
+                if (this.$.ApplyStyleToElementOperation && this.$.Style) {
+                    var selection = this.$.selection;
+                    if (selection.$.anchorIndex === selection.$.activeIndex) {
+                        selection = selection.clone();
+                        selection.set({
+                            anchorIndex: 0,
+                            activeIndex: this.$.textFlow.textLength() - 1
+                        })
+
+                    }
+                    new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new this.$.Style({curve: curve})).doOperation();
+
+                    this.set('curve', curve);
                 }
 
             },
