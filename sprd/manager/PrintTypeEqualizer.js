@@ -11,7 +11,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
 
                 this.$.concreteElement.bind('getProduct().configurations', 'add', this._handleConfigurationAdd, this);
                 this.$.concreteElement.bind('getProduct().configurations', 'remove', this._handleConfigurationRemove, this);
-                this.$.concreteElement.bind('getProduct().configurations', 'item:printTypeTransformed', this._handlePrintTypeTransformed, this);
+                this.$.concreteElement.bind('getProduct().configurations', 'item:printTypeSwitched', this._handlePrintTypeTransformed, this);
             },
 
 
@@ -20,7 +20,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
 
                 this.$.concreteElement.unbind('getProduct().configurations', 'add', this._handleConfigurationAdd, this);
                 this.$.concreteElement.unbind('getProduct().configurations', 'remove', this._handleConfigurationRemove, this);
-                this.$.concreteElement.unbind('getProduct().configurations', 'item:printTypeTransformed', this._handlePrintTypeTransformed, this);
+                this.$.concreteElement.unbind('getProduct().configurations', 'item:printTypeSwitched', this._handlePrintTypeTransformed, this);
             },
 
             _handleConfigurationAdd: function (e) {
@@ -105,10 +105,11 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     for (i = 0; i < configurations.length; i++) {
                         config = configurations[i];
                         if (excludedConfiguration !== config) {
-                            if (!config.$.originalPrintType) {
-                                config.set('originalPrintType', config.$.printType, {silent: true});
-                            }
-                            config.set('printType', possiblePrintType);
+                            config.set('originalPrintType', config.$.printType, {silent: true});
+                            config.set('printType', possiblePrintType, {
+                                printTypeEqualized: true,
+                                printTypeTransformed: true
+                            });
                         }
                     }
                 }
@@ -121,6 +122,18 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             getPreferredPrintType: function (product, printArea, possiblePrintTypes) {
                 var configurations = product.getConfigurationsOnPrintAreas(printArea);
                 if (configurations && configurations.length) {
+                    // first sort the possible print types by the configurations that are on print area
+                    // so when the first configuration has flock then he returns flock
+                    var config,
+                        configPrintTypes;
+                    for (var k = configurations.length - 1; k >= 0; k--) {
+                        config = configurations[k];
+                        var index = possiblePrintTypes.indexOf(config.$.printType);
+                        if (index > 0) {
+                            possiblePrintTypes.unshift(config.$.printType);
+                            possiblePrintTypes.slice(index, 1);
+                        }
+                    }
 
                     var appearanceId = product.get('appearance.id'),
                         cache = {};
@@ -128,8 +141,8 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                         var possiblePrintType = possiblePrintTypes[j];
                         var fitsForAll = true;
                         for (var i = 0; i < configurations.length; i++) {
-                            var config = configurations[i],
-                                configPrintTypes = cache[config.$cid] || config.getPossiblePrintTypesForPrintArea(printArea, appearanceId);
+                            config = configurations[i];
+                            configPrintTypes = cache[config.$cid] || config.getPossiblePrintTypesForPrintArea(printArea, appearanceId);
                             // if config on same printarea
                             // AND has DD print type
                             // AND this print type is supported
