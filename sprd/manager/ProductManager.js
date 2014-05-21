@@ -1,5 +1,5 @@
-define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus'],
-    function (IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus) {
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer'],
+    function (IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
@@ -120,6 +120,26 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         targetPrintArea = productType.getDefaultPrintArea();
                     }
 
+                    var possiblePrintTypes;
+                    var printAreas = [targetPrintArea].concat(productType.$.printAreas.$items);
+
+                    targetPrintArea = null;
+
+                    // search for the best print area
+                    for (var p = 0; p < printAreas.length; p++) {
+                        var printArea = printAreas[p];
+
+                        if (printArea && configuration.isAllowedOnPrintArea(printArea)) {
+                            possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, appearance.$.id);
+
+                            if (possiblePrintTypes.length > 0) {
+                                targetPrintArea = printArea;
+                                break;
+                            }
+                        }
+
+                    }
+
                     if (targetPrintArea && configuration.isAllowedOnPrintArea(targetPrintArea)) {
                         configuration.set('printArea', targetPrintArea, setOptions);
 
@@ -136,7 +156,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         var currentConfigurationHeight = configuration.height();
 
                         // find new print type
-                        var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(targetPrintArea, appearance.$.id);
+
                         var printType = configuration.$.printType;
 
                         var center = {
@@ -161,22 +181,22 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
 
                         var optimalScale = Math.min(
-                                targetPrintAreaWidth / currentPrintAreaWidth,
-                                targetPrintAreaHeight / currentPrintAreaHeight
+                            targetPrintAreaWidth / currentPrintAreaWidth,
+                            targetPrintAreaHeight / currentPrintAreaHeight
                         ) * Math.abs(configuration.$.scale.x);
-
-                        preferredScale = {
-                            x: optimalScale,
-                            y: optimalScale
-                        };
 
                         var allowScale = configuration.allowScale(),
                             printTypeFallback;
 
                         for (var j = 0; j < possiblePrintTypes.length; j++) {
                             printType = possiblePrintTypes[j];
-
                             var factor = optimalScale;
+
+                            if (!printType.isPrintColorColorSpace() && !configuration.$.printType.isPrintColorColorSpace()) {
+                                // digital to digital conversion
+                                factor = optimalScale * printType.$.dpi / configuration.get("printType.dpi");
+                            }
+
                             var minimumScale = null;
 
                             if (printType.isEnlargeable()) {
@@ -187,10 +207,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                             var maximumScale = Math.min(
                                     printType.get("size.width") / configurationPrintTypeSize.$.width,
-                                    printType.get("size.height") / configurationPrintTypeSize.$.height);
+                                    printType.get("size.height") / configurationPrintTypeSize.$.height,
+                                    targetPrintAreaWidth / configurationPrintTypeSize.$.width,
+                                    targetPrintAreaHeight / configurationPrintTypeSize.$.height
+                            );
 
                             if (printType.isShrinkable()) {
-                                maximumScale = 1;
+                                maximumScale = Math.min(1, maximumScale);
                             }
 
 
@@ -215,6 +238,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             if (!printTypeFallback) {
                                 printTypeFallback = printType
                             }
+
+                            preferredScale = {
+                                x: factor,
+                                y: factor
+                            };
+
                             var result = configuration._validatePrintTypeSize(printType, currentConfigurationWidth, currentConfigurationHeight, preferredScale);
                             if (result.minBound || result.maxBound) {
                                 continue;
@@ -254,24 +283,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 product.$.configurations.remove(removeConfigurations);
             },
 
-            _getPreferredPrintType: function (product, printArea, possiblePrintTypes) {
-                var size = product.$.configurations.size();
-                if (size) {
-                    var configurations = product.$.configurations.toArray();
-                    for (var i = 0; i < configurations.length; i++) {
-                        var config = configurations[i];
-                        // if config on same printarea
-                        // AND has DD print type
-                        // AND this print type is supported
-                        // use this print type
-                        if (config.$.printArea === printArea && !config.$.printType.isPrintColorColorSpace() && possiblePrintTypes.indexOf(config.$.printType) > -1) {
-                            return config.$.printType;
-                        }
-                    }
-                }
-                return null;
-            },
-
             /**
              * Adds a design to a given Product
              * @param {sprd.model.Product} product
@@ -297,7 +308,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     view = params.view,
                     appearance = product.$.appearance,
                     printType = params.printType,
-                    possiblePrintTypes;
+                    possiblePrintTypes
 
                 if (!design) {
                     callback(new Error("No design"));
@@ -358,7 +369,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             throw new Error("PrintType not possible for design and printArea");
                         }
 
-                        printType = self._getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
+                        printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes, possiblePrintTypes[0]) || printType || possiblePrintTypes[0];
 
                         if (!printType) {
                             throw new Error("No printType available");
@@ -423,7 +434,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     font = null,
                     appearance = product.$.appearance,
                     printType = params.printType,
-                    printTypeId = params.printTypeId;
+                    printTypeId = params.printTypeId
 
                 if (!text) {
                     callback(new Error("No text"));
@@ -547,7 +558,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             }
                         }
 
-                        printType = self._getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
+                        printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
 
                         if (!printType) {
                             throw new Error("No printType available");

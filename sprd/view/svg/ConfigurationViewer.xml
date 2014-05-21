@@ -11,7 +11,7 @@
     </svg:clipPath>
 
     <svg:g cid="_assetContainerWrapper">
-        <svg:g cid="_assetContainer" scaleX="{_scale.x}" scaleY="{_scale.y}" />
+        <svg:g class="asset-container" cid="_assetContainer" scaleX="{_scale.x}" scaleY="{_scale.y}" />
     </svg:g>
 
     <svg:circle class="rotation-center" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{pixelToViewBox(2)}"

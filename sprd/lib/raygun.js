@@ -1,4 +1,4 @@
-/*! Raygun4js - v1.8.1 - 2014-04-15
+/*! Raygun4js - v1.8.3 - 2014-05-08
 * https://github.com/MindscapeHQ/raygun4js
 * Copyright (c) 2014 MindscapeHQ; Licensed MIT */
 ;(function(window, undefined) {
@@ -345,7 +345,6 @@ TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
             // cross-domain errors will be triggered.
             var source = '';
 
-            // prevent indexOf of undefined error already reported to https://github.com/MindscapeHQ/raygun4js/issues/40
             url = url || "";
 
             if (url.indexOf(document.domain) !== -1) {
@@ -1101,67 +1100,6 @@ TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
     _helper('setInterval');
 }());
 
-/**
- * Extended support for backtraces and global error handling for most
- * asynchronous jQuery functions.
- */
-(function traceKitAsyncForjQuery($) {
-
-    // quit if jQuery isn't on the page
-    if (!$) {
-        return;
-    }
-
-    var _oldEventAdd = $.event.add;
-    $.event.add = function traceKitEventAdd(elem, types, handler, data, selector) {
-        var _handler;
-
-        if (handler.handler) {
-            _handler = handler.handler;
-            handler.handler = TraceKit.wrap(handler.handler);
-        } else {
-            _handler = handler;
-            handler = TraceKit.wrap(handler);
-        }
-
-        // If the handler we are attaching doesn’t have the same guid as
-        // the original, it will never be removed when someone tries to
-        // unbind the original function later. Technically as a result of
-        // this our guids are no longer globally unique, but whatever, that
-        // never hurt anybody RIGHT?!
-        if (_handler.guid) {
-            handler.guid = _handler.guid;
-        } else {
-            handler.guid = _handler.guid = $.guid++;
-        }
-
-        return _oldEventAdd.call(this, elem, types, handler, data, selector);
-    };
-
-    var _oldReady = $.fn.ready;
-    $.fn.ready = function traceKitjQueryReadyWrapper(fn) {
-        return _oldReady.call(this, TraceKit.wrap(fn));
-    };
-
-    var _oldAjax = $.ajax;
-    $.ajax = function traceKitAjaxWrapper(s) {
-        var keys = ['complete', 'error', 'success'], key;
-        while(key = keys.pop()) {
-            if ($.isFunction(s[key])) {
-                s[key] = TraceKit.wrap(s[key]);
-            }
-        }
-
-        try {
-            return _oldAjax.call(this, s);
-        } catch (e) {
-            TraceKit.report(e);
-            throw e;
-        }
-    };
-
-}(window.jQuery));
-
 //Default options:
 if (!TraceKit.remoteFetching) {
   TraceKit.remoteFetching = true;
@@ -1321,7 +1259,9 @@ window.TraceKit = TraceKit;
     send: function (ex, customData, tags) {
       try {
         processUnhandledException(_traceKit.computeStackTrace(ex), {
-          customData: merge(_customData, customData),
+          customData: typeof _customData === 'function' ?
+            merge(_customData(), customData) :
+            merge(_customData, customData),
           tags: mergeArray(_tags, tags)
         });
       }
@@ -1358,16 +1298,21 @@ window.TraceKit = TraceKit;
       // truncate after fourth /, or 24 characters, whichever is shorter
       // /api/1/diagrams/xyz/server becomes
       // /api/1/diagrams/...
+      var truncated = url;
       var path = url.split('//')[1];
-      var queryStart = path.indexOf('?');
-      var sanitizedPath = path.toString().substring(0, queryStart);
-      var truncated_parts = sanitizedPath.split('/').slice(0, 4).join('/');
-      var truncated_length = sanitizedPath.substring(0, 48);
-      var truncated = truncated_parts.length < truncated_length.length?
-                      truncated_parts : truncated_length;
-      if (truncated !== sanitizedPath) {
-          truncated += '..';
+
+      if (path) {
+        var queryStart = path.indexOf('?');
+        var sanitizedPath = path.toString().substring(0, queryStart);
+        var truncated_parts = sanitizedPath.split('/').slice(0, 4).join('/');
+        var truncated_length = sanitizedPath.substring(0, 48);
+        truncated = truncated_parts.length < truncated_length.length?
+                        truncated_parts : truncated_length;
+        if (truncated !== sanitizedPath) {
+            truncated += '..';
+        }
       }
+
       return truncated;
   }
 
@@ -1499,7 +1444,11 @@ window.TraceKit = TraceKit;
     }
 
     if (isEmpty(options.customData)) {
-      options.customData = _customData;
+      if (typeof _customData === 'function') {
+        options.customData = _customData();
+      } else {
+        options.customData = _customData;
+      }
     }
 
     if (isEmpty(options.tags)) {
@@ -1533,7 +1482,7 @@ window.TraceKit = TraceKit;
         },
         'Client': {
           'Name': 'raygun-js',
-          'Version': '1.8.1'
+          'Version': '1.8.3'
         },
         'UserCustomData': options.customData,
         'Tags': options.tags,

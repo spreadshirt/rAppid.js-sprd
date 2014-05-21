@@ -81,6 +81,7 @@
                 </sequence>
                 <attribute name="appearance"/>
                 <attribute name="productType"/>
+                <attribute name="product"/>
             </extension>
         </complexContent>
     </complexType>
@@ -95,6 +96,7 @@
                 </sequence>
                 <attribute name="appearance"/>
                 <attribute name="productType"/>
+                <attribute name="product"/>
                 <attribute name="onappearanceSelect" default="_onAppearanceSelectHandler" type="string"/>
             </extension>
         </complexContent>
@@ -296,6 +298,20 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="display" default="inline-block"/>
+                <attribute name="loadLazy">
+                    <annotation>
+                        <documentation>
+                        Set to true to load images only when in viewport
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="unveiled">
+                    <annotation>
+                        <documentation>
+                        Returns true if image is unveiled
+                    </documentation>
+                    </annotation>
+                </attribute>
                 <attribute name="loaded">
                     <annotation>
                         <documentation>
@@ -324,7 +340,7 @@
                     </documentation>
                     </annotation>
                 </attribute>
-                <attribute name="src">
+                <attribute name="src" default="{imageUrl()}">
                     <annotation>
                         <documentation>
                         the source of the Image
@@ -335,6 +351,13 @@
                     <annotation>
                         <documentation>
                         the title of the Image
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="loadLazyThreshold">
+                    <annotation>
+                        <documentation>
+                        Lazy Load threshold
                     </documentation>
                     </annotation>
                 </attribute>
@@ -350,6 +373,20 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+                <attribute name="loadLazy">
+                    <annotation>
+                        <documentation>
+                        Set to true to load images only when in viewport
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="unveiled">
+                    <annotation>
+                        <documentation>
+                        Returns true if image is unveiled
+                    </documentation>
+                    </annotation>
+                </attribute>
                 <attribute name="loaded">
                     <annotation>
                         <documentation>
@@ -378,7 +415,7 @@
                     </documentation>
                     </annotation>
                 </attribute>
-                <attribute name="src">
+                <attribute name="src" default="{imageUrl()}">
                     <annotation>
                         <documentation>
                         the source of the Image
@@ -389,6 +426,13 @@
                     <annotation>
                         <documentation>
                         the title of the Image
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="loadLazyThreshold">
+                    <annotation>
+                        <documentation>
+                        Lazy Load threshold
                     </documentation>
                     </annotation>
                 </attribute>

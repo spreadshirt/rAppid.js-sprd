@@ -37,7 +37,9 @@ define([
 //            languages: Collection,
                 countries: Collection.of(Country),
                 baskets: Collection.of(Basket),
-                applications: Collection.of(Application)
+                applications: Collection.of(Application),
+                name: String,
+                description: String
 
             }
         });
