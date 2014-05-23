@@ -92,7 +92,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 this.bind('productViewer', 'change:width', this._productViewerSizeChanged, this);
-                this.bind(["productViewer", "change:selectedConfiguration"], function() {
+                this.bind(["productViewer", "change:selectedConfiguration"], function () {
                     if (this.isSelectedConfiguration()) {
                         this.focus();
                     }
@@ -503,12 +503,43 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this.$scaleDiagonalDistance = initialVector.distance();
 
                 }
+                var $w = this.$stage.$window;
+                this.$window = this.$window || this.dom($w);
 
-                var window = this.dom(this.$stage.$window);
+                var window = this.$window;
+
+                // shim layer with setTimeout fallback
+                $w.requestAnimFrame = $w.$requestAnimFrame || (function () {
+                    return  $w.requestAnimationFrame ||
+                        $w.webkitRequestAnimationFrame ||
+                        $w.mozRequestAnimationFrame ||
+                        function (callback) {
+                            $w.setTimeout(callback, 1000 / 60);
+                        };
+                })();
+
+                this.$requestAnimCallback = this.$requestAnimCallback || function(){
+                    self._callMove();
+                };
 
                 this.$moveHandler = function (e) {
+                    e.preventDefault();
+
+                    window.unbindDomEvent(self.$moveEvent, self.$moveHandler);
+
                     selected = true;
-                    self._move(e, mode);
+
+                    self.$moveState = self.$moveState || {
+                        active: false,
+                        e: e,
+                        mode: mode
+                    };
+                    self.$moveState.e = e;
+                    self.$moveState.mode = mode;
+                    if(!self.$moveState.active){
+                        self.$moveState.active = true;
+                        $w.requestAnimFrame(self.$requestAnimCallback);
+                    }
                 };
 
                 this.$upHandler = function (e) {
@@ -530,11 +561,22 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 window.bindDomEvent(this.$moveEvent, this.$moveHandler);
                 window.bindDomEvent(this.$upEvent, this.$upHandler);
 
+
                 if (!this.$stage.$browser.hasTouch || this.$stage.$browser.isIOS) {
                     window.bindDomEvent("keydown", this.$keyDownHandler);
                     window.bindDomEvent("keyup", this.$keyUpHandler);
                 }
 
+            },
+
+            _callMove: function(){
+                if(this.$moveState && this.$moveState.active){
+                    this.$moveState.active = false;
+                    this._move(this.$moveState.e,this.$moveState.mode);
+                }
+                if (this.$moving && this.$window) {
+                    this.$window.bindDomEvent(this.$moveEvent, this.$moveHandler);
+                }
             },
 
             _move: function (e, mode) {
@@ -623,13 +665,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                                 });
                             }
                         }
-
+                        var snapLinesList = this.$.printAreaViewer.$.snapLines;
+                        if (snapLinesList) {
+                            snapLinesList.reset(snapLines);
+                        }
                     }
 
-                    var snapLinesList = this.$.printAreaViewer.$.snapLines;
-                    if (snapLinesList) {
-                        snapLinesList.reset(snapLines);
-                    }
 
                     this.$._offset.set({
                         x: newX,
@@ -801,7 +842,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         });
                     }
 
-                    if(changed){
+                    if (changed) {
                         this.$.bus.trigger('Application.productChanged', this.$.product);
                     }
                 }
@@ -809,8 +850,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 var window = this.dom(this.$stage.$window),
                     f = function (e) {
-                        // capture phase event to prevent click
-                        // which closes menus etc.
+                          // capture phase event to prevent click
+                      // which closes menus etc.
                         e.stopPropagation();
                         window.unbindDomEvent("click", f, true);
                     };
@@ -827,7 +868,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this._stopTransformation();
             },
 
-            focus: function() {
+            focus: function () {
                 if (this.$asset) {
                     this.$asset._focus();
                 }
@@ -874,8 +915,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var window = this.dom(this.$stage.$window);
                 window.unbindDomEvent(this.$moveEvent, this.$moveHandler);
                 window.unbindDomEvent(this.$upEvent, this.$upHandler);
-                window.unbindDomEvent("keydown", this.$keyDownHandler);
-                window.unbindDomEvent("keyup", this.$keyUpHandler);
+                    window.unbindDomEvent("keydown", this.$keyDownHandler);
+                    window.unbindDomEvent("keyup", this.$keyUpHandler);
+                this.$moveHandler = null;
+                this.$upHandler = null;
             },
 
             _resetTransformation: function () {
