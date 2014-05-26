@@ -122,10 +122,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     hasTouch = runsInBrowser && ('ontouchstart' in window);
 
                 this.$hasTouch = hasTouch;
-                this.$downEvent = hasTouch ? "touchstart" : "mousedown";
-                this.$moveEvent = hasTouch ? "touchmove" : "mousemove";
-                this.$upEvent = hasTouch ? "touchend" : "mouseup";
-                this.$clickEvent = hasTouch ? "tap" : "click";
 
                 if (hasTouch) {
                     this.set({
@@ -217,29 +213,29 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         self._showKeyBoard();
                     });
 
-                    assetContainer.bindDomEvent(this.$downEvent, function (e) {
+                    assetContainer.bindDomEvent("pointerdown", function (e) {
                         self._down(e, self._isGesture(e) ? GESTURE : MOVE, assetContainer);
                     });
 
-                    scaleHandle && scaleHandle.bindDomEvent(this.$downEvent, function (e) {
+                    scaleHandle && scaleHandle.bindDomEvent("pointerdown", function (e) {
                         self._down(e, self._isGesture(e) ? GESTURE : SCALE, scaleHandle);
                     });
 
-                    resizeHandle && resizeHandle.bindDomEvent(this.$downEvent, function (e) {
+                    resizeHandle && resizeHandle.bindDomEvent("pointerdown", function (e) {
                         self._down(e, RESIZE);
                     });
 
-                    rotateHandle && rotateHandle.bindDomEvent(this.$downEvent, function (e) {
+                    rotateHandle && rotateHandle.bindDomEvent("pointerdown", function (e) {
                         self._down(e, self._isGesture(e) ? GESTURE : ROTATE, rotateHandle);
                     });
 
-                    moveHandle && moveHandle.bindDomEvent(this.$downEvent, function (e) {
+                    moveHandle && moveHandle.bindDomEvent("pointerdown", function (e) {
                         self._down(e, self._isGesture(e) ? GESTURE : MOVE, moveHandle);
                     });
 
 
                     if (productViewer && this.$hasTouch) {
-                        productViewer.bindDomEvent(this.$downEvent, function (e) {
+                        productViewer.bindDomEvent("pointerdown", function (e) {
                             if (productViewer.$.selectedConfiguration === self.$.configuration && self._isGesture(e)) {
                                 self._down(e, GESTURE);
                             }
@@ -251,14 +247,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         return false;
                     };
 
-                    assetContainer.bindDomEvent(this.$clickEvent, function (e) {
+                    assetContainer.bindDomEvent("click", function (e) {
                         e.stopPropagation && e.stopPropagation();
                         return false;
                     });
 
-                    scaleHandle && scaleHandle.bindDomEvent(this.$clickEvent, preventDefault);
-                    rotateHandle && rotateHandle.bindDomEvent(this.$clickEvent, preventDefault);
-                    moveHandle && moveHandle.bindDomEvent(this.$clickEvent, preventDefault);
+                    scaleHandle && scaleHandle.bindDomEvent("click", preventDefault);
+                    rotateHandle && rotateHandle.bindDomEvent("click", preventDefault);
+                    moveHandle && moveHandle.bindDomEvent("click", preventDefault);
 
                 }
 
@@ -525,7 +521,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$moveHandler = function (e) {
                     e.preventDefault();
 
-                    window.unbindDomEvent(self.$moveEvent, self.$moveHandler);
+                    window.unbindDomEvent("pointermove", self.$moveHandler);
 
                     selected = true;
 
@@ -558,8 +554,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     self._keyUp(e, mode);
                 };
 
-                window.bindDomEvent(this.$moveEvent, this.$moveHandler);
-                window.bindDomEvent(this.$upEvent, this.$upHandler);
+                window.bindDomEvent("pointermove", this.$moveHandler);
+                window.bindDomEvent("pointerup", this.$upHandler);
 
 
                 if (!this.$stage.$browser.hasTouch || this.$stage.$browser.isIOS) {
@@ -575,7 +571,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this._move(this.$moveState.e,this.$moveState.mode);
                 }
                 if (this.$moving && this.$window) {
-                    this.$window.bindDomEvent(this.$moveEvent, this.$moveHandler);
+                    this.$window.bindDomEvent("pointermove", this.$moveHandler);
                 }
             },
 
@@ -913,10 +909,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             _unbindTransformationHandler: function () {
                 var window = this.dom(this.$stage.$window);
-                window.unbindDomEvent(this.$moveEvent, this.$moveHandler);
-                window.unbindDomEvent(this.$upEvent, this.$upHandler);
-                    window.unbindDomEvent("keydown", this.$keyDownHandler);
-                    window.unbindDomEvent("keyup", this.$keyUpHandler);
+                window.unbindDomEvent("pointermove", this.$moveHandler);
+                window.unbindDomEvent("pointerup", this.$upHandler);
+                window.unbindDomEvent("keydown", this.$keyDownHandler);
+                window.unbindDomEvent("keyup", this.$keyUpHandler);
                 this.$moveHandler = null;
                 this.$upHandler = null;
             },
