@@ -9,8 +9,8 @@ define([
     'sprd/model/ProductTypeDepartment',
     'sprd/model/ArticleCategory',
     'sprd/model/DesignCategory',
-    'sprd/model/Article', 'sprd/model/Country', 'sprd/model/PrintType', 'sprd/model/FontFamily', "sprd/model/Product", "sprd/model/DiscountScale", 'sprd/model/Application'],
-    function (SprdModel, Collection, Basket, Currency, Address, Design, ProductType, ProductTypeDepartment, ArticleCategory, DesignCategory, Article, Country, PrintType, FontFamily, Product, DiscountScale, Application) {
+    'sprd/model/Article', 'sprd/model/Country', 'sprd/model/PrintType', 'sprd/model/FontFamily', "sprd/model/Product", "sprd/model/DiscountScale", 'sprd/model/Application', 'sprd/model/ShippingType'],
+    function (SprdModel, Collection, Basket, Currency, Address, Design, ProductType, ProductTypeDepartment, ArticleCategory, DesignCategory, Article, Country, PrintType, FontFamily, Product, DiscountScale, Application, ShippingType) {
 
         return SprdModel.inherit("sprd.model.AbstractShop", {
             schema: {
@@ -25,7 +25,7 @@ define([
                 printTypes: Collection.of(PrintType),
                 fontFamilies: Collection.of(FontFamily),
                 productTypeDepartments: Collection.of(ProductTypeDepartment),
-//            shippingTypes: Collection,
+            shippingTypes: Collection.of(ShippingType),
             designCategories: Collection.of(DesignCategory),
                 designs: Collection.of(Design),
                 articleCategories: Collection.of(ArticleCategory),
