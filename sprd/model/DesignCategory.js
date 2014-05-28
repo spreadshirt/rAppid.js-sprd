@@ -29,6 +29,27 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], funct
             return this.isMarketPlace() || this.isBestseller();
         },
 
+        getCategoryById: function(id) {
+
+            if (id == this.$.id) {
+                return this;
+            }
+
+            var subCategories = this.$.designCategories;
+
+            if (subCategories) {
+                for (var i = 0; i < subCategories.$items.length; i++) {
+                    var category = subCategories.$items[i].getCategoryById(id);
+
+                    if (category) {
+                        return category;
+                    }
+                }
+            }
+
+            return null;
+        },
+
         getSubCategoryById: function (id) {
             return this.$.designCategories.find(function (val) {
                 return val.$.id == id;
