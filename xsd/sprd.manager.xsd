@@ -82,6 +82,13 @@ The following values are replaced
                     </documentation>
                     </annotation>
                 </attribute>
+                <attribute name="updating">
+                    <annotation>
+                        <documentation>
+                        a flag that indicates if the basket is updating
+                    </documentation>
+                    </annotation>
+                </attribute>
                 <attribute name="onbasketChanged" default="_onBasketChangedHandler" type="string">
                     <annotation>
                         <documentation>
