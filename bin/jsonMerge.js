@@ -39,23 +39,34 @@ outputFilename = args.shift() || filename1.match(/([^/.]+)\..*?$/)[1] + '_merge_
 
 // read files
 if (fs.existsSync(filename1)) {
-    json1 = fs.readFileSync(filename1).toString();
+    json1 = fs.readFileSync(filename1, 'utf8').toString().replace(/^\uFEFF/, '');
 } else {
     console.error('file "' + filename1 + '" doesn\'t exist.');
 }
 
 if (fs.existsSync(filename2)) {
-    json2 = fs.readFileSync(filename2).toString();
+    json2 = fs.readFileSync(filename2, 'utf8').toString().replace(/^\uFEFF/, '');
 } else {
     console.error('file "' + filename2 + '" doesn\'t exist.');
 }
 
 // parse json out of files
+
 try {
     obj1 = JSON.parse(json1);
+} catch (e) {
+    console.error('the first file doesn\'t contain valid JSON');
+	 console.error(e);
+	 console.info('json:', json1);
+    process.exit(1);
+}
+
+try {
     obj2 = JSON.parse(json2);
 } catch (e) {
-    console.error('one of the files doesn\'t contain valid JSON');
+    console.error('the second file doesn\'t contain valid JSON');
+	 console.error(e);
+	 console.info('json:', json2);
     process.exit(1);
 }
 
