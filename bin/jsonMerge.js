@@ -35,7 +35,7 @@ if (!(filename1 && filename2)) {
 }
 
 // get output filename from args or user 'file1_merge_file2' as default
-outputFilename = args.shift() || filename1.match(/([^/.]+)\..*?$/)[1] + '_merge_' + filename2.match(/([^/.]+)\..*?$/)[1] + '.json';
+outputFilename = args.shift() || filename1.match(/([^/\\.]+)\..*?$/)[1] + '_merge_' + filename2.match(/([^/\\.]+)\..*?$/)[1] + '.json';
 
 // read files
 if (fs.existsSync(filename1)) {
