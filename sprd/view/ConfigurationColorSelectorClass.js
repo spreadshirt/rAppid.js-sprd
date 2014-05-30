@@ -113,9 +113,13 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
         },
 
         getItemHeight: function () {
-            var mediaQuery = window.matchMedia("(max-height: 650px)");
+            var window = this.$stage.$window;
+            if (window && window.matchMedia) {
+                var mediaQuery = window.matchMedia("(max-height: 650px)");
 
-            return mediaQuery.matches ? 10 : 15;
+                return mediaQuery.matches ? 10 : 15;
+            }
+            return 10;
         }.on("orientationChanged"),
 
         boolean: function(v) {
