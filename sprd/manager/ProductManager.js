@@ -308,7 +308,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     view = params.view,
                     appearance = product.$.appearance,
                     printType = params.printType,
-                    possiblePrintTypes
+                    possiblePrintTypes;
 
                 if (!design) {
                     callback(new Error("No design"));
