@@ -1,4 +1,4 @@
-define(['js/core/Component'], function(Component){
+define(['js/core/Component', 'underscore'], function(Component, _){
 
     return Component.inherit('sprd.manager.FeatureManager', {
 
@@ -27,6 +27,15 @@ define(['js/core/Component'], function(Component){
                     value = keyValue.join("=");
 
                 if (this.$.hasOwnProperty(key)) {
+
+                    if (value === "true") {
+                        value = true;
+                    } else if (value === "false") {
+                        value = false;
+                    } else if (_.isNumber(this.$[key])) {
+                        value = parseFloat(value);
+                    }
+
                     // we react on this key
                     this.set(key, value);
                 }
