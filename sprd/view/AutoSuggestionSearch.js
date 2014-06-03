@@ -1,6 +1,6 @@
-define(["xaml!js/ui/AutoCompleteBox", "xaml!sprd/data/SprdApiDataSource", "JSON"], function(AutoCompleteBox, SprdApiDataSource, JSON) {
+define(["xaml!js/ui/AutoSuggestionBox", "xaml!sprd/data/SprdApiDataSource", "JSON", "rAppid"], function (AutoCompleteBox, SprdApiDataSource, JSON, rAppid) {
 
-    return AutoCompleteBox.inherit("sprd.view.AutoCompleteSearch", {
+    return AutoCompleteBox.inherit("sprd.view.AutoSuggestionSearch", {
 
         inject: {
             api: SprdApiDataSource
