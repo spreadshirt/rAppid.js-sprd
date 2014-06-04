@@ -2,14 +2,15 @@ define(["xaml!js/ui/AutoSuggestionBox", "xaml!sprd/data/SprdApiDataSource", "JSO
 
     return AutoCompleteBox.inherit("sprd.view.AutoSuggestionSearch", {
 
-        inject: {
-            api: SprdApiDataSource
+        defaults: {
+            locale: null
         },
 
         _search: function (searchTerm, callback) {
-            var locale = this.$stage.$parameter.locale;
+            var locale = this.$.locale;
+
             if (locale) {
-                rAppid.ajax("/tag-service/sprd-tags/tags?locale=" + locale + "&prefix=" + searchTerm + "&simple=true", null, function (err, result) {
+                rAppid.ajax("/api/v1/tags?locale=" + locale + "&prefix=" + searchTerm + "&simple=true", null, function (err, result) {
                     var data = null;
                     if (!err) {
                         try {
