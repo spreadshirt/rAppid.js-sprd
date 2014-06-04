@@ -47,7 +47,9 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
 
             autoSelectLayer: false,
 
-            selectedLayer: null
+            selectedLayer: null,
+
+            autoSelectConfigurationType: null
         },
 
         inject: {
@@ -82,8 +84,10 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
         _commitLayers: function(layers) {
 
             this.set("selectedLayer", null);
+            var autoSelectConfigurationType = this.$.autoSelectConfigurationType;
 
-            if (layers && this.$.autoSelectLayer) {
+            if (layers && this.$.autoSelectLayer &&
+                (!autoSelectConfigurationType || autoSelectConfigurationType === this.get("configuration.type"))) {
                 var configuration = this.$.configuration,
                     layerIndex = 0;
                 if (configuration && configuration.$lastLayerIndex) {
