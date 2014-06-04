@@ -6,19 +6,22 @@ define(["xaml!js/ui/AutoSuggestionBox", "xaml!sprd/data/SprdApiDataSource", "JSO
             api: SprdApiDataSource
         },
 
-        _search: function(searchTerm, callback) {
-            rAppid.ajax("/tag-service/sprd-tags/tags?locale=de_DE&prefix=" + searchTerm +"&simple=true", null, function(err, result) {
-                var data = null;
-                if (!err) {
-                    try {
-                        data = JSON.parse(result.responses.text);
-                    } catch (e) {
-                        err = e;
+        _search: function (searchTerm, callback) {
+            var locale = this.$stage.$parameter.locale;
+            if (locale) {
+                rAppid.ajax("/tag-service/sprd-tags/tags?locale=" + locale + "&prefix=" + searchTerm + "&simple=true", null, function (err, result) {
+                    var data = null;
+                    if (!err) {
+                        try {
+                            data = JSON.parse(result.responses.text);
+                        } catch (e) {
+                            err = e;
+                        }
                     }
-                }
 
-                callback && callback(err, data);
-            });
+                    callback && callback(err, data);
+                });
+            }
         }
 
     });
