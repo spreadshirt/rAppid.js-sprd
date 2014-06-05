@@ -50,9 +50,11 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
 
             billing: Billing,
             shipping: Shipping,
-            shipToBillingAddress: true,
+            invoiceToShippingAddress: true,
 
-            shippingCosts: "{shippingCosts()}"
+            shippingCosts: "{shippingCosts()}",
+
+            payment: null
         },
 
         schema: {
@@ -65,8 +67,6 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
 
             this.$.billing.set("order", this);
             this.$.shipping.set("order", this);
-
-
         },
 
         _postConstruct: function() {
@@ -101,19 +101,19 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             return basketVatIncluded + orderDiscount + voucherDiscount + shippingCosts;
         }.onChange("basket.vatIncluded()", "shippingCosts.vatIncluded"),
 
-        deliveryAddress: function() {
-            return this.$.shipToBillingAddress ? this.get("billing.address") : this.get("shipping.address");
-        }.onChange("shipToBillingAddress"),
+        invoiceAddress: function () {
+            return this.$.invoiceToShippingAddress ? this.get("shipping.address") : this.get("billing.address");
+        }.onChange("invoiceToShippingAddress"),
 
         shippingCosts: function() {
             // TODO: change on basket price change -> pass basket price as argument
-            return this.get("shipping.shippingType.getShippingCountryById(deliveryAddress().country.id).shippingRegion.getShippingCostsForOrderValue(20).cost");
-        }.onChange("shipping.shippingType", "deliveryAddress().country"),
+            return this.get("shipping.shippingType.getShippingCountryById(shipping.address.country.id).shippingRegion.getShippingCostsForOrderValue(20).cost");
+        }.onChange("shipping.shippingType", "shipping.address.country"),
 
         shippingTypes: function() {
 
             var root = this.$.root,
-                shippingCountry = this.get("deliveryAddress().country");
+                shippingCountry = this.get("shipping.address.country");
 
             if (root) {
                 return root.getShippingTypesForCountry(shippingCountry);
@@ -121,7 +121,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
 
             return null;
 
-        }.onChange("root", "deliveryAddress().country")
+        }.onChange("root", "shipping.address.country")
 
 
     });
