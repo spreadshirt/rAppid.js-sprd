@@ -19,7 +19,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
         defaults: {
             type: null,
             company: null,
-            person: null,
+            person: Person,
 
             street: null,
             houseNumber: null,
