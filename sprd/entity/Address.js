@@ -1,9 +1,14 @@
 define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCountry", "sprd/entity/Person"], function (Entity, ShippingState, ShippingCountry, Person) {
 
-    return Entity.inherit("sprd.entity.Address", {
+    var ADDRESS_TYPES = {
+        PACKSTATION: "PACKSTATION",
+        PRIVATE: "PRIVATE"
+    };
+
+    var Address = Entity.inherit("sprd.entity.Address", {
 
         defaults: {
-            type: null,
+            type: ADDRESS_TYPES.PRIVATE,
             company: null,
             person: Person,
 
@@ -25,12 +30,13 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
         schema: {
             type: {
                 type: String,
-                required: false
+                required: true
             },
             company: {
                 type: String,
                 required: false
             },
+
             person: Person,
 
             street: String,
@@ -42,7 +48,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
             city: String,
             state: {
                 type: ShippingState,
-                required: function() {
+                required: function () {
                     return this.get("country.isoCode") === "US";
                 }
             },
@@ -60,4 +66,8 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
             }
         }
     });
+
+    Address.ADDRESS_TYPES = ADDRESS_TYPES;
+
+    return Address;
 });
