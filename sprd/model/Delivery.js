@@ -48,6 +48,9 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             invoiceToShippingAddress: true
         },
 
+
+        $isDependentObject: true,
+
         schema: {
             shipping: Shipping,
             billing: Billing,
