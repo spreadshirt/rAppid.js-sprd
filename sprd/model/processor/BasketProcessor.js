@@ -19,6 +19,14 @@ define(['sprd/model/processor/DefaultProcessor'], function (DefaultProcessor) {
 
             return payload;
 
+        },
+
+        parse: function() {
+            var ret = this.callBase();
+            ret.delivery = ret.delivery || {
+                id: "delivery"
+            };
+            return  ret;
         }
 
     });
