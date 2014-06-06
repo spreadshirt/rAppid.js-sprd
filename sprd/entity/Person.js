@@ -7,36 +7,40 @@ define(["js/data/Entity"], function (Entity) {
         4: "company"
     };
 
-    var Salutation = Entity.inherit("sprd.entity.Person.Salutation", {
-        defaults: {
-            id: null
-        },
-
-        schema: {
-            id: Number
-        },
-
-        contraction: function() {
-            return SalutationMap[this.$.id]
-        }.onChange("id")
-
-    });
-
     return Entity.inherit("sprd.entity.Person", {
 
         defaults: {
-            salutation: Salutation,
+            salutation: null,
             firstName: '',
             lastName: ''
         },
+
         schema: {
-            salutation: Salutation,
+            salutation: Object,
             firstName: String,
             lastName: String
         },
 
-        salutation: function () {
+        parse: function() {
+            var data = this.callBase();
+            data.salutation = (data.salutation || {}).id || null;
+            return data;
+        },
 
-        }.onChange("salutation")
+        compose: function() {
+            var data = this.callBase();
+
+            if (data.salutation) {
+                data.salutation = {
+                    id: data.salutation
+                }
+            }
+
+            return  data;
+        },
+
+        contraction: function () {
+            return SalutationMap[this.$.salutation]
+        }.onChange("id")
     });
 });

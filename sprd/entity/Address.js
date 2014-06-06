@@ -1,18 +1,4 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCountry"], function (Entity, ShippingState, ShippingCountry) {
-
-    var Person = Entity.inherit("sprd.entity.Address.Person", {
-        defaults: {
-            salutation: 99,
-            firstName: null,
-            lastName: null
-        },
-
-        schema: {
-            salutation: Number,
-            firstName: String,
-            lastName: String
-        }
-    });
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCountry", "sprd/entity/Person"], function (Entity, ShippingState, ShippingCountry, Person) {
 
     return Entity.inherit("sprd.entity.Address", {
 
