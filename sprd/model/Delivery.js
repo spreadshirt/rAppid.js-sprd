@@ -36,7 +36,6 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             invoiceToShippingAddress: true
         },
 
-
         $isDependentObject: true,
 
         schema: {
@@ -45,6 +44,16 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
 
             email: String,
             presentMessage: String
+        },
+
+        compose: function() {
+            var data = this.callBase();
+
+            if (this.$.invoiceToShippingAddress) {
+                delete data.billing;
+            }
+
+            return data;
         },
 
         invoiceAddress: function () {
