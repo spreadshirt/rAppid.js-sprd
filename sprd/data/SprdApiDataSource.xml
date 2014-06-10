@@ -37,7 +37,7 @@
             <conf:ResourceConfiguration path="items" modelClassName="sprd.model.BasketItem"
                                         processor="BasketItemProcessor"/>
             <conf:ResourceConfiguration path="paymentMethods" modelClassName="sprd.model.PaymentMethod" apiKeyRequired="true"/>
-            <conf:ResourceConfiguration path="delivery" modelClassName="checkout.model.Delivery" apiKeyRequired="true"/>
+            <conf:ResourceConfiguration path="delivery" modelClassName="sprd.model.Delivery" apiKeyRequired="true"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="users" modelClassName="sprd.model.User">
             <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop" sessionRequired="true">

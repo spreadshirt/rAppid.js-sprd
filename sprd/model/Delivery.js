@@ -25,7 +25,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
     });
 
 
-    return SprdModel.inherit("checkout.model.Delivery", {
+    return SprdModel.inherit("sprd.model.Delivery", {
 
         defaults: {
             billing: Billing,
