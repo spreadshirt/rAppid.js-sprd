@@ -72,8 +72,22 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
                 delete data.state;
             }
 
+            if (this.get('type') === ADDRESS_TYPES.PACKSTATION) {
+                data.street = "Packstation " + data.street;
+            }
+
             return data;
         },
+
+        parse: function (data) {
+            if (data.type === ADDRESS_TYPES.PACKSTATION) {
+
+            }
+            return this.callBase();
+        },
+        isPackStation: function () {
+            return this.$.type == ADDRESS_TYPES.PACKSTATION;
+        }.onChange('type')
     });
 
     Address.ADDRESS_TYPES = ADDRESS_TYPES;
