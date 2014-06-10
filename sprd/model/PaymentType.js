@@ -1,5 +1,5 @@
 define(["sprd/data/SprdModel"], function (SprdModel) {
-    return SprdModel.inherit("sprd.model.PaymentMethod", {
+    return SprdModel.inherit("sprd.model.PaymentType", {
 
         defaults: {
 

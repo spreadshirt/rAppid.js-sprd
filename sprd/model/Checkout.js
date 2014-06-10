@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "sprd/entity/Payment"], function(SprdModel, PaymentMethod, Payment) {
+define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment"], function(SprdModel, PaymentType, Payment) {
 
 
     return SprdModel.inherit("sprd.model.Checkout", {
@@ -12,9 +12,8 @@ define(["sprd/data/SprdModel", "sprd/entity/Payment"], function(SprdModel, Payme
         $isDependentObject: true,
 
         schema: {
-            paymentMethod: PaymentMethod,
-            // TODO: find the circular dependency
-            payment: "sprd/entity/Payment",
+            paymentMethod: PaymentType,
+            payment: Payment,
             links: Object
         },
 
