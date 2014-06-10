@@ -63,7 +63,17 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
                 type: String,
                 required: false
             }
-        }
+        },
+
+        compose: function() {
+            var data = this.callBase();
+
+            if (this.get("country.isoCode") !== "US") {
+                delete data.state;
+            }
+
+            return data;
+        },
     });
 
     Address.ADDRESS_TYPES = ADDRESS_TYPES;
