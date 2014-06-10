@@ -13,7 +13,6 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
             person: Person,
 
             street: null,
-            houseNumber: null,
             streetAnnex: null,
             city: null,
             state: null,
@@ -40,7 +39,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
             person: Person,
 
             street: String,
-            houseNumber: String,
+
             streetAnnex: {
                 type: String,
                 required: false
