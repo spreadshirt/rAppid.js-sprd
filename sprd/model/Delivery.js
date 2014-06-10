@@ -45,6 +45,8 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             billing: Billing,
             shipping: Shipping,
 
+            email: null,
+            presentMessage: null,
             invoiceToShippingAddress: true
         },
 
