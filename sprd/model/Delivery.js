@@ -15,26 +15,12 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
     var Shipping = Entity.inherit("sprd.model.Order.Shipping", {
         defaults: {
             address: Address,
-            shippingType: null,
-
-            order: null,
-            shippingTypes: "{order.shippingTypes()}"
+            type: null
         },
 
         schema: {
             address: Address,
-            shippingType: ShippingType
-        },
-
-        _commitShippingTypes: function (shippingTypes) {
-
-            if (shippingTypes) {
-                var shippingType = this.$.shippingType;
-                if (!shippingType || _.indexOf(shippingTypes, shippingType) === -1) {
-                    // select first shipping type or shipping type not available any more
-                    this.set("shippingType", shippingTypes[0]);
-                }
-            }
+            type: ShippingType
         }
     });
 
