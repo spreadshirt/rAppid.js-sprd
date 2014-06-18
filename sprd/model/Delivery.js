@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/model/ShippingType", "underscore"], function(SprdModel, Entity, Address, ShippingType, _) {
+define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/model/ShippingType", "underscore", "js/data/validator/EmailValidator"], function (SprdModel, Entity, Address, ShippingType, _, EmailValidator) {
 
     var Billing = Entity.inherit("sprd.model.Order.Billing", {
         defaults: {
@@ -45,6 +45,10 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             email: String,
             presentMessage: String
         },
+
+        validators: [
+            new EmailValidator({field: "email"})
+        ],
 
         compose: function() {
             var data = this.callBase();
