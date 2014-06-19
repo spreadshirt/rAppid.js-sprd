@@ -1,28 +1,18 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCountry"], function (Entity, ShippingState, ShippingCountry) {
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCountry", "sprd/entity/Person"], function (Entity, ShippingState, ShippingCountry, Person) {
 
-    var Person = Entity.inherit("sprd.entity.Address.Person", {
-        defaults: {
-            salutation: 99,
-            firstName: null,
-            lastName: null
-        },
+    var ADDRESS_TYPES = {
+        PACKSTATION: "PACKSTATION",
+        PRIVATE: "PRIVATE"
+    };
 
-        schema: {
-            salutation: Number,
-            firstName: String,
-            lastName: String
-        }
-    });
-
-    return Entity.inherit("sprd.entity.Address", {
+    var Address = Entity.inherit("sprd.entity.Address", {
 
         defaults: {
-            type: null,
+            type: ADDRESS_TYPES.PRIVATE,
             company: null,
-            person: null,
+            person: Person,
 
             street: null,
-            houseNumber: null,
             streetAnnex: null,
             city: null,
             state: null,
@@ -39,16 +29,17 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
         schema: {
             type: {
                 type: String,
-                required: false
+                required: true
             },
             company: {
                 type: String,
                 required: false
             },
+
             person: Person,
 
             street: String,
-            houseNumber: String,
+
             streetAnnex: {
                 type: String,
                 required: false
@@ -56,7 +47,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
             city: String,
             state: {
                 type: ShippingState,
-                required: function() {
+                required: function () {
                     return this.get("country.isoCode") === "US";
                 }
             },
@@ -72,6 +63,34 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
                 type: String,
                 required: false
             }
-        }
+        },
+
+        compose: function() {
+            var data = this.callBase();
+
+            if (this.get("country.isoCode") !== "US") {
+                delete data.state;
+            }
+
+            if (this.get('type') === ADDRESS_TYPES.PACKSTATION) {
+                data.street = "Packstation " + data.street;
+            }
+
+            return data;
+        },
+
+        parse: function (data) {
+            if (data.type === ADDRESS_TYPES.PACKSTATION) {
+
+            }
+            return this.callBase();
+        },
+        isPackStation: function () {
+            return this.$.type == ADDRESS_TYPES.PACKSTATION;
+        }.onChange('type')
     });
+
+    Address.ADDRESS_TYPES = ADDRESS_TYPES;
+
+    return Address;
 });

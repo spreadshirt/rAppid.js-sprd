@@ -1,4 +1,8 @@
-define(['js/data/Entity'], function (Entity) {
+define(['js/data/Entity', 'js/lib/extension'], function (Entity, extension) {
+
+    // do not remove, as extension is required to have Math.round(number, accuracy)
+    var x = extension;
+
     return Entity.inherit('sprd.entity.Offset', {
         defaults: {
             x: 0,
@@ -21,6 +25,16 @@ define(['js/data/Entity'], function (Entity) {
                 unit: ret.unit
             };
 
+        },
+
+        isDeepEqual: function (a) {
+            if (!a) {
+                return false;
+            }
+
+            return Math.round(this.$.x, 0) === Math.round(a.$.x, 0) &&
+                    Math.round(this.$.y, 0) === Math.round(a.$.y, 0) &&
+                    this.$.unit === a.$.unit;
         }
     });
 });

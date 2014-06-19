@@ -46,8 +46,10 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
         _onDomAdded: function(){
             this.callBase();
-            // focus stage to enable keyboard interaction
-            this.$stage.focus();
+            if (this.$.editable) {
+                // focus stage to enable keyboard interaction
+                this.$stage.focus();
+            }
         },
 
         _commitSelectedConfiguration: function (selectedConfiguration, oldSelectedConfiguration) {

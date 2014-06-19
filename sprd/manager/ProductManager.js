@@ -83,6 +83,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             },
 
             setAppearance: function (product, appearance) {
+
+                if (product.$.appearance.$.id === appearance.$.id) {
+                    // same appearance, nothing to do
+                    return;
+                }
+
                 this.convertConfigurations(product, product.$.productType, appearance);
                 product.set({
                     appearance: appearance
@@ -308,7 +314,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     view = params.view,
                     appearance = product.$.appearance,
                     printType = params.printType,
-                    possiblePrintTypes
+                    possiblePrintTypes;
 
                 if (!design) {
                     callback(new Error("No design"));

@@ -1,5 +1,12 @@
 define(['js/data/DataSource', 'underscore'], function (DataSource, _) {
 
+    var FETCHSTATE = {
+        CREATED: 0,
+        LOADING: 1,
+        LOADED: 2,
+        ERROR: -1
+    };
+
     return DataSource.Processor.inherit("sprd.model.processor.DefaultProcessor", {
 
         parse: function(model, data, action, options) {
@@ -16,6 +23,28 @@ define(['js/data/DataSource', 'underscore'], function (DataSource, _) {
             return {
                 id: model.$.id
             }
+        },
+
+        parseCollection: function(collection, data, action, options) {
+            var ret = this.callBase();
+
+
+            options = options || {};
+            if (ret && options.fullData === true) {
+                // data fetched with full data, so model is already fetched
+                for (var i = 0; i < ret.length; i++) {
+                    var model = ret[i];
+                    var fetch = model._fetch;
+                    if (fetch && fetch.state === FETCHSTATE.CREATED && fetch.callbacks.length === 0) {
+                        // model is created and no callbacks are registered -> set fetch stte
+                        fetch.state = FETCHSTATE.LOADED;
+                    }
+
+                }
+            }
+
+
+            return ret;
         },
 
         compose: function () {
