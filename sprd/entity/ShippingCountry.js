@@ -19,6 +19,15 @@ define(["js/data/Entity", "sprd/entity/ShippingRegion", "sprd/entity/ShippingSta
             externalFulfillmentSupported: Boolean,
             trackingLink: Object,
             shippingStates: [ShippingState]
+        },
+
+        compose: function () {
+            var ret = this.callBase();
+
+            return {
+                isoCode: ret.isoCode,
+                name: ret.name
+            };
         }
 
     });
