@@ -9,7 +9,7 @@ define(['js/data/DataSource', 'underscore'], function (DataSource, _) {
 
     return DataSource.Processor.inherit("sprd.model.processor.DefaultProcessor", {
 
-        parse: function(model, data, action, options) {
+        parse: function (model, data, action, options) {
 
             if (this.$dataSource.$.keepRawData) {
                 model.$data = _.extend({}, model.$data, data);
@@ -23,29 +23,6 @@ define(['js/data/DataSource', 'underscore'], function (DataSource, _) {
             return {
                 id: model.$.id
             }
-        },
-
-        parseCollection: function(collection, data, action, options) {
-            var ret = this.callBase();
-
-
-            options = options || {};
-            if (ret && options.fullData === true && !options.attributeSet) {
-                // data fetched with full data and NO attribute set given,
-                // then we expect that the model is fully loaded
-                for (var i = 0; i < ret.length; i++) {
-                    var model = ret[i];
-                    var fetch = model._fetch;
-                    if (fetch && fetch.state === FETCHSTATE.CREATED && fetch.callbacks.length === 0) {
-                        // model is created and no callbacks are registered -> set fetch stte
-                        fetch.state = FETCHSTATE.LOADED;
-                    }
-
-                }
-            }
-
-
-            return ret;
         },
 
         compose: function () {
