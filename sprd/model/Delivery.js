@@ -43,14 +43,17 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             billing: Billing,
 
             email: String,
-            presentMessage: String
+            presentMessage: {
+                required: false,
+                type: String
+            }
         },
 
         validators: [
             new EmailValidator({field: "email"})
         ],
 
-        compose: function() {
+        compose: function () {
             var data = this.callBase();
 
             if (this.$.invoiceToShippingAddress) {
