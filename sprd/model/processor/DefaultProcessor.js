@@ -30,8 +30,9 @@ define(['js/data/DataSource', 'underscore'], function (DataSource, _) {
 
 
             options = options || {};
-            if (ret && options.fullData === true) {
-                // data fetched with full data, so model is already fetched
+            if (ret && options.fullData === true && !options.attributeSet) {
+                // data fetched with full data and NO attribute set given,
+                // then we expect that the model is fully loaded
                 for (var i = 0; i < ret.length; i++) {
                     var model = ret[i];
                     var fetch = model._fetch;
