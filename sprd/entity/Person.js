@@ -16,18 +16,18 @@ define(["js/data/Entity"], function (Entity) {
         },
 
         schema: {
-            salutation: Object,
+            salutation: {type: Object, required: false},
             firstName: String,
             lastName: String
         },
 
-        parse: function() {
+        parse: function () {
             var data = this.callBase();
             data.salutation = (data.salutation || {}).id || null;
             return data;
         },
 
-        compose: function() {
+        compose: function () {
             var data = this.callBase();
 
             if (data.salutation) {
