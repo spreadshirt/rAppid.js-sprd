@@ -51,10 +51,9 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
                     return this.get("country.isoCode") === "US";
                 }
             },
-            country: ShippingCountry,
+            country: {type: ShippingCountry, isReference: true},
             zipCode: String,
 
-            email: String,
             phone: {
                 type: String,
                 required: false
@@ -65,7 +64,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
             }
         },
 
-        compose: function() {
+        compose: function () {
             var data = this.callBase();
 
             if (this.get("country.isoCode") !== "US") {
