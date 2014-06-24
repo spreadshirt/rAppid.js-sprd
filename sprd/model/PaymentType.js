@@ -7,8 +7,8 @@ define(["sprd/data/SprdModel"], function (SprdModel) {
 
         schema: {
             weight: Number,
-            type: String,
-            subType: String,
+            methodCode: String,
+            categoryCode: String,
             grossLowerLimit: Number,
             grossUpperLimit: Number
         }
