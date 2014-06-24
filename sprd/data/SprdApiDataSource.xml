@@ -36,8 +36,11 @@
                                     apiKeyRequired="true">
             <conf:ResourceConfiguration path="items" modelClassName="sprd.model.BasketItem"
                                         processor="BasketItemProcessor"/>
-            <conf:ResourceConfiguration path="paymentTypes" modelClassName="sprd.model.PaymentType" apiKeyRequired="true"/>
-            <conf:ResourceConfiguration path="delivery" modelClassName="sprd.model.Delivery" apiKeyRequired="true"/>
+            <conf:ResourceConfiguration path="paymentTypes" modelClassName="sprd.model.PaymentType"
+                                        apiKeyRequired="true"
+                                        checkoutTokenRequired="true"/>
+            <conf:ResourceConfiguration path="delivery" modelClassName="sprd.model.Delivery" apiKeyRequired="true"
+                                        checkoutTokenRequired="true"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="users" modelClassName="sprd.model.User">
             <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop" sessionRequired="true">
