@@ -66,6 +66,8 @@
                 <conf:ResourceConfiguration path="stockStates" modelClassName="sprd.model.StockState"
                                             collectionClassName="sprd.collection.StockStates"/>
             </conf:ResourceConfiguration>
+            <conf:ResourceConfiguration path="addresses" modelClassName="sprd.model.Address"/>
+
         </conf:ResourceConfiguration>
 
         <conf:ResourceConfiguration path="sessions" modelClassName="sprd.model.Session"/>
