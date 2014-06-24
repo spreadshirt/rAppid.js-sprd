@@ -24,7 +24,11 @@ define(["js/data/Entity", "sprd/entity/ShippingRegion", "sprd/entity/ShippingSta
 
         parse: function (data) {
             var ret = this.callBase();
-            ret.code = data.isoCode;
+            // shipping countries use isoCode -> checkout address use code
+            // that's why we did this shit here
+            if (data.isoCode) {
+                ret.code = data.isoCode;
+            }
 
             return ret;
         }
