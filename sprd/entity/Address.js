@@ -48,7 +48,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
             state: {
                 type: ShippingState,
                 required: function () {
-                    return this.get("country.isoCode") === "US";
+                    return this.get("country.code") === "US";
                 }
             },
             country: {type: ShippingCountry, isReference: true},
@@ -67,7 +67,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
         compose: function () {
             var data = this.callBase();
 
-            if (this.get("country.isoCode") !== "US") {
+            if (this.get("country.code") !== "US") {
                 delete data.state;
             }
 
