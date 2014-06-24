@@ -11,7 +11,6 @@ define(["js/data/Entity", "sprd/entity/ShippingRegion", "sprd/entity/ShippingSta
 
         schema: {
             name: String,
-            isoCode: String,
             shippingRegion: {
                 isReference: true,
                 type: ShippingRegion
@@ -21,13 +20,13 @@ define(["js/data/Entity", "sprd/entity/ShippingRegion", "sprd/entity/ShippingSta
             shippingStates: [ShippingState]
         },
 
-        compose: function () {
-            var ret = this.callBase();
+        idField: "code",
 
-            return {
-                isoCode: ret.isoCode,
-                name: ret.name
-            };
+        parse: function (data) {
+            var ret = this.callBase();
+            ret.code = data.isoCode;
+
+            return ret;
         }
 
     });
