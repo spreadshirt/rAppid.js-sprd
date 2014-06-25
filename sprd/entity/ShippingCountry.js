@@ -1,9 +1,8 @@
-define(["js/data/Entity", "sprd/entity/ShippingRegion", "sprd/entity/ShippingState"], function (Entity, ShippingRegion, ShippingState) {
-    return Entity.inherit("sprd.entity.ShippingCountry", {
+define(["sprd/entity/Country", "sprd/entity/ShippingRegion", "sprd/entity/ShippingState"], function (Country, ShippingRegion, ShippingState) {
+    return Country.inherit("sprd.entity.ShippingCountry", {
 
         defaults: {
             name: null,
-            isoCode: null,
             shippingRegion: null,
             externalFulfillmentSupported: true,
             trackingLink: null
@@ -19,8 +18,6 @@ define(["js/data/Entity", "sprd/entity/ShippingRegion", "sprd/entity/ShippingSta
             trackingLink: Object,
             shippingStates: [ShippingState]
         },
-
-        idField: "code",
 
         parse: function (data) {
             var ret = this.callBase();
