@@ -1,5 +1,5 @@
-define(['sprd/data/SprdModel', 'js/data/Collection', 'sprd/model/Shop', "sprd/model/Design", "sprd/model/ProductType", "sprd/model/Product", "sprd/model/PrintType", "sprd/model/DesignCategory", "sprd/model/Label", "sprd/model/ObjectLabel", "sprd/model/Address"],
-    function (SprdModel, Collection, Shop, Design, ProductType, Product, PrintType, DesignCategory, Label, ObjectLabel, Address) {
+define(['sprd/data/SprdModel', 'js/data/Collection', 'sprd/model/Shop', "sprd/model/Design", "sprd/model/ProductType", "sprd/model/Product", "sprd/model/PrintType", "sprd/model/DesignCategory", "sprd/model/Label", "sprd/model/ObjectLabel", "sprd/model/UserAddress"],
+    function (SprdModel, Collection, Shop, Design, ProductType, Product, PrintType, DesignCategory, Label, ObjectLabel, UserAddress) {
         return SprdModel.inherit('sprd.model.User', {
             schema: {
                 shops: Collection.of(Shop),
@@ -10,7 +10,7 @@ define(['sprd/data/SprdModel', 'js/data/Collection', 'sprd/model/Shop', "sprd/mo
                 designCategories: Collection.of(DesignCategory),
                 labels: Collection.of(Label),
                 objectLabels: Collection.of(ObjectLabel),
-                addresses: Collection.of(Address)
+                addresses: Collection.of(UserAddress)
             }
         });
     });

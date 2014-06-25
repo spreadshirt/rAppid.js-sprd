@@ -1,7 +1,7 @@
 define(['sprd/data/SprdModel', 'sprd/entity/Person', 'sprd/model/Country'], function (SprdModel, Person, Country) {
 	return SprdModel.inherit('sprd.model.Address', {
         defaults: {
-            person: null,
+            person: Person,
             companyName: '',
             tradeRegister: '',
             street: '',
@@ -16,17 +16,17 @@ define(['sprd/data/SprdModel', 'sprd/entity/Person', 'sprd/model/Country'], func
         },
         schema: {
             person: Person,
-            companyName: String,
-            tradeRegister: String,
+            companyName: {type: String, required: false},
+            tradeRegister: {type: String, required: false},
             street: String,
-            streetAnnex: String,
-            houseNumber: String,
+            streetAnnex: {type: String, required: false},
+            houseNumber: {type: String, required: false},
             zipCode: String,
             city: String,
             country: Country,
-            email: String,
-            phone: String,
-            fax: String
+            email: {type: String, required: false},
+            phone: {type: String, required: false},
+            fax: {type: String, required: false}
         }
 	});
 });
