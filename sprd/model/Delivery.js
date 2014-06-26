@@ -34,6 +34,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             email: null,
             giftWrappingMessage: null,
             useGiftWrapping: false,
+
             invoiceToShippingAddress: true
         },
 
@@ -44,10 +45,13 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             billing: Billing,
 
             email: String,
-            presentMessage: {
+
+            giftWrappingMessage: {
                 required: false,
                 type: String
-            }
+            },
+
+            useGiftWrapping: Boolean
         },
 
         validators: [
