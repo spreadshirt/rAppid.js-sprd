@@ -4,6 +4,7 @@
     xmlns:ns="sprd.manager">
     <import/>
     <element name="ApiBasketManager" type="ns:ApiBasketManager"/>
+    <element name="AuthenticationManager" type="ns:AuthenticationManager"/>
     <element name="DesignProductInitializer" type="ns:DesignProductInitializer"/>
     <element name="ExternalApi" type="ns:ExternalApi"/>
     <element name="ExternalBasketManager" type="ns:ExternalBasketManager"/>
@@ -99,6 +100,19 @@ BasketItem
                 </attribute>
                 <attribute name="onbasketUpdated" default="_onBasketUpdatedHandler" type="string"/>
                 <attribute name="onbasketUpdating" default="_onBasketUpdatingHandler" type="string"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="AuthenticationManager">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.AuthenticationManager"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="session"/>
             </extension>
         </complexContent>
     </complexType>
