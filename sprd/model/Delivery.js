@@ -32,7 +32,8 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             shipping: Shipping,
 
             email: null,
-            presentMessage: null,
+            giftWrappingMessage: null,
+            useGiftWrapping: false,
             invoiceToShippingAddress: true
         },
 
