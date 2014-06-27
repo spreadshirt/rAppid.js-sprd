@@ -60,6 +60,8 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             new EmailValidator({field: "email"})
         ],
 
+        // TODO: add phone validator, checking DEV-68278 + shipping type determinates if optional or not
+
         compose: function () {
             var data = this.callBase();
 
