@@ -6,8 +6,7 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment"],
         defaults: {
             paymentMethod: null,
             payment: null,
-            links: null,
-            newsletter: true
+            links: null
         },
 
         $isDependentObject: true,
