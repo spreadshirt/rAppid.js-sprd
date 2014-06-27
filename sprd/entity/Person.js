@@ -21,6 +21,10 @@ define(["js/data/Entity"], function (Entity) {
             lastName: String
         },
 
+        fullName: function () {
+            return [(this.$.firstName || ""), (this.$.lastName || "")].join(" ");
+        }.onChange("firstName", "lastName"),
+
         parse: function () {
             var data = this.callBase();
             data.salutation = (data.salutation || {}).id || null;
