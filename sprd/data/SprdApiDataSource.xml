@@ -40,7 +40,7 @@
                                         apiKeyRequired="true"
                                         checkoutTokenRequired="true"/>
             <conf:ResourceConfiguration path="delivery" modelClassName="sprd.model.Delivery" apiKeyRequired="true"
-                                        checkoutTokenRequired="true"/>
+                                        checkoutTokenRequired="true" sessionPreferred="true"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="users" modelClassName="sprd.model.User">
             <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop" sessionRequired="true">
