@@ -1,10 +1,10 @@
 define(["js/data/Entity"], function (Entity) {
 
     var SalutationMap = {
-        1: "mr",
-        2: "mrs",
-        3: "ms",
-        4: "company"
+        "1": "mr",
+        "2": "mrs",
+        "3": "ms",
+        "4": "company"
     };
 
     return Entity.inherit("sprd.entity.Person", {
@@ -16,18 +16,18 @@ define(["js/data/Entity"], function (Entity) {
         },
 
         schema: {
-            salutation: Object,
+            salutation: {type: String, required: false},
             firstName: String,
             lastName: String
         },
 
-        parse: function() {
+        parse: function () {
             var data = this.callBase();
             data.salutation = (data.salutation || {}).id || null;
             return data;
         },
 
-        compose: function() {
+        compose: function () {
             var data = this.callBase();
 
             if (data.salutation) {

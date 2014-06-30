@@ -21,14 +21,14 @@ define(['sprd/data/SprdModel', 'sprd/entity/ShippingCountry', 'sprd/entity/Shipp
         /***
          * this method is necessary, because ShippingCountry should be a model, but is defined by the API as entity
          *
-         * @param id
+         * @param code
          * @returns {*}
          */
-        getShippingCountryById: function (id) {
+        getShippingCountryByCode: function (code) {
 
             for (var i = 0; i < this.$.shippingCountries.$items.length; i++) {
                 var shippingCountry = this.$.shippingCountries.$items[i];
-                if (shippingCountry.$.id == id) {
+                if (shippingCountry.$.code == code) {
                     return shippingCountry;
                 }
             }
@@ -37,7 +37,7 @@ define(['sprd/data/SprdModel', 'sprd/entity/ShippingCountry', 'sprd/entity/Shipp
         },
 
         supportsShippingTo: function (shippingCountry) {
-            return !!this.getShippingCountryById(shippingCountry.$.id);
+            return !!this.getShippingCountryByCode(shippingCountry.$.code);
         }
 
     });

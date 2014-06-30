@@ -1,4 +1,4 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCountry", "sprd/entity/Person"], function (Entity, ShippingState, ShippingCountry, Person) {
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person"], function (Entity, ShippingState, Country, Person) {
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
@@ -14,6 +14,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
 
             street: null,
             streetAnnex: null,
+            houseNumber: '1',
             city: null,
             state: null,
             country: null,
@@ -45,16 +46,16 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
                 required: false
             },
             city: String,
+            houseNumber: String,
             state: {
                 type: ShippingState,
                 required: function () {
-                    return this.get("country.isoCode") === "US";
+                    return this.get("country.code") === "US";
                 }
             },
-            country: ShippingCountry,
+            country: {type: Country, isReference: true},
             zipCode: String,
 
-            email: String,
             phone: {
                 type: String,
                 required: false
@@ -65,10 +66,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/ShippingCoun
             }
         },
 
-        compose: function() {
+        compose: function () {
             var data = this.callBase();
 
-            if (this.get("country.isoCode") !== "US") {
+            if (this.get("country.code") !== "US") {
                 delete data.state;
             }
 

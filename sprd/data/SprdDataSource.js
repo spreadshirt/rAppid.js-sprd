@@ -48,7 +48,8 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
 
             var signatureRequired = configuration.$.signatureRequired,
                 apiKeyRequired = configuration.$.apiKeyRequired,
-                sessionRequired = configuration.$.sessionRequired;
+                sessionRequired = configuration.$.sessionRequired,
+                checkoutTokenRequired = configuration.$.checkoutTokenRequired;
 
             var sessionId = this.get('session.id');
 
@@ -73,6 +74,10 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
                     time: time,
                     apiKey: apiKey
                 });
+            }
+
+            if (checkoutTokenRequired && this.$.checkoutToken) {
+                params.token = this.$.checkoutToken;
             }
 
             if (apiKeyRequired || signatureRequired || sessionRequired) {
