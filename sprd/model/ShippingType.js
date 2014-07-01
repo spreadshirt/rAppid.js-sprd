@@ -5,7 +5,9 @@ define(['sprd/data/SprdModel', 'sprd/entity/ShippingCountry', 'sprd/entity/Shipp
             weight: null,
             name: '',
             description: '',
-            trackingLink: null
+            trackingLink: null,
+
+            isExpress: false
         },
 
         schema: {
