@@ -1,4 +1,4 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/shrek", "sprd/entity/Size"], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont, Size) {
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/shrek", "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow"], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont, Size, ImageUploadService, flow) {
 
     var DEFAULT_WIDTH = 200;
 
@@ -16,8 +16,11 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         type: "design",
 
         inject: {
-            specialTextService: SpecialTextService
+            specialTextService: SpecialTextService,
+            imageUploadService: ImageUploadService
+
         },
+
 
         ctor: function () {
             this.callBase();
@@ -27,9 +30,37 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             }
         },
 
-        _commitImageUrl: function (imageUrl) {
-            debugger;
+
+        /***
+         * saves assets asynchronously
+         * @param callback
+         */
+        save: function (callback) {
+
+            var self = this;
+
+            flow()
+                .seq("imageData", function (cb) {
+                    // create a full font size image
+                    self.$.specialTextService.generateImage(self.$.text, {
+                        // request with maximal font size
+                        fontSize: 1000
+                    }, self.$.formatting.$, cb);
+                })
+                .seq("uploadDesign", function(cb) {
+                    var imageUrl = this.vars.imageData.src;
+                    self.$.imageUploadService.upload(imageUrl, cb);
+                })
+                .seq(function(cb) {
+                    // set the uploaded design
+                    var design = this.vars.uploadDesign.$.design;
+                    self.set("design", design);
+
+                    design.fetch(cb);
+                })
+                .exec(callback);
         },
+
 
         _commitChangedAttributes: function ($) {
             this.callBase();
