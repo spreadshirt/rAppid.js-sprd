@@ -41,9 +41,9 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
         getPossiblePrintTypesForSpecialText: function (printArea, appearanceId) {
             return _.filter(ProductUtil.getPossiblePrintTypesForPrintAreas([printArea], appearanceId) || [],
-                function (PrintType) {
+                function (printType) {
                     // just digital print types
-                    return !PrintType.isPrintColorColorSpace();
+                    return !printType.isPrintColorColorSpace() && printType.isScalable();
                 });
         },
 
