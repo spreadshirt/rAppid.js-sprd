@@ -1,4 +1,4 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/shrek", "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow"], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont, Size, ImageUploadService, flow) {
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/starwars", "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow"], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont, Size, ImageUploadService, flow) {
 
     var DEFAULT_WIDTH = 200;
 
@@ -44,7 +44,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                     // create a full font size image
                     self.$.specialTextService.generateImage(self.$.text, {
                         // request with maximal font size
-                        fontSize: 1000
+                        fontsize: 200
                     }, self.$.formatting.$, cb);
                 })
                 .seq("uploadDesign", function(cb) {
@@ -77,12 +77,14 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                             var width = parseInt(data.width) || 1,
                                 height = parseInt(data.height) || 1;
 
-                            self.$.offset.set("x", self.$.offset.$.x - DEFAULT_WIDTH * 0.5);
+                            var originalOffsetX = self.$.offset.$.x + self.$._size.$.width * 0.5;
 
                             self.set({
                                 "_size": new Size({width: DEFAULT_WIDTH, height: DEFAULT_WIDTH * (height / width)}),
                                 "previewImageUrl": (data || {}).src
                             });
+
+                            self.$.offset.set("x", originalOffsetX - DEFAULT_WIDTH * 0.5);
                         } else {
                             self.set('previewImageUrl', null);
                         }
