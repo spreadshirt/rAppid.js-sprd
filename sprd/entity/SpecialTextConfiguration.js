@@ -1,4 +1,4 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/shrek", "sprd/entity/Size"], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont, Size) {
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/tweeter", "sprd/entity/Size"], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont, Size) {
 
     var DEFAULT_WIDTH = 200;
 
@@ -27,13 +27,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             }
         },
 
-        _commitImageUrl: function (imageUrl) {
-            debugger;
-        },
-
         _commitChangedAttributes: function ($) {
             this.callBase();
-
 
             if (this._hasSome($, ["specialTextService", "text", "formatting"])) {
                 var self = this,
