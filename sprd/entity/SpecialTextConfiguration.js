@@ -1,13 +1,48 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "underscore"], function (DesignConfiguration, ProductUtil, _) {
-
-    var undefined;
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/roman"], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont) {
 
     return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
 
         defaults: {
+            text: null,
+            formatting: null,
+
+            previewImageUrl: null
         },
 
         type: "design",
+
+        inject: {
+            specialTextService: SpecialTextService
+        },
+
+        ctor: function() {
+            this.callBase();
+
+            if (!this.$.formatting) {
+                this.set("formatting", new Bindable(RomanFont));
+            }
+        },
+
+        _commitImageUrl: function(imageUrl) {
+            debugger;
+        },
+
+        _commitChangedAttributes: function ($) {
+            this.callBase();
+
+            if (this._hasSome($, ["formatting", "text"])) {
+                var self = this,
+                    text = this.$.text,
+                    formatting = this.$.formatting,
+                    specialTextService = this.$.specialTextService;
+
+                if (specialTextService && text && formatting) {
+                    specialTextService.generateImage(text, null, formatting, function (err, data) {
+                        self.set("previewImageUrl", (data || {}).src);
+                    });
+                }
+            }
+        },
 
         getPossiblePrintTypes: function (appearance) {
             var ret = [],
@@ -15,11 +50,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "underscore"
                 design = this.$.design;
 
             if (printArea && appearance && design) {
-                ret = _.filter(ProductUtil.getPossiblePrintTypesForPrintAreas(printArea, appearance.$.id) || [],
-                    function (PrintType) {
-                        // just digital print types
-                        return !PrintType.isPrintColorColorSpace();
-                    });
+                ret = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance.$.id);
             }
 
             return ret;
@@ -31,11 +62,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "underscore"
         },
 
         getPossiblePrintTypesForPrintArea: function (printArea, appearanceId) {
-            return _.filter(ProductUtil.getPossiblePrintTypesForPrintAreas(printArea, appearanceId) || [],
-                function (PrintType) {
-                    // just digital print types
-                    return !PrintType.isPrintColorColorSpace();
-                });
+            return ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearanceId);
         },
 
         minimumScale: function () {

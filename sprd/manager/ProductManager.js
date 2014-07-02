@@ -1,5 +1,5 @@
-define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer'],
-    function (IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer) {
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer'],
+    function (IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
@@ -440,7 +440,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     font = null,
                     appearance = product.$.appearance,
                     printType = params.printType,
-                    printTypeId = params.printTypeId
+                    printTypeId = params.printTypeId;
 
                 if (!text) {
                     callback(new Error("No text"));
@@ -625,6 +625,138 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             activeIndex: configuration.$.textFlow.textLength() - 1,
                             anchorIndex: 0
                         });
+                        // determinate position
+                        self._positionConfiguration(configuration);
+                    })
+                    .exec(function (err, results) {
+                        !err && product._addConfiguration(results.configuration);
+                        callback && callback(err, results.configuration);
+                        self.$.bus.trigger('Application.productChanged', product);
+                    });
+
+            },
+
+            addSpecialText: function (product, params, callback) {
+
+                params = _.defaults({}, params, {
+                    text: null,
+                    perspective: null, // front, back, etc...
+                    view: null,
+                    printArea: null,
+                    printType: null,
+                    printTypeId: null
+                });
+
+                var self = this,
+                    context = product.$context.$contextModel,
+                    text = params.text,
+                    bus = this.$.bus,
+                    productType = product.$.productType,
+                    printArea = params.printArea,
+                    view = params.view,
+                    appearance = product.$.appearance,
+                    printType = params.printType,
+                    printTypeId = params.printTypeId;
+
+                if (!text) {
+                    callback(new Error("No text"));
+                    return;
+                }
+
+                if (!productType) {
+                    callback(new Error("ProductType not set"));
+                    return;
+                }
+
+                if (!appearance) {
+                    callback(new Error("Appearance for product not set"));
+                    return;
+                }
+
+                flow()
+                    .seq("productType", function (cb) {
+                            productType.fetch(null, cb);
+                    })
+                    .seq("printArea", function () {
+
+                        if (!printArea && params.perspective && !view) {
+                            view = productType.getViewByPerspective(params.perspective);
+                        }
+
+                        if (!printArea && view) {
+                            // get print area by view
+                            if (!productType.containsView(view)) {
+                                throw new Error("View not on ProductType");
+                            }
+
+                            // TODO: look for print area that supports print types, etc...
+                            printArea = view.getDefaultPrintArea();
+                        }
+
+                        view = product.$.view || product.getDefaultView();
+                        if (!printArea && view) {
+                            printArea = view.getDefaultPrintArea();
+                        }
+
+                        if (!printArea) {
+                            throw new Error("target PrintArea couldn't be found.");
+                        }
+
+                        if (!(printArea.get("restrictions.textAllowed") === true &&
+                            printArea.get("restrictions.designAllowed") === true)) {
+                            throw new Error("special text cannot be added to this print area");
+                        }
+
+                        return printArea;
+                    })
+                    .seq("printType", function () {
+
+                        var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance.$.id);
+
+                        if (printType && !_.contains(possiblePrintTypes, printType)) {
+                            throw new Error("PrintType not possible for text and printArea");
+                        }
+
+                        if (printTypeId) {
+                            for (var i = possiblePrintTypes.length; i--;) {
+                                if (possiblePrintTypes[i].$.id == printTypeId) {
+                                    printType = possiblePrintTypes[i];
+                                    break;
+                                }
+                            }
+                        }
+
+                        printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
+
+                        if (!printType) {
+                            throw new Error("No printType available");
+                        }
+
+                        return printType;
+                    })
+                    .seq(function (cb) {
+                        printType.fetch(null, cb);
+                    })
+                    .seq("configuration", function () {
+
+                        var entity = product.createEntity(SpecialTextConfiguration);
+
+                        entity.set({
+                            printType: printType,
+                            printArea: printArea,
+                            text: text
+                        });
+
+                        return entity;
+                    })
+                    .seq(function (cb) {
+                        var configuration = this.vars["configuration"];
+                        bus.setUp(configuration);
+                        configuration.init(cb);
+                    })
+                    .seq(function () {
+                        var configuration = this.vars["configuration"];
+
                         // determinate position
                         self._positionConfiguration(configuration);
                     })

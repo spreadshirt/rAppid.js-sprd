@@ -24,7 +24,13 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
             flow()
                 .par(function (cb) {
-                    design.fetch(null, cb);
+
+                    if (design) {
+                        design.fetch(null, cb);
+                    } else {
+                        cb();
+                    }
+
                 }, function (cb) {
                     printType.fetch(null, cb);
                 })
@@ -49,7 +55,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         defaultPrintColors = [],
                         designColorsRGBs = configuration.$.designColorRGBs,
                         designColorIds = configuration.$.designColorIds,
-                        designColors = design.$.colors,
+                        designColors = design ? design.$.colors : null,
                         values, i,
                         colorsSet = false,
                         printColor;
