@@ -348,15 +348,23 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                     }
                 }
 
-                this.callBase(options, function (err) {
-                    if (!err) {
-                        self.$originalProduct = self.clone();
-                    } else {
-                        err = ProductCreationError.createFromResponse(err);
-                    }
+                flow()
+                    .parEach(this.$.configurations.$items, function(configuration, cb) {
+                        configuration.save(cb);
+                    })
+                    .seq(function(cb) {
+                        ProductBase.prototype.save.call(self, options, cb);
+                    })
+                    .exec(function(err) {
+                        if (!err) {
+                            self.$originalProduct = self.clone();
+                        } else {
+                            err = ProductCreationError.createFromResponse(err);
+                        }
 
-                    callback && callback(err, self);
-                });
+                        callback && callback(err, self);
+                    });
+
             },
 
             init: function (callback) {

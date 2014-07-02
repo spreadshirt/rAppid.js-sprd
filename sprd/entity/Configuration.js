@@ -41,6 +41,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             bus: Bus
         },
 
+        save: function(callback) {
+            callback && callback();
+        },
+
         _commitChangedAttributes: function ($, options) {
 
             var delay = options && options.userInteraction ? 300 : 0,
