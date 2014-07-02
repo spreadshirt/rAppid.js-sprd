@@ -1,12 +1,16 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/roman"], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont) {
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/shrek", "sprd/entity/Size"], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont, Size) {
+
+    var DEFAULT_WIDTH = 200;
 
     return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
 
         defaults: {
             text: null,
             formatting: null,
-
-            previewImageUrl: null
+            _size: Size,
+            aspectRatio: 1,
+            previewImageUrl: null,
+            _allowScale: true
         },
 
         type: "design",
@@ -15,7 +19,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             specialTextService: SpecialTextService
         },
 
-        ctor: function() {
+        ctor: function () {
             this.callBase();
 
             if (!this.$.formatting) {
@@ -23,26 +27,43 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             }
         },
 
-        _commitImageUrl: function(imageUrl) {
+        _commitImageUrl: function (imageUrl) {
             debugger;
         },
 
         _commitChangedAttributes: function ($) {
             this.callBase();
 
-            if (this._hasSome($, ["formatting", "text"])) {
+
+            if (this._hasSome($, ["specialTextService", "text", "formatting"])) {
                 var self = this,
                     text = this.$.text,
                     formatting = this.$.formatting,
                     specialTextService = this.$.specialTextService;
 
                 if (specialTextService && text && formatting) {
-                    specialTextService.generateImage(text, null, formatting, function (err, data) {
-                        self.set("previewImageUrl", (data || {}).src);
+                    specialTextService.generateImage(text, null, formatting.$, function (err, data) {
+                        if (!err) {
+                            var width = parseInt(data.width) || 1,
+                                height = parseInt(data.height) || 1;
+
+                            self.set({
+                                "_size": new Size({width: DEFAULT_WIDTH, height: DEFAULT_WIDTH * (height / width)}),
+                                "previewImageUrl": (data || {}).src
+                            });
+                        } else {
+                            self.set('previewImageUrl', null);
+                        }
                     });
                 }
             }
+
         },
+
+        size: function () {
+            return this.$._size;
+        }.onChange("_size"),
+
 
         getPossiblePrintTypes: function (appearance) {
             var ret = [],
