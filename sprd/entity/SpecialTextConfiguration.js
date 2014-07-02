@@ -78,6 +78,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                             var width = parseInt(data.width) || 1,
                                 height = parseInt(data.height) || 1;
 
+                            self.$.offset.set("x", self.$.offset.$.x - DEFAULT_WIDTH * 0.5);
+
                             self.set({
                                 "_size": new Size({width: DEFAULT_WIDTH, height: DEFAULT_WIDTH * (height / width)}),
                                 "previewImageUrl": (data || {}).src
