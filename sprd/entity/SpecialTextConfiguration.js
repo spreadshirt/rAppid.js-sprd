@@ -8,7 +8,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             _size: Size,
             aspectRatio: 1,
             previewImageUrl: null,
-            _allowScale: true
+            _allowScale: true,
+            loading: false
         },
 
         type: "specialText",
@@ -81,6 +82,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                 specialTextService = this.$.specialTextService;
 
             if (specialTextService && text && formatting) {
+                this.set('loading', true);
                 specialTextService.generateImage(text, null, formatting.$, function (err, data) {
                     if (!err) {
                         var width = (parseInt(data.width) || 1) * 4,
@@ -96,6 +98,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                         self.set('previewImageUrl', null);
                     }
 
+                    self.set('loading', false);
                     callback && callback(err);
                 });
             }
