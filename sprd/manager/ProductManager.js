@@ -187,8 +187,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
 
                         var optimalScale = Math.min(
-                            targetPrintAreaWidth / currentPrintAreaWidth,
-                            targetPrintAreaHeight / currentPrintAreaHeight
+                                targetPrintAreaWidth / currentPrintAreaWidth,
+                                targetPrintAreaHeight / currentPrintAreaHeight
                         ) * Math.abs(configuration.$.scale.x);
 
                         var allowScale = configuration.allowScale(),
@@ -590,8 +590,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         var textFlow = TextFlow.initializeFromText(text);
                         var fontSize = 25;
 
-                        if(!printType.isPrintColorColorSpace()){
-                           fontSize = INITIAL_FONT_SIZE_SCALE_FACTOR* printArea.get('_size.height');
+                        if (!printType.isPrintColorColorSpace()) {
+                            fontSize = INITIAL_FONT_SIZE_SCALE_FACTOR * printArea.get('_size.height');
                         }
 
                         (new ApplyStyleToElementOperation(TextRange.createTextRange(0, textFlow.textLength()), textFlow, new Style({
@@ -675,7 +675,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 flow()
                     .seq("productType", function (cb) {
-                            productType.fetch(null, cb);
+                        productType.fetch(null, cb);
                     })
                     .seq("printArea", function () {
 
@@ -753,6 +753,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         var configuration = this.vars["configuration"];
                         bus.setUp(configuration);
                         configuration.init(cb);
+                    })
+                    .seq(function (cb) {
+                        var configuration = this.vars["configuration"];
+                        configuration.fetchImage(cb);
                     })
                     .seq(function () {
                         var configuration = this.vars["configuration"];

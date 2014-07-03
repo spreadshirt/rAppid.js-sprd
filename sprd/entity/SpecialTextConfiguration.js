@@ -1,4 +1,4 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/starwars", "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow"], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont, Size, ImageUploadService, flow) {
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/starwars", "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil'], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont, Size, ImageUploadService, flow, UnitUtil) {
 
     var DEFAULT_WIDTH = 200;
 
@@ -45,11 +45,11 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                         fontsize: 200
                     }, self.$.formatting.$, cb);
                 })
-                .seq("uploadDesign", function(cb) {
+                .seq("uploadDesign", function (cb) {
                     var imageUrl = this.vars.imageData.src;
                     self.$.imageUploadService.upload(imageUrl, cb);
                 })
-                .seq(function(cb) {
+                .seq(function (cb) {
                     // set the uploaded design
                     var design = this.vars.uploadDesign.$.design;
                     self.set("design", design);
@@ -64,32 +64,45 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             this.callBase();
 
             if (this._hasSome($, ["specialTextService", "text", "formatting"])) {
-                var self = this,
-                    text = this.$.text,
-                    formatting = this.$.formatting,
-                    specialTextService = this.$.specialTextService;
+                var self = this;
+                var oldSize = this.$._size;
+                this.fetchImage(function (err) {
+                    if (!err) {
+                        var mmSize = UnitUtil.convertSizeToMm(self.$._size, self.$.printType.$.dpi),
+                            oldMMSize = UnitUtil.convertSizeToMm(oldSize, self.$.printType.$.dpi);
 
-                if (specialTextService && text && formatting) {
-                    specialTextService.generateImage(text, null, formatting.$, function (err, data) {
-                        if (!err) {
-                            var width = parseInt(data.width) || 1,
-                                height = parseInt(data.height) || 1;
+                        self.$.offset.set('x', self.$.offset.$.x + 2 * self.$.scale.x * (oldMMSize.$.width - mmSize.$.width));
+                    }
 
-                            var originalOffsetX = self.$.offset.$.x + self.$._size.$.width * 0.5;
-
-                            self.set({
-                                "_size": new Size({width: DEFAULT_WIDTH, height: DEFAULT_WIDTH * (height / width)}),
-                                "previewImageUrl": (data || {}).src
-                            });
-
-                            self.$.offset.set("x", originalOffsetX - DEFAULT_WIDTH * 0.5);
-                        } else {
-                            self.set('previewImageUrl', null);
-                        }
-                    });
-                }
+                });
             }
+        },
 
+        fetchImage: function (callback) {
+            var self = this,
+                text = this.$.text,
+                formatting = this.$.formatting,
+                specialTextService = this.$.specialTextService;
+
+            if (specialTextService && text && formatting) {
+                specialTextService.generateImage(text, null, formatting.$, function (err, data) {
+                    if (!err) {
+                        var width = (parseInt(data.width) || 1) * 4,
+                            height = (parseInt(data.height) || 1) * 4;
+
+
+                        self.set({
+                            "_size": new Size({width: width, height: height, unit: "px"}),
+                            "previewImageUrl": (data || {}).src
+                        });
+
+                    } else {
+                        self.set('previewImageUrl', null);
+                    }
+
+                    callback && callback(err);
+                });
+            }
         },
 
         size: function () {
@@ -108,6 +121,19 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
             return ret;
         }.onChange("printArea"),
+
+        getSizeForPrintType: function (printType) {
+            if (printType && printType.$.dpi) {
+                var dpi = printType.$.dpi;
+//                if (!this.$sizeCache[dpi]) {
+                return UnitUtil.convertSizeToMm(this.$._size, dpi);
+//                }
+
+//                return this.$sizeCache[dpi];
+            }
+
+            return Size.empty;
+        },
 
         isAllowedOnPrintArea: function (printArea) {
             return printArea && printArea.get("restrictions.designAllowed") == true &&
