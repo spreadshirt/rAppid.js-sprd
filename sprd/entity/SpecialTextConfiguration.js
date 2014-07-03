@@ -1,7 +1,5 @@
 define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/starwars", "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil'], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont, Size, ImageUploadService, flow, UnitUtil) {
 
-    var DEFAULT_WIDTH = 200;
-
     return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
 
         defaults: {
@@ -42,7 +40,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                     // create a full font size image
                     self.$.specialTextService.generateImage(self.$.text, {
                         // request with maximal font size
-                        fontsize: 200
+                        fontsize: 500,
+                        detectSize: false
                     }, self.$.formatting.$, cb);
                 })
                 .seq("uploadDesign", function (cb) {
