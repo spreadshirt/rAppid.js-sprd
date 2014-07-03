@@ -67,10 +67,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                 var self = this;
                 var oldSize = this.$._size;
                 this.fetchImage(function (err) {
-                    if (!err) {
-                        self.$.offset.set('x', self.$.offset.$.x + 0.5 * self.$.scale.x * (oldSize.$.width - self.$._size.$.width));
-                    }
-
+                    self.$.offset.set('x', self.$.offset.$.x + 0.5 * self.$.scale.x * (oldSize.$.width - self.$._size.$.width));
                 });
             }
         },
