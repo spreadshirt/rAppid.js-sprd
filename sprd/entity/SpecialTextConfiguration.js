@@ -67,10 +67,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                 var oldSize = this.$._size;
                 this.fetchImage(function (err) {
                     if (!err) {
-                        var mmSize = UnitUtil.convertSizeToMm(self.$._size, self.$.printType.$.dpi),
-                            oldMMSize = UnitUtil.convertSizeToMm(oldSize, self.$.printType.$.dpi);
-
-                        self.$.offset.set('x', self.$.offset.$.x + 2 * self.$.scale.x * (oldMMSize.$.width - mmSize.$.width));
+                        self.$.offset.set('x', self.$.offset.$.x + 0.5 * self.$.scale.x * (oldSize.$.width - self.$._size.$.width));
                     }
 
                 });
@@ -91,7 +88,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
 
                         self.set({
-                            "_size": new Size({width: width, height: height, unit: "px"}),
+                            "_size": UnitUtil.convertSizeToMm(new Size({width: width, height: height, unit: "px"}), self.$.printType.$.dpi),
                             "previewImageUrl": (data || {}).src
                         });
 
