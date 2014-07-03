@@ -13,14 +13,13 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             _allowScale: true
         },
 
-        type: "design",
+        type: "specialText",
 
         inject: {
             specialTextService: SpecialTextService,
             imageUploadService: ImageUploadService
 
         },
-
 
         ctor: function () {
             this.callBase();
@@ -29,7 +28,6 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                 this.set("formatting", new Bindable(RomanFont));
             }
         },
-
 
         /***
          * saves assets asynchronously
