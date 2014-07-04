@@ -58,7 +58,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
                     // required if shipping type is express
                     return this.get("shipping.type.isExpress");
                 },
-                type: Boolean
+                type: String
             },
 
             useGiftWrapping: Boolean
