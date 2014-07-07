@@ -98,7 +98,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
 
         invoiceAddress: function () {
             return this.$.invoiceToShippingAddress ? this.get("shipping.address") : this.get("billing.address");
-        }.onChange("invoiceToShippingAddress")
+        }.onChange("invoiceToShippingAddress", "billing.address")
 
     });
 
