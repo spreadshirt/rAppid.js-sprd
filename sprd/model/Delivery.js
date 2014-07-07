@@ -77,6 +77,10 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
                 delete data.billing;
             }
 
+            if (!this.$.phone) {
+                data.phone = null;
+            }
+
             return data;
         },
 
