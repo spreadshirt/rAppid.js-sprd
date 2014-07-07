@@ -80,12 +80,6 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             return data;
         },
 
-        parse: function (data) {
-            if (data.type === ADDRESS_TYPES.PACKSTATION) {
-
-            }
-            return this.callBase();
-        },
         isPackStation: function () {
             return this.$.type == ADDRESS_TYPES.PACKSTATION;
         }.onChange('type')

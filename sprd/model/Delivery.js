@@ -72,6 +72,22 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             return data;
         },
 
+        parse: function (data) {
+            var billingAddress = this.get(data, 'billing.address'),
+                shippingAddress = this.get(data, 'shipping.address');
+
+            if (billingAddress) {
+                billingAddress.set('id', billingAddress.$.id || "billing");
+            }
+            if (shippingAddress) {
+                shippingAddress.set('id', shippingAddress.$.id || "shipping");
+            }
+            if (billingAddress && shippingAddress) {
+                this.set('invoiceToShippingAddress', shippingAddress.$.id == billingAddress.$.id);
+            }
+            return this.callBase();
+        },
+
         invoiceAddress: function () {
             return this.$.invoiceToShippingAddress ? this.get("shipping.address") : this.get("billing.address");
         }.onChange("invoiceToShippingAddress")
