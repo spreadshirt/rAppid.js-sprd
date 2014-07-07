@@ -20,10 +20,16 @@ define([], function() {
     /***
      *
      * @param {String|HTMLElement} idOrElement
+     * @param {Number} [offset=0]
      * @param {Number} [duration=500]
      * @param {Function} callback
      */
-    return function (idOrElement, duration, callback) {
+    return function (idOrElement, offset, duration, callback) {
+
+        if (offset instanceof Function) {
+            callback = offset;
+            offset = 0;
+        }
 
         if (duration instanceof Function) {
             callback = duration;
@@ -31,6 +37,7 @@ define([], function() {
         }
 
         duration = duration || 500;
+        offset = offset || 0;
 
         if (!idOrElement) {
             callback && callback();
@@ -51,7 +58,7 @@ define([], function() {
         var body = document.body || document.getElementsByTagName("body")[0],
             to = element.getBoundingClientRect().top + body.scrollTop;
 
-        scrollTo(to);
+        scrollTo(to + offset);
 
         function scrollTo(to) {
 
