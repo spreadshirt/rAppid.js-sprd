@@ -1,5 +1,6 @@
 <data:SprdApiDataSourceClass xmlns:data="sprd.data" xmlns:conf="js.conf">
     <conf:DataSourceConfiguration>
+        <conf:ResourceConfiguration modelClassName="sprd.model.Registration" path="register" signatureRequired="true"/>
         <conf:ResourceConfiguration path="languages" modelClassName="sprd.model.Language"/>
         <conf:ResourceConfiguration path="countries" modelClassName="sprd.model.Country"/>
         <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop" sessionRequired="true">
