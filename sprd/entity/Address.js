@@ -1,4 +1,4 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person"], function (Entity, ShippingState, Country, Person) {
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "js/data/validator/RegExValidator"], function (Entity, ShippingState, Country, Person, RegExValidator) {
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
@@ -65,6 +65,29 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 required: false
             }
         },
+
+        validators: [
+            new RegExValidator({
+                field: "zipCode",
+                regEx: /^[0-9]{0,10}$/,
+                errorCode: 'zipCodeError'
+            }),
+            new RegExValidator({
+                field: "city",
+                regEx: /^[0-9a-zA-Z]{0,30}$/,
+                errorCode: 'cityError'
+            }),
+            new RegExValidator({
+                field: "street",
+                regEx: /^[0-9a-zA-Z]{0,50}$/,
+                errorCode: 'streetError'
+            }),
+            new RegExValidator({
+                field: "streetAnnex",
+                regEx: /^[0-9a-zA-Z]{0,50}$/,
+                errorCode: 'streetAnnexError'
+            })
+        ],
 
         compose: function () {
             var data = this.callBase();

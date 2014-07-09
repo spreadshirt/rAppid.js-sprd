@@ -1,4 +1,4 @@
-define(["js/data/Entity"], function (Entity) {
+define(["js/data/Entity", "js/data/validator/RegExValidator"], function (Entity, RegExValidator) {
 
     var SalutationMap = {
         "1": "mr",
@@ -21,6 +21,19 @@ define(["js/data/Entity"], function (Entity) {
             lastName: String
         },
 
+        validators: [
+            new RegExValidator({
+                field: "lastName",
+                regEx: /^[0-9a-zA-Z]{0,30}$/,
+                errorCode: 'lastNameError'
+            }),
+            new RegExValidator({
+                field: "firstName",
+                regEx: /^[0-9a-zA-Z]{0,30}$/,
+                errorCode: 'firstNameError'
+            })
+        ],
+
         fullName: function () {
             return [(this.$.firstName || ""), (this.$.lastName || "")].join(" ");
         }.onChange("firstName", "lastName"),
@@ -37,14 +50,14 @@ define(["js/data/Entity"], function (Entity) {
             if (data.salutation) {
                 data.salutation = {
                     id: data.salutation
-                }
+                };
             }
 
             return  data;
         },
 
         contraction: function () {
-            return SalutationMap[this.$.salutation]
+            return SalutationMap[this.$.salutation];
         }.onChange("id")
     });
 });
