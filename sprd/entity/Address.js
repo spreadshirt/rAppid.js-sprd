@@ -83,7 +83,12 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
             person: Person,
 
-            street: String,
+            street: {
+                type: String,
+                required: function () {
+                    return this.get('type') == ADDRESS_TYPES.PRIVATE;
+                }
+            },
 
             streetAnnex: {
                 type: String,
