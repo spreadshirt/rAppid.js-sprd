@@ -146,6 +146,8 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             if (data.type === ADDRESS_TYPES.PACKSTATION) {
                 data.packStationNr = data.street ? data.street.replace(PACKSTATION, "") : "";
                 data.postNr = data.streetAnnex ? data.streetAnnex.replace(POSTNUMMER, "") : "";
+                delete data.streetAnnex;
+                delete data.street;
             }
 
             return this.callBase(data);
