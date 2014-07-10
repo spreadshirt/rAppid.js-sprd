@@ -16,6 +16,7 @@ define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore'], function (S
 
     return SprdModel.inherit('sprd.model.UserAddress', {
         defaults: defaults,
-        schema: schema
+        schema: schema,
+        validators: AddressEntity.validators
     });
 });

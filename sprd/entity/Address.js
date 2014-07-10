@@ -1,9 +1,48 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "js/data/validator/RegExValidator"], function (Entity, ShippingState, Country, Person, RegExValidator) {
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "js/data/validator/Validator", "underscore"], function (Entity, ShippingState, Country, Person, Validator, _) {
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
         PRIVATE: "PRIVATE"
     };
+
+    var MAX_LENGTH = {
+        STREET: 50,
+        ZIP_CODE: 10,
+        CITY: 30,
+        STREET_ANNEX: 50
+    };
+
+    var LengthValidator = Validator.inherit({
+        defaults: {
+            errorCode: 'maxLengthError',
+            /**
+             * The min length of the input
+             *
+             * @type number
+             */
+            minLength: 0,
+            /**
+             * The max length of the input
+             * -1 is for unlimited
+             *
+             * @type number
+             */
+            maxLength: -1
+        },
+        _validate: function (entity, options) {
+            var value = entity.get(this.$.field),
+                schemaDefinition = entity.schema[this.$.field],
+                required = schemaDefinition ? schemaDefinition.required : true;
+
+
+            if (_.isString(value) && (required && value.length || !required)) {
+
+                if (value.length < this.$.minLength || (this.$.maxLength > -1 && value.length > this.$.maxLength)) {
+                    return this._createFieldError();
+                }
+            }
+        }
+    });
 
     var Address = Entity.inherit("sprd.entity.Address", {
 
@@ -67,25 +106,21 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         },
 
         validators: [
-            new RegExValidator({
+            new LengthValidator({
                 field: "zipCode",
-                regEx: /^[0-9]{0,10}$/,
-                errorCode: 'zipCodeError'
+                maxLength: MAX_LENGTH.ZIP_CODE
             }),
-            new RegExValidator({
+            new LengthValidator({
                 field: "city",
-                regEx: /^[0-9a-zA-Z]{0,30}$/,
-                errorCode: 'cityError'
+                maxLength: MAX_LENGTH.CITY
             }),
-            new RegExValidator({
+            new LengthValidator({
                 field: "street",
-                regEx: /^[0-9a-zA-Z]{0,50}$/,
-                errorCode: 'streetError'
+                maxLength: MAX_LENGTH.STREET
             }),
-            new RegExValidator({
+            new LengthValidator({
                 field: "streetAnnex",
-                regEx: /^[0-9a-zA-Z]{0,50}$/,
-                errorCode: 'streetAnnexError'
+                maxLength: MAX_LENGTH.STREET_ANNEX
             })
         ],
 
@@ -109,6 +144,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
     });
 
     Address.ADDRESS_TYPES = ADDRESS_TYPES;
+    Address.MAX_LENGTH = MAX_LENGTH;
 
     return Address;
 });
