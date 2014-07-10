@@ -44,6 +44,9 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         }
     });
 
+    var POSTNUMMER = "Postnummer ",
+        PACKSTATION = "Packstation ";
+
     var Address = Entity.inherit("sprd.entity.Address", {
 
         defaults: {
@@ -61,6 +64,8 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             email: null,
             phone: null,
             fax: null,
+            packStationNr: "",
+            postNr: "",
 
             root: null,
             shippingCountries: "{root.shippingCountries()}"
@@ -94,6 +99,19 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             },
             country: {type: Country, isReference: true},
             zipCode: String,
+            postNr: {
+                type: String,
+                required: function () {
+                    return this.get('type') == ADDRESS_TYPES.PACKSTATION
+                }
+            },
+
+            packStationNr: {
+                type: String,
+                required: function () {
+                    return this.get('type') == ADDRESS_TYPES.PACKSTATION
+                }
+            },
 
             phone: {
                 type: String,
@@ -124,6 +142,15 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             })
         ],
 
+        parse: function (data) {
+            if (data.type === ADDRESS_TYPES.PACKSTATION) {
+                data.packStationNr = data.street ? data.street.replace(PACKSTATION, "") : "";
+                data.postNr = data.streetAnnex ? data.streetAnnex.replace(POSTNUMMER, "") : "";
+            }
+
+            return this.callBase(data);
+        },
+
         compose: function () {
             var data = this.callBase();
 
@@ -132,7 +159,11 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             }
 
             if (this.get('type') === ADDRESS_TYPES.PACKSTATION) {
-                data.street = "Packstation " + data.street;
+                data.street = PACKSTATION + data.packStationNr;
+                data.streetAnnex = POSTNUMMER + data.postNr;
+            } else {
+                delete data.packstationNr;
+                delete data.postNr;
             }
 
             return data;
