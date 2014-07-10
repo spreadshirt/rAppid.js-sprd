@@ -147,6 +147,17 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             })
         ],
 
+
+        _commitChangedAttributes: function ($) {
+            this.callBase();
+
+            if ($.hasOwnProperty("country") && this.$.type === ADDRESS_TYPES.PACKSTATION) {
+                if ($.country.get('code') != "DE") {
+                    this.set('type', ADDRESS_TYPES.PRIVATE);
+                }
+            }
+        },
+
         parse: function (data) {
             if (data.type === ADDRESS_TYPES.PACKSTATION) {
                 data.packStationNr = data.street ? data.street.replace(PACKSTATION, "") : "";
