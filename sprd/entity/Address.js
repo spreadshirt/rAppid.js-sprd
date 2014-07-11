@@ -1,4 +1,4 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "js/data/validator/Validator", "underscore"], function (Entity, ShippingState, Country, Person, Validator, _) {
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "js/data/validator/Validator", "underscore", "js/data/validator/RegExValidator"], function (Entity, ShippingState, Country, Person, Validator, _, RegExValidator) {
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
@@ -154,9 +154,14 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             new LengthValidator({
                 field: "streetAnnex",
                 maxLength: MAX_LENGTH.STREET_ANNEX
+            }),
+            new RegExValidator({
+                field: "street",
+                regEx: /postfiliale/i,
+                inverse: true,
+                errorCode: "postfilialeNotSupported"
             })
         ],
-
 
         _commitChangedAttributes: function ($) {
             this.callBase();
