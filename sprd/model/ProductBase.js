@@ -1,20 +1,6 @@
-define(["sprd/data/SprdModel", 'sprd/model/ProductType', 'sprd/entity/Appearance', 'sprd/entity/Price'],
-    function (SprdModel, ProductType, Appearance, Price) {
+define(["sprd/data/SprdModel"],
+    function (SprdModel) {
         return SprdModel.inherit("sprd.model.ProductBase", {
-
-            schema: {
-                productType: ProductType,
-                appearance: {
-                    type: Appearance,
-                    isReference: true
-                },
-                restrictions: Object,
-                defaultValues: Object,
-                price: {
-                    type: Price,
-                    generated: true
-                }
-            },
 
             defaults: {
                 productType: null,
@@ -32,19 +18,14 @@ define(["sprd/data/SprdModel", 'sprd/model/ProductType', 'sprd/entity/Appearance
             }.onChange("price"),
 
             getDefaultView: function () {
+                var productType = this.$.productType,
+                    viewId = this.get("defaultValues.defaultView.id");
 
-                if (this.$.productType) {
-                    var defaultViewId = this.getDefaultViewId();
-
-                    if (defaultViewId !== null) {
-                        return this.$.productType.getViewById(defaultViewId);
-                    } else {
-                        return this.$.productType.getDefaultView();
-                    }
+                if (productType) {
+                    return productType.getViewById(viewId) || productType.getDefaultView();
                 }
 
                 return null;
-
             },
 
             getDefaultViewId: function () {
