@@ -95,6 +95,16 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return total;
         }.on('change'),
 
+        orderValue: function () {
+            var total = 0;
+            if (this.$.basketItems) {
+                this.$.basketItems.each(function (item) {
+                    total += item.orderValue();
+                });
+            }
+            return total;
+        }.on('change'),
+
         totalVat: function () {
             var total = 0;
             total = (this.vatIncluded() - this.vatExcluded());
