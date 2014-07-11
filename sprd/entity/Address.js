@@ -159,6 +159,12 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 regEx: /postfiliale/i,
                 inverse: true,
                 errorCode: "postfilialeNotSupported"
+            }),
+            new RegExValidator({
+                field: "street",
+                regEx: /packstation|postnummer/i,
+                inverse: true,
+                errorCode: "packstationError"
             })
         ],
 
