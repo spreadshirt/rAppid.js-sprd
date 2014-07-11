@@ -1,5 +1,9 @@
 define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore'], function (SprdModel, AddressEntity, _) {
 
+    /**
+     * User Address shares the same interface and methods like Address but with some extensions
+     *
+     */
     var defaults = _.extend({
         shippingAddress: true,
         billingAddress: true,
@@ -19,6 +23,10 @@ define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore'], function (S
         schema: schema,
         validators: AddressEntity.validators,
         parse: AddressEntity.prototype.parse,
-        compose: AddressEntity.prototype.compose
+        compose: AddressEntity.prototype.compose,
+        _commitChangedAttributes: AddressEntity.prototype._commitChangedAttributes,
+        isPackStation: AddressEntity.prototype.isPackStation,
+        supportsCounty: AddressEntity.prototype.supportsCounty,
+        isStateRequired: AddressEntity.prototype.isStateRequired
     });
 });
