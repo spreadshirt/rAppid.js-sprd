@@ -25,6 +25,33 @@ define(['js/data/DataSource', 'underscore'], function (DataSource, _) {
             }
         },
 
+        parseCollection: function (collection, data, action, options) {
+            var ret = this.callBase(),
+                hasAttributeSet = false;
+
+            options = options || {};
+
+            if (options.query && options.query.query && options.query.query.extra && options.query.query.extra.attributeSet) {
+                hasAttributeSet = true;
+            }
+
+            if (ret && options.fullData === true && !hasAttributeSet) {
+                // data fetched with full data and NO attribute set given,
+                // then we expect that the model is fully loaded
+                for (var i = 0; i < ret.length; i++) {
+                    var model = ret[i];
+                    var fetch = model._fetch;
+                    if (fetch && fetch.state === FETCHSTATE.CREATED && fetch.callbacks.length === 0) {
+                        // model is created and no callbacks are registered -> set fetch stte
+                        fetch.state = FETCHSTATE.LOADED;
+                    }
+
+                }
+            }
+
+            return ret;
+        },
+
         compose: function () {
             var model = this.callBase();
 
