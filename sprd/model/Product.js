@@ -1,5 +1,5 @@
-define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType'],
-    function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType) {
+define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType', 'sprd/entity/Appearance'],
+    function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType, Appearance) {
 
         var undefined;
 
@@ -14,6 +14,16 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                         "text": TextConfiguration
                     }
                 })],
+                appearance: {
+                    type: Appearance,
+                    isReference: true
+                },
+                restrictions: Object,
+                defaultValues: Object,
+                price: {
+                    type: Price,
+                    generated: true
+                },
                 creator: String
             },
 
@@ -113,16 +123,6 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                 return null;
             }.onChange('appearance', 'productType'),
 
-            getDefaultView: function () {
-                var productType = this.$.productType,
-                    viewId = this.get("defaultValues.defaultView.id");
-
-                if (productType) {
-                    return productType.getViewById(viewId) || productType.getDefaultView();
-                }
-
-                return null;
-            },
 
             _onConfigurationOffsetChanged: function (e) {
 
@@ -416,13 +416,13 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                 if (productType) {
                     var appearances = productType.getAvailableAppearances(),
                         configurations = this.$.configurations;
-                    if(configurations){
+                    if (configurations) {
                         var ret = new List(appearances.toArray());
                         configurations.each(function (config) {
-                            appearances.each(function(appearance){
-                                if(ret.contains(appearance)){
+                            appearances.each(function (appearance) {
+                                if (ret.contains(appearance)) {
                                     var printTypes = config.getPossiblePrintTypes(appearance);
-                                    if(!printTypes || !printTypes.length){
+                                    if (!printTypes || !printTypes.length) {
                                         ret.remove(appearance);
                                     }
                                 }
