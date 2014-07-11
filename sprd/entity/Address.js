@@ -99,8 +99,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             state: {
                 type: ShippingState,
                 required: function () {
-                    var code = this.get("country.code");
-                    return  code === "US" || code === "IE";
+                    return this.isStateRequired();
                 }
             },
             country: {
@@ -209,6 +208,11 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         supportsCounty: function () {
             var code = this.get('country.code');
             return  code === "GB" || code === "IE";
+        }.onChange('country'),
+
+        isStateRequired: function () {
+            var code = this.get("country.code");
+            return  code === "US" || code === "IE";
         }.onChange('country')
     });
 
