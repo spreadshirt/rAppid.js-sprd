@@ -219,6 +219,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         isStateRequired: function () {
             var code = this.get("country.code");
             return  code === "US" || code === "IE";
+        }.onChange('country'),
+
+        needsZipCode: function () {
+            return this.get("country.code") !== "IE";
         }.onChange('country')
     });
 

@@ -27,6 +27,7 @@ define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore'], function (S
         _commitChangedAttributes: AddressEntity.prototype._commitChangedAttributes,
         isPackStation: AddressEntity.prototype.isPackStation,
         supportsCounty: AddressEntity.prototype.supportsCounty,
-        isStateRequired: AddressEntity.prototype.isStateRequired
+        isStateRequired: AddressEntity.prototype.isStateRequired,
+        needsZipCode: AddressEntity.prototype.needsZipCode
     });
 });
