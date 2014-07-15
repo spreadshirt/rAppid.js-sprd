@@ -56,7 +56,7 @@ define([], function() {
         }
 
         var body = document.body || document.getElementsByTagName("body")[0],
-            to = element.getBoundingClientRect().top + body.scrollTop;
+            to = element.getBoundingClientRect().top + body.parentNode.scrollTop;
 
         scrollTo(to + offset);
 
@@ -73,7 +73,7 @@ define([], function() {
                 currentTime += increment;
                 // find the value with the quadratic in-out easing function
 
-                body.scrollTop = Math.easeInOutQuad(currentTime, start, change, duration);
+                body.parentNode.scrollTop= Math.easeInOutQuad(currentTime, start, change, duration);
 
                 // do the animation unless its over
                 if (currentTime < duration) {
