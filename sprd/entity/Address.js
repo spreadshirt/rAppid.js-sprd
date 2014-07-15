@@ -1,4 +1,4 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "js/data/validator/Validator", "underscore", "js/data/validator/RegExValidator"], function (Entity, ShippingState, Country, Person, Validator, _, RegExValidator) {
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator) {
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
@@ -11,38 +11,6 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         CITY: 30,
         STREET_ANNEX: 50
     };
-
-    var LengthValidator = Validator.inherit({
-        defaults: {
-            errorCode: 'maxLengthError',
-            /**
-             * The min length of the input
-             *
-             * @type number
-             */
-            minLength: 0,
-            /**
-             * The max length of the input
-             * -1 is for unlimited
-             *
-             * @type number
-             */
-            maxLength: -1
-        },
-        _validate: function (entity, options) {
-            var value = entity.get(this.$.field),
-                schemaDefinition = entity.schema[this.$.field],
-                required = schemaDefinition ? schemaDefinition.required : true;
-
-
-            if (_.isString(value) && (required && value.length || !required)) {
-
-                if (value.length < this.$.minLength || (this.$.maxLength > -1 && value.length > this.$.maxLength)) {
-                    return this._createFieldError();
-                }
-            }
-        }
-    });
 
     var POSTNUMMER = "Postnummer ",
         PACKSTATION = "Packstation ";
