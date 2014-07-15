@@ -1,5 +1,7 @@
 define([], function() {
 
+    var undefined;
+
     // easing functions http://goo.gl/5HLl8
     Math.easeInOutQuad = function (t, b, c, d) {
         t /= d / 2;
@@ -16,6 +18,14 @@ define([], function() {
             window.setTimeout(callback, 1000 / 60);
         };
     })();
+
+    if (!(window.scrollTo instanceof Function)) {
+        window.scrollTo = function (x, y) {
+            var body = window.document.getElementsByTagName("body")[0];
+            body.parentNode.scrollTop = y;
+            body.parentNode.scrollLeft = x;
+        };
+    }
 
     /***
      *
@@ -44,7 +54,11 @@ define([], function() {
             return;
         }
 
-        if (idOrElement instanceof HTMLElement) {
+        var to = undefined;
+
+        if (idOrElement instanceof Number) {
+            to = idOrElement;
+        } else if (idOrElement instanceof HTMLElement) {
             element = idOrElement;
         } else {
             var element = document.getElementById(idOrElement);
@@ -55,8 +69,11 @@ define([], function() {
             return;
         }
 
-        var body = document.body || document.getElementsByTagName("body")[0],
+        var body = document.body || document.getElementsByTagName("body")[0];
+
+        if (to === undefined) {
             to = element.getBoundingClientRect().top + body.parentNode.scrollTop;
+        }
 
         scrollTo(to + offset);
 
@@ -73,7 +90,10 @@ define([], function() {
                 currentTime += increment;
                 // find the value with the quadratic in-out easing function
 
-                body.parentNode.scrollTop= Math.easeInOutQuad(currentTime, start, change, duration);
+                window.scrollTo(
+                    (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft,
+                    Math.easeInOutQuad(currentTime, start, change, duration)
+                );
 
                 // do the animation unless its over
                 if (currentTime < duration) {
