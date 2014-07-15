@@ -18,16 +18,21 @@ define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore'], function (S
         defaultShippingAddress: Boolean
     }, AddressEntity.prototype.schema);
 
-    return SprdModel.inherit('sprd.model.UserAddress', {
+    var UserAddress = SprdModel.inherit('sprd.model.UserAddress', {
         defaults: defaults,
         schema: schema,
-        validators: AddressEntity.validators,
+        validators: AddressEntity.prototype.validators,
         parse: AddressEntity.prototype.parse,
         compose: AddressEntity.prototype.compose,
         _commitChangedAttributes: AddressEntity.prototype._commitChangedAttributes,
         isPackStation: AddressEntity.prototype.isPackStation,
         supportsCounty: AddressEntity.prototype.supportsCounty,
         isStateRequired: AddressEntity.prototype.isStateRequired,
-        needsZipCode: AddressEntity.prototype.needsZipCode
+        needsZipCode: AddressEntity.prototype.needsZipCode,
+
     });
+
+    UserAddress.ADDRESS_TYPES = AddressEntity.ADDRESS_TYPES;
+
+    return UserAddress;
 });
