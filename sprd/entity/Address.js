@@ -86,7 +86,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             street: {
                 type: String,
                 required: function () {
-                    return this.get('type') == ADDRESS_TYPES.PRIVATE;
+                    return !this.isPackStation();
                 }
             },
 
@@ -110,20 +110,20 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 type: String,
                 required: function () {
                     // not required for Ireland
-                    return this.get('country.code') !== "IE";
+                    return this.needsZipCode();
                 }
             },
             postNr: {
                 type: String,
                 required: function () {
-                    return this.get('type') == ADDRESS_TYPES.PACKSTATION
+                    return this.isPackStation()
                 }
             },
 
             packStationNr: {
                 type: String,
                 required: function () {
-                    return this.get('type') == ADDRESS_TYPES.PACKSTATION
+                    return this.isPackStation()
                 }
             },
 
