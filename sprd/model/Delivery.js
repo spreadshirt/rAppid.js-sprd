@@ -53,6 +53,14 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
                 type: String
             },
 
+            phone: {
+                required: function() {
+                    // required if shipping type is express
+                    return this.get("shipping.type.isExpress");
+                },
+                type: String
+            },
+
             useGiftWrapping: Boolean
         },
 
@@ -69,12 +77,32 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
                 delete data.billing;
             }
 
+            if (!this.$.phone) {
+                data.phone = null;
+            }
+
             return data;
+        },
+
+        parse: function (data) {
+            var billingAddress = this.get(data, 'billing.address'),
+                shippingAddress = this.get(data, 'shipping.address');
+
+            if (billingAddress) {
+                billingAddress.set('id', billingAddress.$.id || "billing");
+            }
+            if (shippingAddress) {
+                shippingAddress.set('id', shippingAddress.$.id || "shipping");
+            }
+            if (billingAddress && shippingAddress) {
+                this.set('invoiceToShippingAddress', shippingAddress.$.id == billingAddress.$.id);
+            }
+            return this.callBase();
         },
 
         invoiceAddress: function () {
             return this.$.invoiceToShippingAddress ? this.get("shipping.address") : this.get("billing.address");
-        }.onChange("invoiceToShippingAddress")
+        }.onChange("invoiceToShippingAddress", "billing.address", "shipping.address")
 
     });
 

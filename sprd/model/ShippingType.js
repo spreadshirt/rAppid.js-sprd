@@ -17,7 +17,9 @@ define(['sprd/data/SprdModel', 'sprd/entity/ShippingCountry', 'sprd/entity/Shipp
             trackingLink: Object,
 
             shippingCountries: [ShippingCountry],
-            shippingRegions: [ShippingRegion]
+            shippingRegions: [ShippingRegion],
+
+            isExpress: Boolean
         },
 
         /***

@@ -22,7 +22,7 @@ define(["js/data/Entity", "sprd/entity/ShippingCost"], function (Entity, Shippin
             }
 
             return null
-        },
+        }
 
     });
 });
