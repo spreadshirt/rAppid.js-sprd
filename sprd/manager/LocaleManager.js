@@ -2,8 +2,8 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
     var Config = {
         EU: {
-            supportedLocales: ["de_DE", "de_AT", "dk_DK", "en_GB", "es_ES", "eu_EU", "fi_FI", "fr_BE", "fr_FR", "it_IT", "nl_BE", "nl_NL", "no_NO", "pl_PL", "se_SE"],
-            fallbackLocale: "eu_EU"
+            supportedLocales: ["de_DE", "de_AT", "dk_DK", "en_GB", "es_ES", "en_EU", "fi_FI", "fr_BE", "fr_FR", "it_IT", "nl_BE", "nl_NL", "no_NO", "pl_PL", "se_SE"],
+            fallbackLocale: "en_EU"
         },
         NA: {
             supportedLocales: ["us_US", "us_CA", "fr_CA"],
