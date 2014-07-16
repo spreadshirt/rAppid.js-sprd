@@ -30,8 +30,14 @@ define(['sprd/data/SprdModel', 'sprd/entity/ShippingCountry', 'sprd/entity/Shipp
          */
         getShippingCountryByCode: function (code) {
 
-            for (var i = 0; i < this.$.shippingCountries.$items.length; i++) {
-                var shippingCountry = this.$.shippingCountries.$items[i];
+            var shippingCountries = this.$.shippingCountries;
+
+            if (!shippingCountries) {
+                return null;
+            }
+
+            for (var i = 0; i < shippingCountries.$items.length; i++) {
+                var shippingCountry = shippingCountries.$items[i];
                 if (shippingCountry.$.code == code) {
                     return shippingCountry;
                 }
