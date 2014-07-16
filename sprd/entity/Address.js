@@ -160,8 +160,12 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         compose: function () {
             var data = this.callBase();
 
-            if (this.get("country.code") !== "US") {
+            if (!this.isStateRequired()) {
                 delete data.state;
+            }
+
+            if (!this.needsZipCode()) {
+                data.zipCode = "-";
             }
 
             if (this.get('type') === ADDRESS_TYPES.PACKSTATION) {
