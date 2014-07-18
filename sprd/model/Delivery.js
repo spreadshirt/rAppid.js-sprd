@@ -88,14 +88,14 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             var billingAddress = this.get(data, 'billing.address'),
                 shippingAddress = this.get(data, 'shipping.address');
 
-            if (billingAddress) {
-                billingAddress.set('id', billingAddress.$.id || "billing");
+            if (billingAddress && shippingAddress) {
+                this.set('invoiceToShippingAddress', shippingAddress.$.id == billingAddress.$.id);
+            }
+            if (billingAddress && billingAddress.$.id) {
+                billingAddress.set('id', billingAddress.$.id);
             }
             if (shippingAddress) {
                 shippingAddress.set('id', shippingAddress.$.id || "shipping");
-            }
-            if (billingAddress && shippingAddress) {
-                this.set('invoiceToShippingAddress', shippingAddress.$.id == billingAddress.$.id);
             }
             return this.callBase();
         },
