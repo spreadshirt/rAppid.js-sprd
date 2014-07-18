@@ -46,7 +46,9 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             },
             company: {
                 type: String,
-                required: false
+                required: function () {
+                    return this.isCompany();
+                }
             },
 
             person: Person,
@@ -196,7 +198,11 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         needsZipCode: function () {
             // not required for ireland
             return this.get("country.code") !== "IE";
-        }.onChange('country')
+        }.onChange('country'),
+
+        isCompany: function () {
+            return this.get('person.salutation') == "4"
+        }.onChange('person.salutation')
     });
 
     Address.ADDRESS_TYPES = ADDRESS_TYPES;

@@ -58,6 +58,6 @@ define(["js/data/Entity", "js/data/validator/RegExValidator"], function (Entity,
 
         contraction: function () {
             return SalutationMap[this.$.salutation];
-        }.onChange("id")
+        }.onChange("salutation")
     });
 });
