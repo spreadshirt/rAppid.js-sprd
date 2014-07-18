@@ -28,35 +28,35 @@ describe('sprd.model.UserAddress', function () {
 
             address.set('country', new C.Country({code: 'GB'}));
 
-            expect(address.supportsCounty()).to.equal(true);
+            expect(address.needsCounty()).to.equal(false);
 
             address.set('country', new C.Country({code: 'IE'}));
 
-            expect(address.supportsCounty()).to.equal(true);
+            expect(address.needsCounty()).to.equal(true);
         });
 
         it('should return false for everything else', function () {
             address.set('country', new C.Country({code: 'DE'}));
 
-            expect(address.supportsCounty()).to.equal(false);
+            expect(address.needsCounty()).to.equal(false);
         });
 
         it('should have country annotation', function () {
-            expect(C.Address.prototype.supportsCounty._attributes).to.contain("country");
+            expect(C.Address.prototype.needsCounty._attributes).to.contain("country");
         });
 
     });
 
     describe('isStateRequired', function () {
 
-        it('should return true for UE and IE', function () {
+        it('should return true for US', function () {
             address.set('country', new C.Country({code: 'US'}));
 
             expect(address.isStateRequired()).to.equal(true);
 
             address.set('country', new C.Country({code: 'IE'}));
 
-            expect(address.isStateRequired()).to.equal(true);
+            expect(address.isStateRequired()).to.equal(false);
         });
 
         it('should return false for everything else', function () {
@@ -173,7 +173,7 @@ describe('sprd.model.UserAddress', function () {
 
     describe('state', function () {
 
-        it('should be only required for countries US and IE', function () {
+        it('should be only required for US', function () {
             address.set({
                 state: "", // empty state name
                 country: new C.Country({code: 'DE'})
@@ -193,7 +193,7 @@ describe('sprd.model.UserAddress', function () {
 
             address.validate({fields: ['state']});
 
-            expect(address.isValid()).to.eql(false);
+            expect(address.isValid()).to.eql(true);
         });
 
     });

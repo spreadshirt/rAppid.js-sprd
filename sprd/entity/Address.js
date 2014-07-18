@@ -65,6 +65,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             city: String,
             houseNumber: String,
             state: {
+                isReference: true,
                 type: ShippingState,
                 required: function () {
                     return this.isStateRequired();
@@ -183,17 +184,17 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             return this.$.type == ADDRESS_TYPES.PACKSTATION;
         }.onChange('type'),
 
-        supportsCounty: function () {
-            var code = this.get('country.code');
-            return  code === "GB" || code === "IE";
+        needsCounty: function () {
+            return  this.get('country.code') === "IE";
         }.onChange('country'),
 
         isStateRequired: function () {
             var code = this.get("country.code");
-            return  code === "US" || code === "IE";
+            return  code === "US";
         }.onChange('country'),
 
         needsZipCode: function () {
+            // not required for ireland
             return this.get("country.code") !== "IE";
         }.onChange('country')
     });

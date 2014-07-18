@@ -26,10 +26,9 @@ define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore'], function (S
         compose: AddressEntity.prototype.compose,
         _commitChangedAttributes: AddressEntity.prototype._commitChangedAttributes,
         isPackStation: AddressEntity.prototype.isPackStation,
-        supportsCounty: AddressEntity.prototype.supportsCounty,
-        isStateRequired: AddressEntity.prototype.isStateRequired,
+        needsCounty: AddressEntity.prototype.needsCounty,
         needsZipCode: AddressEntity.prototype.needsZipCode,
-
+        isStateRequired: AddressEntity.prototype.isStateRequired
     });
 
     UserAddress.ADDRESS_TYPES = AddressEntity.ADDRESS_TYPES;
