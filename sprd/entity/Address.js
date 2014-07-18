@@ -191,8 +191,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         }.onChange('country'),
 
         isStateRequired: function () {
-            var code = this.get("country.code");
-            return  code === "US";
+            return  this.get("country.code") === "US";
         }.onChange('country'),
 
         needsZipCode: function () {
