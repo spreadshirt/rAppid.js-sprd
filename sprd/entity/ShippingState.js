@@ -10,6 +10,8 @@ define(["js/data/Entity", "sprd/entity/ShippingRegion"], function (Entity, Shipp
             externalFulfillmentSupported: true
         },
 
+        idField: "isoCode",
+
         schema: {
             name: String,
             isoCode: String,
