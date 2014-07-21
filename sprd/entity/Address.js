@@ -167,7 +167,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 delete data.state;
             }
 
-            if (!this.needsZipCode()) {
+            if (!this.needsZipCode() && !data.zipCode) {
                 data.zipCode = "-";
             }
 
