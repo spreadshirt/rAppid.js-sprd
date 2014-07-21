@@ -172,10 +172,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             }
 
             if (this.get('type') === ADDRESS_TYPES.PACKSTATION) {
-                data.street = PACKSTATION + data.packStationNr;
+                data.street = PACKSTATION + (data.packStationNr || "").replace(/packstation/i, " ").replace(/^\s*|\s*$/, "");
                 data.streetAnnex = POSTNUMMER + data.postNr;
             } else {
-                delete data.packstationNr;
+                delete data.packStationNr;
                 delete data.postNr;
             }
 
