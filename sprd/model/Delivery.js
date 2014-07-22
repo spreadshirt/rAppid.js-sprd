@@ -69,7 +69,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             new RegExValidator({
                 field: "phone",
                 errorCode: "wrongCharacters",
-                regEx: /^(\s|\d|\+|\-)*$/
+                regEx: /^(\s|\d|\+|\-|\.)*$/
             }),
             new RegExValidator({
                 field: "phone",
