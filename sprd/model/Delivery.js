@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/model/ShippingType", "underscore", "js/data/validator/EmailValidator"], function (SprdModel, Entity, Address, ShippingType, _, EmailValidator) {
+define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/model/ShippingType", "underscore", "js/data/validator/EmailValidator", "js/data/validator/RegExValidator"], function (SprdModel, Entity, Address, ShippingType, _, EmailValidator, RegExValidator) {
 
     var Billing = Entity.inherit("sprd.model.Order.Billing", {
         defaults: {
@@ -54,7 +54,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             },
 
             phone: {
-                required: function() {
+                required: function () {
                     // required if shipping type is express
                     return this.get("shipping.type.isExpress");
                 },
@@ -65,7 +65,17 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
         },
 
         validators: [
-            new EmailValidator({field: "email"})
+            new EmailValidator({field: "email"}),
+            new RegExValidator({
+                field: "phone",
+                errorCode: "wrongCharacters",
+                regEx: /^(\s|\d|\+|\-)*$/
+            }),
+            new RegExValidator({
+                field: "phone",
+                errorCode: "atLeast8Digits",
+                regEx: /(.*\d.*){8}/
+            })
         ],
 
         // TODO: add phone validator, checking DEV-68278 + shipping type determinates if optional or not
