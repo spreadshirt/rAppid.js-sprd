@@ -68,11 +68,6 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             new EmailValidator({field: "email"}),
             new RegExValidator({
                 field: "phone",
-                errorCode: "wrongCharacters",
-                regEx: /^(\s|\d|\+|\-|\.)*$/
-            }),
-            new RegExValidator({
-                field: "phone",
                 errorCode: "atLeast8Digits",
                 regEx: /(.*\d.*){8}/
             })
