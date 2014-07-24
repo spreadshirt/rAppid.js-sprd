@@ -1,4 +1,4 @@
-define(["js/data/Entity", "js/data/validator/RegExValidator"], function (Entity, RegExValidator) {
+define(["js/data/Entity"], function (Entity) {
 
     var SalutationMap = {
         "1": "mr",
@@ -20,19 +20,6 @@ define(["js/data/Entity", "js/data/validator/RegExValidator"], function (Entity,
             firstName: String,
             lastName: String
         },
-
-        validators: [
-            new RegExValidator({
-                field: "lastName",
-                regEx: /^[0-9a-zA-Z]{0,30}$/,
-                errorCode: 'lastNameError'
-            }),
-            new RegExValidator({
-                field: "firstName",
-                regEx: /^[0-9a-zA-Z]{0,30}$/,
-                errorCode: 'firstNameError'
-            })
-        ],
 
         fullName: function () {
             return [(this.$.firstName || ""), (this.$.lastName || "")].join(" ");
