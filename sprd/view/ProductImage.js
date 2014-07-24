@@ -60,6 +60,8 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
                     }
                 }
 
+                viewId = viewId || 0;
+
                 return this.$.imageService.productImage(product.$.id, viewId, this.get("appearance.id"), this.$.type, {
                     width: this.$.width,
                     height: this.$.height,
