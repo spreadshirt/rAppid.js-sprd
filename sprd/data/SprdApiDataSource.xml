@@ -83,6 +83,11 @@
                                     signatureRequired="true"/>
         <conf:ResourceConfiguration path="objectTypes" modelClassName="sprd.model.ObjectType"/>
 
+        <conf:ResourceConfiguration path="orders" modelClassName="sprd.model.Order"
+                                    apiKeyRequired="true" sessionRequired="true" signatureRequired="true">
+            <conf:ResourceConfiguration path="items" modelClassName="sprd.model.OrderItem"
+                                        processor="OrderItemProcessor"/>
+        </conf:ResourceConfiguration>
 
     </conf:DataSourceConfiguration>
 </data:SprdApiDataSourceClass>

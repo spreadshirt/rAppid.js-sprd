@@ -14,7 +14,8 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
 
             $processors: {
                 BasketProcessor: BasketProcessor,
-                BasketItemProcessor: BasketItemProcessor
+                BasketItemProcessor: BasketItemProcessor,
+                OrderItemProcessor: BasketItemProcessor
             },
 
             getQueryParameters: function (method, resource) {
