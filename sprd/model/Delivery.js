@@ -25,7 +25,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
     });
 
 
-    return SprdModel.inherit("sprd.model.Delivery", {
+    var Delivery = SprdModel.inherit("sprd.model.Delivery", {
 
         defaults: {
             billing: Billing,
@@ -110,5 +110,10 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
         }.onChange("invoiceToShippingAddress", "billing.address", "shipping.address")
 
     });
+
+    Delivery.Shipping = Shipping;
+    Delivery.Billing = Billing;
+
+    return Delivery;
 
 });
