@@ -1,4 +1,4 @@
-define(["js/data/Entity"], function (Entity) {
+define(["js/data/Entity", "js/data/transformer/TrimTransformer"], function (Entity, TrimTransformer) {
 
     var SalutationMap = {
         "1": "mr",
@@ -20,6 +20,10 @@ define(["js/data/Entity"], function (Entity) {
             firstName: String,
             lastName: String
         },
+
+        transformers: [
+            new TrimTransformer()
+        ],
 
         fullName: function () {
             return [(this.$.firstName || ""), (this.$.lastName || "")].join(" ");

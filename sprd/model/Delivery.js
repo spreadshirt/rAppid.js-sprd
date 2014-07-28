@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/model/ShippingType", "underscore", "js/data/validator/EmailValidator", "js/data/validator/RegExValidator"], function (SprdModel, Entity, Address, ShippingType, _, EmailValidator, RegExValidator) {
+define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/model/ShippingType", "underscore", "js/data/validator/EmailValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer"], function (SprdModel, Entity, Address, ShippingType, _, EmailValidator, RegExValidator, TrimTransformer) {
 
     var Billing = Entity.inherit("sprd.model.Order.Billing", {
         defaults: {
@@ -64,8 +64,12 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             useGiftWrapping: Boolean
         },
 
+        transformers: [
+            new TrimTransformer()
+        ],
+
         validators: [
-            new EmailValidator({field: "email", replaceRegEx: /^\s*([^\s]+)\s*$/, replaceValue: "$1"}),
+            new EmailValidator({field: "email"}),
             new RegExValidator({
                 field: "phone",
                 errorCode: "atLeast8Digits",

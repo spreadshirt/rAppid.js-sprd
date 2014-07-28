@@ -22,6 +22,7 @@ define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore'], function (S
         defaults: defaults,
         schema: schema,
         validators: AddressEntity.prototype.validators,
+        transformers: AddressEntity.prototype.transformers,
         parse: AddressEntity.prototype.parse,
         compose: AddressEntity.prototype.compose,
         _commitChangedAttributes: AddressEntity.prototype._commitChangedAttributes,

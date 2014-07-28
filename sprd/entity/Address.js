@@ -1,4 +1,4 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator) {
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator, TrimTransformer) {
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
@@ -107,6 +107,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 required: false
             }
         },
+
+        transformers: [
+            new TrimTransformer()
+        ],
 
         validators: [
             new LengthValidator({
