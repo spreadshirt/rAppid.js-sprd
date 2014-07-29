@@ -545,14 +545,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 };
 
                 this.$upHandler = function (e) {
-                    if (mode == MOVE) {
-                        if (configuration.$.offset && configuration.$.offset !== self.$._offset) {
-                            configuration.set('offset', self.$._offset);
-                        }
-                    }
                     if (selected) {
                         self._up(e, mode);
                     } else {
+                        if (mode == MOVE) {
+                            if (configuration.$.offset && configuration.$.offset !== self.$._offset) {
+                                configuration.set('offset', self.$._offset);
+                            }
+                        }
                         self.$moving = false;
                     }
                 };
