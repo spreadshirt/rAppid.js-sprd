@@ -261,7 +261,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             _isGesture: function (e) {
-                return this.$hasTouch && e.touches.length > 1;
+                return this.$hasTouch && e.touches && e.touches.length > 1;
             },
 
             _productViewerSizeChanged: function () {
@@ -458,9 +458,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     this.$topLeftPoint = new Vector([svgPoint.x, svgPoint.y]);
 
+                    var rot = -this.$._rotation * Math.PI / 180,
+                        sin = Math.sin(rot),
+                        cos = Math.cos(rot);
+
+                    var distanceX = downPoint.x - svgPoint.x,
+                        distanceY = downPoint.y - svgPoint.y;
                     // diagonal in real px
-                    this.$resizeDistanceX = downPoint.x - svgPoint.x;
-                    this.$resizeDistanceY = downPoint.y - svgPoint.y;
+                    this.$resizeDistanceX = distanceX * cos - sin * distanceY;
+                    this.$resizeDistanceY = distanceX * sin + cos * distanceY;
 
                 } else if (mode === SCALE) {
 
@@ -514,7 +520,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         };
                 })();
 
-                this.$requestAnimCallback = this.$requestAnimCallback || function(){
+                this.$requestAnimCallback = this.$requestAnimCallback || function () {
                     self._callMove();
                 };
 
@@ -532,13 +538,18 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     };
                     self.$moveState.e = e;
                     self.$moveState.mode = mode;
-                    if(!self.$moveState.active){
+                    if (!self.$moveState.active) {
                         self.$moveState.active = true;
                         $w.requestAnimFrame(self.$requestAnimCallback);
                     }
                 };
 
                 this.$upHandler = function (e) {
+                    if (mode == MOVE) {
+                        if (configuration.$.offset && configuration.$.offset !== self.$._offset) {
+                            configuration.set('offset', self.$._offset);
+                        }
+                    }
                     if (selected) {
                         self._up(e, mode);
                     } else {
@@ -565,10 +576,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _callMove: function(){
-                if(this.$moveState && this.$moveState.active){
+            _callMove: function () {
+                if (this.$moveState && this.$moveState.active) {
                     this.$moveState.active = false;
-                    this._move(this.$moveState.e,this.$moveState.mode);
+                    this._move(this.$moveState.e, this.$moveState.mode);
                 }
                 if (this.$moving && this.$window) {
                     this.$window.bindDomEvent("pointermove", this.$moveHandler);
@@ -674,16 +685,36 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }, userInteractionOptions);
 
                 } else if (mode === RESIZE) {
+                    var rot = -this.$._rotation * Math.PI / 180,
+                        sin = Math.sin(rot),
+                        cos = Math.cos(rot);
 
                     // diagonal in real px
-                    currentDistance = x - this.$topLeftPoint.components[0];
-                    scaleFactor = currentDistance / this.$resizeDistanceX;
+                    var currentDistanceX = x - this.$topLeftPoint.components[0];
+                    var currentDistanceY = y - this.$topLeftPoint.components[1];
 
-                    configuration.$.textArea.set('width', this.$textArea.$.width * scaleFactor);
+                    scaleFactor = (currentDistanceX * cos - sin * currentDistanceY) / this.$resizeDistanceX;
 
-                    currentDistance = y - this.$topLeftPoint.components[1];
-                    scaleFactor = currentDistance / this.$resizeDistanceY;
-                    configuration.$.textArea.set('height', this.$textArea.$.height * scaleFactor);
+                    var width = Math.abs(this.$textArea.$.width * scaleFactor);
+                    var widthDiff = width - configuration.$.textArea.$.width;
+
+                    configuration.$.textArea.set('width', width);
+                    scaleFactor = (currentDistanceX * sin + cos * currentDistanceY) / this.$resizeDistanceY;
+
+                    var height = Math.abs(this.$textArea.$.height * scaleFactor);
+                    var heightDiff = height - configuration.$.textArea.$.height;
+                    configuration.$.textArea.set('height', height);
+
+                    rot = this.$._rotation * Math.PI / 180;
+                    sin = Math.sin(rot);
+                    cos = Math.cos(rot);
+
+                    var vX = (cos * widthDiff - sin * heightDiff) * 0.5 ;
+                    var vY = (sin * widthDiff + cos * heightDiff) * 0.5;
+
+
+                    configuration.$.offset.set('x', configuration.$.offset.$.x + (vX - widthDiff * 0.5));
+                    configuration.$.offset.set('y', configuration.$.offset.$.y + (vY - heightDiff * 0.5));
 
                     configuration._debouncedComposeText();
 
@@ -846,8 +877,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 var window = this.dom(this.$stage.$window),
                     f = function (e) {
-                          // capture phase event to prevent click
-                      // which closes menus etc.
+                        // capture phase event to prevent click
+                        // which closes menus etc.
                         e.stopPropagation();
                         window.unbindDomEvent("click", f, true);
                     };
@@ -856,7 +887,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 // chrome does it right and dispatches a click, but
                 // the mobile devices and also ff, safari needs to unbind it time based. sucks.
-                setTimeout(function() {
+                setTimeout(function () {
                     window.unbindDomEvent("click", f, true);
                 }, 100);
 
