@@ -548,12 +548,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     if (selected) {
                         self._up(e, mode);
                     } else {
-                        if (mode == MOVE) {
-                            if (configuration.$.offset && configuration.$.offset !== self.$._offset) {
-                                configuration.set('offset', self.$._offset);
-                            }
-                        }
                         self.$moving = false;
+                        if (configuration.$.offset && configuration.$.offset !== self.$._offset) {
+                            configuration.set('offset', self.$._offset);
+                        }
                     }
                 };
 
@@ -709,12 +707,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     sin = Math.sin(rot);
                     cos = Math.cos(rot);
 
-                    var vX = (cos * widthDiff - sin * heightDiff) * 0.5 ;
+                    var vX = (cos * widthDiff - sin * heightDiff) * 0.5;
                     var vY = (sin * widthDiff + cos * heightDiff) * 0.5;
 
 
-                    configuration.$.offset.set('x', configuration.$.offset.$.x + (vX - widthDiff * 0.5));
-                    configuration.$.offset.set('y', configuration.$.offset.$.y + (vY - heightDiff * 0.5));
+                    configuration.$.offset.set('x', configuration.$.offset.$.x + (vX - widthDiff * 0.5) * configuration.$.scale.x);
+                    configuration.$.offset.set('y', configuration.$.offset.$.y + (vY - heightDiff * 0.5) * configuration.$.scale.y);
 
                     configuration._debouncedComposeText();
 
