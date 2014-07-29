@@ -100,9 +100,15 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             if (billingAddress && shippingAddress) {
                 this.set('invoiceToShippingAddress', shippingAddress.$.id == billingAddress.$.id);
             }
-            if (billingAddress && billingAddress.$.id) {
-                billingAddress.set('id', billingAddress.$.id);
+
+            if (this.$.invoiceToShippingAddress) {
+                this.set('billing', new Billing({id: "billing"}));
+            } else {
+                if (billingAddress && billingAddress.$.id) {
+                    billingAddress.set('id', billingAddress.$.id);
+                }
             }
+
             if (shippingAddress) {
                 shippingAddress.set('id', shippingAddress.$.id || "shipping");
             }
