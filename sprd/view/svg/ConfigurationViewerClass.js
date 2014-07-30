@@ -261,7 +261,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             _isGesture: function (e) {
-                return this.$hasTouch && e.touches && e.touches.length > 1;
+                return e.touches && e.touches.length > 1;
             },
 
             _productViewerSizeChanged: function () {
@@ -364,8 +364,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 });
 
                 downPoint = this.$downPoint = {
-                    x: this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
-                    y: this.$hasTouch ? e.changedTouches[0].pageY : e.pageY
+                    x: e.changedTouches ? e.changedTouches[0].pageX : e.pageX,
+                    y: e.changedTouches ? e.changedTouches[0].pageY : e.pageY
                 };
 
                 var downVector = new Vector([downPoint.x, downPoint.y]);
@@ -597,8 +597,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return;
                 }
 
-                var x = this.$hasTouch ? e.changedTouches[0].pageX : e.pageX,
-                    y = this.$hasTouch ? e.changedTouches[0].pageY : e.pageY,
+                var x = e.changedTouches ? e.changedTouches[0].pageX : e.pageX,
+                    y = e.changedTouches ? e.changedTouches[0].pageY : e.pageY,
                     factor = this.globalToLocalFactor(),
                     deltaX = (this.$downPoint.x - x) ,
                     deltaY = (this.$downPoint.y - y);
