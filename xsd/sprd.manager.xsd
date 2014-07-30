@@ -4,6 +4,7 @@
     xmlns:ns="sprd.manager">
     <import/>
     <element name="ApiBasketManager" type="ns:ApiBasketManager"/>
+    <element name="AuthenticationManager" type="ns:AuthenticationManager"/>
     <element name="DesignProductInitializer" type="ns:DesignProductInitializer"/>
     <element name="ExternalApi" type="ns:ExternalApi"/>
     <element name="ExternalBasketManager" type="ns:ExternalBasketManager"/>
@@ -11,7 +12,7 @@
     <element name="IBasketManager" type="ns:IBasketManager"/>
     <element name="IErrorTrackingManager" type="ns:IErrorTrackingManager"/>
     <element name="IProductInitializer" type="ns:IProductInitializer"/>
-    <element name="LocaleService" type="ns:LocaleService"/>
+    <element name="LocaleManager" type="ns:LocaleManager"/>
     <element name="ProductCreationErrorManager" type="ns:ProductCreationErrorManager"/>
     <element name="ProductInitializer" type="ns:ProductInitializer"/>
     <element name="RaygunErrorTrackingManager" type="ns:RaygunErrorTrackingManager"/>
@@ -99,6 +100,19 @@ BasketItem
                 </attribute>
                 <attribute name="onbasketUpdated" default="_onBasketUpdatedHandler" type="string"/>
                 <attribute name="onbasketUpdating" default="_onBasketUpdatingHandler" type="string"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="AuthenticationManager">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.AuthenticationManager"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="session"/>
             </extension>
         </complexContent>
     </complexType>
@@ -191,19 +205,15 @@ BasketItem
             </extension>
         </complexContent>
     </complexType>
-    <complexType name="LocaleService">
+    <complexType name="LocaleManager">
         <complexContent>
             <extension base="ns1:Component">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.util.LocaleService"></documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.LocaleManager"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="fallbackLanguage" default="en"/>
-                <attribute name="fallbackCountry" default="EU"/>
-                <attribute name="supportedLanguages"/>
-                <attribute name="supportedCountries"/>
                 <attribute name="platform" default="EU"/>
             </extension>
         </complexContent>

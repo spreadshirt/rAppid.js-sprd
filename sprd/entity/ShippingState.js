@@ -4,11 +4,13 @@ define(["js/data/Entity", "sprd/entity/ShippingRegion"], function (Entity, Shipp
 
         defaults: {
             name: "",
-            isoCode: "",
+            code: "",
             shippingRegion: null,
             shippingSupported: true,
             externalFulfillmentSupported: true
         },
+
+        idField: "code",
 
         schema: {
             name: String,
@@ -16,7 +18,19 @@ define(["js/data/Entity", "sprd/entity/ShippingRegion"], function (Entity, Shipp
             shippingRegion: ShippingRegion,
             shippingSupported: Boolean,
             externalFulfillmentSupported: Boolean
+        },
+
+        parse: function (data) {
+
+            if (data.isoCode) {
+                data.code = data.isoCode;
+                delete data.isoCode;
+            }
+
+            return this.callBase(data);
+
         }
+
 
     });
 });

@@ -1,4 +1,4 @@
-define(["js/data/Entity"], function (Entity) {
+define(["js/data/Entity", "js/data/transformer/TrimTransformer"], function (Entity, TrimTransformer) {
 
     var SalutationMap = {
         "1": "mr",
@@ -21,6 +21,14 @@ define(["js/data/Entity"], function (Entity) {
             lastName: String
         },
 
+        transformers: [
+            new TrimTransformer()
+        ],
+
+        fullName: function () {
+            return [(this.$.firstName || ""), (this.$.lastName || "")].join(" ");
+        }.onChange("firstName", "lastName"),
+
         parse: function () {
             var data = this.callBase();
             data.salutation = (data.salutation || {}).id || null;
@@ -33,14 +41,14 @@ define(["js/data/Entity"], function (Entity) {
             if (data.salutation) {
                 data.salutation = {
                     id: data.salutation
-                }
+                };
             }
 
             return  data;
         },
 
         contraction: function () {
-            return SalutationMap[this.$.salutation]
-        }.onChange("id")
+            return SalutationMap[this.$.salutation];
+        }.onChange("salutation")
     });
 });

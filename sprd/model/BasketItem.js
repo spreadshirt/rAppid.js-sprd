@@ -6,13 +6,15 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement", "sprd/entity/Price
             quantity: Number,
             price: Price,
             priceItem: Price,
-            origin: String
+            origin: String,
+            shippingFactor: Number
         },
 
         defaults: {
             quantity: 1,
             element: null,
-            price: null
+            price: null,
+            shippingFactor: 1
         },
 
         increaseQuantity: function (quantity) {
@@ -46,6 +48,10 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement", "sprd/entity/Price
 
             return (this.get('element.item.price().vatExcluded') || 0) + +
                 (this.get('element.article.commission.vatExcluded') || 0);
+        },
+
+        orderValue: function() {
+            return (this.totalVatExcluded() || 0) * (this.$.shippingFactor);
         },
 
         discountPriceVatIncluded: function(){

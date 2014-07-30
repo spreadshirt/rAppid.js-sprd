@@ -49,13 +49,14 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
             var signatureRequired = configuration.$.signatureRequired,
                 apiKeyRequired = configuration.$.apiKeyRequired,
                 sessionRequired = configuration.$.sessionRequired,
+                sessionPreferred = configuration.$.sessionPreferred,
                 checkoutTokenRequired = configuration.$.checkoutTokenRequired;
 
             var sessionId = this.get('session.id');
 
             needsSignature = signatureRequired || (sessionRequired && sessionId);
 
-            if (sessionId && sessionRequired) {
+            if (sessionId && (sessionRequired || sessionPreferred)) {
                 params = _.defaults(params, {
                     // TODO: change session id to token for translation service
                     sessionId: sessionId

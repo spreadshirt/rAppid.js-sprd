@@ -1,0 +1,70 @@
+<view:ImprintClass xmlns:view="sprd.view" xmlns="http://www.w3.org/1999/xhtml">
+    <div>
+        <strong>{i18n.t('legalInfo.address')}</strong>
+        <div>
+            <address>
+                <div class="name">{name}</div>
+                <div class="street">{street}</div>
+                <div class="city">{city}</div>
+                <div class="country">{country}</div>
+            </address>
+        </div>
+    </div>
+
+
+    <div>
+        <strong>{i18n.t('legalInfo.email')}</strong>
+        <div>
+            <a href="mailto:{email}">{email}</a>
+        </div>
+    </div>
+
+
+    <div>
+        <strong>{i18n.t('legalInfo.phone')}</strong>
+        <div>{phone}</div>
+    </div>
+
+
+    <div>
+        <strong>{i18n.t('legalInfo.fax')}</strong>
+        <div>{fax}</div>
+    </div>
+
+    <div visible="{not(isEU())}">
+        <strong>DCMA</strong>
+        <div>
+            <a href="http://www.spreadshirt.com/-C6804" target="_blank">DMCA Notice</a>
+        </div>
+    </div>
+
+
+    <div visible="{isEU()}">
+        <strong>{i18n.t('legalInfo.board')}</strong>
+        <div>{board}</div>
+    </div>
+
+
+    <div visible="{isEU()}">
+        <strong>{i18n.t('legalInfo.boardDirector')}</strong>
+        <div>{boardDirector}</div>
+    </div>
+
+
+    <div visible="{isEU()}">
+        <strong>{i18n.t('legalInfo.tradeRegister')}</strong>
+        <div>{tradeRegister}</div>
+    </div>
+
+    <div visible="{isEU()}">
+        <strong>{i18n.t('legalInfo.vatId')}</strong>
+        <div>{vatId}</div>
+    </div>
+
+    <div visible="{not(isEU())}">
+        <strong>President</strong>
+        <div>Mark Venezia</div>
+    </div>
+
+
+</view:ImprintClass>

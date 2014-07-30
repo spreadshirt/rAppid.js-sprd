@@ -20,6 +20,8 @@
     <element name="ImageClass" type="ns:ImageClass"/>
     <element name="ImageUpload" type="ns:ImageUpload"/>
     <element name="ImageUploadClass" type="ns:ImageUploadClass"/>
+    <element name="Imprint" type="ns:Imprint"/>
+    <element name="ImprintClass" type="ns:ImprintClass"/>
     <element name="MiniBasket" type="ns:MiniBasket"/>
     <element name="MiniBasketClass" type="ns:MiniBasketClass"/>
     <element name="PrintColorImage" type="ns:PrintColorImage"/>
@@ -476,6 +478,60 @@
                 <attribute name="displayNotice" default="true"/>
                 <attribute name="uploadContext"/>
                 <attribute name="notice" default="Drop your files here."/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="Imprint">
+        <complexContent>
+            <extension base="ns:ImprintClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.Imprint"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="platform" default="EU"/>
+                <attribute name="name"/>
+                <attribute name="defaults"/>
+                <attribute name="street"/>
+                <attribute name="city"/>
+                <attribute name="country"/>
+                <attribute name="board"/>
+                <attribute name="boardDirector"/>
+                <attribute name="vatId"/>
+                <attribute name="tradeRegister"/>
+                <attribute name="email"/>
+                <attribute name="website"/>
+                <attribute name="phone"/>
+                <attribute name="fax"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ImprintClass">
+        <complexContent>
+            <extension base="ns1:View">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ImprintClass">
+                                 TODO: I18n.
+                            </documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="platform" default="EU"/>
+                <attribute name="name"/>
+                <attribute name="defaults"/>
+                <attribute name="street"/>
+                <attribute name="city"/>
+                <attribute name="country"/>
+                <attribute name="board"/>
+                <attribute name="boardDirector"/>
+                <attribute name="vatId"/>
+                <attribute name="tradeRegister"/>
+                <attribute name="email"/>
+                <attribute name="website"/>
+                <attribute name="phone"/>
+                <attribute name="fax"/>
             </extension>
         </complexContent>
     </complexType>

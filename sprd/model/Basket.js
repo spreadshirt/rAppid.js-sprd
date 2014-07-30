@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "sprd/model/Currency", "js/data/Entity", "sprd/entity/Price", "sprd/model/DiscountScale"], function (SprdModel, BasketItem, Collection, Currency, Entity, Price, DiscountScale) {
+define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "sprd/model/Currency", "js/data/Entity", "sprd/entity/Price", "sprd/model/DiscountScale", "sprd/model/Language"], function (SprdModel, BasketItem, Collection, Currency, Entity, Price, DiscountScale, Language) {
 
     var Discount = Entity.inherit('sprd.entity.BasketDiscount', {
         schema: {
@@ -13,6 +13,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             priceItems: Price,
             shop: "sprd/model/Shop",
             currency: Currency,
+            language: Language,
             discounts: [Discount]
         },
 
@@ -89,6 +90,16 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             if (this.$.basketItems) {
                 this.$.basketItems.each(function (item) {
                     total += item.totalVatIncluded();
+                });
+            }
+            return total;
+        }.on('change'),
+
+        orderValue: function () {
+            var total = 0;
+            if (this.$.basketItems) {
+                this.$.basketItems.each(function (item) {
+                    total += item.orderValue();
                 });
             }
             return total;

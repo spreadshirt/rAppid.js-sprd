@@ -41,6 +41,8 @@ define(['sprd/data/SprdModel', 'sprd/model/User'], function (SprdModel, User) {
 
             this.validateAndSave(null, function(err, session) {
                 if (!err && session) {
+                    session.set("password", null);
+
                     session.fetch({
                         fetchSubModels: ["user"]
                     }, callback);
