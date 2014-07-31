@@ -64,6 +64,16 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             useGiftWrapping: Boolean
         },
 
+        reset: function() {
+            this.set({
+                email: null,
+                phone: null,
+                giftWrappingMessage: null,
+                useGiftWrapping: false,
+                invoiceToShippingAddress: true
+            });
+        },
+
         transformers: [
             new TrimTransformer()
         ],
