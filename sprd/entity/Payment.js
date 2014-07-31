@@ -11,6 +11,18 @@ define(["js/data/Entity"], function(Entity) {
             return this.type;
         },
 
+        clearData: function() {
+            var $ = this.$,
+                data = {};
+            for (var key in $) {
+                if ($.hasOwnProperty(key) && key !== "root" && key !== "paymentTypeGroup") {
+                    data[key] = null;
+                }
+            }
+
+            this.set(data);
+        },
+
         /***
          * determinate the real payment method. This is a hook so the credit card
          * payment type group can select the payment method
