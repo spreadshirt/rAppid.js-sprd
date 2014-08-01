@@ -70,7 +70,8 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
                 phone: null,
                 giftWrappingMessage: null,
                 useGiftWrapping: false,
-                invoiceToShippingAddress: true
+                invoiceToShippingAddress: true,
+                billing: new Billing()
             });
         },
 
