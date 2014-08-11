@@ -7,8 +7,7 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
             paymentType: null,
             payment: null,
 
-            successLink: null,
-            failLink: null
+            returnUrl: null
         },
 
         $isDependentObject: true,
@@ -16,8 +15,7 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
         schema: {
             paymentType: PaymentType,
             payment: Payment,
-            successLink: String,
-            failLink: String
+            returnUrl: String
         },
 
         save: function() {
