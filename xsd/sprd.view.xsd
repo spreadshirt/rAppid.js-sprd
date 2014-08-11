@@ -491,6 +491,7 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="platform" default="EU"/>
+                <attribute name="locale"/>
                 <attribute name="name"/>
                 <attribute name="defaults"/>
                 <attribute name="street"/>
@@ -519,6 +520,7 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="platform" default="EU"/>
+                <attribute name="locale"/>
                 <attribute name="name"/>
                 <attribute name="defaults"/>
                 <attribute name="street"/>
