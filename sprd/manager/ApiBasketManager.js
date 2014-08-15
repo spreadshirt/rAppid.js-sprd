@@ -91,6 +91,16 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
         },
 
+        _commitBasket: function(basket) {
+
+            if (basket) {
+                basket = basket.clone();
+            }
+
+            // remember a clone
+            this.$originalBasket = basket;
+        },
+
         /**
          * Adds an element to the basket without saving it
          * @param element
@@ -244,7 +254,13 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                                             cb();
                                         });
                                 })
-                                .exec(callback);
+                                .exec(function(err) {
+                                    if (!err) {
+                                        self.$originalBasket = basket.clone();
+                                    }
+
+                                    callback && callback(err, basket);
+                                });
                         }
                     });
             }
@@ -291,9 +307,24 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
         },
 
         saveBasketDebounced: function () {
+
+            var self = this;
+
             this._triggerBasketUpdating();
             this._debounceFunctionCall(function () {
-                this.saveBasket();
+
+                this.saveBasket(function(err) {
+                    if (err) {
+                        // couldn't save basket, restore clone
+                        if (self.$originalBasket) {
+                            self.$originalBasket.sync();
+                        }
+                    } else {
+                        // success create a new copy of it
+                        self.$originalBasket = self.$.basket.clone();
+                    }
+                });
+
             }, "saveBasketCall", 700, this);
         },
 
