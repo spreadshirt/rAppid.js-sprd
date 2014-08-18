@@ -1,4 +1,4 @@
-define(['sprd/data/SprdModel', 'sprd/entity/Price', 'sprd/entity/ConcreteElement'], function (SprdModel, Price, ConcreteElement) {
+define(['sprd/data/SprdModel', 'sprd/entity/Price', 'sprd/entity/ConcreteElement', 'sprd/model/Shop'], function (SprdModel, Price, ConcreteElement, Shop) {
     return SprdModel.inherit('sprd.model.OrderItem', {
 
         defaults: {
@@ -10,7 +10,8 @@ define(['sprd/data/SprdModel', 'sprd/entity/Price', 'sprd/entity/ConcreteElement
         schema: {
             quantity: Number,
             price: Price,
-            element: ConcreteElement
+            element: ConcreteElement,
+            shop: Shop
         },
 
         totalVatIncluded: function () {
