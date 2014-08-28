@@ -3,7 +3,9 @@ define(["underscore"], function(_) {
     var domainMap = {
         EU: {
             de_DE: "de",
+            de_CH: "ch",
             de_AT: "at",
+            fr_CH: "ch/fr",
             fr_FR: "fr",
             se_SE: "se",
             dk_DK: "dk",
@@ -11,6 +13,7 @@ define(["underscore"], function(_) {
             nl_NL: "nl",
             pl_PL: "pl",
             es_ES: "es",
+            it_CH: "ch/it",
             it_IT: "it",
             no_NO: "no",
             be_BE: "be",
