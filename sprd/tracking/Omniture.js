@@ -105,7 +105,7 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
             }
         },
 
-        track: function (oneTimeIdentifier, data, events) {
+        track: function (oneTimeIdentifier, data, events, appendToPageName) {
             data = data || {};
 
             if (oneTimeIdentifier) {
@@ -125,6 +125,9 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
 
             this._queueOrExecute(function () {
 
+                if (appendToPageName) {
+                    trackingData.pageName = this.pageName + appendToPageName
+                }
 
                 if (typeof qaContext !== "undefined" && qaContext.getTrackings()) {
                     try {
