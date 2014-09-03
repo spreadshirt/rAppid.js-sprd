@@ -55,10 +55,10 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                         for (var i = 0; i < content.length; i++) {
                             var tspan = content[i];
 
-                            if (!_.isObject(tspan)) {
+                            if (_.isString(tspan)) {
                                 // text tag without tspans
                                 tspan = {
-                                    content: tspan
+                                    content: [tspan]
                                 }
                             }
 
