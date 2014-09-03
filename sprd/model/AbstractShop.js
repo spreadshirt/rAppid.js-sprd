@@ -26,7 +26,14 @@ define(['sprd/data/SprdModel', 'js/data/Collection', 'sprd/model/Currency', 'spr
             var platform = this.$.platform,
                 id = this.$.id;
             return (platform === "EU" && id == 205909) || (platform === "NA" && id == 93439);
-        }.onChange("platform", "id")
+        }.onChange("platform", "id"),
+
+        isOwnedBySpreadshirt: function() {
+            var platform = this.$.platform,
+                userId = this.get("user.id");
+
+            return (platform === "EU" && userId == 40000) || (platform === "NA" && userId == 1000);
+        }.onChange("platform", "user.id")
 
     });
 });

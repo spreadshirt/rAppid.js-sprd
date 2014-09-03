@@ -44,7 +44,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
         imageUrl: function () {
             if (this.$.product) {
                 var product = this.$.product,
-                    viewId = this.$.view ? this.$.view.$.id : product.getDefaultViewId(),
+                    viewId = this.get('view.id') || product.getDefaultViewId(),
                     resources = product.$.resources;
 
                 if (!viewId && resources instanceof Array) {
