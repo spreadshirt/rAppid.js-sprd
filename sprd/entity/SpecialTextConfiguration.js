@@ -1,10 +1,10 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'designer/service/SpecialTextService', "json!designer/service/preset/starwars", "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil'], function (DesignConfiguration, ProductUtil, Bindable, SpecialTextService, RomanFont, Size, ImageUploadService, flow, UnitUtil) {
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil) {
 
     return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
 
         defaults: {
             text: null,
-            formatting: null,
+            font: null,
             _size: Size,
             aspectRatio: 1,
             previewImageUrl: null,
@@ -15,17 +15,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         type: "specialText",
 
         inject: {
-            specialTextService: SpecialTextService,
+            pimpImageService: PimpImageService,
             imageUploadService: ImageUploadService
-
-        },
-
-        ctor: function () {
-            this.callBase();
-
-            if (!this.$.formatting) {
-                this.set("formatting", new Bindable(RomanFont));
-            }
         },
 
         /***
@@ -39,11 +30,11 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             flow()
                 .seq("imageData", function (cb) {
                     // create a full font size image
-                    self.$.specialTextService.generateImage(self.$.text, {
-                        // request with maximal font size
-                        fontsize: 500,
-                        detectSize: false
-                    }, self.$.formatting.$, cb);
+                    self.$.pimpImageService.generateImage({
+                        text: self.$.text,
+                        size: "X",
+                        font: self.$.font
+                    }, cb);
                 })
                 .seq("uploadDesign", function (cb) {
                     var imageUrl = this.vars.imageData.src;
@@ -63,7 +54,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         _commitChangedAttributes: function ($) {
             this.callBase();
 
-            if (this._hasSome($, ["specialTextService", "text", "formatting"])) {
+            if (this._hasSome($, ["pimpImageService", "text", "font"])) {
                 var self = this;
                 var oldSize = this.$._size;
                 this.fetchImage(function (err) {
@@ -75,16 +66,20 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         fetchImage: function (callback) {
             var self = this,
                 text = this.$.text,
-                formatting = this.$.formatting,
-                specialTextService = this.$.specialTextService;
+                font = this.$.font,
+                pimpImageService = this.$.pimpImageService;
 
-            if (specialTextService && text && formatting) {
+            if (pimpImageService && text && font) {
                 this.set('loading', true);
-                specialTextService.generateImage(text, null, formatting.$, function (err, data) {
+                pimpImageService.generateImage({
+                    text: text,
+                    size: "M",
+                    font: font
+                }, function (err, data) {
                     if (!err) {
+
                         var width = (parseInt(data.width) || 1) * 4,
                             height = (parseInt(data.height) || 1) * 4;
-
 
                         self.set({
                             "_size": UnitUtil.convertSizeToMm(new Size({width: width, height: height, unit: "px"}), self.$.printType.$.dpi),
@@ -121,11 +116,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         getSizeForPrintType: function (printType) {
             if (printType && printType.$.dpi) {
                 var dpi = printType.$.dpi;
-//                if (!this.$sizeCache[dpi]) {
                 return UnitUtil.convertSizeToMm(this.$._size, dpi);
-//                }
-
-//                return this.$sizeCache[dpi];
             }
 
             return Size.empty;

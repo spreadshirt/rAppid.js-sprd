@@ -644,16 +644,17 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     view: null,
                     printArea: null,
                     printType: null,
-                    printTypeId: null
+                    printTypeId: null,
+                    font: null
                 });
 
                 var self = this,
-                    context = product.$context.$contextModel,
                     text = params.text,
                     bus = this.$.bus,
                     productType = product.$.productType,
                     printArea = params.printArea,
                     view = params.view,
+                    font = params.font,
                     appearance = product.$.appearance,
                     printType = params.printType,
                     printTypeId = params.printTypeId;
@@ -665,6 +666,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (!productType) {
                     callback(new Error("ProductType not set"));
+                    return;
+                }
+
+                if (!font) {
+                    callback(new Error("Font not set"));
                     return;
                 }
 
@@ -744,7 +750,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         entity.set({
                             printType: printType,
                             printArea: printArea,
-                            text: text
+                            text: text,
+                            font: font
                         });
 
                         return entity;
