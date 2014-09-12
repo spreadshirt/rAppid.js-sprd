@@ -20,7 +20,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Price"], function 
             optionCosts: [OptionCost]
         },
 
-        getPriceByShippingCountryCode: function (countryCode) {
+        getCostsByShippingCountryCode: function (countryCode) {
             return this.$.optionCosts.find(function (optionCost) {
                 return optionCost.get('shippingCountry.id') == countryCode;
             });
