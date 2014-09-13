@@ -1,6 +1,12 @@
 define(['sprd/data/SprdModel', 'js/data/Collection', 'sprd/model/Currency', 'sprd/model/Address', 'sprd/model/Country'], function (SprdModel, Collection, Currency, Address, Country) {
 
-    return SprdModel.inherit("sprd.model.AbstractShop", {
+    var MarketPlace = {
+        EU: 205909,
+        NA: 93439
+    };
+
+
+    var AbstractShop = SprdModel.inherit("sprd.model.AbstractShop", {
 
         defaults: {
             platform: null
@@ -25,9 +31,19 @@ define(['sprd/data/SprdModel', 'js/data/Collection', 'sprd/model/Currency', 'spr
         isMarketPlace: function () {
             var platform = this.$.platform,
                 id = this.$.id;
-            return (platform === "EU" && id == 205909) || (platform === "NA" && id == 93439);
+            return (platform === "EU" && id == MarketPlace.EU) || (platform === "NA" && id == MarketPlace.NA);
         }.onChange("platform", "id")
 
+    }, {
+
+        marketPlaceShopId: function (platform) {
+            return MarketPlace[platform.toUpperCase()];
+        }
+
     });
+
+    AbstractShop.MarketPlace = MarketPlace;
+
+    return AbstractShop;
 });
 
