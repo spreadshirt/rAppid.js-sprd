@@ -17,6 +17,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Price"], function 
 
         },
         schema: {
+            price: Price,
             optionCosts: [OptionCost]
         },
 
