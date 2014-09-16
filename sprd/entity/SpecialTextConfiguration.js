@@ -15,8 +15,12 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         type: "specialText",
 
         inject: {
-            pimpImageService: PimpImageService,
-            imageUploadService: ImageUploadService
+            pimpImageService: PimpImageService
+        },
+
+        ctor: function() {
+            this.$designCache = {};
+            this.callBase();
         },
 
         /***
@@ -25,30 +29,33 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
          */
         save: function (callback) {
 
-            var self = this;
+            var self = this,
+                cacheId = [self.$.text, self.$.align, self.get("font.id")].join("#");
 
             flow()
-                .seq("imageData", function (cb) {
-                    // create a full font size image
-                    self.$.pimpImageService.generateImage({
-                        text: self.$.text,
-                        size: "X",
-                        font: self.$.font
-                    }, cb);
-                })
-                .seq("uploadDesign", function (cb) {
-                    var imageUrl = this.vars.imageData.src;
-                    self.$.imageUploadService.upload(imageUrl, cb);
-                })
-                .seq(function (cb) {
-                    // set the uploaded design
-                    var design = this.vars.uploadDesign.$.design;
-                    self.set("design", design);
+                .seq("design", function (cb) {
 
-                    design.fetch(cb);
+                    if (self.$designCache.hasOwnProperty(cacheId)) {
+                        cb(null, self.$designCache[cacheId]);
+                    } else {
+                        // create a full font size image
+                        self.$.pimpImageService.generateDesign({
+                            text: self.$.text,
+                            font: self.$.font
+                        }, cb);
+                    }
+
+                })
+                .seq(function () {
+
+                    var design = this.vars.design;
+
+                    self.$designCache[cacheId] = design;
+                    self.set("design", design);
                 })
                 .exec(callback);
         },
+
 
 
         _commitChangedAttributes: function ($) {
@@ -57,7 +64,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             if (this._hasSome($, ["pimpImageService", "text", "font"])) {
                 var self = this;
                 var oldSize = this.$._size;
-                this.fetchImage(function (err) {
+                this.fetchImage(function () {
                     self.$.offset.set('x', self.$.offset.$.x + 0.5 * self.$.scale.x * (oldSize.$.width - self.$._size.$.width));
                 });
             }
