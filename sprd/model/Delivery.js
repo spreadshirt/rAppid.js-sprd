@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/model/ShippingType", "underscore", "js/data/validator/EmailValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer"], function (SprdModel, Entity, Address, ShippingType, _, EmailValidator, RegExValidator, TrimTransformer) {
+define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/model/ShippingType", "underscore", "js/data/validator/EmailValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer", "sprd/data/validator/LengthValidator"], function (SprdModel, Entity, Address, ShippingType, _, EmailValidator, RegExValidator, TrimTransformer, LengthValidator) {
 
     var Billing = Entity.inherit("sprd.model.Order.Billing", {
         defaults: {
@@ -46,6 +46,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             shipping: Shipping,
             billing: Billing,
 
+
             email: String,
 
             giftWrappingMessage: {
@@ -85,6 +86,10 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
                 field: "phone",
                 errorCode: "atLeast8Digits",
                 regEx: /(.*\d.*){8}/
+            }),
+            new LengthValidator({
+                field: "email",
+                maxLength: 30
             })
         ],
 
