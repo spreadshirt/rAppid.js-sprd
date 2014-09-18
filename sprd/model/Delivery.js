@@ -65,7 +65,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             useGiftWrapping: Boolean
         },
 
-        reset: function() {
+        reset: function () {
             this.set({
                 email: null,
                 phone: null,
@@ -113,16 +113,20 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             var billingAddress = this.get(data, 'billing.address'),
                 shippingAddress = this.get(data, 'shipping.address');
 
+            /**
+             * we use the ids to determin if the billing address is the same as billing address
+             * its a lil bit of a hack but faster than comparing all the fields.
+             *
+             * */
             if (billingAddress && shippingAddress) {
                 this.set('invoiceToShippingAddress', shippingAddress.$.id == billingAddress.$.id);
             }
 
             if (this.$.invoiceToShippingAddress) {
-                this.set('billing', new Billing({id: "billing"}));
-            } else {
-                if (billingAddress && billingAddress.$.id) {
-                    billingAddress.set('id', billingAddress.$.id);
-                }
+                this.set('billing', new Billing());
+                this.$.billing.$.address.set('id', "billing");
+            } else if (billingAddress) {
+                billingAddress.set('id', billingAddress.$.id || "billing");
             }
 
             if (shippingAddress) {
