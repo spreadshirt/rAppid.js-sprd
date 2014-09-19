@@ -90,6 +90,10 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             new LengthValidator({
                 field: "email",
                 maxLength: 30
+            }),
+            new LengthValidator({
+                field: "phone",
+                maxLength: 30
             })
         ],
 
