@@ -101,6 +101,10 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
                 data.phone = null;
             }
 
+            if (!this.$.useGiftWrapping) {
+                delete data.giftWrappingMessage;
+            }
+
             return data;
         },
 
