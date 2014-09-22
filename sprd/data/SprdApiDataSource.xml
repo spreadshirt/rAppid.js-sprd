@@ -51,7 +51,7 @@
             </conf:ResourceConfiguration>
 
             <conf:ResourceConfiguration path="printTypes" modelClassName="sprd.model.PrintType" sessionRequired="true"/>
-            <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" sessionRequired="true"/>
+            <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" sessionRequired="true" signatureRequired="true"/>
             <conf:ResourceConfiguration path="products" modelClassName="sprd.model.Product" sessionRequired="true"/>
             <conf:ResourceConfiguration path="designCategories" modelClassName="sprd.model.DesignCategory"
                                         sessionRequired="true"/>
