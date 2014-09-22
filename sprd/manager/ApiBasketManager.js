@@ -352,10 +352,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     .seq(function (cb) {
                         basket.save(null, cb);
                     })
-                    .seq(function (cb) {
+                    .seq(function () {
                         self._triggerBasketChanged();
-
-                        basket.fetch({noCache: true}, cb);
                     })
                     .seq(function(cb){
                         self.fetchBasketDiscounts(cb);

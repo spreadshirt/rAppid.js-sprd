@@ -36,7 +36,7 @@
 
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="baskets" modelClassName="sprd.model.Basket" processor="BasketProcessor"
-                                    apiKeyRequired="true">
+                                    apiKeyRequired="true" parseResponse="true">
             <conf:ResourceConfiguration path="items" modelClassName="sprd.model.BasketItem"
                                         processor="BasketItemProcessor"/>
             <conf:ResourceConfiguration path="paymentTypes" modelClassName="sprd.model.PaymentType"
