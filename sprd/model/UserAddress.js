@@ -1,4 +1,4 @@
-define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore'], function (SprdModel, AddressEntity, _) {
+define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore', 'sprd/entity/Person'], function (SprdModel, AddressEntity, _, Person) {
 
     /**
      * User Address shares the same interface and methods like Address but with some extensions
@@ -30,7 +30,13 @@ define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore'], function (S
         needsCounty: AddressEntity.prototype.needsCounty,
         needsZipCode: AddressEntity.prototype.needsZipCode,
         isStateRequired: AddressEntity.prototype.isStateRequired,
-        isCompany: AddressEntity.prototype.isCompany
+        isCompany: AddressEntity.prototype.isCompany,
+        supportsPackStation: function () {
+            return this.$.personSalutation !== Person.Salutation.COMPANY && this.get('country.code') === "DE";
+        }.onChange('country.code', 'personSalutation'),
+        needsVatId: function () {
+            return this.isCompany();
+        }.onChange('personSalutation')
     });
 
     UserAddress.ADDRESS_TYPES = AddressEntity.ADDRESS_TYPES;

@@ -21,7 +21,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             type: ADDRESS_TYPES.PRIVATE,
             company: null,
             person: Person,
-
+            isBillingAddress: false,
             street: null,
             streetAnnex: null,
             houseNumber: '1',
@@ -34,7 +34,8 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             fax: null,
             packStationNr: "",
             postNr: "",
-
+            personSalutation: "{person.salutation}",
+            isSameAsBillingAddress: true,
             root: null,
             shippingCountries: "{root.shippingCountries()}"
         },
@@ -48,6 +49,13 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 type: String,
                 required: function () {
                     return this.isCompany();
+                }
+            },
+
+            vatId: {
+                type: String,
+                required: function () {
+                    return this.needsVatId();
                 }
             },
 
@@ -153,6 +161,12 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             }
         },
 
+        _commitPersonSalutation: function (salutation) {
+            if (salutation === Person.Salutation.COMPANY) {
+                this.set('type', ADDRESS_TYPES.PRIVATE);
+            }
+        },
+
         parse: function (data) {
             if (data.type === ADDRESS_TYPES.PACKSTATION) {
                 data.packStationNr = data.street ? data.street.replace(PACKSTATION, "") : "";
@@ -186,9 +200,17 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             return data;
         },
 
+        needsVatId: function () {
+            return this.isCompany() && (this.$.isBillingAddress || this.$.isSameAsBillingAddress);
+        }.onChange('person.salutation', 'isBillingAddress', 'isSameAsBillingAddress'),
+
         isPackStation: function () {
             return this.$.type == ADDRESS_TYPES.PACKSTATION;
         }.onChange('type'),
+
+        supportsPackStation: function () {
+            return this.$.personSalutation !== Person.Salutation.COMPANY && this.get('country.code') === "DE" && !this.$.isBillingAddress;
+        }.onChange('country.code', 'personSalutation', 'isBillingAddress'),
 
         needsCounty: function () {
             return  this.get('country.code') === "IE";
@@ -204,7 +226,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         }.onChange('country'),
 
         isCompany: function () {
-            return this.get('person.salutation') == "4"
+            return this.$.personSalutation === Person.Salutation.COMPANY
         }.onChange('person.salutation')
     });
 

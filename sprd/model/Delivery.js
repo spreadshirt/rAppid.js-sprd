@@ -7,8 +7,12 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
 
         schema: {
             address: Address
+        },
+        _commitAddress: function (address) {
+            if (address) {
+                address.set('isBillingAddress', true);
+            }
         }
-
     });
 
 
@@ -21,6 +25,11 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
         schema: {
             address: Address,
             type: ShippingType
+        },
+        _commitAddress: function (address) {
+            if (address) {
+                address.set('isBillingAddress', false);
+            }
         }
     });
 
@@ -37,7 +46,8 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             giftWrappingMessage: null,
             useGiftWrapping: false,
 
-            invoiceToShippingAddress: true
+            invoiceToShippingAddress: true,
+            shippingVatId: "{shipping.address.vatId}"
         },
 
         $isDependentObject: true,
@@ -64,7 +74,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             useGiftWrapping: Boolean
         },
 
-        reset: function() {
+        reset: function () {
             this.set({
                 email: null,
                 phone: null,
@@ -89,6 +99,20 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
         ],
 
         // TODO: add phone validator, checking DEV-68278 + shipping type determinates if optional or not
+
+        _commitInvoiceToShippingAddress: function (invoiceToShippingAddress) {
+            var address = this.get('shipping.address');
+            if (address) {
+                address.set('isSameAsBillingAddress', invoiceToShippingAddress);
+            }
+        },
+
+        _commitShippingVatId: function (vatId) {
+            var address = this.get('billing.address');
+            if (address) {
+                address.set('vatId', vatId);
+            }
+        },
 
         compose: function () {
             var data = this.callBase();
