@@ -54,9 +54,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
             vatId: {
                 type: String,
-                required: function () {
-                    return this.needsVatId();
-                }
+                required: false
             },
 
             person: Person,
