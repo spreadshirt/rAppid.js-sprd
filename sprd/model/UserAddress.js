@@ -31,6 +31,9 @@ define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore', 'sprd/entity
         needsZipCode: AddressEntity.prototype.needsZipCode,
         isStateRequired: AddressEntity.prototype.isStateRequired,
         isCompany: AddressEntity.prototype.isCompany,
+        _commitType: function (type) {
+            this.set('billingAddress', type != AddressEntity.ADDRESS_TYPES.PACKSTATION);
+        },
         supportsPackStation: function () {
             return this.$.personSalutation !== Person.Salutation.COMPANY && this.get('country.code') === "DE";
         }.onChange('country.code', 'personSalutation'),

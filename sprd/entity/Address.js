@@ -24,7 +24,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             isBillingAddress: false,
             street: null,
             streetAnnex: null,
-            houseNumber: '1',
+            houseNumber: null,
             city: null,
             state: null,
             country: null,
@@ -71,7 +71,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 required: false
             },
             city: String,
-            houseNumber: String,
+            houseNumber: {
+                type: String,
+                required: false
+            },
             state: {
                 isReference: true,
                 type: ShippingState,
@@ -214,8 +217,12 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             return  this.get('country.code') === "IE";
         }.onChange('country'),
 
+        hasStates: function () {
+            return this.get("country.shippingStates.length") > 0
+        }.onChange("country"),
+
         isStateRequired: function () {
-            return  this.get("country.code") === "US";
+            return  this.hasStates();
         }.onChange('country'),
 
         needsZipCode: function () {
