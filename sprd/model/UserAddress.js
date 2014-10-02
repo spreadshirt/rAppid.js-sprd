@@ -30,6 +30,7 @@ define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore'], function (S
         needsCounty: AddressEntity.prototype.needsCounty,
         needsZipCode: AddressEntity.prototype.needsZipCode,
         isStateRequired: AddressEntity.prototype.isStateRequired,
+        hasStates: AddressEntity.prototype.hasStates,
         isCompany: AddressEntity.prototype.isCompany,
         _commitType: function (type) {
             this.set('billingAddress', type != AddressEntity.ADDRESS_TYPES.PACKSTATION);
