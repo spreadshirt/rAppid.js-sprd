@@ -166,7 +166,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 for (var i = 0; i < printTypes.length; i++) {
                     newPrintType = printTypes[i];
                     val = this._validatePrintTypeSize(newPrintType, width, height, scale);
-                    if (!(val.printTypeScaling || val.maxBound || val.minBound)) {
+                    if (!(val.printTypeScaling || val.maxBound || val.minBound || val.dpiBound)) {
                         // if the previous print type is valid, use it
                         if (printTypeWasScaled && this.$.originalPrintType === newPrintType) {
                             preferredPrintType = newPrintType;
@@ -222,7 +222,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
             var ret = this._validatePrintTypeSize(printType, this.get('size.width'), this.get('size.height'), this.$.scale);
 
-            return !ret.maxBound && !ret.minBound && !ret.printTypeScaling;
+            return !ret.maxBound && !ret.minBound && !ret.printTypeScaling && !ret.dpiBound;
         }.onChange('_size.width', '_size.height', 'scale'),
 
         _hasHardBoundaryError: function (offset, width, height, rotation, scale) {

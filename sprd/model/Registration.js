@@ -24,6 +24,45 @@ define(["sprd/data/SprdModel",
         }
     });
 
+    var Newsletter = Entity.inherit('sprd.model.Registration.Newsletter', {
+        defaults: {
+            lists: {
+                service: true,
+                survey: true,
+                customer: true
+            }
+        },
+
+        schema: {
+            salutation: String,
+            firstName: String,
+            lastName: String,
+            shop: String,
+            lists: Object
+        },
+
+        setListType: function (type, enabled) {
+            this.$.lists[type] = !!enabled;
+        },
+        compose: function () {
+            var data = this.callBase();
+
+            if (data.salutation) {
+                data.salutation = {
+                    id: data.salutation
+                };
+            }
+
+            if (data.shop) {
+                data.shop = {
+                    id: data.shop
+                };
+            }
+
+            return data;
+        }
+    });
+
 
     var Registration = SprdModel.inherit('sprd.model.Registration', {
         defaults: {
@@ -49,13 +88,18 @@ define(["sprd/data/SprdModel",
             partnerType: String,
             guest: Boolean,
             country: Country,
-            language: Language
+            language: Language,
+            newsletter: {
+                type: Newsletter,
+                required: false
+            }
         },
         resultType: RegistrationResult
     });
 
     Registration.PARTNER_TYPE = PARTNER_TYPE;
     Registration.RegistrationResult = RegistrationResult;
+    Registration.Newsletter = Newsletter;
 
     return Registration;
 });

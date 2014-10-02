@@ -16,6 +16,7 @@
  *
 */
 var fs = require('fs'),
+    path = require('path'),
     nodeCommand = process.title,
     filename1, filename2,
     outputFilename,
@@ -27,6 +28,9 @@ var fs = require('fs'),
 // get input file parameters
 filename1 = args.shift();
 filename2 = args.shift();
+
+filename1= path.resolve(filename1.replace(/^~\//, process.env.HOME + '/'));
+filename2 = path.resolve(filename2.replace(/^~\//, process.env.HOME + '/'));
 
 if (!(filename1 && filename2)) {
     console.error('not enough arguments');

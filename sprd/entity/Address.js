@@ -1,4 +1,4 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator) {
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator, TrimTransformer) {
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
@@ -46,7 +46,9 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             },
             company: {
                 type: String,
-                required: false
+                required: function () {
+                    return this.isCompany();
+                }
             },
 
             person: Person,
@@ -65,6 +67,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             city: String,
             houseNumber: String,
             state: {
+                isReference: true,
                 type: ShippingState,
                 required: function () {
                     return this.isStateRequired();
@@ -104,6 +107,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 required: false
             }
         },
+
+        transformers: [
+            new TrimTransformer()
+        ],
 
         validators: [
             new LengthValidator({
@@ -160,15 +167,19 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         compose: function () {
             var data = this.callBase();
 
-            if (this.get("country.code") !== "US") {
+            if (!this.isStateRequired()) {
                 delete data.state;
             }
 
+            if (!this.needsZipCode() && !data.zipCode) {
+                data.zipCode = "-";
+            }
+
             if (this.get('type') === ADDRESS_TYPES.PACKSTATION) {
-                data.street = PACKSTATION + data.packStationNr;
+                data.street = PACKSTATION + (data.packStationNr || "").replace(/packstation/i, " ").replace(/^\s*|\s*$/, "");
                 data.streetAnnex = POSTNUMMER + data.postNr;
             } else {
-                delete data.packstationNr;
+                delete data.packStationNr;
                 delete data.postNr;
             }
 
@@ -179,19 +190,22 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             return this.$.type == ADDRESS_TYPES.PACKSTATION;
         }.onChange('type'),
 
-        supportsCounty: function () {
-            var code = this.get('country.code');
-            return  code === "GB" || code === "IE";
+        needsCounty: function () {
+            return  this.get('country.code') === "IE";
         }.onChange('country'),
 
         isStateRequired: function () {
-            var code = this.get("country.code");
-            return  code === "US" || code === "IE";
+            return  this.get("country.code") === "US";
         }.onChange('country'),
 
         needsZipCode: function () {
+            // not required for ireland
             return this.get("country.code") !== "IE";
-        }.onChange('country')
+        }.onChange('country'),
+
+        isCompany: function () {
+            return this.get('person.salutation') == "4"
+        }.onChange('person.salutation')
     });
 
     Address.ADDRESS_TYPES = ADDRESS_TYPES;

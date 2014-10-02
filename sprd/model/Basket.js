@@ -11,6 +11,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
         schema: {
             basketItems: Collection.of(BasketItem),
             priceItems: Price,
+            priceTotal: Price,
             shop: "sprd/model/Shop",
             currency: Currency,
             language: Language,
@@ -131,11 +132,19 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
         }.onChange("discounts"),
 
         totalVatIncluded: function () {
+            if (this.$.priceTotal) {
+                return this.$.priceTotal.$.vatIncluded;
+            }
+            return null;
+        }.onChange('priceTotal'),
+
+        totalPriceItemsVatIncluded: function () {
             if (this.$.priceItems) {
                 return this.$.priceItems.$.vatIncluded - this.discountVatIncluded();
             }
             return null;
         }.onChange('priceItems', 'discounts'),
+
 
         platformCheckoutLink: function () {
             if (this.$.links) {

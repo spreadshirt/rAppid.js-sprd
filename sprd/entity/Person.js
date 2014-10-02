@@ -1,4 +1,4 @@
-define(["js/data/Entity", "js/data/validator/RegExValidator"], function (Entity, RegExValidator) {
+define(["js/data/Entity", "js/data/transformer/TrimTransformer"], function (Entity, TrimTransformer) {
 
     var SalutationMap = {
         "1": "mr",
@@ -21,17 +21,8 @@ define(["js/data/Entity", "js/data/validator/RegExValidator"], function (Entity,
             lastName: String
         },
 
-        validators: [
-            new RegExValidator({
-                field: "lastName",
-                regEx: /^[0-9a-zA-Z]{0,30}$/,
-                errorCode: 'lastNameError'
-            }),
-            new RegExValidator({
-                field: "firstName",
-                regEx: /^[0-9a-zA-Z]{0,30}$/,
-                errorCode: 'firstNameError'
-            })
+        transformers: [
+            new TrimTransformer()
         ],
 
         fullName: function () {
@@ -58,6 +49,6 @@ define(["js/data/Entity", "js/data/validator/RegExValidator"], function (Entity,
 
         contraction: function () {
             return SalutationMap[this.$.salutation];
-        }.onChange("id")
+        }.onChange("salutation")
     });
 });

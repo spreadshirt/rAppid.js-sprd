@@ -189,6 +189,12 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
             });
 
             this._debug('trackEvent: ' + [eventName, JSON.stringify(data || {})].join(', '));
+        },
+
+        setDimensionValue: function(dimensionId, value) {
+            this._queueOrExecute(function() {
+                this.setDimensionValue(dimensionId, value);
+            });
         }
 
     });

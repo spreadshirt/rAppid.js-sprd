@@ -59,7 +59,7 @@
             <span>${i18n.t('basket.continueShopping')}</span>
         </a>
         <div class="price-container">
-            <p class="price">{context.currency.formatValue(basket.totalVatIncluded())}</p>
+            <p class="price">{context.currency.formatValue(basket.totalPriceItemsVatIncluded())}</p>
             <ul class="price-infos">
                 <li class="vat" visible="{showVat()}">
                     <a onclick="showVatInfo">{i18n.t('basket.vatIncluded')}</a>

@@ -69,10 +69,12 @@ define([], function() {
             return;
         }
 
+
         var body = document.body || document.getElementsByTagName("body")[0];
+        var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
 
         if (to === undefined) {
-            to = element.getBoundingClientRect().top + body.parentNode.scrollTop;
+            to = element.getBoundingClientRect().top + scrollTop;
         }
 
         scrollTo(to + offset);

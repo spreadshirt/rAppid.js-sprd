@@ -251,7 +251,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             };
 
                             var result = configuration._validatePrintTypeSize(printType, currentConfigurationWidth, currentConfigurationHeight, preferredScale);
-                            if (result.minBound || result.maxBound) {
+                            if (result.minBound || result.maxBound || result.dpiBound) {
                                 continue;
                             }
 

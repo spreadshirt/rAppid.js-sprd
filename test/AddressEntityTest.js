@@ -11,7 +11,8 @@ describe('sprd.entity.Address', function () {
     before(function (done) {
         testRunner.requireClasses({
             Address: 'sprd/entity/Address',
-            Country: 'sprd/entity/Country'
+            Country: 'sprd/entity/Country',
+            Person: 'sprd/entity/Person'
         }, C, done);
 
     });
@@ -28,35 +29,35 @@ describe('sprd.entity.Address', function () {
 
             address.set('country', new C.Country({code: 'GB'}));
 
-            expect(address.supportsCounty()).to.equal(true);
+            expect(address.needsCounty()).to.equal(false);
 
             address.set('country', new C.Country({code: 'IE'}));
 
-            expect(address.supportsCounty()).to.equal(true);
+            expect(address.needsCounty()).to.equal(true);
         });
 
         it('should return false for everything else', function () {
             address.set('country', new C.Country({code: 'DE'}));
 
-            expect(address.supportsCounty()).to.equal(false);
+            expect(address.needsCounty()).to.equal(false);
         });
 
         it('should have country annotation', function () {
-            expect(C.Address.prototype.supportsCounty._attributes).to.contain("country");
+            expect(C.Address.prototype.needsCounty._attributes).to.contain("country");
         });
 
     });
 
     describe('isStateRequired', function () {
 
-        it('should return true for UE and IE', function () {
+        it('should return true for US', function () {
             address.set('country', new C.Country({code: 'US'}));
 
             expect(address.isStateRequired()).to.equal(true);
 
             address.set('country', new C.Country({code: 'IE'}));
 
-            expect(address.isStateRequired()).to.equal(true);
+            expect(address.isStateRequired()).to.equal(false);
         });
 
         it('should return false for everything else', function () {
@@ -87,6 +88,27 @@ describe('sprd.entity.Address', function () {
 
         it('should have country annotation', function () {
             expect(C.Address.prototype.needsZipCode._attributes).to.contain("country");
+        });
+
+    });
+
+    describe('isCompany', function () {
+
+        it('should return true when salutation of person is 4', function () {
+            address.set('person', new C.Person({'salutation': "4"}));
+
+            expect(address.isCompany()).to.equal(true);
+        });
+
+
+        it('should return false when salutation of person is not 4', function () {
+            address.set('person', new C.Person({'salutation': "2"}));
+
+            expect(address.isCompany()).to.equal(false);
+        });
+
+        it('should have an onChange person.salutation binding', function () {
+            expect(C.Address.prototype.isCompany._attributes).to.contain("person.salutation");
         });
 
     });
@@ -173,7 +195,7 @@ describe('sprd.entity.Address', function () {
 
     describe('state', function () {
 
-        it('should be only required for countries US and IE', function () {
+        it('should be only required for US', function () {
             address.set({
                 state: "", // empty state name
                 country: new C.Country({code: 'DE'})
@@ -193,7 +215,7 @@ describe('sprd.entity.Address', function () {
 
             address.validate({fields: ['state']});
 
-            expect(address.isValid()).to.eql(false);
+            expect(address.isValid()).to.eql(true);
         });
 
     });
@@ -258,6 +280,27 @@ describe('sprd.entity.Address', function () {
             address.set('type', C.Address.ADDRESS_TYPES.PRIVATE);
 
             address.validate({fields: ['packStationNr']});
+
+            expect(address.isValid()).to.eql(true);
+        })
+
+    });
+
+    describe('company', function () {
+
+        it('should be required for salutation 4 (Company)', function () {
+            address.set({
+                company: "", // empty company
+                person: new C.Person({firstName: 'Peter', lastName: 'Pan', salutation: "4"})
+            });
+
+            address.validate({fields: ['company']});
+
+            expect(address.isValid()).to.eql(false);
+
+            address.$.person.set('salutation', "1");
+
+            address.validate({fields: ['company']});
 
             expect(address.isValid()).to.eql(true);
         })

@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/model/ShippingType", "underscore", "js/data/validator/EmailValidator"], function (SprdModel, Entity, Address, ShippingType, _, EmailValidator) {
+define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/model/ShippingType", "underscore", "js/data/validator/EmailValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer"], function (SprdModel, Entity, Address, ShippingType, _, EmailValidator, RegExValidator, TrimTransformer) {
 
     var Billing = Entity.inherit("sprd.model.Order.Billing", {
         defaults: {
@@ -25,7 +25,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
     });
 
 
-    return SprdModel.inherit("sprd.model.Delivery", {
+    var Delivery = SprdModel.inherit("sprd.model.Delivery", {
 
         defaults: {
             billing: Billing,
@@ -54,7 +54,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             },
 
             phone: {
-                required: function() {
+                required: function () {
                     // required if shipping type is express
                     return this.get("shipping.type.isExpress");
                 },
@@ -64,8 +64,28 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             useGiftWrapping: Boolean
         },
 
+        reset: function() {
+            this.set({
+                email: null,
+                phone: null,
+                giftWrappingMessage: null,
+                useGiftWrapping: false,
+                invoiceToShippingAddress: true,
+                billing: new Billing()
+            });
+        },
+
+        transformers: [
+            new TrimTransformer()
+        ],
+
         validators: [
-            new EmailValidator({field: "email"})
+            new EmailValidator({field: "email"}),
+            new RegExValidator({
+                field: "phone",
+                errorCode: "atLeast8Digits",
+                regEx: /(.*\d.*){8}/
+            })
         ],
 
         // TODO: add phone validator, checking DEV-68278 + shipping type determinates if optional or not
@@ -88,14 +108,20 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             var billingAddress = this.get(data, 'billing.address'),
                 shippingAddress = this.get(data, 'shipping.address');
 
-            if (billingAddress) {
-                billingAddress.set('id', billingAddress.$.id || "billing");
-            }
-            if (shippingAddress) {
-                shippingAddress.set('id', shippingAddress.$.id || "shipping");
-            }
             if (billingAddress && shippingAddress) {
                 this.set('invoiceToShippingAddress', shippingAddress.$.id == billingAddress.$.id);
+            }
+
+            if (this.$.invoiceToShippingAddress) {
+                this.set('billing', new Billing({id: "billing"}));
+            } else {
+                if (billingAddress && billingAddress.$.id) {
+                    billingAddress.set('id', billingAddress.$.id);
+                }
+            }
+
+            if (shippingAddress) {
+                shippingAddress.set('id', shippingAddress.$.id || "shipping");
             }
             return this.callBase();
         },
@@ -105,5 +131,10 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
         }.onChange("invoiceToShippingAddress", "billing.address", "shipping.address")
 
     });
+
+    Delivery.Shipping = Shipping;
+    Delivery.Billing = Billing;
+
+    return Delivery;
 
 });
