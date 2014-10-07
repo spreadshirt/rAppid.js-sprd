@@ -48,6 +48,18 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
                 return this.callBase();
             },
 
+            _parsePayloadOnUpdate: function (request, xhr) {
+
+                var model = request.model;
+                var configuration = this.$dataSourceConfiguration.getConfigurationForModelClass(model.factory);
+
+                if (configuration.$.parseResponse === true) {
+                    return true;
+                }
+
+                return this.callBase();
+            },
+
             /***
              * returns the context for the shop
              *

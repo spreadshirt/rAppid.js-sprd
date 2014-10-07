@@ -7,7 +7,7 @@ define(["js/data/Entity", "js/data/transformer/TrimTransformer"], function (Enti
         "4": "company"
     };
 
-    return Entity.inherit("sprd.entity.Person", {
+    var Person = Entity.inherit("sprd.entity.Person", {
 
         defaults: {
             salutation: null,
@@ -51,4 +51,13 @@ define(["js/data/Entity", "js/data/transformer/TrimTransformer"], function (Enti
             return SalutationMap[this.$.salutation];
         }.onChange("salutation")
     });
+
+    Person.Salutation = {
+        "MR": "1",
+        "MRS": "2",
+        "MS": "3",
+        "COMPANY": "4"
+    };
+
+    return Person;
 });
