@@ -51,7 +51,7 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement", "sprd/entity/Price
         },
 
         orderValue: function() {
-            return (this.totalVatExcluded() || 0) * (this.$.shippingFactor);
+            return (this.totalVatIncluded() || 0) * (this.$.shippingFactor);
         },
 
         discountPriceVatIncluded: function(){

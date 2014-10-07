@@ -67,7 +67,7 @@ define(["sprd/data/SprdModel",
     var Registration = SprdModel.inherit('sprd.model.Registration', {
         defaults: {
             email: "",
-            password: "",
+            password: null,
             guest: false,
             partnerType: PARTNER_TYPE.NONE
         },
