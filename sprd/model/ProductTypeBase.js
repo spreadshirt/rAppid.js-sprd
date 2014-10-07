@@ -1,5 +1,5 @@
-define(["sprd/data/SprdModel", 'js/core/List', 'js/type/Color'],
-    function (SprdModel, List) {
+define(["sprd/data/SprdModel", 'js/core/List', 'js/data/Entity'],
+    function (SprdModel, List, Entity) {
         return SprdModel.inherit("sprd.model.ProductTypeBase", {
 
             defaults: {
@@ -7,6 +7,10 @@ define(["sprd/data/SprdModel", 'js/core/List', 'js/type/Color'],
                 outOfStock: false,
 
                 sizeFitHint: "normal"
+            },
+
+            schema: {
+                views: [Entity]
             },
 
             getViewById: function (id) {
@@ -18,7 +22,7 @@ define(["sprd/data/SprdModel", 'js/core/List', 'js/type/Color'],
                 if (this.$.views) {
                     for (var i = 0; i < this.$.views.$items.length; i++) {
                         var view = this.$.views.$items[i];
-                        if (view.$.id == id) {
+                        if (view.get("id") == id) {
                             return view;
                         }
                     }
