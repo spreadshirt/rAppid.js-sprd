@@ -1,4 +1,4 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator, TrimTransformer) {
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer", "js/data/validator/Validator"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator, TrimTransformer, Validator) {
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
@@ -14,6 +14,17 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
     var POSTNUMMER = "Postnummer ",
         PACKSTATION = "Packstation ";
+
+    var VatValidator = Validator.inherit({
+        _validate: function (entity) {
+            var error = entity.fieldError(this.$.field);
+            if (error && error.$.code == this.$.errorCode) {
+                // return true of the field is empty
+                return !entity.get(this.$.field) ? null : this._createFieldError(this.$.field);
+            }
+            return null;
+        }
+    });
 
     var Address = Entity.inherit("sprd.entity.Address", {
 
@@ -149,6 +160,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 regEx: /packstation|postnummer/i,
                 inverse: true,
                 errorCode: "packstationError"
+            }),
+            new VatValidator({
+                field: "vatId",
+                errorCode: "vatIdError"
             })
         ],
 
