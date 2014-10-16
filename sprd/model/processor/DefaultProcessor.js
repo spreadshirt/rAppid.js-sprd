@@ -42,7 +42,7 @@ define(['js/data/DataSource', 'underscore'], function (DataSource, _) {
                     var model = ret[i];
                     var fetch = model._fetch;
                     if (fetch && fetch.state === FETCHSTATE.CREATED && fetch.callbacks.length === 0) {
-                        // model is created and no callbacks are registered -> set fetch stte
+                        // model is created and no callbacks are registered -> set fetch state
                         fetch.state = FETCHSTATE.LOADED;
                     }
 

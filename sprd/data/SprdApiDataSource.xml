@@ -47,6 +47,7 @@
             <conf:ResourceConfiguration path="checkout" modelClassName="sprd.model.Checkout" apiKeyRequired="true"
                                         checkoutTokenRequired="true" />
         </conf:ResourceConfiguration>
+        <conf:ResourceConfiguration modelClassName="sprd.model.CombinedBasket" path="combinedBaskets" apiKeyRequired="true" />
         <conf:ResourceConfiguration path="users" modelClassName="sprd.model.User">
             <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop" sessionRequired="true">
                 <conf:ResourceConfiguration path="articles" modelClassName="sprd.model.Article"/>

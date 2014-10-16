@@ -59,7 +59,9 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 /***
                  * a flag that indicates if the basket is updating
                  */
-                updating: false
+                updating: false,
+
+                initBasketWithNoCache: true
             },
 
             events: [
@@ -218,7 +220,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     flow()
                         .seq(function (cb) {
                             basket.fetch({
-                                noCache: true,
+                                noCache: self.$.initBasketWithNoCache,
                                 fetchSubModels: ["currency"]
                             }, cb);
                         })
