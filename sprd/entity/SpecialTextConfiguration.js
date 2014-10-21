@@ -18,7 +18,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             pimpImageService: PimpImageService
         },
 
-        ctor: function() {
+        ctor: function () {
             this.$designCache = {};
             this.callBase();
         },
@@ -88,11 +88,12 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                         var width = (parseInt(data.width) || 1) * 4,
                             height = (parseInt(data.height) || 1) * 4;
 
-                        self.set({
-                            "_size": UnitUtil.convertSizeToMm(new Size({width: width, height: height, unit: "px"}), self.$.printType.$.dpi),
-                            "previewImageUrl": (data || {}).src
-                        });
+                        var size = UnitUtil.convertSizeToMm(new Size({width: width, height: height, unit: "px"}), self.$.printType.$.dpi);
 
+                        self.set({
+                            "previewImageUrl": (data || {}).src,
+                            "_size": size
+                        });
                     } else {
                         self.set('previewImageUrl', null);
                     }
@@ -102,6 +103,14 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                 });
             }
         },
+
+        height: function (scale) {
+            return this.callBase(scale);
+        }.onChange("_size"),
+
+        width: function (scale) {
+            return this.callBase(scale);
+        }.onChange("_size"),
 
         size: function () {
             return this.$._size;
