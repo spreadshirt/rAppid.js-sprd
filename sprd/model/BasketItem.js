@@ -7,7 +7,8 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement", "sprd/entity/Price
             price: Price,
             priceItem: Price,
             origin: String,
-            shippingFactor: Number
+            shippingFactor: Number,
+            giftWrappingSupported: Boolean
         },
 
         defaults: {

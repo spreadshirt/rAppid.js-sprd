@@ -59,7 +59,9 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 /***
                  * a flag that indicates if the basket is updating
                  */
-                updating: false
+                updating: false,
+
+                initBasketWithNoCache: true
             },
 
             events: [
@@ -218,7 +220,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     flow()
                         .seq(function (cb) {
                             basket.fetch({
-                                noCache: true,
+                                noCache: self.$.initBasketWithNoCache,
                                 fetchSubModels: ["currency"]
                             }, cb);
                         })
@@ -348,36 +350,36 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         }
                     }
 
-                    flow()
-                        .seq(function (cb) {
-                            basket.save(null, cb);
-                        })
-                        .seq(function (cb) {
-                            self._triggerBasketChanged();
-
-                            basket.fetch({noCache: true}, cb);
-                        })
-                        .seq(function (cb) {
-                            self.fetchBasketDiscounts(cb);
-                        })
-                        .exec(function (err) {
-                            if (self.$basketChanged) {
-                                self.$basketChanged = false;
-                                self.$savingBasket = false;
-                                self.saveBasket();
-                            } else {
-                                callCallbacks(err, basket);
-                                self.$savingBasket = false;
-                                self._triggerBasketUpdated();
-                            }
-                        });
-                } else {
+                flow()
+                    .seq(function (cb) {
+                        basket.save(null, cb);
+                    })
+                    .seq(function () {
+                        self._triggerBasketChanged();
+                    })
+                    .seq(function(cb){
+                        self.fetchBasketDiscounts(cb);
+                    })
+                    .exec(function (err) {
+                        if (self.$basketChanged) {
+                            self.$basketChanged = false;
+                            self.$savingBasket = false;
+                            self.saveBasket();
+                        } else {
+                            callCallbacks(err, basket);
+                            self.$savingBasket = false;
+                            self._triggerBasketUpdated();
+                        }
+                    });
+            } else {
                     if (callback) {
                         this.$saveCallbacks.push(callback);
                     }
+
                     this.$basketChanged = true;
                 }
             },
+            
             reloadBasket: function (callback) {
                 this._triggerBasketUpdating();
                 var self = this;

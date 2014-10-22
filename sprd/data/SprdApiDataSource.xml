@@ -28,13 +28,15 @@
             <conf:ResourceConfiguration path="productTypeDepartments"
                                         modelClassName="sprd.model.ProductTypeDepartment"/>
             <conf:ResourceConfiguration path="shippingTypes" modelClassName="sprd.model.ShippingType"/>
+            <conf:ResourceConfiguration path="shippingOptions" modelClassName="sprd.model.ShippingOption"/>
+
             <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.Application"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="currencies" modelClassName="sprd.model.Currency">
 
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="baskets" modelClassName="sprd.model.Basket" processor="BasketProcessor"
-                                    apiKeyRequired="true">
+                                    apiKeyRequired="true" parseResponse="true">
             <conf:ResourceConfiguration path="items" modelClassName="sprd.model.BasketItem"
                                         processor="BasketItemProcessor"/>
             <conf:ResourceConfiguration path="paymentTypes" modelClassName="sprd.model.PaymentType"
@@ -45,6 +47,7 @@
             <conf:ResourceConfiguration path="checkout" modelClassName="sprd.model.Checkout" apiKeyRequired="true"
                                         checkoutTokenRequired="true" />
         </conf:ResourceConfiguration>
+        <conf:ResourceConfiguration modelClassName="sprd.model.CombinedBasket" path="combinedBaskets" apiKeyRequired="true" />
         <conf:ResourceConfiguration path="users" modelClassName="sprd.model.User">
             <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop" sessionRequired="true">
                 <conf:ResourceConfiguration path="articles" modelClassName="sprd.model.Article"/>

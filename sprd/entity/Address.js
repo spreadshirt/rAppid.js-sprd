@@ -1,4 +1,4 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator, TrimTransformer) {
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer", "js/data/validator/Validator"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator, TrimTransformer, Validator) {
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
@@ -15,13 +15,24 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
     var POSTNUMMER = "Postnummer ",
         PACKSTATION = "Packstation ";
 
+    var VatValidator = Validator.inherit({
+        _validate: function (entity) {
+            var error = entity.fieldError(this.$.field);
+            if (error && error.$.code == this.$.errorCode) {
+                // return true of the field is empty
+                return !entity.get(this.$.field) ? null : this._createFieldError(this.$.field);
+            }
+            return null;
+        }
+    });
+
     var Address = Entity.inherit("sprd.entity.Address", {
 
         defaults: {
             type: ADDRESS_TYPES.PRIVATE,
             company: null,
             person: Person,
-
+            isBillingAddress: false,
             street: null,
             streetAnnex: null,
             houseNumber: null,
@@ -34,7 +45,8 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             fax: null,
             packStationNr: "",
             postNr: "",
-
+            personSalutation: "{person.salutation}",
+            isSameAsBillingAddress: true,
             root: null,
             shippingCountries: "{root.shippingCountries()}"
         },
@@ -49,6 +61,11 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 required: function () {
                     return this.isCompany();
                 }
+            },
+
+            vatId: {
+                type: String,
+                required: false
             },
 
             person: Person,
@@ -143,6 +160,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 regEx: /packstation|postnummer/i,
                 inverse: true,
                 errorCode: "packstationError"
+            }),
+            new VatValidator({
+                field: "vatId",
+                errorCode: "vatIdError"
             })
         ],
 
@@ -153,6 +174,18 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 if ($.country.get('code') != "DE") {
                     this.set('type', ADDRESS_TYPES.PRIVATE);
                 }
+            }
+        },
+
+        _commitVatId: function (vatId) {
+            if (vatId && this.fieldError("vatId")) {
+                this.$errors.unset('vatId');
+            }
+        },
+
+        _commitPersonSalutation: function (salutation) {
+            if (salutation === Person.Salutation.COMPANY) {
+                this.set('type', ADDRESS_TYPES.PRIVATE);
             }
         },
 
@@ -189,9 +222,17 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             return data;
         },
 
+        needsVatId: function () {
+            return this.isCompany() && (this.$.isBillingAddress || this.$.isSameAsBillingAddress);
+        }.onChange('person.salutation', 'isBillingAddress', 'isSameAsBillingAddress'),
+
         isPackStation: function () {
             return this.$.type == ADDRESS_TYPES.PACKSTATION;
         }.onChange('type'),
+
+        supportsPackStation: function () {
+            return this.$.personSalutation !== Person.Salutation.COMPANY && this.get('country.code') === "DE" && !this.$.isBillingAddress;
+        }.onChange('country.code', 'personSalutation', 'isBillingAddress'),
 
         needsCounty: function () {
             return  this.get('country.code') === "IE";
@@ -211,7 +252,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         }.onChange('country'),
 
         isCompany: function () {
-            return this.get('person.salutation') == "4"
+            return this.$.personSalutation === Person.Salutation.COMPANY
         }.onChange('person.salutation')
     });
 

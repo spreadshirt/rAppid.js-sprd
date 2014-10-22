@@ -46,7 +46,7 @@ define([], function() {
             duration = null;
         }
 
-        duration = duration || 500;
+        duration = (duration == null) ? 500 : duration;
         offset = offset || 0;
 
         if (!idOrElement) {
