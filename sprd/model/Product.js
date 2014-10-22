@@ -1,5 +1,5 @@
-define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType', 'sprd/entity/Appearance'],
-    function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType, Appearance) {
+define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType', 'sprd/entity/Appearance'],
+    function (ProductBase, List, ConfigurationTypeResolver, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType, Appearance) {
 
         var undefined;
 
@@ -7,11 +7,11 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
             schema: {
                 productType: ProductType,
-                configurations: [new AttributeTypeResolver({
-                    attribute: "type",
+                configurations: [new ConfigurationTypeResolver({
                     mapping: {
                         "design": DesignConfiguration,
-                        "text": TextConfiguration
+                        "text": TextConfiguration,
+                        "specialText": SpecialTextConfiguration
                     }
                 })],
                 appearance: {

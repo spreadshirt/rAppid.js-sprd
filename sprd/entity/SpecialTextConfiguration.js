@@ -104,6 +104,26 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             }
         },
 
+        init: function(callback) {
+
+            var self = this;
+            
+            this.callBase(function() {
+                var printType = self.$.printType,
+                    design = self.$.design;
+
+                if (design && design.$.size && printType && printType.$.dpi) {
+                    var dpi = printType.$.dpi;
+                    self.set("_size", UnitUtil.convertSizeToMm(design.$.size, dpi));
+                }
+
+
+                callback.apply(Array.prototype.slice.call(arguments));
+            });
+
+
+        },
+
         height: function (scale) {
             return this.callBase(scale);
         }.onChange("_size"),
