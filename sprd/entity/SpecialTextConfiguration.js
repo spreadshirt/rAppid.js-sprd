@@ -9,7 +9,9 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             aspectRatio: 1,
             previewImageUrl: null,
             _allowScale: true,
-            loading: false
+            loading: false,
+            align: null,
+            initialized: false
         },
 
         type: "specialText",
@@ -57,9 +59,12 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         },
 
 
-
         _commitChangedAttributes: function ($) {
             this.callBase();
+
+            if (!this.$.initialized) {
+                return;
+            }
 
             if (this._hasSome($, ["pimpImageService", "text", "font"])) {
                 var self = this;
@@ -104,22 +109,53 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             }
         },
 
-        init: function(callback) {
+        init: function (callback) {
 
-            var self = this;
-            
-            this.callBase(function() {
-                var printType = self.$.printType,
-                    design = self.$.design;
+            this.synchronizeFunctionCall(function (callback) {
 
-                if (design && design.$.size && printType && printType.$.dpi) {
-                    var dpi = printType.$.dpi;
-                    self.set("_size", UnitUtil.convertSizeToMm(design.$.size, dpi));
-                }
+                var self = this;
 
+                flow()
+                    .seq(function (cb) {
+                        DesignConfiguration.prototype.init.call(self, cb);
+                    })
+                    .seq(function () {
+                        var printType = self.$.printType,
+                            design = self.$.design;
 
-                callback.apply(Array.prototype.slice.call(arguments));
-            });
+                        if (design) {
+
+                            var split = design.$.name.split(";");
+                            self.set({
+                                font: {
+                                    $: {
+                                        id: split[1]
+                                    }
+                                },
+                                align: split
+                            }, {
+                                silent: true
+                            });
+
+                            if (design.$.size && printType && printType.$.dpi) {
+                                var dpi = printType.$.dpi;
+                                self.set("_size", UnitUtil.convertSizeToMm(design.$.size, dpi), {
+                                    silent: true
+                                });
+                            }
+                        }
+                    })
+                    .seq(function (cb) {
+                        self.fetchImage(function () {
+                            cb();
+                        });
+                    })
+                    .exec(function (err) {
+                        self.set("initialized", true);
+                        callback(err);
+                    });
+
+            }, "init", callback, this);
 
 
         },
@@ -147,7 +183,10 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             }
 
             return ret;
-        }.onChange("printArea"),
+        }
+
+            .
+            onChange("printArea"),
 
         getSizeForPrintType: function (printType) {
             if (printType && printType.$.dpi) {
