@@ -1,4 +1,5 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil) {
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'pimp/data/PimpDataSourceClass', 'js/data/Collection', 'pimp/model/Commission'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission) {
+
 
     return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
 
@@ -11,13 +12,21 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             _allowScale: true,
             loading: false,
             align: null,
-            initialized: false
+            initialized: false,
+            commission: null
         },
 
         type: "specialText",
 
         inject: {
-            pimpImageService: PimpImageService
+            pimpImageService: PimpImageService,
+            pimpDataSource: PimpDataSourceClass,
+            context: "context"
+        },
+
+        _postConstruct: function() {
+            this.callBase();
+            this.fetchCommissions();
         },
 
         ctor: function () {
@@ -160,6 +169,44 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
         },
 
+        price: function() {
+            var price = this.callBase(),
+                _designCommission = this.get("design.price") || this.get("commission.price");
+
+            if (_designCommission) {
+                price.add(_designCommission);
+            } else {
+                this.fetchCommissions();
+            }
+
+            return price;
+        }.onChange("_printTypePrice", "commission"),
+
+        fetchCommissions: function() {
+
+            var self = this,
+                contextCurrency = this.get("context.currency.id");
+            this.synchronizeFunctionCall(function(callback) {
+
+                this.$.pimpDataSource.createCollection(Collection.of(Commission)).fetch(null, function (err, collection) {
+                    var commission;
+                    if (!err) {
+                        commission = collection.find(function (commission) {
+                            return commission.get("price.currency.id") === contextCurrency;
+                        });
+                    }
+
+                    self.set("commission", commission);
+                    self.trigger("priceChanged");
+
+                    callback(err, commission);
+                });
+
+            }, "commissions", null, this);
+
+
+        },
+
         height: function (scale) {
             return this.callBase(scale);
         }.onChange("_size"),
@@ -183,10 +230,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             }
 
             return ret;
-        }
-
-            .
-            onChange("printArea"),
+        }.onChange("printArea"),
 
         getSizeForPrintType: function (printType) {
             if (printType && printType.$.dpi) {
