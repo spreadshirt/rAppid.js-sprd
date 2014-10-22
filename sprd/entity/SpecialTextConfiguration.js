@@ -67,11 +67,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             }
 
             if (this._hasSome($, ["pimpImageService", "text", "font"])) {
-                var self = this;
-                var oldSize = this.$._size;
-                this.fetchImage(function () {
-                    self.$.offset.set('x', self.$.offset.$.x + 0.5 * self.$.scale.x * (oldSize.$.width - self.$._size.$.width));
-                });
+                this._debounceFunctionCall(this.fetchImage, "fetchImage", 200, this, [], "DELAY");
             }
         },
 
@@ -82,12 +78,21 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                 pimpImageService = this.$.pimpImageService;
 
             if (pimpImageService && text && font) {
+                var oldSize = this.$._size;
                 this.set('loading', true);
-                pimpImageService.generateImage({
-                    text: text,
-                    size: "M",
-                    font: font
-                }, function (err, data) {
+                if (this.$lastListener) {
+                    this.$lastListener.cancelled = true;
+                }
+
+                var listener = {
+                    cancelled: false
+                };
+
+                var cb = function (err, data) {
+                    if (listener.cancelled) {
+                        return;
+                    }
+
                     if (!err) {
 
                         var width = (parseInt(data.width) || 1) * 4,
@@ -102,10 +107,19 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                     } else {
                         self.set('previewImageUrl', null);
                     }
+                    self.$.offset.set('x', self.$.offset.$.x + 0.5 * self.$.scale.x * (oldSize.$.width - self.$._size.$.width));
 
                     self.set('loading', false);
                     callback && callback(err);
-                });
+                };
+
+                this.$lastListener = listener;
+
+                pimpImageService.generateImage({
+                    text: text,
+                    size: "M",
+                    font: font
+                }, cb);
             }
         },
 
@@ -162,15 +176,23 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
         height: function (scale) {
             return this.callBase(scale);
-        }.onChange("_size"),
+        }
+            .
+            onChange("_size"),
 
         width: function (scale) {
             return this.callBase(scale);
-        }.onChange("_size"),
+        }
+
+            .
+            onChange("_size"),
 
         size: function () {
             return this.$._size;
-        }.onChange("_size"),
+        }
+
+            .
+            onChange("_size"),
 
 
         getPossiblePrintTypes: function (appearance) {
@@ -211,4 +233,5 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             return this.callBase();
         }
     });
-});
+})
+;
