@@ -1,4 +1,4 @@
-define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow"], function (Base, UnitUtil, Design, flow) {
+define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size"], function (Base, UnitUtil, Design, flow, Size) {
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
         initializeConfiguration: function (configuration, callback) {
 
@@ -17,7 +17,9 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
 
                 designId = designId || svg.image.designId;
-                design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
+                if (designId) {
+                    design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
+                }
             } else {
                 design = configuration.$.design;
             }
@@ -141,8 +143,12 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 .seq(function () {
 
                     if (svg) {
-
-                        var size = UnitUtil.convertSizeToMm(design.$.size, configuration.$.printType.$.dpi);
+                        var size;
+                        if (design) {
+                            size = UnitUtil.convertSizeToMm(design.$.size, configuration.$.printType.$.dpi);
+                        } else {
+                            size = new Size({width: svg.image.width * 2, height: svg.image.height * 2});
+                        }
 
                         var match,
                             type,
