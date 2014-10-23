@@ -90,6 +90,7 @@ The following values are replaced
                     </documentation>
                     </annotation>
                 </attribute>
+                <attribute name="initBasketWithNoCache" default="true"/>
                 <attribute name="onbasketChanged" default="_onBasketChangedHandler" type="string">
                     <annotation>
                         <documentation>

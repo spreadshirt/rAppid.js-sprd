@@ -108,7 +108,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
 
         totalVat: function () {
             var total = 0;
-            total = (this.vatIncluded() - this.vatExcluded());
+            total = (this.totalVatIncluded() - this.totalVatExcluded());
 
             return total;
         }.on('change'),
@@ -137,6 +137,14 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             }
             return null;
         }.onChange('priceTotal'),
+
+        totalVatExcluded: function () {
+            if (this.$.priceTotal) {
+                return this.$.priceTotal.$.vatExcluded;
+            }
+            return null;
+        }.onChange('priceTotal'),
+
 
         totalPriceItemsVatIncluded: function () {
             if (this.$.priceItems) {

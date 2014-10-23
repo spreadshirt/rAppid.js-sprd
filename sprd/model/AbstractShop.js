@@ -34,10 +34,10 @@ define(['sprd/data/SprdModel', 'js/data/Collection', 'sprd/model/Currency', 'spr
             return (platform === "EU" && id == MarketPlace.EU) || (platform === "NA" && id == MarketPlace.NA);
         }.onChange("platform", "id"),
 
-        isOwnedBySpreadshirt: function() {
-            var platform = this.$.platform,
-                userId = this.get("user.id");
+        isOwnedBySpreadshirt: function(platform) {
+            platform = platform || this.$.platform;
 
+            var userId = this.get("user.id");
             return (platform === "EU" && userId == 40000) || (platform === "NA" && userId == 1000);
         }.onChange("platform", "user.id")
 
