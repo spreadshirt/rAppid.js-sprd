@@ -1,4 +1,4 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'pimp/data/PimpDataSourceClass', 'js/data/Collection', 'pimp/model/Commission'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission) {
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'pimp/data/PimpDataSourceClass', 'js/data/Collection', 'pimp/model/Commission', 'sprd/entity/Price'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Price) {
 
 
     return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
@@ -184,8 +184,14 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         },
 
         price: function() {
-            var price = this.callBase(),
+            var price = this.get('printType.price'),
                 _designCommission = this.get("design.price") || this.get("commission.price");
+
+            if (price) {
+                price = price.clone();
+            } else {
+                price = new Price();
+            }
 
             if (_designCommission) {
                 price.add(_designCommission);
