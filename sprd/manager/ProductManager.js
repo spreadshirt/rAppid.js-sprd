@@ -427,7 +427,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     fontWeight: "normal",
                     printTypeId: null,
                     fontFamilyId: null,
-                    fontFamilyName: "Arial"
+                    fontFamilyName: "Arial",
+                    offset: null
                 });
 
                 var self = this,
@@ -625,8 +626,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             activeIndex: configuration.$.textFlow.textLength() - 1,
                             anchorIndex: 0
                         });
+
                         // determinate position
                         self._positionConfiguration(configuration);
+                        if (params.offset) {
+                            configuration.set('offset', params.offset, PREVENT_VALIDATION_OPTIONS);
+                        }
                     })
                     .exec(function (err, results) {
                         !err && product._addConfiguration(results.configuration);
@@ -645,7 +650,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printArea: null,
                     printType: null,
                     printTypeId: null,
-                    font: null
+                    font: null,
+                    offset: null
                 });
 
                 var self = this,
@@ -767,9 +773,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     })
                     .seq(function () {
                         var configuration = this.vars["configuration"];
-
                         // determinate position
                         self._positionConfiguration(configuration);
+
+                        if (params.offset) {
+                            configuration.set({'offset': params.offset}, PREVENT_VALIDATION_OPTIONS);
+                        }
                     })
                     .exec(function (err, results) {
                         !err && product._addConfiguration(results.configuration);
@@ -930,9 +939,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 if (boundingBox && printArea && printArea.hasSoftBoundary() &&
                     (
                         boundingBox.x > printArea.width() ||
-                            boundingBox.x + boundingBox.width < 0 ||
-                            boundingBox.y > printArea.height() ||
-                            boundingBox.y + boundingBox.height < 0
+                        boundingBox.x + boundingBox.width < 0 ||
+                        boundingBox.y > printArea.height() ||
+                        boundingBox.y + boundingBox.height < 0
                         )) {
 
                     product.$.configurations.remove(configuration);
