@@ -1,4 +1,4 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'pimp/data/PimpDataSourceClass', 'js/data/Collection', 'pimp/model/Commission', 'pimp/model/Font'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font) {
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'pimp/data/PimpDataSourceClass', 'js/data/Collection', 'pimp/model/Commission', 'pimp/model/Font', 'sprd/entity/Price'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price) {
 
 
     return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
@@ -15,12 +15,12 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             initialized: false,
             commission: null
         },
-
+        
         schema: {
             text: String,
             font: Font
         },
-
+        
         type: "specialText",
 
         inject: {
@@ -190,9 +190,15 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
         },
 
-        price: function () {
-            var price = this.callBase(),
+        price: function() {
+            var price = this.get('printType.price'),
                 _designCommission = this.get("design.price") || this.get("commission.price");
+
+            if (price) {
+                price = price.clone();
+            } else {
+                price = new Price();
+            }
 
             if (_designCommission) {
                 price.add(_designCommission);
@@ -274,12 +280,6 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         minimumScale: function () {
             // TODO:
             return this.callBase();
-        },
-
-        compose: function(){
-            var ret = this.callBase();
-
-            return ret;
         }
     });
 })
