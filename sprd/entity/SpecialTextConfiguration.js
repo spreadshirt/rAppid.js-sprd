@@ -24,7 +24,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             context: "context"
         },
 
-        _postConstruct: function() {
+        _postConstruct: function () {
             this.callBase();
             this.fetchCommissions();
         },
@@ -183,7 +183,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
         },
 
-        price: function() {
+        price: function () {
             var price = this.callBase(),
                 _designCommission = this.get("design.price") || this.get("commission.price");
 
@@ -196,11 +196,11 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             return price;
         }.onChange("_printTypePrice", "commission"),
 
-        fetchCommissions: function() {
+        fetchCommissions: function () {
 
             var self = this,
                 contextCurrency = this.get("context.currency.id");
-            this.synchronizeFunctionCall(function(callback) {
+            this.synchronizeFunctionCall(function (callback) {
 
                 this.$.pimpDataSource.createCollection(Collection.of(Commission)).fetch(null, function (err, collection) {
                     var commission;
@@ -223,23 +223,15 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
         height: function (scale) {
             return this.callBase(scale);
-        }
-            .
-            onChange("_size"),
+        }.onChange("_size"),
 
         width: function (scale) {
             return this.callBase(scale);
-        }
-
-            .
-            onChange("_size"),
+        }.onChange("_size"),
 
         size: function () {
             return this.$._size;
-        }
-
-            .
-            onChange("_size"),
+        }.onChange("_size"),
 
 
         getPossiblePrintTypes: function (appearance) {
