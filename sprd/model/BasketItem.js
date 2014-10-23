@@ -50,6 +50,14 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement", "sprd/entity/Price
                 (this.get('element.article.commission.vatExcluded') || 0);
         },
 
+        displayPrice: function(){
+            if (this.$.priceItem) {
+                return this.$.priceItem.$.display;
+            }
+
+            return this.vatIncluded();
+        },
+
         orderValue: function() {
             return (this.totalVatExcluded() || 0) * (this.$.shippingFactor);
         },
@@ -67,6 +75,10 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement", "sprd/entity/Price
 
         totalVatExcluded: function () {
             return this.vatExcluded() * this.$.quantity;
+        }.on('change:quantity'),
+
+        totalDisplayPrice: function(){
+            return this.displayPrice() * this.$.quantity;
         }.on('change:quantity'),
 
         totalDiscountVatIncluded: function(){
