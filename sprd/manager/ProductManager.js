@@ -428,7 +428,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printTypeId: null,
                     fontFamilyId: null,
                     fontFamilyName: "Arial",
-                    offset: null
+                    addToProduct: false
                 });
 
                 var self = this,
@@ -629,14 +629,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         // determinate position
                         self._positionConfiguration(configuration);
-                        if (params.offset) {
-                            configuration.set('offset', params.offset, PREVENT_VALIDATION_OPTIONS);
-                        }
                     })
                     .exec(function (err, results) {
-                        !err && product._addConfiguration(results.configuration);
+                        !err && params.addToProduct && product._addConfiguration(results.configuration);
                         callback && callback(err, results.configuration);
-                        self.$.bus.trigger('Application.productChanged', product);
+                        params.addToProduct && self.$.bus.trigger('Application.productChanged', product);
                     });
 
             },
@@ -651,7 +648,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printType: null,
                     printTypeId: null,
                     font: null,
-                    offset: null
+                    addToProduct: true
                 });
 
                 var self = this,
@@ -779,11 +776,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         if (params.offset) {
                             configuration.set({'offset': params.offset}, PREVENT_VALIDATION_OPTIONS);
                         }
+                        if (params.scale) {
+                            configuration.set('scale', params.scale, PREVENT_VALIDATION_OPTIONS);
+                        }
                     })
                     .exec(function (err, results) {
-                        !err && product._addConfiguration(results.configuration);
+                        !err && params.addToProduct && product._addConfiguration(results.configuration);
                         callback && callback(err, results.configuration);
-                        self.$.bus.trigger('Application.productChanged', product);
+                        params.addToProduct && self.$.bus.trigger('Application.productChanged', product);
                     });
 
             },
@@ -913,6 +913,57 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     offset: offset
                 }, PREVENT_VALIDATION_OPTIONS);
 
+            },
+
+            convertTextToSpecialText: function (product, textConfiguration, params) {
+                params = params || {};
+                var offset = textConfiguration.$.offset.clone();
+                var width = textConfiguration.width();
+                _.extend(params, {
+                    addToProduct: false,
+                    text: textConfiguration.$.textFlow.text(0, -1, "\n")
+                });
+                product.$.configurations.remove(textConfiguration);
+                var self = this;
+                this.addSpecialText(product, params, function (err, config) {
+                    if (!err) {
+                        var s = width / config.width(1);
+                        config.set({
+                            'scale': {
+                                x: s,
+                                y: s
+                            }, 'offset': offset,
+                            rotation: textConfiguration.$.rotation
+                        });
+                        product._addConfiguration(config);
+                        self.$.bus.trigger('Application.productChanged', product);
+                    }
+                });
+            },
+
+            convertSpecialTextToText: function (product, specialTextConfiguration, params) {
+                params = params || {};
+                var offset = specialTextConfiguration.$.offset.clone();
+                var width = specialTextConfiguration.width();
+                _.extend(params, {
+                    addToProduct: false,
+                    text: specialTextConfiguration.$.text.replace(/^\n+|\n+$/gi, "")
+                });
+                product.$.configurations.remove(specialTextConfiguration);
+                var self = this;
+                this.addText(product, params, function (err, config) {
+                    if (!err) {
+                        var s = width / config.width();
+                        config.set({'scale': {
+                            x: s,
+                            y: s
+                        }, 'offset': offset,
+                            rotation: specialTextConfiguration.$.rotation});
+
+                        product._addConfiguration(config);
+                        self.$.bus.trigger('Application.productChanged', product);
+                    }
+                });
             },
 
             checkConfigurationOffset: function (product, configuration) {
