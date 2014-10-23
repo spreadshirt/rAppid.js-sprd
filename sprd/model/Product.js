@@ -237,7 +237,15 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
 
             _addConfiguration: function (configuration) {
                 this.trigger('beforeConfigurationAdd', configuration);
+
                 this.$.configurations.add(configuration);
+            },
+
+            removeExampleConfiguration: function () {
+                if (this.get('restrictions.example') === true && this.$.configurations.size()) {
+                    this.$.restrictions.example = false;
+                    this.$.configurations.removeAt(0);
+                }
             },
 
             getConfigurationsOnView: function (view) {
@@ -349,13 +357,13 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }
 
                 flow()
-                    .parEach(this.$.configurations.$items, function(configuration, cb) {
+                    .parEach(this.$.configurations.$items, function (configuration, cb) {
                         configuration.save(cb);
                     })
-                    .seq(function(cb) {
+                    .seq(function (cb) {
                         ProductBase.prototype.save.call(self, options, cb);
                     })
-                    .exec(function(err) {
+                    .exec(function (err) {
                         if (!err) {
                             self.$originalProduct = self.clone();
                         } else {
