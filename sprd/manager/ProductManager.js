@@ -275,6 +275,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                             configuration.$.offset.set(preferredOffset, setOptions);
 
+                            // set again with force to trigger events
+                            configuration.set({
+                                printType: preferredPrintType,
+                                scale: preferredScale,
+                                printArea: targetPrintArea
+                            }, {force: true});
                         } else {
                             // remove configuration
                             removeConfigurations.push(configuration);
