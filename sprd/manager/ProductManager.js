@@ -434,7 +434,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printTypeId: null,
                     fontFamilyId: null,
                     fontFamilyName: "Arial",
-                    addToProduct: false
+                    addToProduct: true
                 });
 
                 var self = this,
