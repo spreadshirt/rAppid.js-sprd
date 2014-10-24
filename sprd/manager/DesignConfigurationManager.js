@@ -146,8 +146,10 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         var size;
                         if (design) {
                             size = UnitUtil.convertSizeToMm(design.$.size, configuration.$.printType.$.dpi);
-                        } else {
-                            size = new Size({width: svg.image.width * 2, height: svg.image.height * 2});
+                        } else if(configuration.$.generatedWidth){
+                            // here we have a special text configuration
+                            // with a generated image width
+                            size = UnitUtil.convertSizeToMm(new Size({width: configuration.$.generatedWidth, height: svg.image.height / svg.image.width * configuration.$.generatedWidth, unit: "px"}), configuration.$.printType.$.dpi);
                         }
 
                         var match,

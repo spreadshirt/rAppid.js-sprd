@@ -15,12 +15,17 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             initialized: false,
             commission: null
         },
-        
+
         schema: {
             text: String,
-            font: Font
+            font: Font,
+            /**
+             * The image width used for the pimp image
+             * Needed to calculate scale while parsing
+             */
+            generatedWidth: Number
         },
-        
+
         type: "specialText",
 
         inject: {
@@ -115,13 +120,14 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                         var size = UnitUtil.convertSizeToMm(new Size({width: width, height: height, unit: "px"}), self.$.printType.$.dpi);
 
                         self.set({
+                            "generatedWidth": width,
                             "previewImageUrl": (data || {}).src,
                             "_size": size
                         });
                     } else {
                         self.set('previewImageUrl', null);
                     }
-                    if(oldSize.$.width > 0){
+                    if (oldSize.$.width > 0) {
                         self.$.offset.set('x', self.$.offset.$.x + 0.5 * self.$.scale.x * (oldSize.$.width - self.$._size.$.width));
                     }
 
@@ -190,7 +196,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
         },
 
-        price: function() {
+        price: function () {
             var price = this.get('printType.price'),
                 _designCommission = this.get("design.price") || this.get("commission.price");
 
