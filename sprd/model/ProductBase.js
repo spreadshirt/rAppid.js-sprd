@@ -8,11 +8,6 @@ define(["sprd/data/SprdModel"],
                 view: null
             },
 
-            ctor: function () {
-                this.callBase();
-
-            },
-
             price: function () {
                 return this.$.price;
             }.onChange("price"),

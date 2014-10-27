@@ -1,0 +1,9 @@
+<sprdSvg:SpecialTextConfigurationRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:sprdSvg="sprd.view.svg"
+                                               tagName="g">
+    <image href="{_href}" width="{width}" height="{height}" x="0" y="0"/>
+    <image href="{baseUrl('sprd/css/loading-spin-white.svg')}" width="{loaderSize()}" height="{loaderSize()}"
+           x="{loaderPos().x}" y="{loaderPos().y}" class="loader-white" visible="{loading}"/>
+    <image href="{baseUrl('sprd/css/loading-spin-black.svg')}" width="{loaderSize()}" height="{loaderSize()}"
+           x="{loaderPos().x}" y="{loaderPos().y}" class="loader-black" visible="{loading}"/>
+
+</sprdSvg:SpecialTextConfigurationRendererClass>

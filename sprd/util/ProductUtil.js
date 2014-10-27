@@ -1,6 +1,6 @@
 define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/ProductType", "flow", "sprd/entity/Price"], function (_, ArrayUtil, List, ProductType, flow, Price) {
 
-    return {
+    var ProductUtil = {
 
         getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearanceId) {
             return ArrayUtil.average(design.$.printTypes.$items,
@@ -37,6 +37,14 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             });
 
             return ret;
+        },
+
+        getPossiblePrintTypesForSpecialText: function (printArea, appearanceId) {
+            return _.filter(ProductUtil.getPossiblePrintTypesForPrintAreas([printArea], appearanceId) || [],
+                function (printType) {
+                    // just digital print types
+                    return !printType.isPrintColorColorSpace() && printType.isScalable();
+                });
         },
 
         getCheapestPriceForDesignOnProduct: function (design, product) {
@@ -88,5 +96,7 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
         }
 
     };
+
+    return ProductUtil;
 
 });

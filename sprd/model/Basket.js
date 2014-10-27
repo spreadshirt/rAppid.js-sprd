@@ -153,6 +153,13 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return null;
         }.onChange('priceItems', 'discounts'),
 
+        totalPriceItemsDisplay: function () {
+            if (this.$.priceItems) {
+                return this.$.priceItems.$.display - this.discountVatIncluded();
+            }
+            return null;
+        }.onChange('priceItems', 'discounts'),
+
 
         platformCheckoutLink: function () {
             if (this.$.links) {

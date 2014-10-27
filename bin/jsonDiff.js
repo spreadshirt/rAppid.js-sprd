@@ -97,7 +97,7 @@ diffObj = (function getDiff (obj1, obj2) {
                     diff[key] = tmp;
                 }
             } else if (value1 !== value2) {
-                diff[key] = value1;
+//                diff[key] = value1;
             }
         }
     }

@@ -1,5 +1,5 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "xaml!sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus"],
-    function (SvgElement, TextConfiguration, DesignConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, _, Vector, I18n, Bus) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus"],
+    function (SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus) {
 
         var MOVE = "move",
             SCALE = "scale",
@@ -148,7 +148,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     assetContainer = this.$._assetContainer,
                     configuration = this.$.configuration;
 
-                if (configuration instanceof DesignConfiguration) {
+                if (configuration instanceof SpecialTextConfiguration) {
+                    rendererFactory = SpecialTextConfigurationRenderer;
+                } else if (configuration instanceof DesignConfiguration) {
                     rendererFactory = DesignConfigurationRenderer;
                 } else if (configuration instanceof TextConfiguration) {
                     rendererFactory = TextConfigurationRenderer;
