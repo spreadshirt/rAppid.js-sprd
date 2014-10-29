@@ -124,8 +124,9 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
         }.on('change'),
 
         discountVatIncluded: function () {
-            if (this.$.discounts && this.$.discounts.size()) {
-                return this.$.discounts.at(0).get('price.vatIncluded');
+            var discount = this.getDiscount("scale");
+            if (discount) {
+                return discount.get("price.vatIncluded")
             }
 
             return 0;
@@ -173,7 +174,31 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
                 return this.$.links[1].href;
             }
             return null;
-        }.onChange('links')
+        }.onChange('links'),
+
+        getDiscount: function(type) {
+            type = type || "scale";
+
+            var discounts = this.$.discounts;
+            if (!discounts) {
+                return null;
+            }
+
+            return discounts.find(function (discount) {
+                return discount.$.type == type
+            });
+        }.onChange("discounts"),
+
+        hasVoucher: function() {
+            var discounts = this.$.discounts;
+            if (!discounts) {
+                return false;
+            }
+
+            return !!discounts.find(function(discount) {
+                return /^voucher/.test(discount.type)
+            });
+        }.onChange("discounts")
 
     });
 });
