@@ -10,6 +10,8 @@
     <element name="PrintAreaViewer" type="ns:PrintAreaViewer"/>
     <element name="PrintAreaViewerClass" type="ns:PrintAreaViewerClass"/>
     <element name="ProductTypeViewViewer" type="ns:ProductTypeViewViewer"/>
+    <element name="SpecialTextConfigurationRenderer" type="ns:SpecialTextConfigurationRenderer"/>
+    <element name="SpecialTextConfigurationRendererClass" type="ns:SpecialTextConfigurationRendererClass"/>
     <element name="TextConfigurationRenderer" type="ns:TextConfigurationRenderer"/>
     <element name="TextConfigurationRendererClass" type="ns:TextConfigurationRendererClass"/>
     <complexType name="ConfigurationRenderer">
@@ -135,6 +137,33 @@
                 <attribute name="product"/>
                 <attribute name="productViewer"/>
                 <attribute name="imageService"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="SpecialTextConfigurationRenderer">
+        <complexContent>
+            <extension base="ns:SpecialTextConfigurationRendererClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.SpecialTextConfigurationRenderer"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="g"/>
+                <attribute name="loading" default="{configuration.loading}"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="SpecialTextConfigurationRendererClass">
+        <complexContent>
+            <extension base="ns:ConfigurationRenderer">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.SpecialTextConfigurationRendererClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="loading" default="{configuration.loading}"/>
             </extension>
         </complexContent>
     </complexType>
