@@ -196,7 +196,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             }
 
             return !!discounts.find(function(discount) {
-                return /^voucher/.test(discount.type)
+                return /^voucher/.test(discount.$.type)
             });
         }.onChange("discounts")
 
