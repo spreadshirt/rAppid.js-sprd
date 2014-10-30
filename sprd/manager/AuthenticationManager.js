@@ -1,4 +1,4 @@
-define(["js/core/Component", "xaml!sprd/data/SprdApiDataSource", "flow", "sprd/model/Session"], function(Component, SprdApiDataSource, flow, Session) {
+define(["js/core/Component", "xaml!sprd/data/SprdApiDataSource", "flow", "sprd/model/Session", "js/core/Bus"], function(Component, SprdApiDataSource, flow, Session, Bus) {
 
     return Component.inherit("sprd.manager.AuthenticationManager", {
 
@@ -7,7 +7,8 @@ define(["js/core/Component", "xaml!sprd/data/SprdApiDataSource", "flow", "sprd/m
         },
 
         inject: {
-            api: SprdApiDataSource
+            api: SprdApiDataSource,
+            bus: Bus
         },
 
         _commitSession: function(session) {
@@ -98,6 +99,10 @@ define(["js/core/Component", "xaml!sprd/data/SprdApiDataSource", "flow", "sprd/m
             session.remove(null, function(err) {
                 if (self.$.session === session) {
                     self.set("session", null);
+                }
+
+                if (!err) {
+                    self.$.bus.trigger('User.logout');
                 }
 
                 callback && callback(err);
