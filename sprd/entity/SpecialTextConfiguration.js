@@ -132,6 +132,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                     }
 
                     self.set('loading', false);
+                    self.trigger('configurationChanged');
                     callback && callback(err);
                 };
 
