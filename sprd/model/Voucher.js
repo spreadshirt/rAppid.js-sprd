@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON"], function (SprdModel, Validator, JSON) {
+define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "underscore"], function (SprdModel, Validator, JSON, _) {
 
     var VoucherValidator = Validator.inherit({
         validate: function(entity, options, callback) {
@@ -18,6 +18,11 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON"], function 
                     try {
                         code = JSON.parse(err.xhr.responses.text).causes[0].error.replace(/^0*/, "");
                     } catch (e) {
+                    }
+
+                    if (!(code >= 201 && code <= 213 || code == 216)) {
+                        // error code not supported, fallback to generic
+                        code = "generic";
                     }
 
                     errors.push(self._createError("voucher", "voucher", code))
