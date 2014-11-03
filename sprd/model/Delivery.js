@@ -66,8 +66,8 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
 
             phone: {
                 required: function () {
-                    // required if shipping type is express
-                    return this.get("shipping.type.isExpress");
+                    // required if shipping type has phone number required
+                    return this.get("shipping.type.phoneNumberRequired");
                 },
                 type: String
             },
