@@ -86,7 +86,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             }
 
             if (this._hasSome($, ["pimpImageService", "text", "font"])) {
-                this._debounceFunctionCall(this.fetchImage, "fetchImage", 200, this, [], "DELAY");
+                this._debounceFunctionCall(this.fetchImage, "fetchImage", 430, this, [], "DELAY");
             }
         },
 
