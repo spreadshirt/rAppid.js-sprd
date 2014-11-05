@@ -333,7 +333,6 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
             },
 
             save: function (options, callback) {
-
                 if (this.$originalProduct) {
                     if (this.hasChanges()) {
                         this.set('id', undefined);
@@ -365,7 +364,13 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                     })
                     .exec(function (err) {
                         if (!err) {
-                            self.$originalProduct = self.clone();
+                            var clone = self.clone();
+                            // change original product against the clone in the entity
+                            // so that the application can work with the original product
+                            self.$context.removeEntityFromCache(self);
+                            self.$context.addEntityToCache(clone);
+
+                            self.$originalProduct = clone;
                         } else {
                             err = ProductCreationError.createFromResponse(err);
                         }

@@ -1,5 +1,6 @@
 define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'pimp/data/PimpDataSourceClass', 'js/data/Collection', 'pimp/model/Commission', 'pimp/model/Font', 'sprd/entity/Price'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price) {
 
+    var specialTextConfigurationCounter = 0;
 
     return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
 
@@ -13,7 +14,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             loading: false,
             align: null,
             initialized: false,
-            commission: null
+            commission: null,
+            sid: null
         },
 
         schema: {
@@ -42,6 +44,10 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         ctor: function () {
             this.$designCache = {};
             this.callBase();
+
+            if (!this.$.sid) {
+                this.set("sid", ++specialTextConfigurationCounter);
+            }
         },
 
         /***
@@ -86,7 +92,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             }
 
             if (this._hasSome($, ["pimpImageService", "text", "font"])) {
-                this._debounceFunctionCall(this.fetchImage, "fetchImage", 200, this, [], "DELAY");
+                this._debounceFunctionCall(this.fetchImage, "fetchImage", 430, this, [], "DELAY");
             }
         },
 
@@ -107,7 +113,14 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                     cancelled: false
                 };
 
-                var cb = function (err, data) {
+                this.$lastListener = listener;
+
+                pimpImageService.generateImage({
+                    text: text,
+                    size: "M",
+                    font: font,
+                    sid: this.$.sid
+                }, function (err, data) {
                     if (listener.cancelled) {
                         return;
                     }
@@ -132,16 +145,9 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                     }
 
                     self.set('loading', false);
+                    self.trigger('configurationChanged');
                     callback && callback(err);
-                };
-
-                this.$lastListener = listener;
-
-                pimpImageService.generateImage({
-                    text: text,
-                    size: "M",
-                    font: font
-                }, cb);
+                });
             }
         },
 

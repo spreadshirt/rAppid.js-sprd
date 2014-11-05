@@ -929,9 +929,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     addToProduct: false,
                     text: textConfiguration.$.textFlow.text(0, -1, "\n")
                 });
-                product.$.configurations.remove(textConfiguration);
                 var self = this;
                 this.addSpecialText(product, params, function (err, config) {
+                    product.$.configurations.remove(textConfiguration);
                     if (!err) {
                         var s = width / config.width(1);
                         config.set({
@@ -955,10 +955,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     addToProduct: false,
                     text: specialTextConfiguration.$.text.replace(/^\n+|\n+$/gi, "")
                 });
-                product.$.configurations.remove(specialTextConfiguration);
                 var self = this;
                 this.addText(product, params, function (err, config) {
                     if (!err) {
+                        product.$.configurations.remove(specialTextConfiguration);
                         var s = width / config.width();
                         config.set({'scale': {
                             x: s,
