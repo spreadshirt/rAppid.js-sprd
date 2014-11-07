@@ -128,26 +128,41 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                     if (!err) {
 
                         var width = (parseInt(data.width) || 1) * 4,
-                            height = (parseInt(data.height) || 1) * 4;
+                            height = (parseInt(data.height) || 1) * 4,
+                            design = self.$.design;
 
-                        var size = UnitUtil.convertSizeToMm(new Size({width: width, height: height, unit: "px"}), self.$.printType.$.dpi);
+                        var pxSize = new Size({width: width, height: height, unit: "px"}),
+                            scale = self.$.scale;
+                        if (design) {
+                            var s = (design.$.size.$.width / width) * scale.x;
+                            scale = {
+                                x: s,
+                                y: s
+                            };
+                        }
+                        var size = UnitUtil.convertSizeToMm(pxSize, self.$.printType.$.dpi);
 
                         self.set({
                             "generatedWidth": width,
                             "previewImageUrl": (data || {}).src,
-                            "_size": size
+                            "_size": size,
+                            "scale": scale,
+                            "design": null
                         });
                     } else {
                         self.set('previewImageUrl', null);
                     }
-                    if (oldSize.$.width > 0) {
+                    if (oldSize.$.width > 0 && !design) {
                         self.$.offset.set('x', self.$.offset.$.x + 0.5 * self.$.scale.x * (oldSize.$.width - self.$._size.$.width));
                     }
 
                     self.set('loading', false);
                     self.trigger('configurationChanged');
+                    self._setError(self._validateTransform(self.$));
                     callback && callback(err);
                 });
+            } else {
+                callback && callback();
             }
         },
 
@@ -169,11 +184,9 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
                             var split = design.$.name.split(";");
                             self.set({
-                                font: {
-                                    $: {
-                                        id: split[1]
-                                    }
-                                },
+                                font: new Font({
+                                    id: split[1]
+                                }),
                                 align: split
                             }, {
                                 silent: true
