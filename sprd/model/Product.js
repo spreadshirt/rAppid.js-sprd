@@ -1,5 +1,5 @@
-define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType', 'sprd/entity/Appearance'],
-    function (ProductBase, List, AttributeTypeResolver, DesignConfiguration, TextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType, Appearance) {
+define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType', 'sprd/entity/Appearance'],
+    function (ProductBase, List, ConfigurationTypeResolver, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType, Appearance) {
 
         var undefined;
 
@@ -7,11 +7,11 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
             schema: {
                 productType: ProductType,
-                configurations: [new AttributeTypeResolver({
-                    attribute: "type",
+                configurations: [new ConfigurationTypeResolver({
                     mapping: {
                         "design": DesignConfiguration,
-                        "text": TextConfiguration
+                        "text": TextConfiguration,
+                        "specialText": SpecialTextConfiguration
                     }
                 })],
                 appearance: {
@@ -237,7 +237,15 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
 
             _addConfiguration: function (configuration) {
                 this.trigger('beforeConfigurationAdd', configuration);
+
                 this.$.configurations.add(configuration);
+            },
+
+            removeExampleConfiguration: function () {
+                if (this.get('restrictions.example') === true && this.$.configurations.size()) {
+                    this.$.restrictions.example = false;
+                    this.$.configurations.removeAt(0);
+                }
             },
 
             getConfigurationsOnView: function (view) {
@@ -325,7 +333,6 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
             },
 
             save: function (options, callback) {
-
                 if (this.$originalProduct) {
                     if (this.hasChanges()) {
                         this.set('id', undefined);
@@ -348,15 +355,29 @@ define(['sprd/model/ProductBase', 'js/core/List', 'js/data/AttributeTypeResolver
                     }
                 }
 
-                this.callBase(options, function (err) {
-                    if (!err) {
-                        self.$originalProduct = self.clone();
-                    } else {
-                        err = ProductCreationError.createFromResponse(err);
-                    }
+                flow()
+                    .parEach(this.$.configurations.$items, function (configuration, cb) {
+                        configuration.save(cb);
+                    })
+                    .seq(function (cb) {
+                        ProductBase.prototype.save.call(self, options, cb);
+                    })
+                    .exec(function (err) {
+                        if (!err) {
+                            var clone = self.clone();
+                            // change original product against the clone in the entity
+                            // so that the application can work with the original product
+                            self.$context.removeEntityFromCache(self);
+                            self.$context.addEntityToCache(clone);
 
-                    callback && callback(err, self);
-                });
+                            self.$originalProduct = clone;
+                        } else {
+                            err = ProductCreationError.createFromResponse(err);
+                        }
+
+                        callback && callback(err, self);
+                    });
+
             },
 
             init: function (callback) {

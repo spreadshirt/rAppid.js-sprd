@@ -44,6 +44,7 @@
                                         checkoutTokenRequired="true"/>
             <conf:ResourceConfiguration path="delivery" modelClassName="sprd.model.Delivery" apiKeyRequired="true"
                                         checkoutTokenRequired="true" sessionPreferred="true"/>
+            <conf:ResourceConfiguration path="voucher" modelClassName="sprd.model.Voucher" apiKeyRequired="true" sessionPreferred="true"/>
             <conf:ResourceConfiguration path="checkout" modelClassName="sprd.model.Checkout" apiKeyRequired="true"
                                         checkoutTokenRequired="true" />
         </conf:ResourceConfiguration>

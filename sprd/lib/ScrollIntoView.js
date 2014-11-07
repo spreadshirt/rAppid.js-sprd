@@ -58,7 +58,7 @@ define([], function() {
 
         if (idOrElement instanceof Number) {
             to = idOrElement;
-        } else if (idOrElement instanceof HTMLElement) {
+        } else if (idOrElement instanceof (window.HTMLElement || window.Element)) {
             element = idOrElement;
         } else {
             var element = document.getElementById(idOrElement);

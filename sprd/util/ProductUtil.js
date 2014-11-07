@@ -39,6 +39,14 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             return ret;
         },
 
+        getPossiblePrintTypesForSpecialText: function (printArea, appearanceId) {
+            return _.filter(this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId) || [],
+                function (printType) {
+                    // just digital print types
+                    return !printType.isPrintColorColorSpace() && printType.isScalable();
+                });
+        },
+
         getCheapestPriceForDesignOnProduct: function (design, product) {
             var possiblePrintTypes = this.getPossiblePrintTypesForDesignOnProduct(design, product),
                 cheapestPrintTypePrice = null;
