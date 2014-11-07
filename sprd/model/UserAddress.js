@@ -35,12 +35,10 @@ define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore', 'sprd/entity
         _commitType: function (type) {
             this.set('billingAddress', type != AddressEntity.ADDRESS_TYPES.PACKSTATION);
         },
-        supportsPackStation: function () {
-            return this.$.personSalutation !== Person.Salutation.COMPANY && this.get('country.code') === "DE";
-        }.onChange('country.code', 'personSalutation'),
-        needsVatId: function () {
-            return this.isCompany();
-        }.onChange('personSalutation')
+        _commitVatId: AddressEntity.prototype._commitVatId,
+        _commitPersonSalutation: AddressEntity.prototype._commitPersonSalutation,
+        supportsPackStation: AddressEntity.prototype.supportsPackStation,
+        needsVatId: AddressEntity.prototype.needsVatId
     });
 
     UserAddress.ADDRESS_TYPES = AddressEntity.ADDRESS_TYPES;
