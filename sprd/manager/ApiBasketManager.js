@@ -400,7 +400,12 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         language = res[0],
                         country = res[1];
 
-                    return "/" + [language, country, "Widget/Www/synchronizeBasket/basket", basket.$.id, "toApi", "false"].join("/");
+                    var location = this.$stage.$window.location,
+                        domain = location.hostname.split(".");
+
+                    domain[0] = "www";
+
+                    return "https://" + domain.join(".") + "/" + [language, country, "Widget/Www/synchronizeBasket/basket", basket.$.id, "toApi", "false"].join("/");
                 }
                 return null;
             },
