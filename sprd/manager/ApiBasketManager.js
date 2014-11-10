@@ -361,6 +361,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         })
                         .seq(function (cb) {
                             if (self.$.syncToOpossum) {
+                                // TODO: remove this shit after new checkout is live everywhere
                                 rAppid.ajax(self._buildSyncUrl(), {"method": "GET"}, function () {
                                     cb();
                                 });
@@ -400,12 +401,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         language = res[0],
                         country = res[1];
 
-                    var location = this.$stage.$window.location,
-                        domain = location.hostname.split(".");
-
-                    domain[0] = "www";
-
-                    return "https://" + domain.join(".") + "/" + [language, country, "Widget/Www/synchronizeBasket/basket", basket.$.id, "toApi", "false"].join("/");
+                    return "/" + [language, country, "Widget/Www/synchronizeBasket/basket", basket.$.id, "toApi", "false"].join("/");
                 }
                 return null;
             },
