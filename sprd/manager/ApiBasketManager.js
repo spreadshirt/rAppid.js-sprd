@@ -362,7 +362,10 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         .seq(function (cb) {
                             if (self.$.syncToOpossum) {
                                 // TODO: remove this shit after new checkout is live everywhere
-                                rAppid.ajax(self._buildSyncUrl(), {"method": "GET"}, function () {
+                                rAppid.ajax("/syncBasket", {"method": "GET",
+                                    "queryParameter": {
+                                        basketId: basket.$.id
+                                    }}, function () {
                                     cb();
                                 });
                             }
@@ -392,20 +395,6 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     this.$basketChanged = true;
                 }
             },
-
-            _buildSyncUrl: function () {
-                var basket = this.$.basket;
-                if (basket) {
-                    var locale = this.$.api.$.locale,
-                        res = locale.split("_"),
-                        language = res[0],
-                        country = res[1];
-
-                    return "/" + [language, country, "Widget/Www/synchronizeBasket/basket", basket.$.id, "toApi", "false"].join("/");
-                }
-                return null;
-            },
-
             reloadBasket: function (callback) {
                 this._triggerBasketUpdating();
                 var self = this;
