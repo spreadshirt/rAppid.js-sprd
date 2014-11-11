@@ -368,6 +368,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                                     }}, function () {
                                     cb();
                                 });
+                            } else {
+                                cb();
                             }
                         })
                         .seq(function () {
