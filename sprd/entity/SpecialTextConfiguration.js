@@ -14,8 +14,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             loading: false,
             align: null,
             initialized: false,
-            commission: null,
-            sid: null
+            commission: null
         },
 
         schema: {
@@ -44,10 +43,6 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         ctor: function () {
             this.$designCache = {};
             this.callBase();
-
-            if (!this.$.sid) {
-                this.set("sid", ++specialTextConfigurationCounter);
-            }
         },
 
         /***
@@ -68,7 +63,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                         // create a full font size image
                         self.$.pimpImageService.generateDesign({
                             text: self.$.text,
-                            font: self.$.font
+                            font: self.$.font,
+                            taskId: self.$.taskId
                         }, cb);
                     }
 
@@ -119,16 +115,18 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                     text: text,
                     size: "M",
                     font: font,
-                    sid: this.$.sid
+                    taskId: this.$.taskId
                 }, function (err, data) {
                     if (listener.cancelled) {
                         return;
                     }
 
+                    data = data || {};
+
                     if (!err) {
 
-                        var width = (parseInt(data.width) || 1) * 4,
-                            height = (parseInt(data.height) || 1) * 4,
+                        var width = (parseInt(data.image.width) || 1) * 4,
+                            height = (parseInt(data.image.height) || 1) * 4,
                             design = self.$.design;
 
                         var pxSize = new Size({width: width, height: height, unit: "px"}),
@@ -143,15 +141,17 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                         var size = UnitUtil.convertSizeToMm(pxSize, self.$.printType.$.dpi);
 
                         self.set({
-                            "generatedWidth": width,
-                            "previewImageUrl": (data || {}).src,
-                            "_size": size,
-                            "scale": scale,
-                            "design": null
+                            generatedWidth: width,
+                            previewImageUrl: data.image.src,
+                            taskId: data.task.id,
+                            _size: size,
+                            scale: scale,
+                            design: null
                         });
                     } else {
                         self.set('previewImageUrl', null);
                     }
+
                     if (oldSize.$.width > 0 && !design) {
                         self.$.offset.set('x', self.$.offset.$.x + 0.5 * self.$.scale.x * (oldSize.$.width - self.$._size.$.width));
                     }
