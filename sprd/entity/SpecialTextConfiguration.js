@@ -14,7 +14,10 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             loading: false,
             align: null,
             initialized: false,
-            commission: null
+            commission: null,
+
+            renderedText: null,
+            renderedFontId: null
         },
 
         schema: {
@@ -121,7 +124,10 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                         return;
                     }
 
-                    data = data || {};
+                    data = data || {
+                        image: {},
+                        task: {}
+                    };
 
                     if (!err) {
 
@@ -144,6 +150,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                             generatedWidth: width,
                             previewImageUrl: data.image.src,
                             taskId: data.task.id,
+                            renderedText: text,
+                            renderedFontId: font.$.id,
                             _size: size,
                             scale: scale,
                             design: null
