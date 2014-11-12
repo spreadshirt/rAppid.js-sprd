@@ -97,9 +97,15 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
                 errorCode: "atLeast8Digits",
                 regEx: /(.*\d.*){8}/
             }),
+            new RegExValidator({
+                field: "email",
+                errorCode: 'emailError',
+                regEx: /^[^.@]+@[^.]{1,64}\.[^.]+$/
+            }),
             new LengthValidator({
                 field: "email",
-                maxLength: 30
+                errorCode: 'emailError',
+                maxLength: 255
             }),
             new LengthValidator({
                 field: "phone",
