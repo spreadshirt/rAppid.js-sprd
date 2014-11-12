@@ -91,6 +91,13 @@ The following values are replaced
                     </annotation>
                 </attribute>
                 <attribute name="initBasketWithNoCache" default="true"/>
+                <attribute name="syncToOpossum">
+                    <annotation>
+                        <documentation>
+                        a flag to trigger opossum synchronisation
+                    </documentation>
+                    </annotation>
+                </attribute>
                 <attribute name="onbasketChanged" default="_onBasketChangedHandler" type="string">
                     <annotation>
                         <documentation>
