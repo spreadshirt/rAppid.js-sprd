@@ -100,7 +100,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             new RegExValidator({
                 field: "email",
                 errorCode: 'emailError',
-                regEx: /^[^.@]+@[^.]{1,64}\.[^.]+$/
+                regEx: /^[^@]+@.{1,64}\.[^.]+$/
             }),
             new LengthValidator({
                 field: "email",
