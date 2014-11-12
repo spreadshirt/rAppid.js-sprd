@@ -1,6 +1,6 @@
 define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/data/SprdApiDataSource",
-        "js/data/LocalStorage", "js/data/Entity"],
-    function (IBasketManager, flow, Basket, SprdApiDataSource, LocalStorage, Entity) {
+        "js/data/LocalStorage", "js/data/Entity", "rAppid"],
+    function (IBasketManager, flow, Basket, SprdApiDataSource, LocalStorage, Entity, rAppid) {
 
         /***
          * @summary A BasketManager to interact with the Spreadshirt Basket API
@@ -61,7 +61,12 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                  */
                 updating: false,
 
-                initBasketWithNoCache: true
+                initBasketWithNoCache: true,
+
+                /**
+                 * a flag to trigger opossum synchronisation
+                 */
+                syncToOpossum: false
             },
 
             events: [
@@ -350,28 +355,41 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         }
                     }
 
-                flow()
-                    .seq(function (cb) {
-                        basket.save(null, cb);
-                    })
-                    .seq(function () {
-                        self._triggerBasketChanged();
-                    })
-                    .seq(function(cb){
-                        self.fetchBasketDiscounts(cb);
-                    })
-                    .exec(function (err) {
-                        if (self.$basketChanged) {
-                            self.$basketChanged = false;
-                            self.$savingBasket = false;
-                            self.saveBasket();
-                        } else {
-                            callCallbacks(err, basket);
-                            self.$savingBasket = false;
-                            self._triggerBasketUpdated();
-                        }
-                    });
-            } else {
+                    flow()
+                        .seq(function (cb) {
+                            basket.save(null, cb);
+                        })
+                        .seq(function (cb) {
+                            if (self.$.syncToOpossum) {
+                                // TODO: remove this shit after new checkout is live everywhere
+                                rAppid.ajax("/syncBasket", {"method": "GET",
+                                    "queryParameter": {
+                                        basketId: basket.$.id
+                                    }}, function () {
+                                    cb();
+                                });
+                            } else {
+                                cb();
+                            }
+                        })
+                        .seq(function () {
+                            self._triggerBasketChanged();
+                        })
+                        .seq(function (cb) {
+                            self.fetchBasketDiscounts(cb);
+                        })
+                        .exec(function (err) {
+                            if (self.$basketChanged) {
+                                self.$basketChanged = false;
+                                self.$savingBasket = false;
+                                self.saveBasket();
+                            } else {
+                                callCallbacks(err, basket);
+                                self.$savingBasket = false;
+                                self._triggerBasketUpdated();
+                            }
+                        });
+                } else {
                     if (callback) {
                         this.$saveCallbacks.push(callback);
                     }
@@ -379,7 +397,6 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     this.$basketChanged = true;
                 }
             },
-            
             reloadBasket: function (callback) {
                 this._triggerBasketUpdating();
                 var self = this;
