@@ -157,18 +157,28 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
              *
              * */
             if (billingAddress && shippingAddress) {
-                this.set('invoiceToShippingAddress', shippingAddress.$.id == billingAddress.$.id);
+                var invoiceToShippingAddress = shippingAddress.$.id == billingAddress.$.id;
+                this.set('invoiceToShippingAddress', invoiceToShippingAddress);
+//                if(invoiceToShippingAddress && shippingAddress){
+//                    shippingAddress.set('isBillingAddress', false);
+//                }
             }
 
             if (this.$.invoiceToShippingAddress) {
                 this.set('billing', new Billing());
                 this.$.billing.$.address.set('id', "billing");
             } else if (billingAddress) {
-                billingAddress.set('id', billingAddress.$.id || "billing");
+                billingAddress.set({
+                    'id': billingAddress.$.id || "billing",
+                    'isBillingAddress': true
+                });
             }
 
             if (shippingAddress) {
-                shippingAddress.set('id', shippingAddress.$.id || "shipping");
+                shippingAddress.set({
+                    'id': shippingAddress.$.id || "shipping",
+                    'isBillingAddress': false
+                });
             }
             return this.callBase();
         },
