@@ -108,6 +108,7 @@ BasketItem
                 </attribute>
                 <attribute name="onbasketUpdated" default="_onBasketUpdatedHandler" type="string"/>
                 <attribute name="onbasketUpdating" default="_onBasketUpdatingHandler" type="string"/>
+                <attribute name="onbasketSaving" default="_onBasketSavingHandler" type="string"/>
             </extension>
         </complexContent>
     </complexType>
