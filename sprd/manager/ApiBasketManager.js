@@ -76,7 +76,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
              */
                 "on:basketChanged",
                 "on:basketUpdated",
-                "on:basketUpdating"
+                "on:basketUpdating",
+                "on:basketSaving"
             ],
 
             inject: {
@@ -151,6 +152,10 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 }
 
                 callback && callback();
+            },
+
+            _triggerBasketSaving: function () {
+                this.trigger("on:basketSaving", this.$.basket, this);
             },
 
             _triggerBasketChanged: function () {
@@ -313,13 +318,13 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 this.saveBasketDebounced();
             },
 
-            saveBasketDebounced: function () {
+            saveBasketDebounced: function (cb) {
 
                 var self = this;
 
                 this._triggerBasketUpdating();
                 this._debounceFunctionCall(function () {
-
+                    cb && cb();
                     this.saveBasket(function (err) {
                         if (err) {
                             // couldn't save basket, restore clone
@@ -338,6 +343,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             saveBasket: function (callback) {
                 if (!this.$savingBasket) {
                     this._triggerBasketUpdating();
+                    this._triggerBasketSaving();
                     this.$savingBasket = true;
                     this.$callSaveBasketAgain = false;
                     this.$saveCallbacks = this.$saveCallbacks || [];
