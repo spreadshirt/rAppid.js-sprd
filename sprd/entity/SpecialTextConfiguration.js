@@ -1,7 +1,5 @@
 define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'pimp/data/PimpDataSourceClass', 'js/data/Collection', 'pimp/model/Commission', 'pimp/model/Font', 'sprd/entity/Price'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price) {
 
-    var specialTextConfigurationCounter = 0;
-
     return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
 
         defaults: {
@@ -15,7 +13,9 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             align: null,
             initialized: false,
             commission: null,
-            sid: null
+
+            renderedText: null,
+            renderedFontId: null
         },
 
         schema: {
@@ -44,10 +44,6 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         ctor: function () {
             this.$designCache = {};
             this.callBase();
-
-            if (!this.$.sid) {
-                this.set("sid", ++specialTextConfigurationCounter);
-            }
         },
 
         /***
@@ -68,7 +64,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                         // create a full font size image
                         self.$.pimpImageService.generateDesign({
                             text: self.$.text,
-                            font: self.$.font
+                            font: self.$.font,
+                            taskId: self.$.taskId
                         }, cb);
                     }
 
@@ -119,16 +116,21 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                     text: text,
                     size: "M",
                     font: font,
-                    sid: this.$.sid
+                    taskId: this.$.taskId
                 }, function (err, data) {
                     if (listener.cancelled) {
                         return;
                     }
 
+                    data = data || {
+                        image: {},
+                        task: {}
+                    };
+
                     if (!err) {
 
-                        var width = (parseInt(data.width) || 1) * 4,
-                            height = (parseInt(data.height) || 1) * 4,
+                        var width = (parseInt(data.image.width) || 1) * 4,
+                            height = (parseInt(data.image.height) || 1) * 4,
                             design = self.$.design;
 
                         var pxSize = new Size({width: width, height: height, unit: "px"}),
@@ -143,15 +145,19 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                         var size = UnitUtil.convertSizeToMm(pxSize, self.$.printType.$.dpi);
 
                         self.set({
-                            "generatedWidth": width,
-                            "previewImageUrl": (data || {}).src,
-                            "_size": size,
-                            "scale": scale,
-                            "design": null
+                            generatedWidth: width,
+                            previewImageUrl: data.image.src,
+                            taskId: data.task.id,
+                            renderedText: text,
+                            renderedFontId: font.$.id,
+                            _size: size,
+                            scale: scale,
+                            design: null
                         });
                     } else {
                         self.set('previewImageUrl', null);
                     }
+
                     if (oldSize.$.width > 0 && !design) {
                         self.$.offset.set('x', self.$.offset.$.x + 0.5 * self.$.scale.x * (oldSize.$.width - self.$._size.$.width));
                     }
