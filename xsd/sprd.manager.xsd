@@ -91,6 +91,13 @@ The following values are replaced
                     </annotation>
                 </attribute>
                 <attribute name="initBasketWithNoCache" default="true"/>
+                <attribute name="syncToOpossum">
+                    <annotation>
+                        <documentation>
+                        a flag to trigger opossum synchronisation
+                    </documentation>
+                    </annotation>
+                </attribute>
                 <attribute name="onbasketChanged" default="_onBasketChangedHandler" type="string">
                     <annotation>
                         <documentation>
@@ -101,6 +108,7 @@ BasketItem
                 </attribute>
                 <attribute name="onbasketUpdated" default="_onBasketUpdatedHandler" type="string"/>
                 <attribute name="onbasketUpdating" default="_onBasketUpdatingHandler" type="string"/>
+                <attribute name="onbasketSaving" default="_onBasketSavingHandler" type="string"/>
             </extension>
         </complexContent>
     </complexType>

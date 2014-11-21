@@ -14,7 +14,8 @@ define(["js/core/Bindable"], function (Bindable) {
             image: null,
             uploadProgress: 0,
             xhr: null,
-
+            designLoaded: false,
+            isPrintable: true,
             state: State.NONE
         },
 

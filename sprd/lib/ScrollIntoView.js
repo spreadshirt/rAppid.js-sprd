@@ -1,4 +1,4 @@
-define([], function() {
+define([], function () {
 
     var undefined;
 
@@ -54,14 +54,15 @@ define([], function() {
             return;
         }
 
-        var to = undefined;
+        var to = undefined,
+            element;
 
         if (idOrElement instanceof Number) {
             to = idOrElement;
+        } else if (typeof(idOrElement) === "string") {
+            element = document.getElementById(idOrElement);
         } else if (idOrElement instanceof (window.HTMLElement || window.Element)) {
             element = idOrElement;
-        } else {
-            var element = document.getElementById(idOrElement);
         }
 
         if (!element) {

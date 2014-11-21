@@ -175,6 +175,11 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                     this.set('type', ADDRESS_TYPES.PRIVATE);
                 }
             }
+            if ($.hasOwnProperty("country")) {
+                if (!this.isStateRequired()) {
+                    this.set('state', null);
+                }
+            }
         },
 
         _commitVatId: function (vatId) {

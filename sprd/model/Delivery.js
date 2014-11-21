@@ -97,9 +97,15 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
                 errorCode: "atLeast8Digits",
                 regEx: /(.*\d.*){8}/
             }),
+            new RegExValidator({
+                field: "email",
+                errorCode: 'emailError',
+                regEx: /^[^@]+@.{1,64}\.[^.]+$/
+            }),
             new LengthValidator({
                 field: "email",
-                maxLength: 30
+                errorCode: 'emailError',
+                maxLength: 255
             }),
             new LengthValidator({
                 field: "phone",
@@ -145,24 +151,32 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
             var billingAddress = this.get(data, 'billing.address'),
                 shippingAddress = this.get(data, 'shipping.address');
 
-            /**
-             * we use the ids to determin if the billing address is the same as billing address
-             * its a lil bit of a hack but faster than comparing all the fields.
-             *
-             * */
-            if (billingAddress && shippingAddress) {
-                this.set('invoiceToShippingAddress', shippingAddress.$.id == billingAddress.$.id);
-            }
+            if (billingAddress || shippingAddress) {
+                /**
+                 * we use the ids to determin if the billing address is the same as billing address
+                 * its a lil bit of a hack but faster than comparing all the fields.
+                 *
+                 * */
+                if (billingAddress && shippingAddress) {
+                    data['invoiceToShippingAddress'] = shippingAddress.$.id == billingAddress.$.id;
+                }
 
-            if (this.$.invoiceToShippingAddress) {
-                this.set('billing', new Billing());
-                this.$.billing.$.address.set('id', "billing");
-            } else if (billingAddress) {
-                billingAddress.set('id', billingAddress.$.id || "billing");
-            }
+                if (data['invoiceToShippingAddress']) {
+                    data['billing'] = new Billing();
+                    data['billing'].$.address.set('id', "billing");
+                } else if (billingAddress) {
+                    billingAddress.set({
+                        'id': billingAddress.$.id || "billing",
+                        'isBillingAddress': true
+                    });
+                }
 
-            if (shippingAddress) {
-                shippingAddress.set('id', shippingAddress.$.id || "shipping");
+                if (shippingAddress) {
+                    shippingAddress.set({
+                        'id': shippingAddress.$.id || "shipping",
+                        'isBillingAddress': false
+                    });
+                }
             }
             return this.callBase();
         },
