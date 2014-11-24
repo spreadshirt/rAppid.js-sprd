@@ -10,6 +10,7 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                 properties = element.properties,
                 prop,
                 elementPayload = {};
+            var shop = this.$dataSource.createEntity(Shop, payload.shop.id);
 
             for (var i = 0; i < properties.length; i++) {
                 prop = properties[i];
@@ -32,9 +33,13 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                     elementPayload["appearance"]["name"] = prop.value;
                 }
 
+                if(prop.key === "article"){
+                    elementPayload["article"] = this.$dataSource.getContextForChild(Article, shop).createEntity(Article, element.id);
+                }
+
             }
 
-            var shop = this.$dataSource.createEntity(Shop, payload.shop.id);
+
 
             if (element.type === TYPE_ARTICLE) {
                 elementPayload.item = this.$dataSource.getContextForChild(Article, shop).createEntity(Article, element.id);
@@ -63,12 +68,15 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
 
             var baseArticleId = model.get("element.article.id");
 
+            baseArticleId = baseArticleId || model.get('article.id');
+
             if (baseArticleId) {
                 properties.push({
                     key: "article",
                     value: baseArticleId
                 });
             }
+
 
             var links = [];
 
