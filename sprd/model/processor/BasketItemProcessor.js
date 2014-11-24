@@ -34,7 +34,7 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                 }
 
                 if(prop.key === "article"){
-                    elementPayload["article"] = this.$dataSource.getContextForChild(Article, shop).createEntity(Article, element.id);
+                    elementPayload["article"] = this.$dataSource.getContextForChild(Article, shop).createEntity(Article, prop.value);
                 }
 
             }
