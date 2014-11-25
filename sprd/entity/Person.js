@@ -39,9 +39,14 @@ define(["js/data/Entity", "js/data/transformer/TrimTransformer"], function (Enti
             var data = this.callBase();
 
             if (data.salutation) {
-                data.salutation = {
-                    id: data.salutation
-                };
+                // only send valid salutation id
+                if(SalutationMap[data.salutation]){
+                    data.salutation = {
+                        id: data.salutation
+                    };
+                } else {
+                    data.salutation = null;
+                }
             }
 
             return  data;
