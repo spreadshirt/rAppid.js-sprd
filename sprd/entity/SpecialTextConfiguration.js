@@ -81,14 +81,14 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         },
 
 
-        _commitChangedAttributes: function ($) {
+        _commitChangedAttributes: function ($, options) {
             this.callBase();
 
             if (!this.$.initialized) {
                 return;
             }
 
-            if (this._hasSome($, ["pimpImageService", "text", "font"])) {
+            if (this._hasSome($, ["pimpImageService", "text", "font"]) && !options.initial) {
                 this._debounceFunctionCall(this.fetchImage, "fetchImage", 430, this, [], "DELAY");
             }
         },
