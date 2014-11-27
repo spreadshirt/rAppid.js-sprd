@@ -770,10 +770,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         bus.setUp(configuration);
                         configuration.init(cb);
                     })
-                    .seq(function (cb) {
-                        var configuration = this.vars["configuration"];
-                        configuration.fetchImage(cb);
-                    })
                     .seq(function () {
                         var configuration = this.vars["configuration"];
                         // determinate position
