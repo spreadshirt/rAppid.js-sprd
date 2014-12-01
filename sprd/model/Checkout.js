@@ -46,6 +46,15 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
             document.body.appendChild(form);
             form.submit();
 
+        },
+
+        compose: function () {
+            var ret = this.callBase();
+
+            ret.payment = ret.payment || {};
+            ret.paymentType = ret.paymentType || {};
+
+            return ret;
         }
 
     });
