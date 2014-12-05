@@ -4,6 +4,7 @@ define(['js/data/Entity', 'sprd/model/Currency'], function (Entity, Currency) {
         defaults: {
             vatExcluded: 0,
             vatIncluded: 0,
+            display: 0,
             vat: 0,
             currency: Currency
         },
@@ -12,6 +13,7 @@ define(['js/data/Entity', 'sprd/model/Currency'], function (Entity, Currency) {
             vatExcluded: Number,
             vatIncluded: Number,
             vat: Number,
+            display: Number,
             currency: Currency
         },
 
@@ -29,7 +31,8 @@ define(['js/data/Entity', 'sprd/model/Currency'], function (Entity, Currency) {
             if (price) {
                 this.set({
                     vatIncluded: this.$.vatIncluded + price.$.vatIncluded,
-                    vatExcluded: this.$.vatExcluded + price.$.vatExcluded
+                    vatExcluded: this.$.vatExcluded + price.$.vatExcluded,
+                    display: this.$.display + price.$.display
                 });
             }
         }

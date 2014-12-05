@@ -2,7 +2,9 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
 
     var Discount = Entity.inherit('sprd.entity.BasketDiscount', {
         schema: {
-            discountScale: DiscountScale
+            discountScale: DiscountScale,
+            price: Price,
+            type: String
         }
     });
 
@@ -176,7 +178,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return null;
         }.onChange('links'),
 
-        getDiscount: function(type) {
+        getDiscount: function (type) {
             type = type || "scale";
 
             var discounts = this.$.discounts;
@@ -189,13 +191,33 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             });
         }.onChange("discounts"),
 
-        hasVoucher: function() {
+        getGoodsDiscountPrice: function () {
+            var discounts = this.$.discounts;
+            if (!discounts) {
+                return null;
+            }
+
+            var price = new Price();
+            discounts.each(function (discount) {
+                if (discount.$.price && ["scale", "voucherShipping"].indexOf(discount.$.type) == -1) {
+                    price.add(discount.$.price);
+                }
+            });
+
+            if (price.$.vatIncluded > 0) {
+                return price;
+            } else {
+                return null;
+            }
+        }.onChange("discounts"),
+
+        hasVoucher: function () {
             var discounts = this.$.discounts;
             if (!discounts) {
                 return false;
             }
 
-            return !!discounts.find(function(discount) {
+            return !!discounts.find(function (discount) {
                 return /^voucher/.test(discount.$.type)
             });
         }.onChange("discounts")
