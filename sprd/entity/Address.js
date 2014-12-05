@@ -258,7 +258,29 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
         isCompany: function () {
             return this.$.personSalutation === Person.Salutation.COMPANY
-        }.onChange('person.salutation')
+        }.onChange('person.salutation'),
+
+        isEqual: function (address) {
+            if (!address) {
+                return false;
+            }
+            var fields = ["type", "company", "vatId", "person", "street", "streetAnnex", "city", "state", "country", "zipCode", "postNr", "packStationNr", "phone", "fax"];
+            for (var i = 0; i < fields.length; i++) {
+                var value = this.get(fields[i]),
+                    compare = address.get(fields[i]);
+                if (value && value.isEqual) {
+                    if (!value.isEqual(compare)) {
+                        return false;
+                    }
+                } else {
+                    if (value !== compare) {
+                        return false;
+                    }
+                }
+            }
+            ;
+            return true;
+        }
     });
 
     Address.ADDRESS_TYPES = ADDRESS_TYPES;

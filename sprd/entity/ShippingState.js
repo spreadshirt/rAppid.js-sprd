@@ -29,6 +29,13 @@ define(["js/data/Entity", "sprd/entity/ShippingRegion"], function (Entity, Shipp
 
             return this.callBase(data);
 
+        },
+
+        isEqual: function (state) {
+            if (!state) {
+                return false;
+            }
+            return state.$.code == this.$.code;
         }
 
 
