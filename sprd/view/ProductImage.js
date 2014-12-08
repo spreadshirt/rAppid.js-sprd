@@ -70,7 +70,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
             }
             return null;
 
-        }.onChange('product', 'width', 'height', 'type', 'view', 'appearance')
+        }.onChange('product', 'width', 'height', 'type', 'view', 'appearance', 'product.defaultValues')
 
     });
 });
