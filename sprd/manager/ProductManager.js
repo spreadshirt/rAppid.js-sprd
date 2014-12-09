@@ -14,6 +14,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 bus: Bus
             },
 
+            events: [
+                "on:removedConfigurations"
+            ],
+
             /***
              * set the product type and converts all configurations
              *
@@ -290,6 +294,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         // no print area found, remove configuration
                         removeConfigurations.push(configuration);
                     }
+                }
+
+                if(removeConfigurations.length){
+                    this.trigger('on:removedConfigurations', {configurations: removeConfigurations}, this);
                 }
 
                 product.$.configurations.remove(removeConfigurations);
