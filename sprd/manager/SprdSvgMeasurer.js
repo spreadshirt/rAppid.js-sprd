@@ -40,9 +40,9 @@ define(["text/composer/SvgMeasurer", "xaml!text/ui/SvgTextArea"], function (SvgM
 
             return {
                 x: bbox.x,
-                y: bbox.y,
+                y: Math.max(bbox.y, 0),
                 width: bbox.width,
-                height: bbox.height
+                height: bbox.height - (bbox.y < 0 ? bbox.y : 0)
             };
 
         }
