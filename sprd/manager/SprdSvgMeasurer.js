@@ -38,11 +38,15 @@ define(["text/composer/SvgMeasurer", "xaml!text/ui/SvgTextArea"], function (SvgM
             var textEl = this.svgTextArea.$.text.$el;
             var bbox = textEl.getBBox();
 
+            // Chrome returns 0 for y, which is correct
+            // Safari returns some value for y
+            // when adding this value to the height, the height is correct in safari
+            // same for FF
             return {
                 x: bbox.x,
-                y: Math.max(bbox.y, 0),
+                y: 0,
                 width: bbox.width,
-                height: bbox.height - (bbox.y < 0 ? bbox.y : 0)
+                height: bbox.height + (bbox.y)
             };
 
         }
