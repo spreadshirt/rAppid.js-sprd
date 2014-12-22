@@ -39,11 +39,11 @@ define(["js/ui/View", "flow", "sprd/model/PrintType", "js/core/I18n"], function 
         },
 
         labelForPrintType: function (printType) {
-            if(this.$.i18n){
+            if (this.$.i18n) {
                 var key = LABEL_MAPPING[printType.$.id];
 
-                if(key){
-                    return this.$.i18n.t('printColorSelector.'+key);
+                if (key) {
+                    return this.$.i18n.t('printColorSelector.' + key);
                 }
             }
             return printType.$.name;
@@ -84,19 +84,14 @@ define(["js/ui/View", "flow", "sprd/model/PrintType", "js/core/I18n"], function 
                 allowNylonFlex = false,
                 allowDigital = false,
                 digitalPrintType = null,
-                plotPrintType = null;
+                plotPrintType = null,
+                digitalPrintTypes = [];
 
             if (possiblePrintTypes) {
-                var hasDigital = false;
                 for (var i = possiblePrintTypes.length - 1; i >= 0; i--) {
                     var printType = possiblePrintTypes[i];
                     if (!printType.isPrintColorColorSpace()) {
-                        if (!hasDigital) {
-                            hasDigital = true;
-                        } else {
-                            possiblePrintTypes.splice(i, 1);
-                            continue;
-                        }
+                        digitalPrintTypes.push(printType);
                     }
                     switch (printType.$.id) {
                         case PrintType.Mapping.Flex:
@@ -118,6 +113,18 @@ define(["js/ui/View", "flow", "sprd/model/PrintType", "js/core/I18n"], function 
                         default:
                             digitalPrintType = digitalPrintType || printType;
                             allowDigital = true;
+                    }
+                }
+            }
+
+            // if we have more than one digital print type
+            if (digitalPrintTypes.length > 1) {
+                // remove one
+                for (var j = digitalPrintTypes.length - 1; j >= 0; j--) {
+                    printType = digitalPrintTypes[j];
+                    if (printType !== this.$.configuration.$.printType) {
+                        possiblePrintTypes.splice(possiblePrintTypes.indexOf(printType), 1);
+                        break;
                     }
                 }
             }
