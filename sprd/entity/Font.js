@@ -13,7 +13,7 @@ define(["js/data/Entity"], function (Entity) {
         },
 
         getUniqueFontName: function() {
-            return "sprdfont_" + this.$.id;
+            return "sprdfont_" + this.$parent.$.id + "_" + this.$.id;
         },
 
         isBold: function() {
