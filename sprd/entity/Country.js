@@ -5,7 +5,14 @@ define(["js/data/Entity"], function (Entity) {
         schema: {
 
         },
-        idField: "code"
+        idField: "code",
+        isEqual: function (country) {
+            if (!country) {
+                return false;
+            }
+
+            return country.get('code') == this.$.code;
+        }
     });
 
 });

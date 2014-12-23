@@ -152,13 +152,9 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
                 shippingAddress = this.get(data, 'shipping.address');
 
             if (billingAddress || shippingAddress) {
-                /**
-                 * we use the ids to determin if the billing address is the same as billing address
-                 * its a lil bit of a hack but faster than comparing all the fields.
-                 *
-                 * */
-                if (billingAddress && shippingAddress) {
-                    data['invoiceToShippingAddress'] = shippingAddress.$.id == billingAddress.$.id;
+
+                if (shippingAddress && billingAddress) {
+                    data['invoiceToShippingAddress'] = shippingAddress.isEqual(billingAddress);
                 }
 
                 if (data['invoiceToShippingAddress']) {
