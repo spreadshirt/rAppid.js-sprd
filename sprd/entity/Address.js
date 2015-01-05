@@ -264,10 +264,14 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             if (!address) {
                 return false;
             }
-            var fields = ["type", "company", "vatId", "person", "street", "streetAnnex", "city", "state", "country", "zipCode", "postNr", "packStationNr", "phone", "fax"];
+            var field,
+                fields = ["type", "company", "vatId", "person.firstName", "person.lastName", "person.salutation", "street", "streetAnnex", "city", "state.code", "country.code", "zipCode", "postNr", "packStationNr", "phone", "fax"];
+
             for (var i = 0; i < fields.length; i++) {
-                var value = this.get(fields[i]),
-                    compare = address.get(fields[i]);
+                field = fields[i];
+                var value = this.get(field),
+                    compare = address.get(field);
+
                 if (value && value.isEqual) {
                     if (!value.isEqual(compare)) {
                         return false;
@@ -278,7 +282,6 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                     }
                 }
             }
-            ;
             return true;
         }
     });
