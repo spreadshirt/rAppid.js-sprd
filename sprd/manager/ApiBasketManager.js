@@ -337,7 +337,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         }
                     });
 
-                }, "saveBasketCall", 700, this, {}, "DELAY");
+                }, "saveBasketCall", 700, this, [], "DELAY");
             },
 
             saveBasket: function (callback) {
