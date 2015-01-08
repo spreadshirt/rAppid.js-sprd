@@ -381,6 +381,10 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
             },
 
             init: function (callback) {
+                if (this.initialized) {
+                    callback && callback(null, this);
+                    return;
+                }
                 var self = this;
 
                 flow()
@@ -420,7 +424,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                             .exec(cb);
                     })
                     .exec(function (err) {
-
+                        self.initialized = true;
                         self.trigger("productInitialized");
                         self.trigger("priceChanged");
 

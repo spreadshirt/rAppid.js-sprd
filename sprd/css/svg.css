@@ -98,19 +98,21 @@ image {
 }
 
 .text-configuration-background {
-    fill: red;
+    fill: rgba(255,255,255,0);
     fill-opacity: 0.01;
 }
 
 .dark .text-cursor {
-    fill: white;
+    stroke: white;
 }
 
 .bright .text-cursor {
-    fill: blue;
+    stroke: blue;
 }
 
 .text-cursor {
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
     visibility: hidden;
 }
 

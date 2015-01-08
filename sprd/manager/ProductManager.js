@@ -190,10 +190,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             possiblePrintTypes.unshift(printType);
                         }
 
-                        var optimalScale = Math.min(
-                                targetPrintAreaWidth / currentPrintAreaWidth,
-                                targetPrintAreaHeight / currentPrintAreaHeight
-                        ) * Math.abs(configuration.$.scale.x);
+                        var optimalScale = Math.abs(configuration.$.scale.x);
+
+                        if (product.$.productType !== productType) {
+                            optimalScale = Math.min(
+                                    targetPrintAreaWidth / currentPrintAreaWidth,
+                                    targetPrintAreaHeight / currentPrintAreaHeight
+                            ) * Math.abs(configuration.$.scale.x);
+                        }
 
                         var allowScale = configuration.allowScale(),
                             printTypeFallback;
@@ -296,7 +300,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     }
                 }
 
-                if(removeConfigurations.length){
+                if (removeConfigurations.length) {
                     this.trigger('on:removedConfigurations', {configurations: removeConfigurations}, this);
                 }
 
