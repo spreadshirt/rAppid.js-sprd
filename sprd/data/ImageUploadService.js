@@ -48,7 +48,10 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
 
                 if (restrictions instanceof Function) {
                     callback = restrictions;
-                    restrictions = null;
+                    restrictions = {};
+                }
+                if (uploadDesign.$.image.$.type == 'image/svg+xml') {
+                    restrictions.colorCount = 3;
                 }
 
                 callback = callback || this.emptyCallback();
