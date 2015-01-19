@@ -1,8 +1,7 @@
-define(["sprd/data/SprdModel"], function (SprdModel) {
+define(["sprd/data/SprdModel", "js/data/Entity"], function (SprdModel, Entity) {
     return SprdModel.inherit("sprd.model.PaymentType", {
 
         defaults: {
-
         },
 
         schema: {
@@ -10,7 +9,8 @@ define(["sprd/data/SprdModel"], function (SprdModel) {
             methodCode: String,
             categoryCode: String,
             grossLowerLimit: Number,
-            grossUpperLimit: Number
+            grossUpperLimit: Number,
+            banks: [Entity]
         }
 
     });
