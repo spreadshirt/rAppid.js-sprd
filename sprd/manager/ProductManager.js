@@ -645,6 +645,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             anchorIndex: 0
                         });
 
+                        configuration.set('isNew', true);
+
                         // determinate position
                         self._positionConfiguration(configuration);
                     })

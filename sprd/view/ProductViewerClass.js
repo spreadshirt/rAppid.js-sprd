@@ -53,15 +53,19 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
         },
 
         _commitSelectedConfiguration: function (selectedConfiguration, oldSelectedConfiguration) {
-
-            if (this.$.removeEmptyTextConfiguration && oldSelectedConfiguration &&
-                oldSelectedConfiguration.type === "text" && oldSelectedConfiguration.$.textFlow &&
-                this.$.product) {
-
-                var text = oldSelectedConfiguration.$.textFlow.text(0, -1);
-                if (/^[\s\n\r]*$/.test(text)) {
+            if(this.$.product && oldSelectedConfiguration && oldSelectedConfiguration.type === "text"){
+                if(oldSelectedConfiguration.$.isNew){
                     this.$.product.$.configurations.remove(oldSelectedConfiguration);
                 }
+                if (this.$.removeEmptyTextConfiguration
+                     && oldSelectedConfiguration.$.textFlow) {
+
+                    var text = oldSelectedConfiguration.$.textFlow.text(0, -1);
+                    if (/^[\s\n\r]*$/.test(text)) {
+                        this.$.product.$.configurations.remove(oldSelectedConfiguration);
+                    }
+                }
+
             }
 
             if (this.isRendered() && selectedConfiguration && !this.$stage.$browser.hasTouch) {
