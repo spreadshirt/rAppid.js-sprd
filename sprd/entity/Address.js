@@ -224,6 +224,11 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 delete data.postNr;
             }
 
+            if(!this.isCompany()){
+                delete data.company;
+                delete data.vatId;
+            }
+
             return data;
         },
 

@@ -28,9 +28,10 @@ define(['sprd/data/SprdModel', 'js/data/Collection', 'sprd/model/Currency', 'spr
 
         },
 
-        isMarketPlace: function () {
-            var platform = this.$.platform,
-                id = this.$.id;
+        isMarketPlace: function (platform) {
+            platform = platform || this.$.platform;
+            var id = this.$.id;
+
             return (platform === "EU" && id == MarketPlace.EU) || (platform === "NA" && id == MarketPlace.NA);
         }.onChange("platform", "id"),
 
