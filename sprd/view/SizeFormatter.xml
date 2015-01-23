@@ -1,0 +1,3 @@
+<view:SizeFormatterClass xmlns="http://www.w3.org/1999/xhtml" xmlns:view="sprd.view">
+    <span class="size-part">${$text}</span>
+</view:SizeFormatterClass>
