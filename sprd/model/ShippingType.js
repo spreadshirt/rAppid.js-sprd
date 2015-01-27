@@ -8,7 +8,9 @@ define(['sprd/data/SprdModel', 'sprd/entity/ShippingCountry', 'sprd/entity/Shipp
             trackingLink: null,
 
             isExpress: false,
-            phoneNumberRequired: false
+            phoneNumberRequired: false,
+
+            supportsPackstation: true
         },
 
         schema: {
@@ -21,7 +23,9 @@ define(['sprd/data/SprdModel', 'sprd/entity/ShippingCountry', 'sprd/entity/Shipp
             shippingRegions: [ShippingRegion],
 
             isExpress: Boolean,
-            phoneNumberRequired: Boolean
+            phoneNumberRequired: Boolean,
+
+            supportsPackstation: Boolean
         },
 
         /***
