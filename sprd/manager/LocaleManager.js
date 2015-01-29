@@ -26,7 +26,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
             locale = (locale || config.fallbackLocale);
 
-            if (_.indexOf(config.supportedLocales, locale)) {
+            if (_.include(config.supportedLocales, locale)) {
                 return locale;
             }
 
