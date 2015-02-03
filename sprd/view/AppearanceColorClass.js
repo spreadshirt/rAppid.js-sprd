@@ -11,7 +11,8 @@ define(["js/ui/View"], function (View) {
 
         defaults: {
             appearance: null,
-            componentClass: "appearance-color appearance-{appearance.id}"
+            componentClass: "appearance-color appearance-{appearance.id}",
+            title: "{appearance.name}"
         },
 
         colorWidth: function (index) {
