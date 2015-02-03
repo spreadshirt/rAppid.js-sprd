@@ -234,7 +234,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
         needsVatId: function () {
             return this.isCompany() && (this.$.isBillingAddress || this.$.isSameAsBillingAddress);
-        }.onChange('person.salutation', 'isBillingAddress', 'isSameAsBillingAddress'),
+        }.onChange('personSalutation', 'isBillingAddress', 'isSameAsBillingAddress'),
 
         isPackStation: function () {
             return this.$.type == ADDRESS_TYPES.PACKSTATION;
@@ -263,7 +263,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
         isCompany: function () {
             return this.$.personSalutation === Person.Salutation.COMPANY
-        }.onChange('person.salutation'),
+        }.onChange('personSalutation'),
 
         isEqual: function (address) {
             if (!address) {
