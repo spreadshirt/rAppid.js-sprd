@@ -13,7 +13,7 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
              * the appearance of the basket item
              * @type sprd.entity.Appearance
              */
-            appearance: null,
+            appearance: "{getProduct().appearance}",
             /***
              * the size of the basket item
              * @type sprd.entity.ProductTypeSize
