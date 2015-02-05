@@ -308,7 +308,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         height: function (scale) {
 
             if (!scale && scale !== 0) {
-                scale = this.$.scale.y;
+                scale = this.get('scale.y') || 0;
             }
 
             return Math.abs(this.size().$.height * scale);
@@ -317,7 +317,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         width: function (scale) {
 
             if (!scale && scale !== 0) {
-                scale = this.$.scale.x;
+                scale = this.get('scale.x') || 0;
             }
 
             return Math.abs(this.size().$.width * scale);

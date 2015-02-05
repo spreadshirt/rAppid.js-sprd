@@ -645,6 +645,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             anchorIndex: 0
                         });
 
+                        configuration.set('isNew', true);
+
                         // determinate position
                         self._positionConfiguration(configuration);
                     })
@@ -961,7 +963,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var width = specialTextConfiguration.width();
                 _.extend(params, {
                     addToProduct: false,
-                    text: specialTextConfiguration.$.text.replace(/^\n+|\n+$/gi, "")
+                    text: (specialTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, "")
                 });
                 var self = this;
                 this.addText(product, params, function (err, config) {

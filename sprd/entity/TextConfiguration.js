@@ -10,7 +10,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 composedTextFlow: null,
                 selection: null,
                 bound: null,
-                copyrightWordList: null
+                copyrightWordList: null,
+                isNew: false
             },
 
             inject: {
@@ -89,6 +90,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         self.$.bus && self.$.bus.trigger('Application.productChanged', null, self);
                     }, "productChanged", 300);
                 });
+                this.set('isNew', false);
 
                 this.trigger("priceChanged");
                 this.trigger("configurationChanged");

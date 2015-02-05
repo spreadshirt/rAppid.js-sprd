@@ -25,7 +25,8 @@ define(["underscore"], function(_) {
         NA: {
             fr_CA: "ca/fr",
             en_CA: "ca",
-            us_US: "com"
+            us_US: "com",
+            us_AU: "com.au"
         }
     };
 
