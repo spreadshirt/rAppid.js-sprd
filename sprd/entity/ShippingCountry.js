@@ -5,7 +5,8 @@ define(["sprd/entity/Country", "sprd/entity/ShippingRegion", "sprd/entity/Shippi
             name: null,
             shippingRegion: null,
             externalFulfillmentSupported: true,
-            trackingLink: null
+            trackingLink: null,
+            customs: false
         },
 
         schema: {
@@ -15,6 +16,7 @@ define(["sprd/entity/Country", "sprd/entity/ShippingRegion", "sprd/entity/Shippi
                 type: ShippingRegion
             },
             externalFulfillmentSupported: Boolean,
+            customs: Boolean,
             trackingLink: Object,
             shippingStates: [ShippingState]
         },
