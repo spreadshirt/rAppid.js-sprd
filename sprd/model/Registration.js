@@ -51,6 +51,10 @@ define(["sprd/data/SprdModel",
                 data.salutation = {
                     id: data.salutation
                 };
+            } else {
+                data.salutation = {
+                    id: 0
+                }
             }
 
             if (data.shop) {
