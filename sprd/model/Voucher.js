@@ -1,7 +1,7 @@
 define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "underscore"], function (SprdModel, Validator, JSON, _) {
 
     var VoucherValidator = Validator.inherit({
-        validate: function(entity, options, callback) {
+        validate: function (entity, options, callback) {
             var self = this;
 
             if (!entity.$.voucherCode) {
@@ -9,7 +9,7 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "underscor
                 return;
             }
 
-            entity.save(null, function(err) {
+            entity.save(null, function (err) {
                 var errors = [];
 
                 if (err) {
@@ -50,13 +50,11 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "underscor
             }
         },
 
-        idField: "voucherCode",
-
         validators: [
             new VoucherValidator()
         ],
 
-        _saveAndRefresh: function(options, callback) {
+        _saveAndRefresh: function (options, callback) {
             var basketManager = this.$.basketManager;
 
             if (basketManager) {
@@ -77,14 +75,14 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "underscor
             });
         },
 
-        save: function(options, callback) {
+        save: function (options, callback) {
             var self = this;
 
             this.synchronizeFunctionCall(function (cb) {
                 this._saveAndRefresh(options || {}, cb);
             }, "save", function (err, model) {
 
-                setTimeout(function() {
+                setTimeout(function () {
                     self.$synchronizeCache["save"] = null;
                 }, 1000);
 
