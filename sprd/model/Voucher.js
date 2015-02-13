@@ -25,7 +25,7 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "underscor
                         code = "generic";
                     }
 
-                    errors.push(self._createError(code, "voucher error", "voucher"))
+                    errors.push(self._createError(code, "voucher error", "voucherCode"))
                 }
 
                 callback(null, errors);
@@ -49,6 +49,8 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "underscor
                 type: String
             }
         },
+
+        idField: "voucherCode",
 
         validators: [
             new VoucherValidator()
