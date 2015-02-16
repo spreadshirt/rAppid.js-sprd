@@ -54,13 +54,15 @@
                 <conf:ResourceConfiguration path="articles" modelClassName="sprd.model.Article"/>
             </conf:ResourceConfiguration>
 
-            <conf:ResourceConfiguration path="printTypes" modelClassName="sprd.model.PrintType" sessionRequired="true"/>
-            <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" signatureRequired="true"/>
-            <conf:ResourceConfiguration path="products" modelClassName="sprd.model.Product" sessionRequired="true"/>
+            <conf:ResourceConfiguration path="printTypes" modelClassName="sprd.model.PrintType" sessionRequired="true" signatureRequired="true"/>
+            <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" signatureRequired="true" apiKeyRequired="true"/>
+            <conf:ResourceConfiguration path="products" modelClassName="sprd.model.Product" sessionRequired="true" apiKeyRequired="true" signatureRequired="true"/>
             <conf:ResourceConfiguration path="designCategories" modelClassName="sprd.model.DesignCategory"
-                                        sessionRequired="true"/>
+                                        sessionRequired="true" signatureRequired="true">
+                <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" apiKeyRequired="true" signatureRequired="true"/>
+            </conf:ResourceConfiguration>
 
-            <conf:ResourceConfiguration path="fontFamilies" modelClassName="sprd.model.FontFamily"/>
+            <conf:ResourceConfiguration path="fontFamilies" modelClassName="sprd.model.FontFamily" apiKeyRequired="true" signatureRequired="true"/>
             <conf:ResourceConfiguration path="productTypeDepartments"
                                         modelClassName="sprd.model.ProductTypeDepartment"/>
             <conf:ResourceConfiguration path="shippingTypes" modelClassName="sprd.model.ShippingType"/>
@@ -69,7 +71,7 @@
                                         sessionRequired="true"/>
 
             <conf:ResourceConfiguration path="productTypes" modelClassName="sprd.model.ProductType"
-                                        sessionRequired="true">
+                                        sessionRequired="true" signatureRequired="true">
                 <conf:ResourceConfiguration path="stockStates" modelClassName="sprd.model.StockState"
                                             collectionClassName="sprd.collection.StockStates"/>
             </conf:ResourceConfiguration>
