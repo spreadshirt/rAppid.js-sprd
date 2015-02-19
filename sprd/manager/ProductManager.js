@@ -804,6 +804,114 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
+            moveConfigurationToView: function (product, configuration, view, callback) {
+
+                var self = this,
+                    bus = this.$.bus,
+                    params = {},
+                    productType = product.$.productType,
+                    appearance = product.$.appearance,
+                    printArea,
+                    printType,
+                    printTypeId;
+
+
+                flow()
+                    .seq("printArea", function () {
+
+                        if (!printArea && params.perspective && !view) {
+                            view = productType.getViewByPerspective(params.perspective);
+                        }
+
+                        if (!printArea && view) {
+                            // get print area by view
+                            if (!productType.containsView(view)) {
+                                throw new Error("View not on ProductType");
+                            }
+
+                            // TODO: look for print area that supports print types, etc...
+                            printArea = view.getDefaultPrintArea();
+                        }
+
+                        view = product.$.view || product.getDefaultView();
+                        if (!printArea && view) {
+                            printArea = view.getDefaultPrintArea();
+                        }
+
+                        if (!printArea) {
+                            throw new Error("target PrintArea couldn't be found.");
+                        }
+
+                        if (printArea.get("restrictions.textAllowed") === false) {
+                            throw new Error("text cannot be added to this print area");
+                        }
+
+                        return printArea;
+                    })
+                    .seq("printType", function () {
+                        var possiblePrintTypes;
+                        if (configuration instanceof SpecialTextConfiguration) {
+                            possiblePrintTypes = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance.$.id);
+                        } else if (configuration instanceof TextConfiguration) {
+                            var fontFamily = configuration.$.textFlow.findLeaf(0).$.style.$.font.$parent;
+                            possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance.$.id);
+                        } else if (configuration instanceof DesignConfiguration) {
+                            possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, printArea, appearance.$.id);
+                        }
+
+                        if (printType && !_.contains(possiblePrintTypes, printType)) {
+                            throw new Error("PrintType not possible for text and printArea");
+                        }
+
+                        if (printTypeId) {
+                            for (var i = possiblePrintTypes.length; i--;) {
+                                if (possiblePrintTypes[i].$.id == printTypeId) {
+                                    printType = possiblePrintTypes[i];
+                                    break;
+                                }
+                            }
+                        }
+
+                        printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
+
+                        if (!printType) {
+                            throw new Error("No printType available");
+                        }
+
+                        return printType;
+                    })
+                    .seq(function (cb) {
+                        printType.fetch(null, cb);
+                    })
+                    .seq(function () {
+                        product.$.configurations.remove(configuration);
+                        configuration.set({
+                            scale: {x: 1, y: 1},
+                            printType: printType,
+                            printArea: printArea
+                        }, {silent: true});
+
+
+                    })
+                    .seq(function () {
+                        configuration.clearErrors();
+                        self._positionConfiguration(configuration);
+                    })
+                    .exec(function (err) {
+                        callback && callback(err);
+
+                        if (!err) {
+                            product._addConfiguration(configuration);
+                            bus.trigger('Application.productChanged', null);
+                        } else {
+                            configuration.clearErrors();
+                            self._positionConfiguration(configuration);
+                        }
+                    })
+
+
+            },
+
             setTextForConfiguration: function (text, configuration) {
                 if (!(configuration instanceof TextConfiguration)) {
                     throw new Error("Configuration is not a TextConfiguration");

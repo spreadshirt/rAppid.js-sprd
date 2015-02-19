@@ -53,12 +53,12 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
         },
 
         _commitSelectedConfiguration: function (selectedConfiguration, oldSelectedConfiguration) {
-            if(this.$.product && oldSelectedConfiguration && oldSelectedConfiguration.type === "text"){
-                if(oldSelectedConfiguration.$.isNew){
+            if (this.$.product && oldSelectedConfiguration && oldSelectedConfiguration.type === "text") {
+                if (oldSelectedConfiguration.$.isNew) {
                     this.$.product.$.configurations.remove(oldSelectedConfiguration);
                 }
                 if (this.$.removeEmptyTextConfiguration
-                     && oldSelectedConfiguration.$.textFlow) {
+                    && oldSelectedConfiguration.$.textFlow) {
 
                     var text = oldSelectedConfiguration.$.textFlow.text(0, -1);
                     if (/^[\s\n\r]*$/.test(text)) {
@@ -195,7 +195,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 }
                 this.trigger('on:configurationSelect', configuration);
                 this.set('selectedConfigurationViewer', viewer);
-                if (viewer) {
+                if (viewer && this.$.product.$.configurations.size() > 1) {
                     // rearange configurations in list
                     this.$.product.$.configurations.remove(configuration, {silent: true});
                     this.$.product.$.configurations.add(configuration, {silent: true});
@@ -334,6 +334,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
         _delegateEvent: function (e) {
 
             if (this.$stage.$browser.isIOS || this.$.textArea.get('opacity') == 0) {
+                this.$.productViewerSvg.$currentProductTypeViewViewer._handleDown(e);
                 var viewer = this.$.selectedConfigurationViewer;
                 if (viewer) {
                     viewer._down(e.domEvent, viewer._isGesture(e.domEvent) ? "gesture" : "move");
@@ -347,9 +348,12 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             this.$pointerMoveEventTriggerd = true;
         },
 
-        _endTextAreaMove: function (e) {
+        _handlePointerUp: function (e) {
             if (!this.$pointerMoveEventTriggerd) {
                 e.target.focus();
+            }
+            if (this.$stage.$browser.isIOS || this.$.textArea.get('opacity') == 0) {
+                this.$.productViewerSvg.$currentProductTypeViewViewer._handleUp(e);
             }
         },
 
