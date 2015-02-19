@@ -188,6 +188,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
 
             var viewer = this.$configurationViewerCache[configuration.$cid];
             if (viewer) {
+                delete this.$configurationViewerCache[configuration.$cid];
                 viewer.remove();
                 viewer.destroy();
             }
