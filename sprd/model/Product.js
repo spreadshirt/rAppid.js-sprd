@@ -489,6 +489,13 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 if (attributes.hasOwnProperty("appearance") || attributes.hasOwnProperty("productType")) {
                     this.trigger("productChanged");
                 }
+            },
+            sync: function () {
+                var ret = this.callBase();
+                if (ret) {
+                    this._$source.initialized = false;
+                }
+                return ret;
             }
         });
     });
