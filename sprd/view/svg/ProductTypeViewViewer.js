@@ -147,21 +147,22 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     }
                 }
             }
-
             this.dom(this.$stage.$window).bindDomEvent('pointermove', this.$moveHandler);
         },
         unbindMoveEvent: function () {
-            this.dom(this.$stage.$window).unbindDomEvent('pointermove', this.$moveHandler);
+            if (this.$moveHandler) {
+                this.dom(this.$stage.$window).unbindDomEvent('pointermove', this.$moveHandler);
+            }
         },
         _handleUp: function (e) {
             var domEvent = e.domEvent;
             if (dndObject) {
                 var viewer = this;
+                dndObject.viewer.unbindMoveEvent();
                 if (domEvent.changedTouches && domEvent.changedTouches.length) {
                     viewer = findProductTypeViewViewer(domEvent.changedTouches[0].clientX, domEvent.changedTouches[0].clientY, viewer);
                 }
                 if (viewer && dndObject.viewer !== viewer) {
-                    dndObject.viewer.unbindMoveEvent();
                     e.stopPropagation();
                     var configView = dndObject.configurationViewer;
                     configView.set('preventValidation', false);
