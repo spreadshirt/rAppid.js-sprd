@@ -833,6 +833,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                             // TODO: look for print area that supports print types, etc...
                             printArea = view.getDefaultPrintArea();
+                            return printArea;
                         }
 
                         view = product.$.view || product.getDefaultView();
