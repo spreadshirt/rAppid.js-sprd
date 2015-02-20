@@ -125,13 +125,18 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
                         if (configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
                             if (clientRect.left > x || clientRect.right < x || clientRect.top > y || clientRect.bottom < y) {
-                                configViewer && configViewer.addClass('hide-configuration');
-                                dndObject.dndImage.set({
-                                    'visible': true,
-                                    'left': x,
-                                    'top': y
-                                });
+                                if (configViewer) {
+                                    configViewer.$.configuration.clearErrors();
+                                    configViewer.set('preventValidation', true);
+                                    configViewer.addClass('hide-configuration');
+                                    dndObject.dndImage.set({
+                                        'visible': true,
+                                        'left': x,
+                                        'top': y
+                                    });
+                                }
                             } else {
+                                configViewer.set('preventValidation', false);
                                 configViewer && configViewer.removeClass('hide-configuration');
                                 dndObject.dndImage.set({
                                     'visible': false
@@ -158,7 +163,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 if (viewer && dndObject.viewer !== viewer) {
                     dndObject.viewer.unbindMoveEvent();
                     e.stopPropagation();
-                    var configView = dndObject.viewer.getViewerForConfiguration(dndObject.config);
+                    var configView = dndObject.configurationViewer;
+                    configView.set('preventValidation', false);
                     configView.$moving = false;
 
                     var productManager = dndObject.viewer.get('product.manager');

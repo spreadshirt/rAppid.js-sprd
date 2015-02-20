@@ -65,7 +65,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _mode: null,
                 _rotationRadius: null,
 
-                imageService: null
+                imageService: null,
+                preventValidation: false
             },
 
             inject: {
@@ -293,12 +294,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var configuration = this.$.configuration;
                 if (configuration) {
 
+                    var self = this;
                     this._debounceFunctionCall(function () {
-                        configuration._setError(configuration._validateTransform({
-                            offset: this.$._offset,
-                            scale: this.$._scale,
-                            rotation: this.$._rotation
-                        }));
+                        if (!self.$.preventValidation) {
+                            configuration._setError(configuration._validateTransform({
+                                offset: this.$._offset,
+                                scale: this.$._scale,
+                                rotation: this.$._rotation
+                            }));
+                        }
                     }, "transformationChanged");
                 }
             },
