@@ -813,7 +813,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     appearance = product.$.appearance,
                     printArea,
                     printType,
-                    printTypeId;
+                    printTypeId,
+                    currentScale = configuration.$.scale,
+                    currentOffset = configuration.$.offset.clone();
 
 
                 flow()
@@ -886,6 +888,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq(function () {
                         product.$.configurations.remove(configuration);
                         configuration.set({
+                            rotation: 0,
                             scale: {x: 1, y: 1},
                             printType: printType,
                             printArea: printArea
@@ -904,8 +907,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             product._addConfiguration(configuration);
                             bus.trigger('Application.productChanged', null);
                         } else {
+                            configuration.set({
+                                offset: currentOffset,
+                                scale: currentScale
+                            });
                             configuration.clearErrors();
-                            self._positionConfiguration(configuration);
                         }
                     })
 
