@@ -27,8 +27,6 @@ define(["sprd/data/SprdModel",
     var Newsletter = Entity.inherit('sprd.model.Registration.Newsletter', {
         defaults: {
             lists: {
-                service: true,
-                survey: true,
                 customer: true
             }
         },
@@ -44,6 +42,7 @@ define(["sprd/data/SprdModel",
         setListType: function (type, enabled) {
             this.$.lists[type] = !!enabled;
         },
+
         compose: function () {
             var data = this.callBase();
 
@@ -51,6 +50,10 @@ define(["sprd/data/SprdModel",
                 data.salutation = {
                     id: data.salutation
                 };
+            } else {
+                data.salutation = {
+                    id: 0
+                }
             }
 
             if (data.shop) {

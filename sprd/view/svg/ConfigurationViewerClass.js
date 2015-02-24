@@ -65,7 +65,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _mode: null,
                 _rotationRadius: null,
 
-                imageService: null
+                imageService: null,
+                preventValidation: false
             },
 
             inject: {
@@ -216,7 +217,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     });
 
                     assetContainer.bindDomEvent("pointerdown", function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : MOVE, assetContainer);
+                        self._down(e, self._isGesture(e) ? GESTURE : MOVE);
                     });
 
                     scaleHandle && scaleHandle.bindDomEvent("pointerdown", function (e) {
@@ -293,12 +294,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var configuration = this.$.configuration;
                 if (configuration) {
 
+                    var self = this;
                     this._debounceFunctionCall(function () {
-                        configuration._setError(configuration._validateTransform({
-                            offset: this.$._offset,
-                            scale: this.$._scale,
-                            rotation: this.$._rotation
-                        }));
+                        if (!self.$.preventValidation) {
+                            configuration._setError(configuration._validateTransform({
+                                offset: this.$._offset,
+                                scale: this.$._scale,
+                                rotation: this.$._rotation
+                            }));
+                        }
                     }, "transformationChanged");
                 }
             },
@@ -330,6 +334,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     // not left mouse button
                     return;
                 }
+
+                this.$moveInitiator = initiator;
 
                 // there is a current action and another down -> gesture
                 if (this.$._mode !== null) {
@@ -573,6 +579,22 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     window.bindDomEvent("keydown", this.$keyDownHandler);
                     window.bindDomEvent("keyup", this.$keyUpHandler);
                 }
+
+            },
+
+            _beforeDestroy: function () {
+                this.callBase();
+
+                var snapLines = this.$.printAreaViewer.$.snapLines;
+                snapLines && snapLines.clear();
+
+                var $w = this.$stage.$window;
+                this.$window = this.$window || this.dom($w);
+
+                var window = this.$window;
+
+                window.unbindDomEvent("pointermove", this.$moveHandler);
+                window.unbindDomEvent("pointerup", this.$upHandler);
 
             },
 

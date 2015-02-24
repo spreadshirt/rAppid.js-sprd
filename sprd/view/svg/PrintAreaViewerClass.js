@@ -56,6 +56,8 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
                 height: this.get('_viewMap.printArea.boundary.size.height')
             });
 
+            this.$border = border;
+
             var softBoundary = this.get("_viewMap.printArea.boundary.soft.content.svg.path.d");
 
             if (softBoundary) {
@@ -90,6 +92,13 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
             }
 
             this.callBase();
+        },
+
+        getStaticBoundingRect: function () {
+            if (this.$border && this.$border.$el) {
+                return this.$border.$el.getBoundingClientRect();
+            }
+            return null;
         },
 
         initialize: function () {
@@ -188,6 +197,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
 
             var viewer = this.$configurationViewerCache[configuration.$cid];
             if (viewer) {
+                delete this.$configurationViewerCache[configuration.$cid];
                 viewer.remove();
                 viewer.destroy();
             }
