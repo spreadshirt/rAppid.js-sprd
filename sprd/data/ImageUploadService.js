@@ -1,4 +1,6 @@
-define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sprd/model/UploadImage", "sprd/type/UploadDesign", "underscore", 'sprd/entity/FileSystemImage', 'sprd/entity/RemoteImage', "sprd/entity/Image", 'sprd/data/IframeUpload', 'sprd/manager/TrackingManager'],
+define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sprd/model/UploadImage",
+        "sprd/type/UploadDesign", "underscore", "sprd/entity/FileSystemImage", "sprd/entity/RemoteImage",
+        "sprd/entity/Image", "sprd/data/IframeUpload", "sprd/manager/TrackingManager"],
     function (Component, ImageServerDataSource, flow, UploadImage, UploadDesign, _, FileSystemImage, RemoteImage, Image, iFrameUpload, TrackingManager) {
 
         return Component.inherit('sprd.data.ImageUploadService', {
@@ -12,6 +14,14 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                 trackingManager: TrackingManager
             },
 
+            /**
+             * Upload image from local file system
+             *
+             * @param {sprd.entity.Image | sprd.data.iFrameUpload} data
+             * @param {Object} restrictions
+             * @param {Function} callback
+             * @returns {sprd.type.UploadDesign}
+             */
             upload: function (data, restrictions, callback) {
                 var image;
 
@@ -41,14 +51,26 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                 return uploadDesign;
             },
 
-
+            /**
+             * Upload image to image server and show progress
+             *
+             * @param {sprd.type.UploadDesign} uploadDesign
+             * @param {Object} restrictions
+             * @param {Function} [callback]
+             * @private
+             */
             _uploadDesign: function (uploadDesign, restrictions, callback) {
                 var self = this,
-                    trackingManager = this.$.trackingManager;
+                    trackingManager = this.$.trackingManager,
+                    message;
 
                 if (restrictions instanceof Function) {
                     callback = restrictions;
-                    restrictions = null;
+                    restrictions = {};
+                }
+                if (uploadDesign.isVectorMimeType() || uploadDesign.isVectorExtension()) {
+                    restrictions.colorCount = 3;
+                    uploadDesign.set('isVector', true);
                 }
 
                 callback = callback || this.emptyCallback();
@@ -56,8 +78,6 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                 var uploadContext = this.$.uploadContext,
                     imageServer = this.$.imageServer,
                     errorTracked = false;
-
-                var message;
 
                 if (!uploadContext) {
                     message = "No upload context set. Cancel upload";
@@ -79,9 +99,11 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
 
                 flow()
                     .seq(function (cb) {
+                        // Fetch all designs for the shop (API)
                         uploadContext.fetch(null, cb);
                     })
                     .seq("design", function () {
+                        // Create a new design placeholder for the shop (API)
                         var design = uploadContext.getCollection("designs").createItem();
                         design.set("name", uploadDesign.get("image.name"));
 
@@ -92,7 +114,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                         return design;
                     })
                     .seq(function (cb) {
-                        this.vars["design"].save(null, function(err) {
+                        this.vars["design"].save(null, function (err) {
                             if (err && trackingManager) {
                                 trackingManager.trackUploadDesignCreationFailed(err);
                                 errorTracked = true;
@@ -102,6 +124,9 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                         });
                     })
                     .seq(function (cb) {
+
+                        // Upload image to image server
+
                         var design = this.vars["design"];
                         var uploadImage = imageServer.createEntity(UploadImage, design.$.id);
                         uploadImage.set('image', uploadDesign.$.image);
@@ -113,7 +138,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
 
                         if (uploadDesign.$.image instanceof iFrameUpload) {
                             uploadDesign.$.image.upload({
-                                url : self.$.imageServer.$.endPoint + '/designs/' + uploadDesign.$.id,
+                                url: self.$.imageServer.$.endPoint + '/designs/' + uploadDesign.$.id,
                                 queryParams: '?method=put&apiKey=' + self.$.imageServer.$.apiKey
                             }, cb);
                         } else {

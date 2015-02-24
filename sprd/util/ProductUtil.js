@@ -2,6 +2,13 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
     return {
 
+        DesignServiceState: {
+            APPROVED: "APPROVED",
+            TO_BE_APPROVED: "TO_BE_APPROVED",
+            REJECTED: "REJECTED",
+            TO_BE_APPROVED_BY_USER: "TO_BE_APPROVED_BY_USER"
+        },
+
         getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearanceId) {
             return ArrayUtil.average(design.$.printTypes.$items,
                 this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId));
@@ -93,8 +100,47 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                 .exec(function (err) {
                     callback(err, colors);
                 });
-        }
+        },
 
+        /**
+         * Returns if the vector design is already processed.
+         *
+         * @param {Object} design
+         * @returns {boolean}
+         */
+        isDesignServiceStateApproved: function (design) {
+            return design.$.designServiceState == this.DesignServiceState.APPROVED;
+        },
+
+        /**
+         * Returns if the vector design is still in the processing.
+         *
+         * @param {Object} design
+         * @returns {boolean}
+         */
+        isDesignServiceStateChecking: function (design) {
+            return design.$.designServiceState == this.DesignServiceState.TO_BE_APPROVED;
+        },
+
+        /**
+         * Returns if the vector design is rejected.
+         *
+         * @param {Object} design
+         * @returns {boolean}
+         */
+        isDesignServiceStateRejected: function (design) {
+            return design.$.designServiceState == this.DesignServiceState.REJECTED;
+        },
+
+        /**
+         * Returns if the vector design needs an approval.
+         *
+         * @param {Object} design
+         * @returns {boolean}
+         */
+        isDesignServiceStateRequireApproval: function (design) {
+            return design.$.designServiceState == this.DesignServiceState.TO_BE_APPROVED_BY_USER;
+        }
     };
 
 });
