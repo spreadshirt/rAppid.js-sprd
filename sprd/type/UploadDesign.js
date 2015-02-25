@@ -1,4 +1,4 @@
-define(["js/core/Bindable"], function (Bindable) {
+define(["js/core/Bindable", "sprd/model/Design"], function (Bindable, Design) {
 
     var State = {
         ERROR: "error",
@@ -73,6 +73,49 @@ define(["js/core/Bindable"], function (Bindable) {
          */
         isAllowedExtension: function () {
             return UploadDesign.isAllowedExtension(this.$.image.$.name);
+        },
+
+        checkDesign: function (cb) {
+            if (this.$.design) {
+                this.$checkCallbacks = this.$checkCallbacks || [];
+                if (cb && this.$checkCallbacks.indexOf(cb) === -1) {
+                    this.$checkCallbacks.push(cb);
+                }
+                var options = {},
+                    self = this;
+                if (this.get('state') == State.CONVERTING) {
+                    options.noCache = true;
+                }
+                this.$.design.fetch(options, function (err, design) {
+                    self.set('designLoaded', true);
+                    var timeout;
+                    if (!err) {
+                        var state = self.$.state;
+                        if (design.isVectorDesign()) {
+                            if (design.$.designServiceState == Design.DesignServiceState.APPROVED) {
+                                state = UploadDesign.State.LOADED;
+                            } else if (design.$.designServiceState == Design.DesignServiceState.TO_BE_APPROVED) {
+                                state = UploadDesign.State.CONVERTING;
+                                self.$checkTimeout && clearTimeout(self.$checkTimeout);
+                                self.$checkTimeout = setTimeout(function () {
+                                    self.checkDesign();
+                                }, 4000);
+                                timeout = self.$checkTimeout;
+                            } else {
+                                state = UploadDesign.State.ERROR;
+                                // Some error occurred...
+                            }
+                            self.set('state', state);
+                        }
+                    }
+                    if (!timeout) {
+                        while (self.$checkCallbacks.length) {
+                            var callback = self.$checkCallbacks.pop();
+                            callback(err, self);
+                        }
+                    }
+                })
+            }
         }
     }, {
 

@@ -1,7 +1,7 @@
 define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sprd/model/UploadImage",
         "sprd/type/UploadDesign", "underscore", "sprd/entity/FileSystemImage", "sprd/entity/RemoteImage",
-        "sprd/entity/Image", "sprd/data/IframeUpload", "sprd/manager/TrackingManager"],
-    function (Component, ImageServerDataSource, flow, UploadImage, UploadDesign, _, FileSystemImage, RemoteImage, Image, iFrameUpload, TrackingManager) {
+        "sprd/entity/Image", "sprd/data/IframeUpload", "sprd/manager/TrackingManager", "sprd/model/Design"],
+    function (Component, ImageServerDataSource, flow, UploadImage, UploadDesign, _, FileSystemImage, RemoteImage, Image, iFrameUpload, TrackingManager, Design) {
 
         return Component.inherit('sprd.data.ImageUploadService', {
 
@@ -111,6 +111,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                             design.set('restrictions', restrictions);
                         }
 
+
                         return design;
                     })
                     .seq(function (cb) {
@@ -168,8 +169,9 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                                 trackingManager.trackUploadFailed(err);
                             }
                         }
+                        var state = uploadDesign.$.isVector ? UploadDesign.State.CONVERTING : UploadDesign.State.LOADED;
 
-                        uploadDesign.set('state', err ? UploadDesign.State.ERROR : UploadDesign.State.LOADED);
+                        uploadDesign.set('state', err ? UploadDesign.State.ERROR : state);
                         callback && callback(err, uploadDesign);
 
                     });
