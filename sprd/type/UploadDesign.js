@@ -138,6 +138,7 @@ define(["js/core/Bindable", "sprd/model/Design"], function (Bindable, Design) {
          * @returns {boolean}
          */
         isVectorExtension: function (fileName) {
+            fileName = (fileName || "").toLowerCase();
             var validExtensions = ["svg", "cdr", "eps", "ai"],
                 fileExtension = fileName.substr(fileName.lastIndexOf('.') + 1);
 
@@ -163,6 +164,7 @@ define(["js/core/Bindable", "sprd/model/Design"], function (Bindable, Design) {
          * @returns {boolean}
          */
         isAllowedExtension: function (fileName) {
+            fileName = (fileName || "").toLowerCase();
             var validExtensions = ["svg", "cdr", "eps", "ai", "jpg", "jpeg", "gif", "png", "bmp"],
                 fileExtension = fileName.substr(fileName.lastIndexOf('.') + 1);
 
