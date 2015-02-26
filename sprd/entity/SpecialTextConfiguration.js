@@ -280,10 +280,9 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
         getPossiblePrintTypes: function (appearance) {
             var ret = [],
-                printArea = this.$.printArea,
-                design = this.$.design;
+                printArea = this.$.printArea;
 
-            if (printArea && appearance && design) {
+            if (printArea && appearance) {
                 ret = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance.$.id);
             }
 
