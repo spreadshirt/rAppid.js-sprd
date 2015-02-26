@@ -120,7 +120,7 @@ define(["js/ui/View", "flow", "sprd/model/PrintType", "js/core/I18n"], function 
             // if we have more than one digital print type
             if (digitalPrintTypes.length > 1) {
                 // remove one
-                for (var j = digitalPrintTypes.length - 1; j >= 0; j--) {
+                for (var j = 0; j < digitalPrintTypes.length; j++) {
                     printType = digitalPrintTypes[j];
                     if (printType !== this.$.configuration.$.printType) {
                         possiblePrintTypes.splice(possiblePrintTypes.indexOf(printType), 1);
