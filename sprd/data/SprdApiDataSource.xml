@@ -93,6 +93,11 @@
                                     apiKeyRequired="true" sessionRequired="true" signatureRequired="true">
             <conf:ResourceConfiguration path="items" modelClassName="sprd.model.OrderItem"
                                         processor="OrderItemProcessor"/>
+            <conf:ResourceConfiguration path="paymentTypes" modelClassName="sprd.model.PaymentType"
+                                        apiKeyRequired="true"
+                                        checkoutTokenRequired="true"/>
+            <conf:ResourceConfiguration path="repay" modelClassName="sprd.model.Checkout" apiKeyRequired="true"
+                                        checkoutTokenRequired="true"/>
         </conf:ResourceConfiguration>
 
     </conf:DataSourceConfiguration>
