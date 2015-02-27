@@ -20,7 +20,7 @@ define(["js/core/Component", "flow"], function(Component, flow) {
             flow()
                 .seq(function(cb) {
                     order.fetch({
-                        // fetchSubModels: ["currency"]
+                        fetchSubModels: ["currency"]
                     }, cb);
                 })
                 .exec(function(err) {

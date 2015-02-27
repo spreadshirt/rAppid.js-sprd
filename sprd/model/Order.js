@@ -2,7 +2,8 @@ define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/da
 
     var Shipping = Delivery.Shipping.inherit("sprd.model.Order.Shipping", {
         schema: {
-            price: Price
+            price: Price,
+            priceItem: Price
         }
     });
 
