@@ -22,6 +22,10 @@ define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/da
             repayable: Boolean
         },
 
+        items: function() {
+            return this.$.orderItems;
+        }.onChange("orderItems"),
+
         totalVatIncluded: function() {
             var vatIncluded = 0;
             if (this.$.orderItems) {

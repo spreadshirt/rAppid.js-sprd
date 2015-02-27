@@ -46,6 +46,10 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return basketItem;
         },
 
+        items: function() {
+            return this.$.basketItems
+        }.onChange("basketItems"),
+
         mergeBasketItem: function (basketItem) {
             var old, nItem;
             nItem = this.$.basketItems.find(function (item) {
