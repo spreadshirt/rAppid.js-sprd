@@ -20,8 +20,7 @@ define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/da
             billing: Delivery.Billing,
             shipping: Shipping,
             repayable: Boolean,
-            priceTotal: Price,
-            handlingGross: Price
+            priceTotal: Price
         },
 
         items: function() {
@@ -44,11 +43,8 @@ define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/da
 
         totalVat: function () {
             return this.get('priceTotal.totalVat');
-        }.onChange('priceTotal'),
+        }.onChange('priceTotal')
 
-        getHandlingGross: function () {
-            return this.$.handlingGross;
-        }.onChange('handlingGross')
 
     });
 });

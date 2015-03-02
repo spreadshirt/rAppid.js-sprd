@@ -212,6 +212,11 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             }
         }.onChange("discounts"),
 
+        getShippingDiscountPrice: function () {
+            var voucherShipping = this.getDiscount('voucherShipping');
+            return voucherShipping ? voucherShipping.get('price') : null;
+        }.onChange('discounts'),
+
         hasVoucher: function () {
             var discounts = this.$.discounts;
             if (!discounts) {
