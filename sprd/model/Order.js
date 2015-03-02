@@ -19,27 +19,36 @@ define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/da
             orderItems: Collection.of(OrderItem),
             billing: Delivery.Billing,
             shipping: Shipping,
-            repayable: Boolean
+            repayable: Boolean,
+            priceTotal: Price,
+            handlingGross: Price
         },
 
         items: function() {
             return this.$.orderItems;
         }.onChange("orderItems"),
 
-        totalVatIncluded: function() {
+        vatIncluded: function () {
             var vatIncluded = 0;
             if (this.$.orderItems) {
-                this.$.orderItems.each(function(orderItem) {
+                this.$.orderItems.each(function (orderItem) {
                     vatIncluded += orderItem.totalVatIncluded();
                 });
             }
-            var shippingPrice = this.get('shipping.price');
-            if (shippingPrice) {
-                vatIncluded += shippingPrice.$.vatIncluded;
-            }
-
             return vatIncluded;
-        }.onChange('orderItems', 'shipping.price')
+        }.onChange('orderItems'),
+
+        totalVatIncluded: function () {
+            return this.get('priceTotal.vatIncluded');
+        }.onChange('priceTotal'),
+
+        totalVat: function () {
+            return this.get('priceTotal.totalVat');
+        }.onChange('priceTotal'),
+
+        getHandlingGross: function () {
+            return this.$.handlingGross;
+        }.onChange('handlingGross')
 
     });
 });
