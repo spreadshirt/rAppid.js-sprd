@@ -6,7 +6,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             fallbackLocale: "en_EU"
         },
         NA: {
-            supportedLocales: ["us_US", "us_CA", "fr_CA"],
+            supportedLocales: ["us_US", "us_CA", "fr_CA", "us_AU"],
             fallbackLocale: "us_US"
         }
     };

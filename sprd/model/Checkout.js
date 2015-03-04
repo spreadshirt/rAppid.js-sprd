@@ -36,6 +36,17 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
             form.setAttribute("method", "post");
             form.setAttribute("action", url);
 
+            if (this.inIframe()) {
+                // do a navigation on the top frame, this
+                // could fail if a sandbox is defined without allow-top-navigation.
+
+                // to be more secure, we could just add this _top target, where we know
+                // that the loading checkout don't allow to run within an iframe
+                // (X-Frame-Options, see https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options),
+                // which is the case for e.g. paypal
+                form.setAttribute("target", "_top");
+            }
+
             var valueField = document.createElement("input");
             valueField.setAttribute("type", "hidden");
             valueField.setAttribute("name", "value");
@@ -46,6 +57,14 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
             document.body.appendChild(form);
             form.submit();
 
+        },
+
+        inIframe: function() {
+            try {
+                return window.self !== window.top;
+            } catch (e) {
+                return true;
+            }
         },
 
         compose: function () {
