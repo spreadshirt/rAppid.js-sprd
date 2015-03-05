@@ -174,6 +174,20 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             y: configuration.$.offset.$.y + currentConfigurationHeight / 2
                         };
 
+                        // if digital print type
+                        if (!printType.isPrintColorColorSpace()) {
+                            var pt;
+                            // try to find another digital print type which is before the current print type
+                            // this is needed to switch back from DD to DT
+                            for (var k = 0; k < possiblePrintTypes.length; k++) {
+                                pt = possiblePrintTypes[k];
+                                if (!pt.isPrintColorColorSpace()) {
+                                    printType = pt;
+                                    break;
+                                }
+                            }
+                        }
+
                         if (printType && !_.contains(possiblePrintTypes, printType)) {
                             // print type not possible any more
                             printType = null;

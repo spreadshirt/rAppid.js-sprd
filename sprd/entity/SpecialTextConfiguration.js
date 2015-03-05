@@ -1,4 +1,4 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'pimp/data/PimpDataSourceClass', 'js/data/Collection', 'pimp/model/Commission', 'pimp/model/Font', 'sprd/entity/Price'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price) {
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'sprd/pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'sprd/pimp/data/PimpDataSourceClass', 'js/data/Collection', 'sprd/pimp/model/Commission', 'sprd/pimp/model/Font', 'sprd/entity/Price'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price) {
 
     return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
 
@@ -280,10 +280,9 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
         getPossiblePrintTypes: function (appearance) {
             var ret = [],
-                printArea = this.$.printArea,
-                design = this.$.design;
+                printArea = this.$.printArea;
 
-            if (printArea && appearance && design) {
+            if (printArea && appearance) {
                 ret = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance.$.id);
             }
 

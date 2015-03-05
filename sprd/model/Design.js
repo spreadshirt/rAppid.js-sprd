@@ -6,6 +6,13 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         OnProduct: "onProduct"
     };
 
+    var DesignServiceState = {
+        APPROVED: "APPROVED",
+        TO_BE_APPROVED: "TO_BE_APPROVED",
+        REJECTED: "REJECTED",
+        TO_BE_APPROVED_BY_USER: "TO_BE_APPROVED_BY_USER"
+    };
+
     var Translation = Entity.inherit('app.model.TranslatedDesign.Translation', {
         schema: {
             locale: Locale,
@@ -35,7 +42,6 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             colorCount: Number,
             ownText: Boolean,
             minimumScale: Number,
-
             denyOtherText: String,
             denyOtherDesigns: String,
 
@@ -50,7 +56,8 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         defaults: {
             name: '',
             description: '',
-            restrictions: null
+            restrictions: null,
+            designServiceState: null
         },
 
         schema: {
@@ -69,6 +76,11 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             restrictions: Restrictions,
             user: "sprd/model/User",
 
+            designServiceState: {
+                required: false,
+                type: String
+            },
+
             translations: [Translation],
 
             resources: Object
@@ -85,11 +97,11 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             return data;
         },
 
-        isVectorDesign: function() {
+        isVectorDesign: function () {
             return this.$.colors.length > 0;
         },
 
-        hasBackgroundColor: function() {
+        hasBackgroundColor: function () {
 
             if (this.$hasBackgroundColor === true || this.$.backgroundColor) {
                 return true;
@@ -162,6 +174,7 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
     });
 
 
+    Design.DesignServiceState = DesignServiceState;
     Design.Restrictions = Restrictions;
     Design.Translation = Translation;
     Design.Locale = Locale;

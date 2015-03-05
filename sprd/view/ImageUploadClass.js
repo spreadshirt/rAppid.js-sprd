@@ -1,7 +1,8 @@
-define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xaml!sprd/data/ImageServerDataSource', 'sprd/model/UploadImage', 'sprd/type/UploadDesign', 'sprd/data/ImageUploadService'],
-    function (View, List, FileSystemImage, flow, ImageServerDataSource, UploadImage, UploadDesign, ImageUploadService) {
+define(["js/ui/View", "js/core/List", "sprd/entity/FileSystemImage", "flow", "xaml!sprd/data/ImageServerDataSource",
+        "sprd/model/UploadImage", "sprd/type/UploadDesign", "sprd/data/ImageUploadService", "js/core/I18n"],
+    function (View, List, FileSystemImage, flow, ImageServerDataSource, UploadImage, UploadDesign, ImageUploadService, I18n) {
 
-        return View.inherit('sprd.view.ImageUploadClass', {
+        return View.inherit("sprd.view.ImageUploadClass", {
 
             defaults: {
                 items: List,
@@ -17,6 +18,7 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
             },
 
             inject: {
+                i18n: I18n,
                 imageServer: ImageServerDataSource,
                 imageUploadService: ImageUploadService
             },
@@ -60,6 +62,12 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 return false;
             },
 
+            /**
+             * An image has been dropped into the design window.
+             *
+             * @param {Event} e
+             * @returns {boolean}
+             */
             dropImage: function (e) {
                 if (this.$.enabled) {
                     this.removeClass('drag-over');
@@ -75,16 +83,28 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 }
                 e.preventDefault();
                 e.stopPropagation();
-                return false;
 
+                return false;
             },
 
+            /**
+             * Upload image and add it to the list of our designs.
+             *
+             * @param {File} file
+             * @param {Function} [callback]
+             * @private
+             */
             _addAndUploadFile: function (file, callback) {
                 var uploadDesign = this.uploadFile(file, callback);
-                this._addUploadDesign(uploadDesign);
+                this._addUploadDesignToList(uploadDesign);
             },
 
-            _addAndUploadFallbackFile: function(iFrameUpload, callback) {
+            /**
+             * @param {sprd.data.iFrameUpload} iFrameUpload
+             * @param {Function} [callback]
+             * @private
+             */
+            _addAndUploadFallbackFile: function (iFrameUpload, callback) {
 
                 var self = this;
 
@@ -94,14 +114,11 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
 
                 this.$.imageUploadService._uploadDesign(uploadDesign, function (err) {
                     if (!err) {
-
-                        uploadDesign.set('state', UploadDesign.State.LOADED);
                         self.trigger("uploadComplete", {
                             uploadDesign: uploadDesign
                         });
 
                         uploadDesign.trigger("imageUrlChanged");
-
                     } else {
                         self.trigger("uploadError", {
                             error: err,
@@ -113,10 +130,16 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 });
 
 
-                this._addUploadDesign(uploadDesign);
-
+                this._addUploadDesignToList(uploadDesign);
             },
 
+            /**
+             * Upload image to Spreadshirt platform.
+             *
+             * @param {File} file
+             * @param {Function} [callback]
+             * @returns {sprd.type.UploadDesign}
+             */
             uploadFile: function (file, callback) {
 
                 var self = this,
@@ -137,7 +160,6 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 reader.readAsDataURL(file);
                 this.$.imageUploadService._uploadDesign(uploadDesign, function (err) {
                     if (!err) {
-                        uploadDesign.set('state', UploadDesign.State.LOADED);
                         self.trigger("uploadComplete", {
                             uploadDesign: uploadDesign
                         });
@@ -154,7 +176,13 @@ define(['js/ui/View', 'js/core/List', 'sprd/entity/FileSystemImage', 'flow', 'xa
                 return uploadDesign;
             },
 
-            _addUploadDesign: function (uploadDesign) {
+            /**
+             * Add a design image to the list of our designs.
+             *
+             * @param {sprd.type.UploadDesign} uploadDesign
+             * @private
+             */
+            _addUploadDesignToList: function (uploadDesign) {
                 this.$.items.unshift(uploadDesign);
             }
         });

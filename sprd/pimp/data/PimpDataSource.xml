@@ -1,0 +1,6 @@
+<data:PimpDataSourceClass xmlns:data="sprd.pimp.data" xmlns:conf="js.conf">
+    <conf:DataSourceConfiguration>
+        <conf:ResourceConfiguration modelClassName="sprd.pimp.model.Font" path="fonts"/>
+        <conf:ResourceConfiguration modelClassName="sprd.pimp.model.Commission" path="commissions"/>
+    </conf:DataSourceConfiguration>
+</data:PimpDataSourceClass>

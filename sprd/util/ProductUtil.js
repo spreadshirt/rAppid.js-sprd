@@ -94,7 +94,6 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                     callback(err, colors);
                 });
         }
-
     };
 
 });
