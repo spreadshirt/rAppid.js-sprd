@@ -4,7 +4,9 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
         defaults: {
             apiKey: null,
             secret: null,
-            session: null
+            session: null,
+            checkoutToken: null,
+            authToken: null
         },
 
         _getConfigurationForResource: function (resource) {
@@ -50,7 +52,8 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
                 apiKeyRequired = configuration.$.apiKeyRequired,
                 sessionRequired = configuration.$.sessionRequired,
                 sessionPreferred = configuration.$.sessionPreferred,
-                checkoutTokenRequired = configuration.$.checkoutTokenRequired;
+                checkoutTokenRequired = configuration.$.checkoutTokenRequired,
+                authTokenRequired = configuration.$.authTokenRequired;
 
             var sessionId = this.get('session.id');
 
@@ -79,6 +82,10 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
 
             if (checkoutTokenRequired && this.$.checkoutToken) {
                 params.token = this.$.checkoutToken;
+            }
+
+            if (authTokenRequired && this.$.authToken) {
+                params.authToken = this.$.authToken;
             }
 
             if (apiKeyRequired || signatureRequired || sessionRequired) {

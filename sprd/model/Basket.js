@@ -46,6 +46,10 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return basketItem;
         },
 
+        items: function() {
+            return this.$.basketItems
+        }.onChange("basketItems"),
+
         mergeBasketItem: function (basketItem) {
             var old, nItem;
             nItem = this.$.basketItems.find(function (item) {
@@ -207,6 +211,11 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
                 return null;
             }
         }.onChange("discounts"),
+
+        getShippingDiscountPrice: function () {
+            var voucherShipping = this.getDiscount('voucherShipping');
+            return voucherShipping ? voucherShipping.get('price') : null;
+        }.onChange('discounts'),
 
         hasVoucher: function () {
             var discounts = this.$.discounts;

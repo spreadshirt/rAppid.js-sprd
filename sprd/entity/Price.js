@@ -17,6 +17,13 @@ define(['js/data/Entity', 'sprd/model/Currency'], function (Entity, Currency) {
             currency: Currency
         },
 
+        parse: function (data) {
+            if (!data.hasOwnProperty("display")) {
+                data["display"] = data["vatIncluded"];
+            }
+            return this.callBase(data);
+        },
+
         formattedPrice: function () {
             var currency = this.$.currency;
 
