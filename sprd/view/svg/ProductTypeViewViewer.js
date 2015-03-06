@@ -147,11 +147,23 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     }
                 }
             }
+            if (!this.$upHandler) {
+                var self = this;
+                this.$upHandler = function (e) {
+                    self._handleUp({
+                        domEvent: e
+                    });
+                };
+            }
+            this.dom(this.$stage.$window).bindDomEvent('pointerup', this.$upHandler);
             this.dom(this.$stage.$window).bindDomEvent('pointermove', this.$moveHandler);
         },
         unbindMoveEvent: function () {
             if (this.$moveHandler) {
                 this.dom(this.$stage.$window).unbindDomEvent('pointermove', this.$moveHandler);
+            }
+            if (this.$upHandler) {
+                this.dom(this.$stage.$window).unbindDomEvent('pointerup', this.$upHandler);
             }
         },
         _handleUp: function (e) {
@@ -162,9 +174,9 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 if (domEvent.changedTouches && domEvent.changedTouches.length) {
                     viewer = findProductTypeViewViewer(domEvent.changedTouches[0].clientX, domEvent.changedTouches[0].clientY, viewer);
                 }
+                var configView = dndObject.configurationViewer;
                 if (viewer && dndObject.viewer !== viewer) {
                     e.stopPropagation();
-                    var configView = dndObject.configurationViewer;
                     configView.set('preventValidation', false);
                     configView.$moving = false;
 
