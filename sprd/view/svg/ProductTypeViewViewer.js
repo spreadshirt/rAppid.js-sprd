@@ -27,9 +27,12 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
             productViewer: null,
 
+            dropHovered: false,
+
             _width: "{productViewer.width}",
             _height: "{productViewer.height}",
             _appearance: "{product.appearance}",
+
 
             _view: null,
             _productType: null,
@@ -66,6 +69,10 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             }
             return false;
 
+        },
+
+        checkForDropHover: function (x, y) {
+            this.set('dropHovered', this.isPointInElement(x, y));
         },
 
         _initializeRenderer: function () {
@@ -114,6 +121,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
         },
 
         bindMoveEvent: function () {
+            var self = this;
             if (!this.$moveHandler) {
                 this.$moveHandler = function (e) {
                     if (dndObject) {
@@ -124,6 +132,16 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                             y = pointerEvent.clientY;
 
                         if (configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
+                            // TODO: add debouncing
+                            self._debounceFunctionCall(function(x,y){
+                                console.log("check");
+                                for (var i = 0; i < productTypeViewViewer.length; i++) {
+                                    if (productTypeViewViewer[i] !== self) {
+                                        productTypeViewViewer[i].checkForDropHover(x, y);
+                                    }
+                                }
+                            },"setHoverState", 100, self, [x,y], "BOUNCE");
+
                             if (clientRect.left > x || clientRect.right < x || clientRect.top > y || clientRect.bottom < y) {
                                 if (configViewer) {
                                     configViewer.$.configuration.clearErrors();
@@ -148,7 +166,6 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 }
             }
             if (!this.$upHandler) {
-                var self = this;
                 this.$upHandler = function (e) {
                     self._handleUp({
                         domEvent: e
@@ -177,8 +194,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 var configView = dndObject.configurationViewer;
                 if (viewer && dndObject.viewer !== viewer) {
                     e.stopPropagation();
-                    configView.set('preventValidation', false);
                     configView.$moving = false;
+                    viewer.set('dropHovered', false);
 
                     var productManager = dndObject.viewer.get('product.manager');
                     productManager.moveConfigurationToView(dndObject.viewer.$.product, dndObject.config, viewer.$._view, function (err) {
@@ -186,6 +203,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                             dndObject.viewer.$.product.set('view', viewer.$._view);
                         }
                     });
+                    configView.set('preventValidation', false);
                 }
                 dndObject.configurationViewer.removeClass('hide-configuration');
                 dndObject.dndImage.set({
@@ -194,6 +212,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 dndObject = null;
             }
         },
+
+
         _handleDown: function () {
             var productViewer = this.$.productViewer,
                 selectedConfiguration = productViewer.$.selectedConfiguration;
@@ -238,6 +258,16 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
                 }
 
+            }
+        },
+
+        _renderDropHovered: function (hovered) {
+            if (this.$.productViewer) {
+                if (hovered) {
+                    this.$.productViewer.addClass('drop-hover');
+                } else {
+                    this.$.productViewer.removeClass('drop-hover');
+                }
             }
         },
 
