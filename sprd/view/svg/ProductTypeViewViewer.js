@@ -132,15 +132,14 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                             y = pointerEvent.clientY;
 
                         if (configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
-                            // TODO: add debouncing
-                            self._debounceFunctionCall(function(x,y){
+                            self._debounceFunctionCall(function (x, y) {
                                 console.log("check");
                                 for (var i = 0; i < productTypeViewViewer.length; i++) {
                                     if (productTypeViewViewer[i] !== self) {
                                         productTypeViewViewer[i].checkForDropHover(x, y);
                                     }
                                 }
-                            },"setHoverState", 100, self, [x,y], "BOUNCE");
+                            }, "setHoverState", 100, self, [x, y], "BOUNCE");
 
                             if (clientRect.left > x || clientRect.right < x || clientRect.top > y || clientRect.bottom < y) {
                                 if (configViewer) {
