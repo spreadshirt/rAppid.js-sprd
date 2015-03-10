@@ -1,18 +1,23 @@
-define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "sprd/model/Currency", "js/data/Entity", "sprd/entity/Price", "sprd/model/DiscountScale"], function (SprdModel, BasketItem, Collection, Currency, Entity, Price, DiscountScale) {
+define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "sprd/model/Currency", "js/data/Entity", "sprd/entity/Price", "sprd/model/DiscountScale", "sprd/model/Language"], function (SprdModel, BasketItem, Collection, Currency, Entity, Price, DiscountScale, Language) {
 
     var Discount = Entity.inherit('sprd.entity.BasketDiscount', {
         schema: {
-            discountScale: DiscountScale
+            discountScale: DiscountScale,
+            price: Price,
+            type: String
         }
     });
 
     return SprdModel.inherit("sprd.model.Basket", {
 
         schema: {
+            supportsEmailShipping: Boolean,
             basketItems: Collection.of(BasketItem),
             priceItems: Price,
+            priceTotal: Price,
             shop: "sprd/model/Shop",
             currency: Currency,
+            language: Language,
             discounts: [Discount]
         },
 
@@ -41,6 +46,10 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
 
             return basketItem;
         },
+
+        items: function() {
+            return this.$.basketItems
+        }.onChange("basketItems"),
 
         mergeBasketItem: function (basketItem) {
             var old, nItem;
@@ -94,6 +103,20 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return total;
         }.on('change'),
 
+        orderValue: function () {
+            var total = 0;
+            if (this.$.basketItems) {
+                this.$.basketItems.each(function (item) {
+                    total += item.orderValue();
+                });
+            }
+            return total;
+        }.on('change'),
+
+        totalVat: function () {
+            return (this.totalVatIncluded() - this.totalVatExcluded()) || 0;
+        }.on('change'),
+
         vatExcluded: function () {
             var total = 0;
             if (this.$.basketItems) {
@@ -105,19 +128,43 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
         }.on('change'),
 
         discountVatIncluded: function () {
-            if (this.$.discounts && this.$.discounts.size()) {
-                return this.$.discounts.at(0).get('price.vatIncluded');
+            var discount = this.getDiscount("scale");
+            if (discount) {
+                return discount.get("price.vatIncluded")
             }
 
             return 0;
         }.onChange("discounts"),
 
         totalVatIncluded: function () {
+            if (this.$.priceTotal) {
+                return this.$.priceTotal.$.vatIncluded;
+            }
+            return null;
+        }.onChange('priceTotal'),
+
+        totalVatExcluded: function () {
+            if (this.$.priceTotal) {
+                return this.$.priceTotal.$.vatExcluded;
+            }
+            return null;
+        }.onChange('priceTotal'),
+
+
+        totalPriceItemsVatIncluded: function () {
             if (this.$.priceItems) {
                 return this.$.priceItems.$.vatIncluded - this.discountVatIncluded();
             }
             return null;
         }.onChange('priceItems', 'discounts'),
+
+        totalPriceItemsDisplay: function () {
+            if (this.$.priceItems) {
+                return this.$.priceItems.$.display - this.discountVatIncluded();
+            }
+            return null;
+        }.onChange('priceItems', 'discounts'),
+
 
         platformCheckoutLink: function () {
             if (this.$.links) {
@@ -131,7 +178,56 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
                 return this.$.links[1].href;
             }
             return null;
-        }.onChange('links')
+        }.onChange('links'),
+
+        getDiscount: function (type) {
+            type = type || "scale";
+
+            var discounts = this.$.discounts;
+            if (!discounts) {
+                return null;
+            }
+
+            return discounts.find(function (discount) {
+                return discount.$.type == type
+            });
+        }.onChange("discounts"),
+
+        getGoodsDiscountPrice: function () {
+            var discounts = this.$.discounts;
+            if (!discounts) {
+                return null;
+            }
+
+            var price = new Price();
+            discounts.each(function (discount) {
+                if (discount.$.price && ["scale", "voucherShipping"].indexOf(discount.$.type) == -1) {
+                    price.add(discount.$.price);
+                }
+            });
+
+            if (price.$.vatIncluded > 0) {
+                return price;
+            } else {
+                return null;
+            }
+        }.onChange("discounts"),
+
+        getShippingDiscountPrice: function () {
+            var voucherShipping = this.getDiscount('voucherShipping');
+            return voucherShipping ? voucherShipping.get('price') : null;
+        }.onChange('discounts'),
+
+        hasVoucher: function () {
+            var discounts = this.$.discounts;
+            if (!discounts) {
+                return false;
+            }
+
+            return !!discounts.find(function (discount) {
+                return /^voucher/.test(discount.$.type)
+            });
+        }.onChange("discounts")
 
     });
 });

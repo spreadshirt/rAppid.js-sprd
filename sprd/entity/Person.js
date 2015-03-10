@@ -1,25 +1,68 @@
-define(["js/data/Entity"], function (Entity) {
-    var Salutation = Entity.inherit("sprd.entity.Person.Salutation", {
-        defaults: {
-            id: null
-        },
+define(["js/data/Entity", "js/data/transformer/TrimTransformer"], function (Entity, TrimTransformer) {
 
-        schema: {
-            id: Number
-        }
-    });
+    var SalutationMap = {
+        "1": "mr",
+        "2": "mrs",
+        "3": "ms",
+        "4": "company"
+    };
 
-    return Entity.inherit("sprd.entity.Person", {
+    var Person = Entity.inherit("sprd.entity.Person", {
 
         defaults: {
-            salutation: Salutation,
+            salutation: null,
             firstName: '',
             lastName: ''
         },
+
         schema: {
-            salutation: Salutation,
+            salutation: {type: String, required: false},
             firstName: String,
             lastName: String
-        }
+        },
+
+        transformers: [
+            new TrimTransformer()
+        ],
+
+        fullName: function () {
+            return [(this.$.firstName || ""), (this.$.lastName || "")].join(" ");
+        }.onChange("firstName", "lastName"),
+
+        parse: function () {
+            var data = this.callBase();
+            data.salutation = (data.salutation || {}).id || null;
+            return data;
+        },
+
+        compose: function () {
+            var data = this.callBase();
+
+            if (data.salutation) {
+                // only send valid salutation id
+                if(SalutationMap[data.salutation]){
+                    data.salutation = {
+                        id: data.salutation
+                    };
+                } else {
+                    data.salutation = null;
+                }
+            }
+
+            return  data;
+        },
+
+        contraction: function () {
+            return SalutationMap[this.$.salutation];
+        }.onChange("salutation")
     });
+
+    Person.Salutation = {
+        "MR": "1",
+        "MRS": "2",
+        "MS": "3",
+        "COMPANY": "4"
+    };
+
+    return Person;
 });

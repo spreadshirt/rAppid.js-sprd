@@ -1,24 +1,38 @@
 var chai = require('chai'),
     expect = chai.expect,
+    flow = require('flow.js').flow,
     testRunner = require('rAppid.js').TestRunner.setup();
 
 var C = {};
 
-describe('SprdApiDataSource', function () {
+describe.skip('SprdApiDataSource', function () {
 
     var api,
-        shop;
+        shop,
+        stage;
 
     before(function (done) {
 
-        testRunner.requireClasses({
-            SprdApiDataSource: 'xaml!sprd/data/SprdApiDataSource',
-            Shop: 'sprd/model/Shop',
-            Basket: 'sprd/model/Basket',
-            Model: 'js/data/Model',
-            Product: 'sprd/model/Product',
-            ConcreteElement: 'sprd/entity/ConcreteElement'
-        }, C, done);
+        flow()
+            .seq(function (cb) {
+
+                testRunner.requireClasses({
+                    SprdApiDataSource: 'xaml!sprd/data/SprdApiDataSource',
+                    Shop: 'sprd/model/Shop',
+                    Basket: 'sprd/model/Basket',
+                    Model: 'js/data/Model',
+                    Product: 'sprd/model/Product',
+                    ConcreteElement: 'sprd/entity/ConcreteElement'
+                }, C, cb);
+            })
+            .seq(function (cb) {
+                testRunner.createSystemManager(null, function (err, result) {
+                    stage = result;
+
+                    cb(err);
+                })
+            })
+            .exec(done);
     });
 
     beforeEach(function () {
@@ -26,7 +40,7 @@ describe('SprdApiDataSource', function () {
             endPoint: 'http://api.spreadshirt.net/api/v1',
             gateway: 'http://api.spreadshirt.net/api/v1',
             apiKey: '2b065dd3-88b7-44a8-87fe-e564ed27f904'
-        }, null, testRunner.createSystemManager());
+        }, null, stage);
     });
 
 //    describe('load', function(){
@@ -58,16 +72,16 @@ describe('SprdApiDataSource', function () {
 //
 //    });
 
-    describe('#save', function() {
+    describe('#save', function () {
 
         var basketId = '2d8bebe4-6428-4605-aed3-7a3abf9c0763';
 
-        beforeEach(function(done) {
+        beforeEach(function (done) {
             shop = api.createEntity(C.Shop, 205909);
             shop.fetch(null, done);
         });
 
-        it ('create model from collection', function() {
+        it('create model from collection', function () {
             var basket = shop.$.baskets.createItem();
             expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
         });
@@ -77,7 +91,7 @@ describe('SprdApiDataSource', function () {
             expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
             expect(basket.status() === C.Model.STATE.NEW).to.be.ok;
 
-            basket.save(null, function(err, basket) {
+            basket.save(null, function (err, basket) {
                 expect(err).to.not.exist;
                 expect(basket).to.exist;
                 expect(basket.status() === C.Model.STATE.CREATED).to.be.ok;
@@ -90,13 +104,13 @@ describe('SprdApiDataSource', function () {
         });
 
 
-        it ('load basket from api', function(done) {
+        it('load basket from api', function (done) {
 
             var basket = api.createEntity(C.Basket, basketId);
             expect(basket).to.exist.and.to.be.an.instanceof(C.Basket);
             expect(basket.status() === C.Model.STATE.CREATED).to.be.ok;
 
-            basket.fetch(null, function(err, b) {
+            basket.fetch(null, function (err, b) {
                 expect(err).to.not.exist;
                 expect(b === basket).to.be.ok;
 
@@ -115,16 +129,16 @@ describe('SprdApiDataSource', function () {
                 product;
 
             flow()
-                .seq(function(cb) {
+                .seq(function (cb) {
                     basket.fetch(null, cb);
                 })
-                .seq(function(cb) {
+                .seq(function (cb) {
                     product = api.shop(205909).createEntity(C.Product, 103737096);
                     product.fetch({
                         fetchSubModels: ["ProductType"]
                     }, cb);
                 })
-                .seq(function() {
+                .seq(function () {
                     basketItem = basket.$.basketItems.createItem();
                     basketItem.set({
                         element: new C.ConcreteElement({
@@ -137,10 +151,10 @@ describe('SprdApiDataSource', function () {
 
                 })
                 // save basket
-                .seq(function(cb) {
+                .seq(function (cb) {
                     basketItem.save(null, cb);
                 }).
-                exec(function(err) {
+                exec(function (err) {
                     expect(err).to.not.exist;
                     done();
                 });

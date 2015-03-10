@@ -16,7 +16,6 @@ define(['sprd/model/processor/DefaultProcessor'], function (DefaultProcessor) {
                 payload.basketItems = composedItems;
             }
 
-
             return payload;
 
         }

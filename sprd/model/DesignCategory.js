@@ -1,8 +1,11 @@
-define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], function (Model, Design, Collection) {
+define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection", "js/core/List"], function (Model, Design, Collection, List) {
 
     var DesignCategory = Model.inherit('sprd.model.DesignCategory', {
         schema: {
             designs: Collection.of(Design)
+        },
+        defaults: {
+            designCategories: List
         },
 
         isMarketPlace: function () {
@@ -27,6 +30,27 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], funct
 
         allowSearch: function() {
             return this.isMarketPlace() || this.isBestseller();
+        },
+
+        getCategoryById: function(id) {
+
+            if (id == this.$.id) {
+                return this;
+            }
+
+            var subCategories = this.$.designCategories;
+
+            if (subCategories) {
+                for (var i = 0; i < subCategories.$items.length; i++) {
+                    var category = subCategories.$items[i].getCategoryById(id);
+
+                    if (category) {
+                        return category;
+                    }
+                }
+            }
+
+            return null;
         },
 
         getSubCategoryById: function (id) {

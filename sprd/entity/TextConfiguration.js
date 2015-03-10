@@ -10,7 +10,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 composedTextFlow: null,
                 selection: null,
                 bound: null,
-                copyrightWordList: null
+                copyrightWordList: null,
+                isNew: false
             },
 
             inject: {
@@ -89,6 +90,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         self.$.bus && self.$.bus.trigger('Application.productChanged', null, self);
                     }, "productChanged", 300);
                 });
+                this.set('isNew', false);
 
                 this.trigger("priceChanged");
                 this.trigger("configurationChanged");
@@ -229,7 +231,9 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     return;
                 }
 
-                var textFlow = this.$.textFlow;
+                var textFlow = this.$.textFlow,
+                    printColors = [],
+                    printColor;
                 if (textFlow) {
 
                     var useThisColor = null;
@@ -246,10 +250,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                                 useThisColor = printType.getClosestPrintColor(printTypeColor.color());
                             }
 
-                            style.set('printTypeColor', useThisColor || printType.getClosestPrintColor(printTypeColor.color()));
+                            printColor = useThisColor || printType.getClosestPrintColor(printTypeColor.color());
+                            if(!printColors.length){
+                                printColors = [printColor];
+                            }
+
+                            style.set('printTypeColor', printColor);
                         }
                     } while ((leaf = leaf.getNextLeaf(textFlow)));
 
+                    this.$.printColors.reset(printColors);
                     this._composeText();
                 }
 
@@ -580,6 +590,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                             return false;
                         } else if (newProperty.isDeepEqual && newProperty.isDeepEqual instanceof Function) {
                             if (!newProperty.isDeepEqual(originalProperty)) {
+                                return false;
+                            }
+                        } else if (_.isObject(newProperty)) {
+                            if (!_.isEqual(originalProperty, newProperty)) {
                                 return false;
                             }
                         } else {

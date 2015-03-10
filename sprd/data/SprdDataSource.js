@@ -4,7 +4,9 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
         defaults: {
             apiKey: null,
             secret: null,
-            session: null
+            session: null,
+            checkoutToken: null,
+            authToken: null
         },
 
         _getConfigurationForResource: function (resource) {
@@ -48,14 +50,19 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
 
             var signatureRequired = configuration.$.signatureRequired,
                 apiKeyRequired = configuration.$.apiKeyRequired,
-                sessionRequired = configuration.$.sessionRequired;
+                sessionRequired = configuration.$.sessionRequired,
+                sessionPreferred = configuration.$.sessionPreferred,
+                checkoutTokenRequired = configuration.$.checkoutTokenRequired,
+                authTokenRequired = configuration.$.authTokenRequired;
 
-            needsSignature = signatureRequired || sessionRequired;
+            var sessionId = this.get('session.id');
 
-            if (this.$.session && sessionRequired) {
+            needsSignature = signatureRequired || (sessionRequired && sessionId);
+
+            if (sessionId && (sessionRequired || sessionPreferred)) {
                 params = _.defaults(params, {
                     // TODO: change session id to token for translation service
-                    sessionId: this.$.session.$.id
+                    sessionId: sessionId
                 });
             }
 
@@ -71,6 +78,14 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
                     time: time,
                     apiKey: apiKey
                 });
+            }
+
+            if (checkoutTokenRequired && this.$.checkoutToken) {
+                params.token = this.$.checkoutToken;
+            }
+
+            if (authTokenRequired && this.$.authToken) {
+                params.authToken = this.$.authToken;
             }
 
             if (apiKeyRequired || signatureRequired || sessionRequired) {

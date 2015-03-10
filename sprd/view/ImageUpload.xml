@@ -2,7 +2,6 @@
 <view:ImageUploadClass xmlns="http://www.w3.org/1999/xhtml"
                        xmlns:js="js.core"
                        xmlns:ui="js.ui" xmlns:view="sprd.view"
-
                        ondragenter="dragEnter" ondragexit="dragExit" ondrop="dropImage" ondragover="dragOver"
                        componentClass="image-upload">
 

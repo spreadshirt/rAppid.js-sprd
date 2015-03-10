@@ -214,7 +214,11 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
         getAppearanceForProductTypeAndColor: function (productType, color) {
             if (color && productType) {
                 var colorHash = productTypeToColorMap[productType.$.id],
+                    appearances;
+
+                if (colorHash) {
                     appearances = colorHash[color.toString()];
+                }
 
                 if (appearances && appearances.length) {
                     return appearances[0];

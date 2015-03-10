@@ -11,6 +11,15 @@ define(['js/data/Entity', 'js/type/Color'], function (Entity, Color) {
             data["default"] = Color.parse(data["default"]);
             data.origin = Color.parse(data.origin);
             return data;
+        },
+
+        compose: function () {
+            var color = this.callBase();
+
+            color.default = color.default.toString();
+            color.origin = color.origin.toString();
+
+            return color;
         }
     })
 });

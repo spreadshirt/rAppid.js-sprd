@@ -14,7 +14,8 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
 
             $processors: {
                 BasketProcessor: BasketProcessor,
-                BasketItemProcessor: BasketItemProcessor
+                BasketItemProcessor: BasketItemProcessor,
+                OrderItemProcessor: BasketItemProcessor
             },
 
             getQueryParameters: function (method, resource) {
@@ -42,6 +43,18 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
 
                 if (match) {
                     return match[1];
+                }
+
+                return this.callBase();
+            },
+
+            _parsePayloadOnUpdate: function (request, xhr) {
+
+                var model = request.model;
+                var configuration = this.$dataSourceConfiguration.getConfigurationForModelClass(model.factory);
+
+                if (configuration.$.parseResponse === true) {
+                    return true;
                 }
 
                 return this.callBase();

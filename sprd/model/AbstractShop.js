@@ -1,45 +1,57 @@
-define([
-    "sprd/data/SprdModel",
-    'js/data/Collection',
-    'sprd/model/Basket',
-    'sprd/model/Currency',
-    'sprd/model/Address',
-    'sprd/model/Design',
-    'sprd/model/ProductType',
-    'sprd/model/ProductTypeDepartment',
-    'sprd/model/ArticleCategory',
-    'sprd/model/DesignCategory',
-    'sprd/model/Article', 'sprd/model/Country', 'sprd/model/PrintType', 'sprd/model/FontFamily', "sprd/model/Product", "sprd/model/DiscountScale", 'sprd/model/Application'],
-    function (SprdModel, Collection, Basket, Currency, Address, Design, ProductType, ProductTypeDepartment, ArticleCategory, DesignCategory, Article, Country, PrintType, FontFamily, Product, DiscountScale, Application) {
+define(['sprd/data/SprdModel', 'js/data/Collection', 'sprd/model/Currency', 'sprd/model/Address', 'sprd/model/Country'], function (SprdModel, Collection, Currency, Address, Country) {
 
-        return SprdModel.inherit("sprd.model.AbstractShop", {
-            schema: {
+    var MarketPlace = {
+        EU: 205909,
+        NA: 93439
+    };
 
 
-                country: Country,
-//            language: SprdModel,
-                currency: Currency,
-//            address: SprdModel,
-                address: Address,
-                productTypes: Collection.of(ProductType),
-                printTypes: Collection.of(PrintType),
-                fontFamilies: Collection.of(FontFamily),
-                productTypeDepartments: Collection.of(ProductTypeDepartment),
-//            shippingTypes: Collection,
-            designCategories: Collection.of(DesignCategory),
-                designs: Collection.of(Design),
-                articleCategories: Collection.of(ArticleCategory),
-                articles: Collection.of(Article),
-                discountSupported: Boolean,
-                discountScale: DiscountScale,
-                products: Collection.of(Product),
-                currencies: Collection.of(Currency),
-//            languages: Collection,
-                countries: Collection.of(Country),
-                baskets: Collection.of(Basket),
-                applications: Collection.of(Application)
+    var AbstractShop = SprdModel.inherit("sprd.model.AbstractShop", {
 
-            }
-        });
+        defaults: {
+            platform: null
+        },
+
+        schema: {
+
+            address: Address,
+            country: Country,
+            currency: Currency,
+
+            currencies: Collection.of(Currency),
+            countries: Collection.of(Country),
+
+            name: String,
+            description: String,
+            user: "sprd/model/User",
+            discountSupported: Boolean
+
+        },
+
+        isMarketPlace: function (platform) {
+            platform = platform || this.$.platform;
+            var id = this.$.id;
+
+            return (platform === "EU" && id == MarketPlace.EU) || (platform === "NA" && id == MarketPlace.NA);
+        }.onChange("platform", "id"),
+
+        isOwnedBySpreadshirt: function(platform) {
+            platform = platform || this.$.platform;
+
+            var userId = this.get("user.id");
+            return (platform === "EU" && userId == 40000) || (platform === "NA" && userId == 1000);
+        }.onChange("platform", "user.id")
+
+    }, {
+
+        marketPlaceShopId: function (platform) {
+            return MarketPlace[platform.toUpperCase()];
+        }
+
     });
+
+    AbstractShop.MarketPlace = MarketPlace;
+
+    return AbstractShop;
+});
 

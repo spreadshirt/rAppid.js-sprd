@@ -47,7 +47,9 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
 
             autoSelectLayer: false,
 
-            selectedLayer: null
+            selectedLayer: null,
+
+            autoSelectConfigurationType: null
         },
 
         inject: {
@@ -60,6 +62,8 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
         ],
 
         ctor: function() {
+            var self = this;
+
             this.callBase();
 
             this.bind("colorPicker", "change:menuVisible", function() {
@@ -67,13 +71,23 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
                     this.set("selectedLayer", null);
                 }
             }, this);
+
+            window.onorientationchange = function () {
+                self.trigger("orientationChanged");
+            };
+        },
+
+        _commitConfiguration: function() {
+            this.set("layers", null);
         },
 
         _commitLayers: function(layers) {
 
             this.set("selectedLayer", null);
+            var autoSelectConfigurationType = this.$.autoSelectConfigurationType;
 
-            if (layers && this.$.autoSelectLayer) {
+            if (layers && this.$.autoSelectLayer &&
+                (!autoSelectConfigurationType || autoSelectConfigurationType === this.get("configuration.type"))) {
                 var configuration = this.$.configuration,
                     layerIndex = 0;
                 if (configuration && configuration.$lastLayerIndex) {
@@ -98,10 +112,19 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
             if (layer !== this.$.selectedLayer) {
                 this.set("selectedLayer", layer);
             } else {
-                this.set("selectedLayer", null)
+                this.set("selectedLayer", null);
             }
-
         },
+
+        getItemHeight: function () {
+            var window = this.$stage.$window;
+            if (window && window.matchMedia) {
+                var mediaQuery = window.matchMedia("(max-height: 650px)");
+
+                return mediaQuery.matches ? 10 : 15;
+            }
+            return 10;
+        }.on("orientationChanged"),
 
         boolean: function(v) {
             return !!v;

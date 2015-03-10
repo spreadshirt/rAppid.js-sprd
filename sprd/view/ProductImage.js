@@ -44,7 +44,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
         imageUrl: function () {
             if (this.$.product) {
                 var product = this.$.product,
-                    viewId = this.$.view ? this.$.view.$.id : product.getDefaultViewId(),
+                    viewId = this.get('view.id') || product.getDefaultViewId(),
                     resources = product.$.resources;
 
                 if (!viewId && resources instanceof Array) {
@@ -60,6 +60,8 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
                     }
                 }
 
+                viewId = viewId || 0;
+
                 return this.$.imageService.productImage(product.$.id, viewId, this.get("appearance.id"), this.$.type, {
                     width: this.$.width,
                     height: this.$.height,
@@ -68,7 +70,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
             }
             return null;
 
-        }.onChange('product', 'width', 'height', 'type', 'view', 'appearance')
+        }.onChange('product', 'width', 'height', 'type', 'view', 'appearance', 'product.defaultValues')
 
     });
 });

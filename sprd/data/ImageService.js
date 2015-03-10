@@ -22,13 +22,17 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         },
 
         productImage: function (productId, viewId, appearanceId, type, options) {
+            var params = ImageService.getImageSizeParameter(options);
+            if (appearanceId) {
+                params.appearanceId = appearanceId;
+            }
             return this.buildUrl([
                 type === PRODUCT ? "products" : "compositions",
                 productId,
                 "views",
                 viewId
             ],
-            _.extend({ appearanceId: appearanceId}, ImageService.getImageSizeParameter(options)),
+                params,
             parseInt(productId || 0) + parseInt(viewId || 0) + parseInt(appearanceId || 0));
         },
 

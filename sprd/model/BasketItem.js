@@ -6,13 +6,16 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement", "sprd/entity/Price
             quantity: Number,
             price: Price,
             priceItem: Price,
-            origin: String
+            origin: String,
+            shippingFactor: Number,
+            giftWrappingSupported: Boolean
         },
 
         defaults: {
             quantity: 1,
             element: null,
-            price: null
+            price: null,
+            shippingFactor: 1
         },
 
         increaseQuantity: function (quantity) {
@@ -48,6 +51,18 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement", "sprd/entity/Price
                 (this.get('element.article.commission.vatExcluded') || 0);
         },
 
+        displayPrice: function(){
+            if (this.$.priceItem) {
+                return this.$.priceItem.$.display;
+            }
+
+            return this.vatIncluded();
+        },
+
+        orderValue: function() {
+            return (this.totalVatIncluded() || 0) * (this.$.shippingFactor);
+        },
+
         discountPriceVatIncluded: function(){
             if(this.$.price){
                 return this.$.price.$.vatIncluded;
@@ -61,6 +76,10 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement", "sprd/entity/Price
 
         totalVatExcluded: function () {
             return this.vatExcluded() * this.$.quantity;
+        }.on('change:quantity'),
+
+        totalDisplayPrice: function(){
+            return this.displayPrice() * this.$.quantity;
         }.on('change:quantity'),
 
         totalDiscountVatIncluded: function(){

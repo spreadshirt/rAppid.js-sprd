@@ -1,4 +1,4 @@
-define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "text/entity/TextFlow", "text/entity/ParagraphElement", "text/entity/SpanElement", "sprd/type/Style", "text/entity/TextRange"], function (Base, flow, Size, TextFlow, ParagraphElement, SpanElement, Style, TextRange) {
+define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "text/entity/TextFlow", "text/entity/ParagraphElement", "text/entity/SpanElement", "sprd/type/Style", "text/entity/TextRange", "underscore"], function (Base, flow, Size, TextFlow, ParagraphElement, SpanElement, Style, TextRange, _) {
     return Base.inherit("sprd.manager.TextConfigurationManager", {
         initializeConfiguration: function (configuration, callback) {
 
@@ -54,6 +54,13 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
 
                         for (var i = 0; i < content.length; i++) {
                             var tspan = content[i];
+
+                            if (_.isString(tspan)) {
+                                // text tag without tspans
+                                tspan = {
+                                    content: [tspan]
+                                }
+                            }
 
                             if (!lastTSpan || tspan.hasOwnProperty("y")) {
                                 if (paragraph) {

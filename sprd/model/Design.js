@@ -6,6 +6,13 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         OnProduct: "onProduct"
     };
 
+    var DesignServiceState = {
+        APPROVED: "APPROVED",
+        TO_BE_APPROVED: "TO_BE_APPROVED",
+        REJECTED: "REJECTED",
+        TO_BE_APPROVED_BY_USER: "TO_BE_APPROVED_BY_USER"
+    };
+
     var Translation = Entity.inherit('app.model.TranslatedDesign.Translation', {
         schema: {
             locale: Locale,
@@ -35,7 +42,6 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             colorCount: Number,
             ownText: Boolean,
             minimumScale: Number,
-
             denyOtherText: String,
             denyOtherDesigns: String,
 
@@ -50,7 +56,8 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         defaults: {
             name: '',
             description: '',
-            restrictions: null
+            restrictions: null,
+            designServiceState: null
         },
 
         schema: {
@@ -62,12 +69,21 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             tags: String,
 
             colors: [DesignColor],
+            backgroundColor: String,
+
             price: Price,
 
             restrictions: Restrictions,
             user: "sprd/model/User",
 
-            translations: [Translation]
+            designServiceState: {
+                required: false,
+                type: String
+            },
+
+            translations: [Translation],
+
+            resources: Object
         },
 
         parse: function (data) {
@@ -81,9 +97,41 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             return data;
         },
 
-        isVectorDesign: function() {
+        isVectorDesign: function () {
             return this.$.colors.length > 0;
         },
+
+        hasBackgroundColor: function () {
+
+            if (this.$hasBackgroundColor === true || this.$.backgroundColor) {
+                return true;
+            }
+
+            if (!this.$hasBackgroundColor === false) {
+                // already search
+                return false;
+            }
+
+            var ret = false;
+
+            // requesting without fullData will not give us a payload for
+            // background color or not, that's why we search within resources
+
+            var resources = this.$.resources;
+            if (resources instanceof Array) {
+                for (var i = 0; i < resources.length; i++) {
+                    var obj = resources[i];
+                    if (obj && obj.href && /backgroundColor/.test(obj.href)) {
+                        ret = true;
+                        break;
+                    }
+                }
+            }
+
+            this.$hasBackgroundColor = ret;
+            return ret;
+
+        }.onChange("backgroundColor"),
 
         getTranslationForLocale: function (locale) {
             var translations = this.$.translations,
@@ -126,6 +174,7 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
     });
 
 
+    Design.DesignServiceState = DesignServiceState;
     Design.Restrictions = Restrictions;
     Design.Translation = Translation;
     Design.Locale = Locale;

@@ -56,6 +56,8 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
                 height: this.get('_viewMap.printArea.boundary.size.height')
             });
 
+            this.$border = border;
+
             var softBoundary = this.get("_viewMap.printArea.boundary.soft.content.svg.path.d");
 
             if (softBoundary) {
@@ -92,13 +94,19 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
             this.callBase();
         },
 
+        getStaticBoundingRect: function () {
+            if (this.$border && this.$border.$el) {
+                return this.$border.$el.getBoundingClientRect();
+            }
+            return null;
+        },
+
         initialize: function () {
             this.bind('product.configurations', 'add', this._onConfigurationAdded, this);
-            this.bind('product.configurations', 'change', this._onConfigurationChanged, this);
+            this.bind('product.configurations', 'item:change:printArea', this._onConfigurationChanged, this);
             this.bind('product.configurations', 'remove', this._onConfigurationRemoved, this);
             this.bind('product.configurations', 'reset', this._onConfigurationsReset, this);
             this.bind('product', 'change:configurations', this._onConfigurationsReset, this);
-
             this.callBase();
         },
 
@@ -189,6 +197,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
 
             var viewer = this.$configurationViewerCache[configuration.$cid];
             if (viewer) {
+                delete this.$configurationViewerCache[configuration.$cid];
                 viewer.remove();
                 viewer.destroy();
             }
@@ -208,13 +217,11 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
 
         _onConfigurationChanged: function (e) {
             // remove or add
-            if (e && this._hasSome(e.$.changedAttributes, ["printArea"])) {
-                var configuration = e.$.item;
-                if (configuration.$.printArea === this.get('_viewMap.printArea')) {
-                    this._addConfiguration(configuration);
-                } else {
-                    this._removeConfiguration(configuration);
-                }
+            var configuration = e.$.item;
+            if (configuration.$.printArea === this.get('_viewMap.printArea')) {
+                this._addConfiguration(configuration);
+            } else {
+                this._removeConfiguration(configuration);
             }
         }
 

@@ -44,19 +44,40 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             this.bind('selectedConfiguration', 'change:offset', this._positionTextArea, this);
         },
 
+        _onDomAdded: function () {
+            this.callBase();
+            if (this.$.editable) {
+                // focus stage to enable keyboard interaction
+                this.$stage.focus();
+            }
+        },
+
         _commitSelectedConfiguration: function (selectedConfiguration, oldSelectedConfiguration) {
-
-            if (this.$.removeEmptyTextConfiguration && oldSelectedConfiguration &&
-                oldSelectedConfiguration.type === "text" && oldSelectedConfiguration.$.textFlow &&
-                this.$.product) {
-
-                var text = oldSelectedConfiguration.$.textFlow.text(0, -1);
-                if (/^[\s\n\r]*$/.test(text)) {
+            if (this.$.product && oldSelectedConfiguration && oldSelectedConfiguration.type === "text") {
+                if (oldSelectedConfiguration.$.isNew) {
                     this.$.product.$.configurations.remove(oldSelectedConfiguration);
                 }
+                if (this.$.removeEmptyTextConfiguration
+                    && oldSelectedConfiguration.$.textFlow) {
+
+                    var text = oldSelectedConfiguration.$.textFlow.text(0, -1);
+                    if (/^[\s\n\r]*$/.test(text)) {
+                        this.$.product.$.configurations.remove(oldSelectedConfiguration);
+                    }
+                }
+
             }
 
-            this._positionTextArea();
+            if (this.isRendered() && selectedConfiguration && !this.$stage.$browser.hasTouch) {
+                // when the selection changes make sure to focus the stage to allow keyboard interaction
+                // only needed on desktop
+                this.$stage.focus();
+            }
+
+            if (selectedConfiguration && this.$.textArea && this.$.textArea.isRendered()) {
+                this.$.textArea.$el.blur();
+                this._positionTextArea();
+            }
         },
 
         keyUp: function (e) {
@@ -174,6 +195,13 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 }
                 this.trigger('on:configurationSelect', configuration);
                 this.set('selectedConfigurationViewer', viewer);
+                if (viewer && this.$.product.$.configurations.size() > 1) {
+                    // rearange configurations in list
+                    this.$.product.$.configurations.remove(configuration, {silent: true});
+                    this.$.product.$.configurations.add(configuration, {silent: true});
+                    // bring viewer to front
+                    viewer.bringToFront();
+                }
 
             }
         },
@@ -292,7 +320,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     self._positionTextArea();
                     self.$.textArea.set({
                         opacity: 1.0,
-                        value: self.$.selectedConfiguration ? self.$.selectedConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "") : ""
+                        value: self.$.selectedConfiguration ? self.$.selectedConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "") : "",
+                        _configuration: self.$.selectedConfiguration
                     });
                     self.$.textArea.set('opacity', 1.0);
                 }, 1000);
@@ -305,6 +334,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
         _delegateEvent: function (e) {
 
             if (this.$stage.$browser.isIOS || this.$.textArea.get('opacity') == 0) {
+                this.$.productViewerSvg.$currentProductTypeViewViewer._handleDown(e);
                 var viewer = this.$.selectedConfigurationViewer;
                 if (viewer) {
                     viewer._down(e.domEvent, viewer._isGesture(e.domEvent) ? "gesture" : "move");
@@ -318,9 +348,12 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             this.$pointerMoveEventTriggerd = true;
         },
 
-        _endTextAreaMove: function (e) {
+        _handlePointerUp: function (e) {
             if (!this.$pointerMoveEventTriggerd) {
                 e.target.focus();
+            }
+            if (this.$stage.$browser.isIOS || this.$.textArea.get('opacity') == 0) {
+                this.$.productViewerSvg.$currentProductTypeViewViewer._handleUp(e);
             }
         },
 
@@ -341,8 +374,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     self.$stage.set('height', '100%');
                 }, 200);
 
-                if (this.$.selectedConfiguration) {
-                    this.$.productManager.setTextForConfiguration(this.$.textArea.$.value, this.$.selectedConfiguration);
+                if (this.$.textArea.$._configuration) {
+                    this.$.productManager.setTextForConfiguration(this.$.textArea.$.value, this.$.textArea.$._configuration);
                 }
 
                 self.$.textArea.set('opacity', 0);

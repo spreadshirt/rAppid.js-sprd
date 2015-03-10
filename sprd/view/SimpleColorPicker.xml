@@ -25,6 +25,7 @@
     </div>
     <ui:TemplatePlaceHolder cid="colorPickerZoom"
                             selected="{_showPreview}"
+                            onpointerdown="_onPointerDown"
                             position="absolute"
                             class="simple-color-picker-zoom"
                             templateName="preview-item"

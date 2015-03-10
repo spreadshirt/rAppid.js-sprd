@@ -1,4 +1,4 @@
-#!/usr/bin/node
+#!/usr/local/bin/node
 
 'use strict';
 
@@ -16,26 +16,21 @@
  *
 */
 var fs = require('fs'),
+    path = require('path'),
     nodeCommand = process.title,
     filename1, filename2,
     outputFilename,
     json1, json2,
     obj1, obj2, mergeObj,
-    args = process.argv,
+    args = process.argv.splice(2),
     i;
-
-// throw out node command and script file parameter
-if (args[0] === nodeCommand) {
-    args.shift();
-}
-
-if (args[0] === __filename) {
-    args.shift();
-}
 
 // get input file parameters
 filename1 = args.shift();
 filename2 = args.shift();
+
+filename1= path.resolve(filename1.replace(/^~\//, process.env.HOME + '/'));
+filename2 = path.resolve(filename2.replace(/^~\//, process.env.HOME + '/'));
 
 if (!(filename1 && filename2)) {
     console.error('not enough arguments');
@@ -44,27 +39,38 @@ if (!(filename1 && filename2)) {
 }
 
 // get output filename from args or user 'file1_merge_file2' as default
-outputFilename = args.shift() || filename1.match(/([^/.]+)\..*?$/)[1] + '_merge_' + filename2.match(/([^/.]+)\..*?$/)[1] + '.json';
+outputFilename = args.shift() || filename1.match(/([^/\\.]+)\..*?$/)[1] + '_merge_' + filename2.match(/([^/\\.]+)\..*?$/)[1] + '.json';
 
 // read files
 if (fs.existsSync(filename1)) {
-    json1 = fs.readFileSync(filename1).toString();
+    json1 = fs.readFileSync(filename1, 'utf8').toString().replace(/^\uFEFF/, '');
 } else {
     console.error('file "' + filename1 + '" doesn\'t exist.');
 }
 
 if (fs.existsSync(filename2)) {
-    json2 = fs.readFileSync(filename2).toString();
+    json2 = fs.readFileSync(filename2, 'utf8').toString().replace(/^\uFEFF/, '');
 } else {
     console.error('file "' + filename2 + '" doesn\'t exist.');
 }
 
 // parse json out of files
+
 try {
     obj1 = JSON.parse(json1);
+} catch (e) {
+    console.error('the first file doesn\'t contain valid JSON');
+	 console.error(e);
+	 console.info('json:', json1);
+    process.exit(1);
+}
+
+try {
     obj2 = JSON.parse(json2);
 } catch (e) {
-    console.error('one of the files doesn\'t contain valid JSON');
+    console.error('the second file doesn\'t contain valid JSON');
+	 console.error(e);
+	 console.info('json:', json2);
     process.exit(1);
 }
 

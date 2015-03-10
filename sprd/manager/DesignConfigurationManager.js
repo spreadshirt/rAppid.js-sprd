@@ -1,4 +1,4 @@
-define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow"], function (Base, UnitUtil, Design, flow) {
+define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size"], function (Base, UnitUtil, Design, flow, Size) {
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
         initializeConfiguration: function (configuration, callback) {
 
@@ -17,14 +17,22 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
 
                 designId = designId || svg.image.designId;
-                design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
+                if (designId) {
+                    design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
+                }
             } else {
                 design = configuration.$.design;
             }
 
             flow()
                 .par(function (cb) {
-                    design.fetch(null, cb);
+
+                    if (design) {
+                        design.fetch(null, cb);
+                    } else {
+                        cb();
+                    }
+
                 }, function (cb) {
                     printType.fetch(null, cb);
                 })
@@ -49,7 +57,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         defaultPrintColors = [],
                         designColorsRGBs = configuration.$.designColorRGBs,
                         designColorIds = configuration.$.designColorIds,
-                        designColors = design.$.colors,
+                        designColors = design ? design.$.colors : null,
                         values, i,
                         colorsSet = false,
                         printColor;
@@ -135,8 +143,14 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 .seq(function () {
 
                     if (svg) {
-
-                        var size = UnitUtil.convertSizeToMm(design.$.size, configuration.$.printType.$.dpi);
+                        var size;
+                        if (design) {
+                            size = UnitUtil.convertSizeToMm(design.$.size, configuration.$.printType.$.dpi);
+                        } else if(configuration.$.generatedWidth){
+                            // here we have a special text configuration
+                            // with a generated image width
+                            size = UnitUtil.convertSizeToMm(new Size({width: configuration.$.generatedWidth, height: svg.image.height / svg.image.width * configuration.$.generatedWidth, unit: "px"}), configuration.$.printType.$.dpi);
+                        }
 
                         var match,
                             type,
@@ -162,7 +176,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                             }
                         }
 
-                        configuration.set(ret);
+                        configuration.set(ret, {preventValidation: true});
                     }
                 })
                 .exec(callback);
