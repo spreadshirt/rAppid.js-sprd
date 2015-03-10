@@ -11,6 +11,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
     return SprdModel.inherit("sprd.model.Basket", {
 
         schema: {
+            supportsEmailShipping: Boolean,
             basketItems: Collection.of(BasketItem),
             priceItems: Price,
             priceTotal: Price,
