@@ -111,6 +111,8 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
     ImageService.getImageSizeParameter = function (options) {
 
+        options = options || {};
+
         var ret = {};
 
         if (options.width) {

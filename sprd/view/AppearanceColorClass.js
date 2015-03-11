@@ -1,4 +1,4 @@
-define(["js/ui/View"], function (View) {
+define(["js/ui/View", "sprd/data/ImageService"], function (View, ImageService) {
 
     var ratios = {
         2: [75, 25],
@@ -13,6 +13,10 @@ define(["js/ui/View"], function (View) {
             appearance: null,
             componentClass: "appearance-color appearance-{appearance.id}",
             title: "{appearance.name}"
+        },
+
+        inject: {
+            imageService: ImageService
         },
 
         colorWidth: function (index) {
@@ -38,7 +42,20 @@ define(["js/ui/View"], function (View) {
 
             return ret;
 
-        }.onChange("appearance")
+        }.onChange("appearance"),
+
+        textureImage: function() {
+
+            var imageService = this.$.imageService,
+                appearance = this.$.appearance;
+
+            if (!(imageService && appearance && appearance.$.texture)) {
+                return;
+            }
+
+            return imageService.appearanceImage(appearance.$.id);
+
+        }.onChange("apperance")
 
     });
 
