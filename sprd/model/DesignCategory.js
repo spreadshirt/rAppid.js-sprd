@@ -1,8 +1,11 @@
-define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection"], function (Model, Design, Collection) {
+define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection", "js/core/List"], function (Model, Design, Collection, List) {
 
     var DesignCategory = Model.inherit('sprd.model.DesignCategory', {
         schema: {
             designs: Collection.of(Design)
+        },
+        defaults: {
+            designCategories: List
         },
 
         isMarketPlace: function () {

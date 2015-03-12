@@ -231,7 +231,9 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     return;
                 }
 
-                var textFlow = this.$.textFlow;
+                var textFlow = this.$.textFlow,
+                    printColors = [],
+                    printColor;
                 if (textFlow) {
 
                     var useThisColor = null;
@@ -248,10 +250,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                                 useThisColor = printType.getClosestPrintColor(printTypeColor.color());
                             }
 
-                            style.set('printTypeColor', useThisColor || printType.getClosestPrintColor(printTypeColor.color()));
+                            printColor = useThisColor || printType.getClosestPrintColor(printTypeColor.color());
+                            if(!printColors.length){
+                                printColors = [printColor];
+                            }
+
+                            style.set('printTypeColor', printColor);
                         }
                     } while ((leaf = leaf.getNextLeaf(textFlow)));
 
+                    this.$.printColors.reset(printColors);
                     this._composeText();
                 }
 
