@@ -151,6 +151,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                             if (clientRect.left > x || clientRect.right < x || clientRect.top > y || clientRect.bottom < y) {
                                 if (configViewer) {
                                     configViewer.$.configuration.clearErrors();
+                                    configViewer.disableMoveSnipping();
                                     configViewer.set('preventValidation', true);
                                     configViewer.addClass('hide-configuration');
                                     dndObject.dndImage.set({
@@ -159,9 +160,13 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                                         'top': y
                                     });
                                 }
-                            } else {
-                                configViewer.set('preventValidation', false);
-                                configViewer && configViewer.removeClass('hide-configuration');
+                            } else{
+                                if(configViewer){
+                                    configViewer.set('preventValidation', false);
+                                    configViewer.removeClass('hide-configuration');
+                                    configViewer.enableMoveSnipping();
+                                }
+
                                 dndObject.dndImage.set({
                                     'visible': false
                                 });
@@ -211,7 +216,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     });
                     configView.set('preventValidation', false);
                 }
-                dndObject.configurationViewer.removeClass('hide-configuration');
+                configView.removeClass('hide-configuration');
+                configView.enableMoveSnipping();
                 dndObject.dndImage.set({
                     'visible': false
                 });

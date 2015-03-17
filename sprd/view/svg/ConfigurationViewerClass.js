@@ -917,6 +917,16 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this._stopTransformation();
             },
 
+            disableMoveSnipping: function(){
+                moveSnippingEnabled = false;
+                var snapLines = this.get('printAreaViewer.snapLines');
+                snapLines && snapLines.clear();
+            },
+
+            enableMoveSnipping: function(){
+                moveSnippingEnabled = true;
+            },
+
             focus: function () {
                 if (this.$asset) {
                     this.$asset._focus();
