@@ -115,7 +115,8 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             url.unshift(imgServer);
 
             if (this.$.supportsWebP) {
-                url.push(".webp");
+                parameter = parameter || {};
+                parameter.mediaType = parameter.mediaType || "webp";
             }
 
             return ImageService.buildUrl(url, parameter);
