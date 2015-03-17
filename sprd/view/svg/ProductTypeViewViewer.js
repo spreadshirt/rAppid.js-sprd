@@ -71,8 +71,16 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
         },
 
+        /**
+         * Returns true if point is inside element (hover)
+         * @param x
+         * @param y
+         * @returns {Boolean}
+         */
         checkForDropHover: function (x, y) {
-            this.set('dropHovered', this.isPointInElement(x, y));
+            var hover = this.isPointInElement(x, y);
+            this.set('dropHovered', hover);
+            return hover;
         },
 
         _initializeRenderer: function () {
@@ -134,8 +142,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                         if (configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
                             self._debounceFunctionCall(function (x, y) {
                                 for (var i = 0; i < productTypeViewViewer.length; i++) {
-                                    if (productTypeViewViewer[i] !== self) {
-                                        productTypeViewViewer[i].checkForDropHover(x, y);
+                                    if (productTypeViewViewer[i] !== self && productTypeViewViewer[i].checkForDropHover(x, y)) {
+                                        break;
                                     }
                                 }
                             }, "setHoverState", 100, self, [x, y], "BOUNCE");
