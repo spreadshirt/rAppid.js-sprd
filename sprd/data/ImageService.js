@@ -96,7 +96,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
         fontUrl: function (font, extension) {
             extension = extension || "woff" || "svg#font";
-            return this.buildUrl(['fontFamilies', font.getFontFamily().$.id, 'fonts', font.$.id + "." + extension]);
+            return ImageService.buildUrl([this.$.gateway,'fontFamilies', font.getFontFamily().$.id, 'fonts', font.$.id + "." + extension]);
         },
 
         buildUrl: function (url, parameter, cacheId) {
