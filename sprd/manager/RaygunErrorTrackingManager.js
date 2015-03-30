@@ -31,7 +31,8 @@ define(["sprd/manager/IErrorTrackingManager", "require"], function (IErrorTracki
                     }
 
                     Raygun.init(apiKey, {
-                        allowInsecureSubmissions: true  // IE8
+                        allowInsecureSubmissions: true,  // IE8,
+                        ignore3rdPartyErrors: true // This option removes nonsense 'Script Error's from your Raygun dashboard
                     }).attach();
 
                     var version = self.$stage.$parameter.version;

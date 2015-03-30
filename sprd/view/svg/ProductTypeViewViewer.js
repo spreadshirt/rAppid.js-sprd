@@ -71,8 +71,16 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
         },
 
+        /**
+         * Returns true if point is inside element (hover)
+         * @param x
+         * @param y
+         * @returns {Boolean}
+         */
         checkForDropHover: function (x, y) {
-            this.set('dropHovered', this.isPointInElement(x, y));
+            var hover = this.isPointInElement(x, y);
+            this.set('dropHovered', hover);
+            return hover;
         },
 
         _initializeRenderer: function () {
@@ -134,8 +142,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                         if (configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
                             self._debounceFunctionCall(function (x, y) {
                                 for (var i = 0; i < productTypeViewViewer.length; i++) {
-                                    if (productTypeViewViewer[i] !== self) {
-                                        productTypeViewViewer[i].checkForDropHover(x, y);
+                                    if (productTypeViewViewer[i] !== self && productTypeViewViewer[i].checkForDropHover(x, y)) {
+                                        break;
                                     }
                                 }
                             }, "setHoverState", 100, self, [x, y], "BOUNCE");
@@ -143,6 +151,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                             if (clientRect.left > x || clientRect.right < x || clientRect.top > y || clientRect.bottom < y) {
                                 if (configViewer) {
                                     configViewer.$.configuration.clearErrors();
+                                    configViewer.disableMoveSnipping();
                                     configViewer.set('preventValidation', true);
                                     configViewer.addClass('hide-configuration');
                                     dndObject.dndImage.set({
@@ -151,9 +160,13 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                                         'top': y
                                     });
                                 }
-                            } else {
-                                configViewer.set('preventValidation', false);
-                                configViewer && configViewer.removeClass('hide-configuration');
+                            } else{
+                                if(configViewer){
+                                    configViewer.set('preventValidation', false);
+                                    configViewer.removeClass('hide-configuration');
+                                    configViewer.enableMoveSnipping();
+                                }
+
                                 dndObject.dndImage.set({
                                     'visible': false
                                 });
@@ -203,7 +216,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     });
                     configView.set('preventValidation', false);
                 }
-                dndObject.configurationViewer.removeClass('hide-configuration');
+                configView.removeClass('hide-configuration');
+                configView.enableMoveSnipping();
                 dndObject.dndImage.set({
                     'visible': false
                 });

@@ -9,7 +9,29 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         defaults: {
             subDomainCount: 10,
             endPoint: '//image.spreadshirt.net/image-server/v1',
-            gateway: '/image-server/v1'
+            gateway: '/image-server/v1',
+
+            detectWebP: true,
+
+            supportsWebP: false
+        },
+
+        ctor: function() {
+            this.callBase();
+
+            if (this.$.detectWebP) {
+                var self = this;
+
+                var image = new Image();
+                image.onerror = function() {
+                    self.set("supportsWebP", false);
+                };
+                image.onload = function() {
+                    self.set("supportsWebP", image.width == 1);
+                };
+
+                image.src = 'data:image/webp;base64,UklGRiwAAABXRUJQVlA4ICAAAAAUAgCdASoBAAEAL/3+/3+CAB/AAAFzrNsAAP5QAAAAAA==';
+            }
         },
 
         virtualProductImage: function(product, vpString, viewId, options) {
@@ -91,6 +113,11 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
             url = url || [];
             url.unshift(imgServer);
+
+            if (this.$.supportsWebP) {
+                parameter = parameter || {};
+                parameter.mediaType = parameter.mediaType || "webp";
+            }
 
             return ImageService.buildUrl(url, parameter);
         }

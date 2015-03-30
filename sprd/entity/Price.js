@@ -24,11 +24,11 @@ define(['js/data/Entity', 'sprd/model/Currency'], function (Entity, Currency) {
             return this.callBase(data);
         },
 
-        formattedPrice: function () {
+        formattedPrice: function (type) {
             var currency = this.$.currency;
 
             if (currency) {
-                return currency.formatPrice(this);
+                return currency.formatPrice(this, type);
             }
 
             return null;
