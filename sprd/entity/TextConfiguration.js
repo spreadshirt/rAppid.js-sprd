@@ -129,7 +129,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     self.set({
                         composedTextFlow: composedTextFlow,
                         bound: composedTextFlow ? composedTextFlow.measure : null
-                    });
+                    }, {force: true});
 
                     callback && callback(err);
                 });
@@ -251,7 +251,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                             }
 
                             printColor = useThisColor || printType.getClosestPrintColor(printTypeColor.color());
-                            if(!printColors.length){
+                            if (!printColors.length) {
                                 printColors = [printColor];
                             }
 
