@@ -200,7 +200,12 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     this.$.product.$.configurations.remove(configuration, {silent: true});
                     this.$.product.$.configurations.add(configuration, {silent: true});
                     // bring viewer to front
-                    viewer.bringToFront();
+                    // timeout is needed here otherwise IE in windows 8
+                    // will throw an additional click event
+                    // on the underlying element
+                    setTimeout(function(){
+                        viewer.bringToFront();
+                    },2)
                 }
 
             }
