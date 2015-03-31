@@ -56,18 +56,9 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             },
 
             equalizeConfigurations: function (product, printArea, targetPrintType, excludedConfiguration) {
-                if (!printArea || !product) {
+                if (!printArea || !product || this.$equalizingConfigurations) {
                     return;
                 }
-
-                var configurations = product.getConfigurationsOnPrintAreas([printArea]);
-
-                var appearanceId = product.get('appearance.id');
-                var possiblePrintTypesOnPrintArea = ProductUtil.getPossiblePrintTypesForPrintAreas([printArea], appearanceId),
-                    possiblePrintType,
-                    possiblePrintTypes,
-                    config,
-                    i;
 
                 function checkPrintTypeForConfigurations(printType) {
                     for (i = 0; i < configurations.length; i++) {
@@ -83,37 +74,50 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     return true;
                 }
 
-                // if we have a target print type
-                // check if this fits for all
-                if (targetPrintType) {
-                    if (checkPrintTypeForConfigurations(targetPrintType)) {
-                        possiblePrintType = targetPrintType;
-                    }
-                }
+                var configurations = product.getConfigurationsOnPrintAreas([printArea]);
+                if (configurations.length > 1) {
+                    this.$equalizingConfigurations = true;
 
-                if (!possiblePrintType && !excludedConfiguration) {
-                    for (var j = 0; j < possiblePrintTypesOnPrintArea.length; j++) {
-                        if (checkPrintTypeForConfigurations(possiblePrintTypesOnPrintArea[j])) {
-                            possiblePrintType = possiblePrintTypesOnPrintArea[j];
-                            break;
+                    var appearanceId = product.get('appearance.id');
+                    var possiblePrintTypesOnPrintArea = ProductUtil.getPossiblePrintTypesForPrintAreas([printArea], appearanceId),
+                        possiblePrintType,
+                        possiblePrintTypes,
+                        config,
+                        i;
+
+                    // if we have a target print type
+                    // check if this fits for all
+                    if (targetPrintType) {
+                        if (checkPrintTypeForConfigurations(targetPrintType)) {
+                            possiblePrintType = targetPrintType;
                         }
                     }
-                }
 
-                // switch print type
-                if (possiblePrintType) {
-                    for (i = 0; i < configurations.length; i++) {
-                        config = configurations[i];
-                        if (excludedConfiguration !== config) {
-                            config.set('originalPrintType', config.$.printType, {silent: true});
-                            config.set('printType', possiblePrintType, {
-                                printTypeEqualized: true,
-                                printTypeTransformed: true
-                            });
+                    if (!possiblePrintType && !excludedConfiguration) {
+                        for (var j = 0; j < possiblePrintTypesOnPrintArea.length; j++) {
+                            if (checkPrintTypeForConfigurations(possiblePrintTypesOnPrintArea[j])) {
+                                possiblePrintType = possiblePrintTypesOnPrintArea[j];
+                                break;
+                            }
                         }
                     }
-                }
 
+                    // switch print type
+                    if (possiblePrintType) {
+                        for (i = 0; i < configurations.length; i++) {
+                            config = configurations[i];
+                            if (excludedConfiguration !== config) {
+                                config.set('originalPrintType', config.$.printType, {silent: true});
+                                config.set('printType', possiblePrintType, {
+                                    printTypeEqualized: true,
+                                    printTypeTransformed: true
+                                });
+                            }
+                        }
+                    }
+
+                    this.$equalizingConfigurations = false;
+                }
             }
         },
 

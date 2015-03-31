@@ -72,8 +72,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this._composeText();
             }.bus("Stage.Rendered"),
 
-            _commitChangedAttributes: function ($) {
-                if ($.hasOwnProperty("bound")) {
+            _commitChangedAttributes: function ($, options) {
+                if ($.hasOwnProperty("bound") && !options.preventValidation && !options.printTypeEqualized) {
                     this._setError(this._validateTransform($));
                 }
 
@@ -100,11 +100,18 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this._debounceFunctionCall(this._composeText, "composeText", 300, this, [true])
             },
 
-            _composeText: function (skipHeight, callback) {
+            _composeText: function (skipHeight, options, callback) {
 
                 if (!(this.$stage && this.$stage.rendered)) {
                     return;
                 }
+
+                if (options instanceof Function) {
+                    callback = options;
+                    options = null;
+                }
+
+                options = options || {};
 
                 var textFlow = this.$.textFlow;
                 if (!textFlow) {
@@ -126,10 +133,12 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         self.trigger("sizeChanged");
                     }
 
+                    var opt = _.clone(options);
+                    opt.force = true;
                     self.set({
                         composedTextFlow: composedTextFlow,
                         bound: composedTextFlow ? composedTextFlow.measure : null
-                    }, {force: true});
+                    }, opt);
 
                     callback && callback(err);
                 });
@@ -224,7 +233,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             },
 
-            _commitPrintType: function (printType) {
+            _commitPrintType: function (printType, oldPrintType, options) {
                 // print type changed -> convert colors
 
                 if (!printType) {
@@ -260,7 +269,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     } while ((leaf = leaf.getNextLeaf(textFlow)));
 
                     this.$.printColors.reset(printColors);
-                    this._composeText();
+                    this._composeText(true, options);
                 }
 
                 this.trigger("priceChanged");
