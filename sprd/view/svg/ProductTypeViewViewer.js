@@ -214,10 +214,12 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                             dndObject.viewer.$.product.set('view', viewer.$._view);
                         }
                     });
-                    configView.set('preventValidation', false);
+                    configView && configView.set('preventValidation', false);
                 }
-                configView.removeClass('hide-configuration');
-                configView.enableMoveSnipping();
+                if(configView){
+                    configView.removeClass('hide-configuration');
+                    configView.enableMoveSnipping();
+                }
                 dndObject.dndImage.set({
                     'visible': false
                 });
