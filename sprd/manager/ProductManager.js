@@ -460,7 +460,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printTypeId: null,
                     fontFamilyId: null,
                     fontFamilyName: "Arial",
-                    addToProduct: true
+                    addToProduct: true,
+                    isNew: true
                 });
 
                 var self = this,
@@ -659,7 +660,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             anchorIndex: 0
                         });
 
-                        configuration.set('isNew', true);
+                        configuration.set('isNew', params.isNew);
 
                         // determinate position
                         self._positionConfiguration(configuration);
@@ -1091,6 +1092,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var offset = specialTextConfiguration.$.offset.clone();
                 var width = specialTextConfiguration.width();
                 _.extend(params, {
+                    isNew: false,
                     addToProduct: false,
                     text: (specialTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, "")
                 });
