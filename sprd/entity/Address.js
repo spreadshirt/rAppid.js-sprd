@@ -227,6 +227,9 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             if(!this.isCompany()){
                 delete data.company;
                 delete data.vatId;
+            } else if (!/^[A-Z]{2}/.test(data.vatId)) {
+                data.vatId = (this.get("country.code") || "").toUpperCase() + data.vatId.replace(/^[A-Z]*/, "");
+                console.dir(data);
             }
 
             return data;
