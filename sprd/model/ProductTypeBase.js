@@ -49,8 +49,8 @@ define(["sprd/data/SprdModel", 'js/core/List', 'js/data/Entity'],
 
             containsSize: function (size) {
 
-                if (this.$.sizes) {
-                    return this.$.sizes.includes(size);
+                if (this.$.sizes && size) {
+                    return !!this.getSizeById(size.$.id);
                 }
 
                 return false;
