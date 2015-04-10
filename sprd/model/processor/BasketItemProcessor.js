@@ -33,13 +33,21 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                     elementPayload["appearance"]["name"] = prop.value;
                 }
 
-                if(prop.key === "article"){
+                if (prop.key === "article") {
                     elementPayload["article"] = this.$dataSource.getContextForChild(Article, shop).createEntity(Article, prop.value);
                 }
 
             }
 
-
+            var links = payload.links;
+            for (var j = 0; j < links.length; j++) {
+                var link = links[j];
+                if (link.type == "edit") {
+                    link.href = decodeURI(link.href);
+                    link.href = link.href.replace("{BASKET_ID}", model.$context.$contextModel.$.id);
+                    link.href = link.href.replace("{BASKET_ITEM_ID}", payload.id);
+                }
+            }
 
             if (element.type === TYPE_ARTICLE) {
                 elementPayload.item = this.$dataSource.getContextForChild(Article, shop).createEntity(Article, element.id);
@@ -97,25 +105,24 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                 }
                 links.push({
                     type: "edit",
-                    href: editLink + separator + "basketId={BASKET_ID}&basketItemId={BASKET_ITEM_ID}"
+                    href: encodeURI(editLink + separator + "basketId={BASKET_ID}&basketItemId={BASKET_ITEM_ID}")
                 });
             }
 
-
+            var ret = {
+                element: elementPayload,
+                quantity: payload.quantity
+            };
 
 
             if (links.length > 0) {
-                elementPayload['links'] = links;
+                ret['links'] = links;
             }
 
             elementPayload["type"] = model.$.element.getType();
             elementPayload["href"] = model.get('element.item.href');
             elementPayload["id"] = model.get('element.item.id');
 
-            var ret = {
-                element: elementPayload,
-                quantity: payload.quantity
-            };
 
             if (payload.origin) {
                 ret['origin'] = payload.origin;
