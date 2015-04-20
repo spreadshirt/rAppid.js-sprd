@@ -1,7 +1,7 @@
-define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sprd/model/UploadImage",
+define(["js/core/Component", "js/core/Bus", "xaml!sprd/data/ImageServerDataSource", "flow", "sprd/model/UploadImage",
         "sprd/type/UploadDesign", "underscore", "sprd/entity/FileSystemImage", "sprd/entity/RemoteImage",
-        "sprd/entity/Image", "sprd/data/IframeUpload", "sprd/manager/TrackingManager", "sprd/model/Design"],
-    function (Component, ImageServerDataSource, flow, UploadImage, UploadDesign, _, FileSystemImage, RemoteImage, Image, iFrameUpload, TrackingManager, Design) {
+        "sprd/entity/Image", "sprd/data/IframeUpload", "sprd/model/Design", "sprd/error/DesignUploadError"],
+    function (Component, Bus, ImageServerDataSource, flow, UploadImage, UploadDesign, _, FileSystemImage, RemoteImage, Image, iFrameUpload, Design, DesignUploadError) {
 
         return Component.inherit('sprd.data.ImageUploadService', {
 
@@ -11,7 +11,7 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
 
             inject: {
                 imageServer: ImageServerDataSource,
-                trackingManager: TrackingManager
+                bus: Bus
             },
 
             /**
@@ -117,7 +117,10 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                     .seq(function (cb) {
                         this.vars["design"].save(null, function (err) {
                             if (err && trackingManager) {
-                                trackingManager.trackUploadDesignCreationFailed(err);
+                                self.triggerError({
+                                    code: DesignUploadError.ErrorCodes.DESIGN_SAVE_ERROR,
+                                    originalError: err
+                                });
                                 errorTracked = true;
                             }
 
@@ -166,7 +169,10 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                             if (!err) {
                                 trackingManager.trackUploadSuccess();
                             } else if (!errorTracked) {
-                                trackingManager.trackUploadFailed(err);
+                                self.triggerError({
+                                    code: DesignUploadError.ErrorCodes.DESIGN_UPLOAD_ERROR,
+                                    originalError: err
+                                })
                             }
                         }
                         var state = uploadDesign.$.isVector ? UploadDesign.State.CONVERTING : UploadDesign.State.LOADED;
@@ -175,6 +181,9 @@ define(["js/core/Component", "xaml!sprd/data/ImageServerDataSource", "flow", "sp
                         callback && callback(err, uploadDesign);
 
                     });
+            },
+            triggerError: function (error) {
+                this.$.bus.trigger('ImageUploadService.Error', error, this);
             }
         });
     });

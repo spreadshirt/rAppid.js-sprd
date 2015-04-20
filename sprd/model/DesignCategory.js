@@ -63,6 +63,12 @@ define(["sprd/data/SprdModel", "sprd/model/Design", "js/data/Collection", "js/co
             return this.$.designCategories && this.$.designCategories.size();
         },
 
+        getBestsellerCatageory: function () {
+            return this.$.designCategories.find(function (val) {
+                return val.isBestseller();
+            });
+        },
+
         entryCount: function() {
             var ret = this.$.entryCount || 0;
 

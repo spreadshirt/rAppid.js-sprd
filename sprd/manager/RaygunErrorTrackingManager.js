@@ -3,7 +3,8 @@ define(["sprd/manager/IErrorTrackingManager", "require"], function (IErrorTracki
     return IErrorTrackingManager.inherit("sprd.manager.RaygunErrorTrackingManager", {
 
         defaults: {
-            apiKey: null
+            apiKey: null,
+            beforeSendFnc: null
         },
 
         _initializationComplete: function () {
@@ -34,6 +35,16 @@ define(["sprd/manager/IErrorTrackingManager", "require"], function (IErrorTracki
                         allowInsecureSubmissions: true,  // IE8,
                         ignore3rdPartyErrors: true // This option removes nonsense 'Script Error's from your Raygun dashboard
                     }).attach();
+
+                    if(self.$.beforeSendFnc){
+                        var scope = self.getScopeForFncName(self.$.beforeSendFnc);
+                        if(scope && scope[self.$.beforeSendFnc] instanceof Function){
+                            Raygun.onBeforeSend(function(payload){
+                                return scope[self.$.beforeSendFnc].call(scope, payload);
+                            });
+                        }
+
+                    }
 
                     var version = self.$stage.$parameter.version;
                     if (version) {
