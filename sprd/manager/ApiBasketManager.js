@@ -8,7 +8,6 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
          * @see http://developer.spreadshirt.net/display/API/Basket+Resources
          */
         return IBasketManager.inherit('sprd.manager.ApiBasketManager', {
-
             defaults: {
                 /***
                  * the basket model
