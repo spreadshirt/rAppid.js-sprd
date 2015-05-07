@@ -3,12 +3,17 @@ define(["sprd/manager/IBasketManager", "flow"], function (IBasketManager, flow) 
     return IBasketManager.inherit('sprd.manager.ExternalBasketManager', {
 
         defaults: {
-            externalBasket: null
+            externalBasket: null,
+            basketItem: null
         },
 
         addElementToBasket: function (element, quantity, callback) {
             var externalBasket = this.$.externalBasket;
             externalBasket.addBasketItem(element, quantity, callback);
+        },
+
+        updateBasketItem: function (basketItem, element, quantity, cb) {
+            cb && cb();
         },
 
         saveBasket: function(cb) {

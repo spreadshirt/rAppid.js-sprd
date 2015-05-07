@@ -8,7 +8,6 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
          * @see http://developer.spreadshirt.net/display/API/Basket+Resources
          */
         return IBasketManager.inherit('sprd.manager.ApiBasketManager', {
-
             defaults: {
                 /***
                  * the basket model
@@ -64,6 +63,10 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 initBasketWithNoCache: true,
 
                 /**
+                 * if set, the element which is added will be saved under this basket item
+                 */
+                basketItem: null,
+                /**
                  * a flag to trigger opossum synchronisation
                  */
                 syncToOpossum: false
@@ -116,7 +119,6 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
              * @param callback
              */
             addElementToBasket: function (element, quantity, callback) {
-
                 if (this.$.basket) {
                     var basketItem = this.$.basket.addElement(element, quantity);
                     element = basketItem.$.element;
@@ -152,6 +154,22 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 }
 
                 callback && callback();
+            },
+            /**
+             * Updates the given basket item
+             *
+             * @param {sprd.model.BasketItem} basketItem
+             * @param {sprd.model.ConcreteElement} element
+             * @param {Number} quantity
+             * @param {Function} cb
+             */
+            updateBasketItem: function (basketItem, element, quantity, cb) {
+                basketItem.set({
+                    element: element,
+                    quantity: quantity
+                });
+
+                basketItem.save(null, cb);
             },
 
             _triggerBasketSaving: function () {

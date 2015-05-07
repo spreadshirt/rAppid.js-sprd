@@ -5,10 +5,13 @@
         <conf:ResourceConfiguration path="countries" modelClassName="sprd.model.Country"/>
         <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop" sessionRequired="true">
             <conf:ResourceConfiguration path="address" modelClassName="sprd.model.Address"/>
-            <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.Application" sessionRequired="true"/>
-            <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.application.ShopApplication" sessionRequired="true"/>
+            <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.Application"
+                                        sessionRequired="true"/>
+            <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.application.ShopApplication"
+                                        sessionRequired="true"/>
             <conf:ResourceConfiguration path="applications"
-                                        modelClassName="sprd.model.application.ConfomatApplication" sessionRequired="true"/>
+                                        modelClassName="sprd.model.application.ConfomatApplication"
+                                        sessionRequired="true"/>
             <conf:ResourceConfiguration path="articles" modelClassName="sprd.model.Article"/>
             <conf:ResourceConfiguration path="articleCategories" modelClassName="sprd.model.ArticleCategory"/>
             <conf:ResourceConfiguration path="designCategories" modelClassName="sprd.model.DesignCategory">
@@ -38,31 +41,38 @@
         <conf:ResourceConfiguration path="baskets" modelClassName="sprd.model.Basket" processor="BasketProcessor"
                                     apiKeyRequired="true" parseResponse="true">
             <conf:ResourceConfiguration path="items" modelClassName="sprd.model.BasketItem"
-                                        processor="BasketItemProcessor"/>
+                                        processor="BasketItemProcessor" apiKeyRequired="true"/>
             <conf:ResourceConfiguration path="paymentTypes" modelClassName="sprd.model.PaymentType"
                                         apiKeyRequired="true"
                                         checkoutTokenRequired="true"/>
             <conf:ResourceConfiguration path="delivery" modelClassName="sprd.model.Delivery" apiKeyRequired="true"
                                         checkoutTokenRequired="true" sessionPreferred="true"/>
-            <conf:ResourceConfiguration path="voucher" modelClassName="sprd.model.Voucher" apiKeyRequired="true" sessionPreferred="true"/>
+            <conf:ResourceConfiguration path="voucher" modelClassName="sprd.model.Voucher" apiKeyRequired="true"
+                                        sessionPreferred="true"/>
             <conf:ResourceConfiguration path="checkout" modelClassName="sprd.model.Checkout" apiKeyRequired="true"
-                                        checkoutTokenRequired="true" />
+                                        checkoutTokenRequired="true"/>
         </conf:ResourceConfiguration>
-        <conf:ResourceConfiguration modelClassName="sprd.model.CombinedBasket" path="combinedBaskets" apiKeyRequired="true" />
+        <conf:ResourceConfiguration modelClassName="sprd.model.CombinedBasket" path="combinedBaskets"
+                                    apiKeyRequired="true"/>
         <conf:ResourceConfiguration path="users" modelClassName="sprd.model.User">
             <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop" sessionRequired="true">
                 <conf:ResourceConfiguration path="articles" modelClassName="sprd.model.Article"/>
             </conf:ResourceConfiguration>
 
-            <conf:ResourceConfiguration path="printTypes" modelClassName="sprd.model.PrintType" sessionRequired="true" signatureRequired="true"/>
-            <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" signatureRequired="true" apiKeyRequired="true"/>
-            <conf:ResourceConfiguration path="products" modelClassName="sprd.model.Product" sessionRequired="true" apiKeyRequired="true" signatureRequired="true"/>
+            <conf:ResourceConfiguration path="printTypes" modelClassName="sprd.model.PrintType" sessionRequired="true"
+                                        signatureRequired="true"/>
+            <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" signatureRequired="true"
+                                        apiKeyRequired="true"/>
+            <conf:ResourceConfiguration path="products" modelClassName="sprd.model.Product" sessionRequired="true"
+                                        apiKeyRequired="true" signatureRequired="true"/>
             <conf:ResourceConfiguration path="designCategories" modelClassName="sprd.model.DesignCategory"
                                         sessionRequired="true" signatureRequired="true">
-                <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" apiKeyRequired="true" signatureRequired="true"/>
+                <conf:ResourceConfiguration path="designs" modelClassName="sprd.model.Design" apiKeyRequired="true"
+                                            signatureRequired="true"/>
             </conf:ResourceConfiguration>
 
-            <conf:ResourceConfiguration path="fontFamilies" modelClassName="sprd.model.FontFamily" apiKeyRequired="true" signatureRequired="true"/>
+            <conf:ResourceConfiguration path="fontFamilies" modelClassName="sprd.model.FontFamily" apiKeyRequired="true"
+                                        signatureRequired="true"/>
             <conf:ResourceConfiguration path="productTypeDepartments"
                                         modelClassName="sprd.model.ProductTypeDepartment"/>
             <conf:ResourceConfiguration path="shippingTypes" modelClassName="sprd.model.ShippingType"/>
@@ -90,7 +100,8 @@
         <conf:ResourceConfiguration path="objectTypes" modelClassName="sprd.model.ObjectType"/>
 
         <conf:ResourceConfiguration path="orders" modelClassName="sprd.model.Order"
-                                    apiKeyRequired="true" sessionRequired="true" signatureRequired="true" authTokenRequired="true">
+                                    apiKeyRequired="true" sessionRequired="true" signatureRequired="true"
+                                    authTokenRequired="true">
             <conf:ResourceConfiguration path="items" modelClassName="sprd.model.OrderItem"
                                         processor="OrderItemProcessor"/>
             <conf:ResourceConfiguration path="paymentTypes" modelClassName="sprd.model.PaymentType"
