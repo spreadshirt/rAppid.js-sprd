@@ -29,27 +29,6 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 shop: null,
 
                 /***
-                 * continueShopping link is used in checkout as link for continue shopping button.
-                 * It will be automatically added to the element added to basket
-                 * @type String
-                 */
-                continueShoppingLink: null,
-
-                /***
-                 * edit link is the link displayed in checkout for editing the basket item.
-                 * It will be automatically added to the element added to the basked.
-                 *
-                 * The following values are replaced
-                 *
-                 *  + ${productId} - with the current productId
-                 *
-                 * @type String
-                 */
-                editBasketItemLinkTemplate: null,
-
-                editBasketItemLinkHook: null,
-
-                /***
                  * the origin id used for basked items
                  * @type {Number|String}
                  */
@@ -130,27 +109,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         }));
                     }
 
-                    var continueShoppingLink = this.$.continueShoppingLink;
-
-                    if (continueShoppingLink) {
-                        element.set("continueShoppingLink", continueShoppingLink);
-                    }
-
-                    var editBasketItemLinkHook = this.$.editBasketItemLinkHook,
-                        editLink = null;
-
-                    if (editBasketItemLinkHook) {
-                        editLink = editBasketItemLinkHook(basketItem);
-                    }
-
-                    var editBasketItemLinkTemplate = this.$.editBasketItemLinkTemplate;
-                    if (!editLink && editBasketItemLinkTemplate) {
-                        editLink = editBasketItemLinkTemplate.replace("$productId", element.get("item.id"));
-                    }
-
-                    if (editLink) {
-                        element.set("editLink", editLink);
-                    }
+                    this.extendElementWithLinks(element);
                 }
 
                 callback && callback();

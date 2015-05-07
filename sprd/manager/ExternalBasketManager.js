@@ -9,6 +9,9 @@ define(["sprd/manager/IBasketManager", "flow"], function (IBasketManager, flow) 
 
         addElementToBasket: function (element, quantity, callback) {
             var externalBasket = this.$.externalBasket;
+
+            this.extendElementWithLinks(element);
+
             externalBasket.addBasketItem(element, quantity, callback);
         },
 

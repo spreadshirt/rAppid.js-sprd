@@ -98,14 +98,11 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
             }
 
             var editLink = model.get("element.editLink");
+
             if (editLink) {
-                var separator = "?";
-                if (/\?(.*)/.test(editLink)) {
-                    separator = "&";
-                }
                 links.push({
                     type: "edit",
-                    href: encodeURI(editLink + separator + "basketId={BASKET_ID}&basketItemId={BASKET_ITEM_ID}")
+                    href: editLink
                 });
             }
 
