@@ -79,7 +79,7 @@ define(["js/core/Component"], function (Component) {
                 if (/\?(.*)/.test(editBasketItemUrl)) {
                     separator = "&";
                 }
-                return encodeURI(editBasketItemUrl + separator + "basketId={BASKET_ID}&basketItemId={BASKET_ITEM_ID}");
+                return editBasketItemUrl + separator + "basketId={BASKET_ID}&basketItemId={BASKET_ITEM_ID}";
             }
 
             return null;
