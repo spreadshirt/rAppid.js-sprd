@@ -16,6 +16,8 @@ define(["sprd/manager/IBasketManager", "flow"], function (IBasketManager, flow) 
         },
 
         updateBasketItem: function (basketItem, element, quantity, cb) {
+            this.extendElementWithLinks(element);
+
             basketItem.set({
                 element: element,
                 quantity: quantity
