@@ -128,6 +128,11 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                 ret['origin'] = payload.origin;
             }
 
+            var id = model.$.id;
+            if (id) {
+                ret["id"] = id;
+            }
+
             return ret;
         }
     });
