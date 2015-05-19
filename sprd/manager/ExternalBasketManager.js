@@ -16,11 +16,21 @@ define(["sprd/manager/IBasketManager", "flow"], function (IBasketManager, flow) 
         },
 
         updateBasketItem: function (basketItem, element, quantity, cb) {
-            var externalBasket = this.$.externalBasket;
+            basketItem.set({
+                element: element,
+                quantity: quantity
+            });
 
-            if (externalBasket && externalBasket.updateBasketItem) {
-                externalBasket.updateBasketItem(basketItem, element, quantity, cb);
-            }
+            var externalBasket = this.$.externalBasket;
+            basketItem.save(null, function (err) {
+                if (!err) {
+                    if (externalBasket && externalBasket.onBasketItemUpdated) {
+                        externalBasket.onBasketItemUpdated(basketItem);
+                    }
+                }
+                cb(err);
+            });
+
         },
 
         saveBasket: function(cb) {
