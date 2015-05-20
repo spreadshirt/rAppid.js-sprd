@@ -39,7 +39,7 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
 
             }
 
-            var links = payload.links;
+            var links = payload.links || [];
             for (var j = 0; j < links.length; j++) {
                 var link = links[j];
                 if (link.type == "edit") {
