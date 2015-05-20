@@ -75,8 +75,8 @@ define(["js/core/Component"], function (Component) {
 
             var editBasketItemUrl = this.$.editBasketItemUrl;
             // clear edit basket item url from existing basketId and basketItemId query parameters
-            editBasketItemUrl = editBasketItemUrl.replace(/basketId=[^=&]+&?/gi, "");
-            editBasketItemUrl = editBasketItemUrl.replace(/basketItemId=[^=&]+&?/gi, "");
+            editBasketItemUrl = editBasketItemUrl.replace(/&?basketId=[^=&]+/gi, "");
+            editBasketItemUrl = editBasketItemUrl.replace(/&?basketItemId=[^=&]+/gi, "");
 
             if (editBasketItemUrl) {
                 var separator = "?";
