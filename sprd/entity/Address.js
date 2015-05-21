@@ -232,6 +232,9 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 console.dir(data);
             }
 
+            // send empty house number
+            data.houseNumber = "";
+
             return data;
         },
 
