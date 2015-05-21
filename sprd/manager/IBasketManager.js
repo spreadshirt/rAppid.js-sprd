@@ -63,7 +63,7 @@ define(["js/core/Component"], function (Component) {
                 }
 
                 if (!editLink) {
-                    editLink = this.buildItemEditLink(element);
+                    editLink = this.buildItemEditLink();
                     if (editLink) {
                         element.set('editLink', editLink);
                     }
@@ -71,14 +71,15 @@ define(["js/core/Component"], function (Component) {
             }
         },
 
-        buildItemEditLink: function (element) {
+        buildItemEditLink: function () {
 
             var editBasketItemUrl = this.$.editBasketItemUrl;
-            // clear edit basket item url from existing basketId and basketItemId query parameters
-            editBasketItemUrl = editBasketItemUrl.replace(/&?basketId=[^=&]+/gi, "");
-            editBasketItemUrl = editBasketItemUrl.replace(/&?basketItemId=[^=&]+/gi, "");
 
             if (editBasketItemUrl) {
+                // clear edit basket item url from existing basketId and basketItemId query parameters
+                editBasketItemUrl = editBasketItemUrl.replace(/&?basketId=[^=&]+/gi, "");
+                editBasketItemUrl = editBasketItemUrl.replace(/&?basketItemId=[^=&]+/gi, "");
+
                 var separator = "?";
                 if (/\?(.*)/.test(editBasketItemUrl)) {
                     separator = "&";
