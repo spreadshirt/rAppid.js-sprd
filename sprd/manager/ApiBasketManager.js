@@ -123,6 +123,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
              * @param {Function} cb
              */
             updateBasketItem: function (basketItem, element, quantity, cb) {
+                this.extendElementWithLinks(element);
+
                 basketItem.set({
                     element: element,
                     quantity: quantity
