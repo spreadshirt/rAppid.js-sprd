@@ -8,7 +8,6 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
          * @see http://developer.spreadshirt.net/display/API/Basket+Resources
          */
         return IBasketManager.inherit('sprd.manager.ApiBasketManager', {
-
             defaults: {
                 /***
                  * the basket model
@@ -30,27 +29,6 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 shop: null,
 
                 /***
-                 * continueShopping link is used in checkout as link for continue shopping button.
-                 * It will be automatically added to the element added to basket
-                 * @type String
-                 */
-                continueShoppingLink: null,
-
-                /***
-                 * edit link is the link displayed in checkout for editing the basket item.
-                 * It will be automatically added to the element added to the basked.
-                 *
-                 * The following values are replaced
-                 *
-                 *  + ${productId} - with the current productId
-                 *
-                 * @type String
-                 */
-                editBasketItemLinkTemplate: null,
-
-                editBasketItemLinkHook: null,
-
-                /***
                  * the origin id used for basked items
                  * @type {Number|String}
                  */
@@ -63,6 +41,10 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
                 initBasketWithNoCache: true,
 
+                /**
+                 * if set, the element which is added will be saved under this basket item
+                 */
+                basketItem: null,
                 /**
                  * a flag to trigger opossum synchronisation
                  */
@@ -116,7 +98,6 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
              * @param callback
              */
             addElementToBasket: function (element, quantity, callback) {
-
                 if (this.$.basket) {
                     var basketItem = this.$.basket.addElement(element, quantity);
                     element = basketItem.$.element;
@@ -128,30 +109,26 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         }));
                     }
 
-                    var continueShoppingLink = this.$.continueShoppingLink;
-
-                    if (continueShoppingLink) {
-                        element.set("continueShoppingLink", continueShoppingLink);
-                    }
-
-                    var editBasketItemLinkHook = this.$.editBasketItemLinkHook,
-                        editLink = null;
-
-                    if (editBasketItemLinkHook) {
-                        editLink = editBasketItemLinkHook(basketItem);
-                    }
-
-                    var editBasketItemLinkTemplate = this.$.editBasketItemLinkTemplate;
-                    if (!editLink && editBasketItemLinkTemplate) {
-                        editLink = editBasketItemLinkTemplate.replace("$productId", element.get("item.id"));
-                    }
-
-                    if (editLink) {
-                        element.set("editLink", editLink);
-                    }
+                    this.extendElementWithLinks(element);
                 }
 
                 callback && callback();
+            },
+            /**
+             * Updates the given basket item
+             *
+             * @param {sprd.model.BasketItem} basketItem
+             * @param {sprd.model.ConcreteElement} element
+             * @param {Number} quantity
+             * @param {Function} cb
+             */
+            updateBasketItem: function (basketItem, element, quantity, cb) {
+                basketItem.set({
+                    element: element,
+                    quantity: quantity
+                });
+
+                basketItem.save(null, cb);
             },
 
             _triggerBasketSaving: function () {
