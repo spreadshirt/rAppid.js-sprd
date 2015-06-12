@@ -1,4 +1,4 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'sprd/pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'sprd/pimp/data/PimpDataSourceClass', 'js/data/Collection', 'sprd/pimp/model/Commission', 'sprd/pimp/model/Font', 'sprd/entity/Price'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price) {
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'sprd/pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'sprd/pimp/data/PimpDataSourceClass', 'js/data/Collection', 'sprd/pimp/model/Commission', 'sprd/pimp/model/Font', 'sprd/entity/Price', 'underscore'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price, _) {
 
     return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
 
@@ -91,6 +91,33 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             if (this._hasSome($, ["pimpImageService", "text", "font"]) && !options.initial) {
                 this._debounceFunctionCall(this.fetchImage, "fetchImage", 430, this, [], "DELAY");
             }
+
+            if (this._hasSome($, ["text", "font"])) {
+                this.validateChars();
+            }
+        },
+
+        validateChars: function() {
+
+            var font = this.$.font,
+                text = (this.$.text || "").replace(/[\n\r\s\t]/g, "");
+
+            if (!(font && font.$.supportedGlyphs)) {
+                return;
+            }
+
+            var unsupportedGlyph = null;
+
+            for (var i = 0; i < text.length; i++) {
+                var glyph = text.substr(i ,1).toLowerCase();
+
+                if (_.indexOf(font.$.supportedGlyphs, glyph) === -1) {
+                    unsupportedGlyph = glyph;
+                    break;
+                }
+            }
+
+            this._setError("GlyphNotSupport", unsupportedGlyph);
         },
 
         fetchImage: function (callback) {
