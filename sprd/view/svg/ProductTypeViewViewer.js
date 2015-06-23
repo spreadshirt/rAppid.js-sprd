@@ -139,7 +139,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                             x = pointerEvent.clientX,
                             y = pointerEvent.clientY;
 
-                        if (configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
+                        if (configViewer && configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
                             self._debounceFunctionCall(function (x, y) {
                                 for (var i = 0; i < productTypeViewViewer.length; i++) {
                                     if (productTypeViewViewer[i] !== self && productTypeViewViewer[i].checkForDropHover(x, y)) {
