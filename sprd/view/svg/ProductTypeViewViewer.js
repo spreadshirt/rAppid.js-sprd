@@ -1,8 +1,9 @@
-define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/view/DndImage"], function (SvgElement, PrintAreaViewer, DndImage) {
+define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/view/DndImage", "sprd/view/DndImageClass", "sprd/util/ProductUtil"], function (SvgElement, PrintAreaViewer, DndImage, DndImageClass, ProductUtil) {
 
 
     var dndObject = null,
-        productTypeViewViewer = [];
+        productTypeViewViewer = [],
+        DROP_HOVERED = DndImageClass.DROP_HOVERED;
 
     function findProductTypeViewViewer(x, y, requestor) {
         var ret = null;
@@ -26,8 +27,6 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             product: null,
 
             productViewer: null,
-
-            dropHovered: false,
 
             _width: "{productViewer.width}",
             _height: "{productViewer.height}",
@@ -78,10 +77,9 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
          * @returns {Boolean}
          */
         checkForDropHover: function (x, y) {
-            var hover = this.isPointInElement(x, y);
-            this.set('dropHovered', hover);
-            return hover;
+            return this.isPointInElement(x, y);
         },
+
 
         _initializeRenderer: function () {
 
@@ -141,12 +139,26 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
                         if (configViewer && configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
                             self._debounceFunctionCall(function (x, y) {
-                                for (var i = 0; i < productTypeViewViewer.length; i++) {
-                                    if (productTypeViewViewer[i] !== self && productTypeViewViewer[i].checkForDropHover(x, y)) {
-                                        break;
+                                    if (dndObject && dndObject.dndImage) {
+                                        var hovered = DROP_HOVERED.NO;
+                                        for (var i = 0; i < productTypeViewViewer.length; i++) {
+                                            if (productTypeViewViewer[i] !== self && productTypeViewViewer[i].checkForDropHover(x, y)) {
+                                                var possiblePrintAreas = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configViewer.$.configuration.$.design, productTypeViewViewer[i].$printAreas[0].getPrintArea(), this.get('_appearance.id'));
+                                                if (possiblePrintAreas.length) {
+                                                    hovered = DROP_HOVERED.YES;
+                                                } else {
+                                                    hovered = DROP_HOVERED.INVALID;
+                                                }
+                                            }
+                                            if (hovered != DROP_HOVERED.NO) {
+                                                break;
+                                            }
+                                        }
+                                        dndObject.dndImage.set('hoverState', hovered);
                                     }
-                                }
-                            }, "setHoverState", 100, self, [x, y], "BOUNCE");
+                                }, "setHoverState", 100, self, [x, y], "BOUNCE"
+                            )
+                            ;
 
                             if (clientRect.left > x || clientRect.right < x || clientRect.top > y || clientRect.bottom < y) {
                                 if (configViewer) {
@@ -160,8 +172,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                                         'top': y
                                     });
                                 }
-                            } else{
-                                if(configViewer){
+                            } else {
+                                if (configViewer) {
                                     configViewer.set('preventValidation', false);
                                     configViewer.removeClass('hide-configuration');
                                     configViewer.enableMoveSnipping();
@@ -206,7 +218,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 if (viewer && dndObject.viewer !== viewer) {
                     e.stopPropagation();
                     configView.$moving = false;
-                    viewer.set('dropHovered', false);
+                    dndObject.dndImage.set('hoverState', DROP_HOVERED.NO);
 
                     var productManager = dndObject.viewer.get('product.manager');
                     productManager.moveConfigurationToView(dndObject.viewer.$.product, dndObject.config, viewer.$._view, function (err) {
@@ -216,7 +228,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     });
                     configView && configView.set('preventValidation', false);
                 }
-                if(configView){
+                if (configView) {
                     configView.removeClass('hide-configuration');
                     configView.enableMoveSnipping();
                 }
@@ -275,16 +287,6 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             }
         },
 
-        _renderDropHovered: function (hovered) {
-            if (this.$.productViewer) {
-                if (hovered) {
-                    this.$.productViewer.addClass('drop-hover');
-                } else {
-                    this.$.productViewer.removeClass('drop-hover');
-                }
-            }
-        },
-
         getViewerForConfiguration: function (configuration) {
             var viewer;
             for (var i = 0; i < this.$printAreas.length; i++) {
@@ -308,5 +310,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             this.callBase();
         }
 
-    });
-});
+    })
+        ;
+})
+;
