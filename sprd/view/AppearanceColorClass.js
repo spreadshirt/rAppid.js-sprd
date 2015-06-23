@@ -55,7 +55,7 @@ define(["js/ui/View", "sprd/data/ImageService"], function (View, ImageService) {
 
             return imageService.appearanceImage(appearance.$.id);
 
-        }.onChange("apperance")
+        }.onChange("appearance")
 
     });
 

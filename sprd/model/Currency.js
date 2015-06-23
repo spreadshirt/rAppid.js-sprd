@@ -22,13 +22,28 @@ define(["sprd/data/SprdModel", "underscore"], function (Model, _) {
             val = Math.round(val * pow) / pow;
 
             val = new String(val).split(".");
-            var len = val.length;
-            if (len === 1) {
-                val.push("00");
-            } else if (val[1].length < this.$.decimalCount) {
-                val[1] += "0";
-            } else if (val[1].length > this.$.decimalCount) {
-                val[1] = val[1].substr(0, 2);
+            var afterDecimals = val.length > 1 ? val[1] : "";
+            var zerosToAdd = this.$.decimalCount - afterDecimals.length;
+
+            if (zerosToAdd > 0) {
+                // add zeros
+                for (var i = 0; i < zerosToAdd; i++) {
+                    afterDecimals += "0";
+                }
+            } else if (zerosToAdd < 0) {
+                // remove zeros
+                afterDecimals = afterDecimals.substr(0, -1 * zerosToAdd);
+            }
+
+
+            if (afterDecimals) {
+                if (val.length > 1) {
+                    val[1] = afterDecimals;
+                } else {
+                    val.push(afterDecimals);
+                }
+            } else if (val.length > 1) {
+                val.pop();
             }
 
             if (this.$.pattern) {
