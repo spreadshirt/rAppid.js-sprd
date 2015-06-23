@@ -1,5 +1,7 @@
 define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'sprd/pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'sprd/pimp/data/PimpDataSourceClass', 'js/data/Collection', 'sprd/pimp/model/Commission', 'sprd/pimp/model/Font', 'sprd/entity/Price', 'underscore'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price, _) {
 
+    var previewSizeRatio = 3;
+
     return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
 
         defaults: {
@@ -156,8 +158,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
                     if (!err) {
 
-                        var width = (parseInt(data.image.width) || 1) * 4,
-                            height = (parseInt(data.image.height) || 1) * 4,
+                        var width = (parseInt(data.image.width) || 1) * previewSizeRatio,
+                            height = (parseInt(data.image.height) || 1) * previewSizeRatio,
                             design = self.$.design;
 
                         var pxSize = new Size({width: width, height: height, unit: "px"}),
@@ -337,7 +339,27 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         minimumScale: function () {
             // TODO:
             return this.callBase();
-        }
+        },
+        _validatePrintTypeSize: function (printType, width, height, scale) {
+            var ret = {};
+            var design = this.$.design;
+
+            if (!printType || !scale) {
+                return ret;
+            }
+
+            if(design){
+                return this.callBase();
+            } else {
+
+            }
+
+            ret.minBound = !printType.isShrinkable();
+            ret.dpiBound = printType.isShrinkable() && Math.max(Math.abs(scale.x), Math.abs(scale.y)) > 1;
+
+            return ret;
+
+        },
     });
 })
 ;
