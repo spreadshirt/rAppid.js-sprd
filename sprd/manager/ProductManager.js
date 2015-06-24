@@ -204,13 +204,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             possiblePrintTypes.unshift(printType);
                         }
 
-                        var optimalScale = Math.abs(configuration.$.scale.x);
+                        var scale = configuration.get('scale') || {x: 1, y: 1};
+
+                        var optimalScale = Math.abs(scale.x);
 
                         if (product.$.productType !== productType) {
                             optimalScale = Math.min(
                                     targetPrintAreaWidth / currentPrintAreaWidth,
                                     targetPrintAreaHeight / currentPrintAreaHeight
-                            ) * Math.abs(configuration.$.scale.x);
+                            ) * Math.abs(scale.x);
                         }
 
                         var allowScale = configuration.allowScale(),
