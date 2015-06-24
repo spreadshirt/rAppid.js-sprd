@@ -80,6 +80,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.callBase();
             },
 
+            _commitTextFlow: function(textFlow) {
+
+                var rawText = null;
+                if (textFlow) {
+                    rawText = textFlow.text();
+                }
+
+                this.set("rawText", rawText);
+            },
+
             _onTextFlowChange: function () {
                 var self = this;
 
@@ -94,6 +104,14 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 this.trigger("priceChanged");
                 this.trigger("configurationChanged");
+
+                var rawText = this.$.textFlow.text();
+                if (this.$.rawText && this.$.rawText != rawText) {
+                    this.trigger("rawTextChanged");
+                }
+
+                this.set("rawText", rawText);
+
             },
 
             _debouncedComposeText: function () {
