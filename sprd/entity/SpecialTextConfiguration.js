@@ -108,18 +108,22 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                 return;
             }
 
-            var unsupportedGlyph = null;
+            var unsupportedGlyph = null,
+                ret = {
+                    invalidChar: false
+                };
 
             for (var i = 0; i < text.length; i++) {
                 var glyph = text.substr(i ,1).toLowerCase();
 
                 if (_.indexOf(font.$.supportedGlyphs, glyph) === -1) {
                     unsupportedGlyph = glyph;
+                    ret.invalidChar = true;
                     break;
                 }
             }
 
-            this._setError("GlyphNotSupport", unsupportedGlyph);
+            this._setError(ret);
         },
 
         fetchImage: function (callback) {
@@ -219,9 +223,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
                             var split = design.$.name.split(";");
                             self.set({
-                                font: new Font({
-                                    id: split[1]
-                                }),
+                                font: self.$.pimpDataSource.createEntity(Font,split[1]),
                                 align: split
                             }, {
                                 silent: true
@@ -231,6 +233,13 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                                 var dpi = printType.$.dpi;
                                 self.set("_size", UnitUtil.convertSizeToMm(design.$.size, dpi), {
                                     silent: true
+                                });
+                            }
+                        } else {
+                            var fontId = self.get('font.id');
+                            if(fontId){
+                                self.set({
+                                    font: self.$.pimpDataSource.createEntity(Font, fontId)
                                 });
                             }
                         }
