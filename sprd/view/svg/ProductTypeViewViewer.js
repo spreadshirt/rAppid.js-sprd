@@ -142,10 +142,22 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                                     if (dndObject && dndObject.dndImage) {
                                         var hovered = DROP_HOVERED.NO;
                                         for (var i = 0; i < productTypeViewViewer.length; i++) {
+                                            var configuration = configViewer.$.configuration;
                                             if (productTypeViewViewer[i] !== self && productTypeViewViewer[i].checkForDropHover(x, y)) {
-                                                var possiblePrintAreas = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configViewer.$.configuration.$.design, productTypeViewViewer[i].$printAreas[0].getPrintArea(), this.get('_appearance.id'));
-                                                if (possiblePrintAreas.length) {
+                                                var printArea = productTypeViewViewer[i].$printAreas[0].getPrintArea();
+                                                var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, printArea, this.get('_appearance.id'));
+                                                if (possiblePrintTypes.length) {
                                                     hovered = DROP_HOVERED.YES;
+                                                    var xScale = printArea.get("boundary.size.width") / configuration.get('_size.width'),
+                                                        yScale = printArea.get("boundary.size.height") / configuration.get('_size.height');
+                                                    var scale = {
+                                                        x: xScale,
+                                                        y: yScale
+                                                    };
+                                                    var validation = configuration._validatePrintTypeSize(possiblePrintTypes[0], configuration.get('size.width'), configuration.get('size.height'), scale);
+                                                    if (validation.minBound || validation.dpiBound) {
+                                                        hovered = DROP_HOVERED.INVALID;
+                                                    }
                                                 } else {
                                                     hovered = DROP_HOVERED.INVALID;
                                                 }
