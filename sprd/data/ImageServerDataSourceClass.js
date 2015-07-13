@@ -70,7 +70,13 @@ define(["sprd/data/SprdDataSource", "js/data/Model", "js/data/RestDataSource", "
             },
 
             serialize: function (data) {
-                return '<reference xmlns="http://api.spreadshirt.net" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="' + data.image.src + '" />'
+                var src = data.image.src
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&apos;");
+                return '<reference xmlns="http://api.spreadshirt.net" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="' + src + '" />'
             },
 
             getContentType: function () {
