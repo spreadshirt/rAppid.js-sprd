@@ -20,7 +20,33 @@ define(["sprd/data/SprdModel", "js/data/Entity"], function (Model, Entity) {
             }
 
             return currentDiscount;
-        }.onChange('discounts')
+        }.onChange('discounts'),
+
+
+        getDiscountByQuantity: function (quantity) {
+
+            var currentDiscount = null;
+            if (quantity > 0) {
+                currentDiscount = this.$.discounts.find(function (discountItem) {
+                    var range = discountItem.$.valueRange;
+                    return range.from <= quantity && (!range.to || range.to >= quantity);
+                });
+            }
+
+            return currentDiscount;
+        },
+
+        getNextDiscountForQuantity: function (quantity) {
+            var currentDiscount = this.$.discounts.at(0);
+            if (quantity > 0) {
+                currentDiscount = this.$.discounts.find(function (discountItem) {
+                    var range = discountItem.$.valueRange;
+                    return range.from > quantity;
+                });
+            }
+
+            return currentDiscount;
+        }
 
     });
 
