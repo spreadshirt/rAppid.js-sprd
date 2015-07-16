@@ -204,13 +204,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             possiblePrintTypes.unshift(printType);
                         }
 
-                        var optimalScale = Math.abs(configuration.$.scale.x);
+                        var scale = configuration.get('scale') || {x: 1, y: 1};
+
+                        var optimalScale = Math.abs(scale.x);
 
                         if (product.$.productType !== productType) {
                             optimalScale = Math.min(
                                     targetPrintAreaWidth / currentPrintAreaWidth,
                                     targetPrintAreaHeight / currentPrintAreaHeight
-                            ) * Math.abs(configuration.$.scale.x);
+                            ) * Math.abs(scale.x);
                         }
 
                         var allowScale = configuration.allowScale(),
@@ -934,10 +936,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            setTextForConfiguration: function (text, configuration) {
+            setTextForConfiguration: function (text, configuration, options) {
                 if (!(configuration instanceof TextConfiguration)) {
                     throw new Error("Configuration is not a TextConfiguration");
                 }
+
+                options = options || {};
 
                 var textFlow = TextFlow.initializeFromText(text),
                     textRange = TextRange.createTextRange(0, textFlow.textLength()),
@@ -953,6 +957,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         paragraphStyle = paragraph.$.style;
                     }
                 }
+
+                leafStyle.$.fontSize = options.fontSize || leafStyle.$.fontSize;
+                leafStyle.$.font = options.font || leafStyle.$.font;
 
                 var operation = new ApplyStyleToElementOperation(textRange, textFlow, leafStyle, paragraphStyle);
                 operation.doOperation();

@@ -37,6 +37,10 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
 
         },
 
+        getPrintArea: function () {
+            return this.get('_viewMap.printArea');
+        },
+
         _initializeRenderer: function () {
 
             // Could be done via binding, but viewMaps don't change at runtime and so just evalulating

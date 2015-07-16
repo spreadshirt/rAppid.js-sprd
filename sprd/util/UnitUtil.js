@@ -1,5 +1,18 @@
 define(["sprd/entity/Size"], function(Size){
 
+    var ConvertToInch = {
+            unit: "in",
+            fromMm: function (mm) {
+                return Math.round(mm / 25.4, 1);
+            }
+        },
+
+        ConvertSizes = {
+            us_US: ConvertToInch,
+            en_GB: ConvertToInch,
+            fr_CA: ConvertToInch
+        };
+
     return {
 
         pointToMillimeter: function(point) {
@@ -40,6 +53,20 @@ define(["sprd/entity/Size"], function(Size){
             }
 
             return size;
+        },
+
+        getLocalizedSize: function (mm, locale) {
+            var converter = ConvertSizes[locale];
+
+            if (converter) {
+                var ret = converter.fromMm(mm) + "";
+                if (ret.split(".").length == 1) {
+                    ret += ".0";
+                }
+                return ret + " in";
+            }
+
+            return mm + " mm";
         }
 
     };
