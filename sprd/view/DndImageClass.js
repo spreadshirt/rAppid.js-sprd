@@ -1,6 +1,12 @@
 define(["js/ui/View"], function (View) {
 
-    return View.inherit({
+    var DROP_HOVERED = {
+        YES: "YES",
+        INVALID: "INVALID",
+        NO: "NO"
+    };
+
+    var DndImage = View.inherit({
 
         defaults: {
             componentClass: 'dnd-image',
@@ -8,6 +14,7 @@ define(["js/ui/View"], function (View) {
             configurationViewer: null,
             svgContainer: null,
             design: null,
+            hoverState: DROP_HOVERED.NO,
             initializeInvisibleChildren: true
         },
 
@@ -28,7 +35,23 @@ define(["js/ui/View"], function (View) {
                     this.$.svgContainer.$el.appendChild(clone);
                 }
             }
+        },
+        _renderHoverState: function (hovered) {
+            this.removeClass('ok invalid');
+            switch (hovered) {
+                case DROP_HOVERED.YES :
+                    this.addClass('ok');
+                    break;
+                case DROP_HOVERED.INVALID:
+                    this.addClass('invalid');
+                    break;
+            }
+
         }
+    }, {
+        DROP_HOVERED: DROP_HOVERED
     });
+
+    return DndImage;
 
 });
