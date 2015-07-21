@@ -50,7 +50,8 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
 
                         var lastTSpan = null,
                             paragraph = null,
-                            maxLineWidth = parseFloat(text.width);
+                            maxLineWidth = parseFloat(text.width),
+                            printTypeColor;
 
                         for (var i = 0; i < content.length; i++) {
                             var tspan = content[i];
@@ -91,7 +92,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             tspan.fontId = tspan.fontId || text.fontId;
                             tspan.fontSize = tspan.fontSize || text.fontSize;
 
-                            var printTypeColor;
+                            printTypeColor = null;
 
                             if (tspan.printColorId) {
                                 printTypeColor = printType.getPrintColorById(tspan.printColorId);
