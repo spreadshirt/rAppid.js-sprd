@@ -41,7 +41,7 @@ define(["sprd/data/SprdModel"],
             compose: function () {
                 var ret = this.callBase();
 
-                ret.restrictions = {
+                ret.restrictions = ret.restrictions || {
                     freeColorSelection: false,
                     example: false
                 };
