@@ -78,6 +78,10 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
                 }
             }
 
+            if (options.version) {
+                parameter.version = options.version;
+            }
+
             var cacheId = options.cacheId || (designId || "").replace(/^.*?(\d+).*/, "$1");
             return this.buildUrl(['designs', designId], parameter, cacheId);
         },

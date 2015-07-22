@@ -12,7 +12,8 @@ define(['sprd/view/svg/ConfigurationRenderer'], function (Renderer) {
             if (this.$.imageService && this.$.configuration && this.$.configuration.$.design && this.$.configuration.$.printColors) {
 
                 var maxSize = Math.min(this.$._width, 600),
-                    options = {};
+                    options = {},
+                    design = this.$.configuration.$.design;
 
                 if (this.$.width >= this.$.height) {
                     options.width = maxSize;
@@ -21,8 +22,9 @@ define(['sprd/view/svg/ConfigurationRenderer'], function (Renderer) {
                 }
 
                 options.printColors = this.$.configuration.getPrintColorsAsRGB();
+                options.version = design.$.version;
 
-                return this.$.imageService.designImage(this.$.configuration.$.design.$.wtfMbsId, options);
+                return this.$.imageService.designImage(design.$.wtfMbsId, options);
             }
 
 

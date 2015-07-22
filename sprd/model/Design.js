@@ -19,14 +19,16 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             name: String,
             description: String,
             tags: String,
-            userContent: Boolean
+            userContent: Boolean,
+            version: Number
         },
 
         defaults: {
             name: '',
             description: '',
             tags: '',
-            userContent: true
+            userContent: true,
+            version: null
         }
     });
 
