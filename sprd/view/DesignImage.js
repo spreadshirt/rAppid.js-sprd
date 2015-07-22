@@ -25,9 +25,10 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
                 design = this.$.design;
 
             if (design && imageService && (this.$.height || this.$.width)) {
-                return imageService.designImage(this.$.design.$.wtfMbsId || this.$.design.$.id, {
+                return imageService.designImage(design.$.wtfMbsId || design.$.id, {
                     width: !this.$.width ? this.$.height : this.$.width,
-                    height: !this.$.height ? this.$.width : this.$.height
+                    height: !this.$.height ? this.$.width : this.$.height,
+                    version: design.$.version
                 });
             }
             return url;
