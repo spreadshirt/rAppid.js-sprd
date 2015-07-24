@@ -81,6 +81,39 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
 
             baseArticleId = baseArticleId || model.get('article.id');
 
+
+            function productContainsDesign(product, design) {
+                if (design) {
+                    return !!product.$.configurations.find(function (configuration) {
+                        return configuration.get('design.id') == design.$.id ||
+                            configuration.get('design.wtfMbsId') == design.$.id;
+                    });
+                } else {
+                    return false;
+                }
+            }
+
+            function findDesign(product) {
+                var config = product.$.configurations.find(function (configuration) {
+                    return !!configuration.$.design;
+                });
+
+                return config ? config.$.design : null;
+            }
+
+            var originalProduct = model.get('element.originalProduct');
+            if (!baseArticleId && originalProduct) {
+                var design = findDesign(originalProduct);
+                if (design) {
+                    var product = model.get('element.getProduct()');
+                    if (product && productContainsDesign(product, design)) {
+                        baseArticleId = model.get('element.originalArticleId');
+                        debugger;
+                    }
+                }
+            }
+
+
             if (baseArticleId) {
                 properties.push({
                     key: "article",

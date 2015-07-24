@@ -42,7 +42,13 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
              * the base article
              * @type sprd.model.Article
              */
-            article: null
+            article: null,
+
+            /**
+             *
+             */
+            originalProduct: null,
+            originalArticleId: null
         },
 
         isEqual: function (concreteElement) {
