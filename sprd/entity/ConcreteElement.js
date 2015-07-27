@@ -108,6 +108,42 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
             return [ this.get('getProduct().productType.id'),
                 this.get('appearance.id'),
                 this.get('size.id')].join(' - ');
+        },
+
+        getBaseArticleId: function () {
+            var baseArticleId = this.get("article.id");
+
+            function productContainsDesign(product, design) {
+                if (design) {
+                    return !!product.$.configurations.find(function (configuration) {
+                        return configuration.get('design.id') == design.$.id ||
+                            configuration.get('design.wtfMbsId') == design.$.id;
+                    });
+                } else {
+                    return false;
+                }
+            }
+
+            function findDesign(product) {
+                var config = product.$.configurations.find(function (configuration) {
+                    return !!configuration.$.design;
+                });
+
+                return config ? config.$.design : null;
+            }
+
+            var originalProduct = this.get('originalProduct');
+            if (!baseArticleId && originalProduct) {
+                var design = findDesign(originalProduct);
+                if (design) {
+                    var product = this.getProduct();
+                    if (product && productContainsDesign(product, design)) {
+                        baseArticleId = this.$.originalArticleId;
+                    }
+                }
+            }
+
+            return baseArticleId;
         }
 
     });
