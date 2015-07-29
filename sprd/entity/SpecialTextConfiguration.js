@@ -9,7 +9,6 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             font: null,
             _size: Size,
             aspectRatio: 1,
-            previewImageUrl: null,
             _allowScale: true,
             loading: false,
             align: null,
@@ -84,7 +83,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
 
         _commitChangedAttributes: function ($, options) {
-            this.callBase();
+            this.callBase($, options);
 
             if (!this.$.initialized) {
                 return;
@@ -99,7 +98,11 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             }
         },
 
-        validateChars: function() {
+        previewImageUrl: function () {
+            return this.$.loading ? null : this._previewImageUrl;
+        }.onChange('loading'),
+
+        validateChars: function () {
 
             var font = this.$.font,
                 text = (this.$.text || "").replace(/[\n\r\s\t]/g, "");
@@ -114,7 +117,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                 };
 
             for (var i = 0; i < text.length; i++) {
-                var glyph = text.substr(i ,1).toLowerCase();
+                var glyph = text.substr(i, 1).toLowerCase();
 
                 if (_.indexOf(font.$.supportedGlyphs, glyph) === -1) {
                     unsupportedGlyph = glyph;
@@ -134,7 +137,9 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
             if (pimpImageService && text && font) {
                 var oldSize = this.$._size;
-                this.set('loading', true);
+                this.set({
+                    loading: true
+                });
                 if (this.$lastListener) {
                     this.$lastListener.cancelled = true;
                 }
@@ -176,10 +181,10 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                             };
                         }
                         var size = UnitUtil.convertSizeToMm(pxSize, self.$.printType.$.dpi);
+                        self._previewImageUrl = data.image.src;
 
                         self.set({
                             generatedWidth: width,
-                            previewImageUrl: data.image.src,
                             taskId: data.task.id,
                             renderedText: text,
                             renderedFontId: font.$.id,
@@ -188,7 +193,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                             design: null
                         });
                     } else {
-                        self.set('previewImageUrl', null);
+                        self._previewImageUrl = null;
                     }
 
                     if (oldSize.$.width > 0 && !design) {
@@ -197,6 +202,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
                     self.set('loading', false);
                     self.trigger('configurationChanged');
+
                     self._setError(self._validateTransform(self.$));
                     callback && callback(err);
                 });
@@ -223,7 +229,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
                             var split = design.$.name.split(";");
                             self.set({
-                                font: self.$.pimpDataSource.createEntity(Font,split[1]),
+                                font: self.$.pimpDataSource.createEntity(Font, split[1]),
                                 align: split
                             }, {
                                 silent: true
@@ -237,7 +243,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                             }
                         } else {
                             var fontId = self.get('font.id');
-                            if(fontId){
+                            if (fontId) {
                                 self.set({
                                     font: self.$.pimpDataSource.createEntity(Font, fontId)
                                 });
@@ -357,7 +363,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                 return ret;
             }
 
-            if(design){
+            if (design) {
                 return this.callBase();
             } else {
 
@@ -369,6 +375,11 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             return ret;
 
         },
+        clone: function () {
+            var ret = this.callBase();
+
+            return ret;
+        }
     });
 })
 ;
