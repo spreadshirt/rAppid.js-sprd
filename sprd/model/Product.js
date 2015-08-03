@@ -289,27 +289,6 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
 
             },
 
-            compose: function () {
-                var ret = this.callBase();
-
-                ret.restrictions = {
-                    freeColorSelection: false,
-                    example: false
-                };
-
-                var viewId = this.get("view.id");
-
-                if (viewId) {
-                    ret.defaultValues = {
-                        defaultView: {
-                            id: viewId
-                        }
-                    };
-                }
-
-                return ret;
-            },
-
             fetch: function (options, callback) {
                 var self = this,
                     fetchState = this._fetch.state;

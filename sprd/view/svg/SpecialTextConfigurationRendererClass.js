@@ -3,7 +3,7 @@ define(['sprd/view/svg/ConfigurationRenderer'], function (ConfigurationRenderer)
     return ConfigurationRenderer.inherit("sprd.view.svg.SpecialTextConfigurationRendererClass", {
 
         defaults: {
-            _href: "{configuration.previewImageUrl}",
+            _href: "{configuration.previewImageUrl()}",
             loading: "{configuration.loading}"
         },
 

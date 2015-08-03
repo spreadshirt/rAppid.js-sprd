@@ -77,9 +77,7 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                 {key: "size", value: element.size.id}
             ];
 
-            var baseArticleId = model.get("element.article.id");
-
-            baseArticleId = baseArticleId || model.get('article.id');
+            var baseArticleId = model.$.element.getBaseArticleId() || model.get('article.id');
 
             if (baseArticleId) {
                 properties.push({
