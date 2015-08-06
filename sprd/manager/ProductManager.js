@@ -441,7 +441,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         self._positionConfiguration(this.vars["designConfiguration"]);
                     })
                     .exec(function (err, results) {
-                        !err && product._addConfiguration(results.designConfiguration);
+                        if (!err) {
+                            product.removeExampleConfiguration();
+                            product._addConfiguration(results.designConfiguration);
+                        }
                         self.$.bus.trigger('Application.productChanged', product);
                         callback && callback(err, results.designConfiguration);
                     });
@@ -668,7 +671,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         self._positionConfiguration(configuration);
                     })
                     .exec(function (err, results) {
-                        !err && params.addToProduct && product._addConfiguration(results.configuration);
+                        if (!err && params.addToProduct) {
+                            product.removeExampleConfiguration();
+                            product._addConfiguration(results.configuration);
+                        }
                         callback && callback(err, results.configuration);
                         params.addToProduct && self.$.bus.trigger('Application.productChanged', product);
                     });
@@ -814,7 +820,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
                     })
                     .exec(function (err, results) {
-                        !err && params.addToProduct && product._addConfiguration(results.configuration);
+                        if (!err && params.addToProduct) {
+                            product.removeExampleConfiguration();
+                            product._addConfiguration(results.configuration);
+                        }
                         callback && callback(err, results.configuration);
                         params.addToProduct && self.$.bus.trigger('Application.productChanged', product);
                     });
