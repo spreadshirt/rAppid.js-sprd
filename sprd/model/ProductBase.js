@@ -42,7 +42,7 @@ define(["sprd/data/SprdModel"],
                 var ret = this.callBase();
 
                 ret.restrictions = ret.restrictions || {
-                    freeColorSelection: false,
+                    freeColorSelection: true,
                     example: false
                 };
 
