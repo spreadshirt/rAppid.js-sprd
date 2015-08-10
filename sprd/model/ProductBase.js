@@ -42,9 +42,10 @@ define(["sprd/data/SprdModel"],
                 var ret = this.callBase();
 
                 ret.restrictions = ret.restrictions || {
-                    freeColorSelection: true,
                     example: false
                 };
+
+                ret.restrictions.freeColorSelection = true;
 
                 var viewId = this.get("view.id");
 
