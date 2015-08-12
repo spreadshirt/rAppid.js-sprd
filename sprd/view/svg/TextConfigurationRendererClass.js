@@ -51,6 +51,16 @@ define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (Configu
             }
         },
 
+        _handleClick: function(){
+            if (this.$.configuration && this.$.productViewer.$.product.$.restrictions.example && !this.$exampleFirstClick) {
+                this.$exampleFirstClick = true;
+                this.$.configuration.$.selection.set({
+                    anchorIndex: 0,
+                    activeIndex: this.$.configuration.$.textFlow.textLength()-1
+                });
+            }
+        },
+
         handleKeyPress: function (e) {
             this.$.textArea.handleKeyPress(e);
         },

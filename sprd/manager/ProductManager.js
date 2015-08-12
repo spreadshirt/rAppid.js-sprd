@@ -441,7 +441,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         self._positionConfiguration(this.vars["designConfiguration"]);
                     })
                     .exec(function (err, results) {
-                        !err && product._addConfiguration(results.designConfiguration);
+                        if (!err) {
+                            product.removeExampleConfiguration();
+                            product._addConfiguration(results.designConfiguration);
+                        }
                         self.$.bus.trigger('Application.productChanged', product);
                         callback && callback(err, results.designConfiguration);
                     });
@@ -668,7 +671,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         self._positionConfiguration(configuration);
                     })
                     .exec(function (err, results) {
-                        !err && params.addToProduct && product._addConfiguration(results.configuration);
+                        if (!err && params.addToProduct) {
+                            product.removeExampleConfiguration();
+                            product._addConfiguration(results.configuration);
+                        }
                         callback && callback(err, results.configuration);
                         params.addToProduct && self.$.bus.trigger('Application.productChanged', product);
                     });
@@ -814,7 +820,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
                     })
                     .exec(function (err, results) {
-                        !err && params.addToProduct && product._addConfiguration(results.configuration);
+                        if (!err && params.addToProduct) {
+                            product.removeExampleConfiguration();
+                            product._addConfiguration(results.configuration);
+                        }
                         callback && callback(err, results.configuration);
                         params.addToProduct && self.$.bus.trigger('Application.productChanged', product);
                     });
@@ -976,8 +985,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             _positionConfiguration: function (configuration) {
 
                 var printArea = configuration.$.printArea,
+                    printType = configuration.$.printType,
                     printAreaWidth = printArea.get("boundary.size.width"),
                     printAreaHeight = printArea.get("boundary.size.height"),
+                    printTypeWidth = printType.get('size.width'),
+                    printTypeHeight = printType.get('size.height'),
+                    maxHeight = Math.min(printAreaHeight, printTypeHeight),
+                    maxWidth = Math.min(printAreaWidth, printTypeWidth),
                     defaultBox = printArea.$.defaultBox || {
                         x: 0,
                         y: 0,
@@ -998,16 +1012,16 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     y: defaultBox.y
                 }, PREVENT_VALIDATION_OPTIONS);
 
-                if (offset.$.x < 0 || offset.$.x + boundingBox.width > printAreaWidth) {
+                if (offset.$.x < 0 || offset.$.x + boundingBox.width > maxWidth) {
 
                     // hard boundary error
-                    var maxPossibleWidthToHardBoundary = Math.min(defaultBoxCenterX, printAreaWidth - defaultBoxCenterX) * 2;
+                    var maxPossibleWidthToHardBoundary = Math.min(defaultBoxCenterX, maxWidth - defaultBoxCenterX) * 2;
 
                     // scale to avoid hard boundary error
                     var scaleToAvoidCollision = maxPossibleWidthToHardBoundary / boundingBox.width;
 
                     // scale to fit into default box
-                    var scaleToFixDefaultBox = defaultBox.width / boundingBox.width;
+                    var scaleToFixDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
 
                     // TODO: first use scaleToFixDefaultBox and use scaleToAvoidCollission only if
                     // scaleToFitDefaultBox is not possible for print type
@@ -1028,11 +1042,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     }, PREVENT_VALIDATION_OPTIONS);
                 }
 
-                if (boundingBox.height > printAreaHeight) {
+                if (boundingBox.height > maxHeight) {
                     // y-scale needed to fit print area
 
                     // calculate maxScale to fix height
-                    var maxScaleToFitPrintArea = configuration.$.scale.y * printAreaHeight / boundingBox.height;
+                    var maxScaleToFitPrintArea = configuration.$.scale.y * maxHeight / boundingBox.height;
                     var maxScaleToFitDefaultBox = configuration.$.scale.y * defaultBox.height / boundingBox.height;
 
                     // TODO: try the two different scales, prefer defaultBox and fallback to printArea if size to small
@@ -1053,12 +1067,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 }
 
-                if (offset.$.y < 0 || offset.$.y + boundingBox.height > printAreaHeight) {
+                if (offset.$.y < 0 || offset.$.y + boundingBox.height > maxHeight) {
                     // hard boundary error
 
                     // center in print area
                     offset.set({
-                        y: printAreaHeight / 2 - boundingBox.height / 2
+                        y: maxHeight / 2 - boundingBox.height / 2
                     });
                 }
 

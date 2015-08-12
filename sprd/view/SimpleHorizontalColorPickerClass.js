@@ -5,7 +5,6 @@ define(["js/ui/View", "js/core/List"], function (View, List) {
             defaults: {
                 color: null,
                 colors: List,
-                height: 30,
                 itemWidth: 20,
                 _previewColor: null,
                 _showPreview: false,
@@ -62,7 +61,7 @@ define(["js/ui/View", "js/core/List"], function (View, List) {
                 var pos = this.$.colorList.globalToLocal({x: e.pageX, y: e.pageY});
 
                 var numColors = this.$._numColors,
-                    colorIndex = Math.max(Math.min(this.$._numColors-1,Math.floor((pos.x / this.$tableWidth) * numColors)),0);
+                    colorIndex = Math.max(Math.min(this.$._numColors - 1, Math.floor((pos.x / this.$tableWidth) * numColors)), 0);
 
                 this.set({
                     '_previewColor': this.$.colors.at(colorIndex)
@@ -73,7 +72,7 @@ define(["js/ui/View", "js/core/List"], function (View, List) {
                 this.$.colorPickerZoom.$el.style["left"] = (colorIndex + 0.5) * itemWidth + "px";
             },
 
-            _render_previewColor: function(color){
+            _render_previewColor: function (color) {
                 if (color && this.$.colors) {
                     var index = this.$.colors.indexOf(color);
                     if (index > -1) {
