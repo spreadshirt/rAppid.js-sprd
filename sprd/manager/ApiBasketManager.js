@@ -59,7 +59,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 "on:basketChanged",
                 "on:basketUpdated",
                 "on:basketUpdating",
-                "on:basketSaving"
+                "on:basketSaving",
+                "on:basketInitialized"
             ],
 
             inject: {
@@ -248,6 +249,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                                     .exec(function (err) {
                                         if (!err) {
                                             self.$originalBasket = basket.clone();
+                                            self.trigger("on:basketInitialized", basket, self);
                                         }
 
                                         callback && callback(err, basket);
