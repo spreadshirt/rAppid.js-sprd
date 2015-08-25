@@ -91,8 +91,6 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         parse: function (data) {
             data = this.callBase();
 
-            data.colors = data.colors || new List();
-
             if (data.href) {
                 data.wtfMbsId = data.id;
                 data.id = data.href.split("/").pop();
@@ -102,7 +100,7 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         },
 
         isVectorDesign: function () {
-            return this.$.colors.length > 0;
+            return this.$.colors && this.$.colors.length > 0;
         },
 
         hasBackgroundColor: function () {
