@@ -188,6 +188,12 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             }
         },
 
+        _commitCountry: function(country){
+            if(country && this.fieldError("vatId")){
+                this.$errors.unset("vatId");
+            }
+        },
+
         _commitPersonSalutation: function (salutation) {
             if (salutation === Person.Salutation.COMPANY) {
                 this.set('type', ADDRESS_TYPES.PRIVATE);

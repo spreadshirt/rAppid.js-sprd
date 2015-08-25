@@ -36,6 +36,7 @@ define(['sprd/data/SprdModel', 'sprd/entity/Address', 'underscore', 'sprd/entity
             this.set('billingAddress', type != AddressEntity.ADDRESS_TYPES.PACKSTATION);
         },
         _commitVatId: AddressEntity.prototype._commitVatId,
+        _commitCountry: AddressEntity.prototype._commitCountry,
         _commitPersonSalutation: AddressEntity.prototype._commitPersonSalutation,
         supportsPackStation: AddressEntity.prototype.supportsPackStation,
         needsVatId: AddressEntity.prototype.needsVatId

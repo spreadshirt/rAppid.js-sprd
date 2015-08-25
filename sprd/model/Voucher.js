@@ -77,7 +77,6 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "underscor
 
         save: function (options, callback) {
             var self = this;
-            console.log(options);
             this.synchronizeFunctionCall(function (cb) {
                 this._saveAndRefresh(options || {}, cb);
             }, "save", function (err, model) {

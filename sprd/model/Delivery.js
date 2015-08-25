@@ -84,6 +84,8 @@ define(["sprd/data/SprdModel", "js/data/Entity", "sprd/entity/Address", "sprd/mo
                 invoiceToShippingAddress: true,
                 billing: new Billing()
             });
+
+            this.$.shipping.$.address.set('state', null);
         },
 
         transformers: [
