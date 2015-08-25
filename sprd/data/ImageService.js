@@ -13,7 +13,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
             detectWebP: true,
 
-            supportsWebP: false
+            supportsWebP: true
         },
 
         ctor: function() {
