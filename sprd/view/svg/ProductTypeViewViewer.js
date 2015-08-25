@@ -145,14 +145,19 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                                             var configuration = configViewer.$.configuration;
                                             if (productTypeViewViewer[i] !== self && productTypeViewViewer[i].checkForDropHover(x, y)) {
                                                 var printArea = productTypeViewViewer[i].$printAreas[0].getPrintArea();
-                                                var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, printArea, this.get('_appearance.id'));
+                                                var possiblePrintTypes;
+                                                if (configuration.$.design) {
+                                                    possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, printArea, this.get('_appearance.id'));
+                                                } else {
+                                                    possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, this.get('_appearance.id'));
+                                                }
                                                 if (possiblePrintTypes.length) {
                                                     hovered = DROP_HOVERED.YES;
                                                     var xScale = printArea.get("boundary.size.width") / configuration.get('_size.width'),
                                                         yScale = printArea.get("boundary.size.height") / configuration.get('_size.height');
                                                     var scale = {
-                                                        x: xScale,
-                                                        y: yScale
+                                                        x: Math.min(xScale, yScale),
+                                                        y: Math.min(xScale, yScale)
                                                     };
                                                     var validation = configuration._validatePrintTypeSize(possiblePrintTypes[0], configuration.get('size.width'), configuration.get('size.height'), scale);
                                                     if (validation.minBound || validation.dpiBound) {
