@@ -1,4 +1,4 @@
-define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd/entity/DesignColor', 'sprd/entity/Price', 'js/data/Entity', 'sprd/model/Locale', 'js/core/List'], function (SprdModel, PrintType, Size, DesignColor, Price, Entity, Locale, List) {
+define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd/entity/DesignColor', 'sprd/entity/Price', 'js/data/Entity', 'sprd/model/Locale'], function (SprdModel, PrintType, Size, DesignColor, Price, Entity, Locale) {
 
     var DENY_ON = {
         No: "NO",
@@ -90,8 +90,6 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
 
         parse: function (data) {
             data = this.callBase();
-
-            data.colors = data.colors || new List();
 
             if (data.href) {
                 data.wtfMbsId = data.id;
