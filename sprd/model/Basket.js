@@ -47,7 +47,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return basketItem;
         },
 
-        items: function() {
+        items: function () {
             return this.$.basketItems
         }.onChange("basketItems"),
 
@@ -218,14 +218,14 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return voucherShipping ? voucherShipping.get('price') : null;
         }.onChange('discounts'),
 
-        hasVoucher: function () {
+        hasCoupon: function () {
             var discounts = this.$.discounts;
             if (!discounts) {
                 return false;
             }
 
             return !!discounts.find(function (discount) {
-                return /^voucher/.test(discount.$.type)
+                return /^coupon|^voucher/.test(discount.$.type)
             });
         }.onChange("discounts")
 

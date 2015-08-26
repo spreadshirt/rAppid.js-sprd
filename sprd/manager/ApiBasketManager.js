@@ -217,6 +217,11 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         .seq(function (cb) {
                             self.fetchBasketDiscounts(cb);
                         })
+                        .seq(function (cb) {
+                            self.fetchBasketCoupons(function () {
+                                cb();
+                            });
+                        })
                         .exec(function (err) {
                             if (err) {
                                 // something went wrong
@@ -270,6 +275,17 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     }
                 } else {
                     cb();
+                }
+            },
+
+            fetchBasketCoupons: function (cb) {
+                var basket = this.$.basket;
+                if (basket) {
+                    var coupons = basket.getCollection("coupons");
+                    coupons.invalidatePageCache();
+                    coupons.fetch(cb);
+                } else {
+                    cb && cb();
                 }
             },
 
@@ -386,11 +402,19 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             },
             reloadBasket: function (callback) {
                 this._triggerBasketUpdating();
-                var self = this;
-                this.$.basket.fetch({noCache: true}, function (err, basket) {
-                    self._triggerBasketUpdated();
-                    callback && callback(err, basket)
-                })
+                var self = this,
+                    basket = this.$.basket;
+                flow()
+                    .seq(function (cb) {
+                        basket.fetch({noCache: true}, cb);
+                    })
+                    .seq(function (cb) {
+                        self.fetchBasketCoupons(cb);
+                    })
+                    .exec(function (err, basket) {
+                        self._triggerBasketUpdated();
+                        callback && callback(err, basket)
+                    })
             }
         });
 
