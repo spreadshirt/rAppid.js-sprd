@@ -43,6 +43,15 @@ define(["js/core/Component"], function (Component) {
             callback && callback();
         },
 
+        /**
+         *
+         * @param {sprd.model.Coupon} coupon
+         * @param {Function} callback
+         */
+        applyCoupon: function (coupon, callback) {
+            throw "apply Coupon needs to be implemented"
+        },
+
         addElementToBasket: function (element, quantity, callback) {
             callback && callback();
         },

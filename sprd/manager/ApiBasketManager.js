@@ -60,7 +60,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 "on:basketUpdated",
                 "on:basketUpdating",
                 "on:basketSaving",
-                "on:basketInitialized"
+                "on:basketInitialized",
+                "on:couponApplied"
             ],
 
             inject: {
@@ -132,6 +133,26 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 });
 
                 basketItem.save(null, cb);
+            },
+
+            applyCoupon: function (coupon, cb) {
+                coupon.set('currency', this.get('basket.currency'));
+                var self = this;
+                coupon.validate(function (err) {
+                    if (coupon.isValid()) {
+                        self.reloadBasket();
+                    }
+                    self.trigger('on:couponApplied', coupon, self);
+                    cb && cb(err, coupon);
+                })
+            },
+
+            removeCoupon: function (coupon, cb) {
+                var self = this;
+                coupon.remove(null, function () {
+                    self.reloadBasket();
+                    cb && cb();
+                });
             },
 
             _triggerBasketSaving: function () {

@@ -32,8 +32,8 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "underscor
                         var val = values[i],
                             m = val.match(/([^\|]+)\|(\w+)/);
                         if (m) {
-                            if (m[2] == "M" && entity.$.basketManager) {
-                                values[i] = entity.$.basketManager.$.basket.$.currency.formatValue(m[1]);
+                            if (m[2] == "M" && entity.$.currency) {
+                                values[i] = entity.$.currency.formatValue(m[1]);
                             }
                         }
                     }
@@ -53,7 +53,7 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "underscor
 
         defaults: {
             code: null,
-            basketManager: null
+            currency: null
         },
 
         schema: {
