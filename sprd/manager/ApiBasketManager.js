@@ -136,15 +136,19 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             },
 
             applyCoupon: function (coupon, cb) {
-                coupon.set('currency', this.get('basket.currency'));
-                var self = this;
-                coupon.validate(function (err) {
-                    if (coupon.isValid()) {
-                        self.reloadBasket();
-                    }
-                    self.trigger('on:couponApplied', coupon, self);
-                    cb && cb(err, coupon);
-                })
+                if (!this.$appliyngCoupon) {
+                    this.$appliyngCoupon = true;
+                    coupon.set('currency', this.get('basket.currency'));
+                    var self = this;
+                    coupon.validate(function (err) {
+                        self.$appliyngCoupon = false;
+                        if (coupon.isValid()) {
+                            self.reloadBasket();
+                        }
+                        self.trigger('on:couponApplied', coupon, self);
+                        cb && cb(err, coupon);
+                    })
+                }
             },
 
             removeCoupon: function (coupon, cb) {
