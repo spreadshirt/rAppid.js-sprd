@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "underscore"], function (SprdModel, Validator, JSON, _) {
+define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "moment"], function (SprdModel, Validator, JSON, moment) {
 
     var CouponValidator = Validator.inherit({
         validate: function (entity, options, callback) {
@@ -32,8 +32,14 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "underscor
                         var val = values[i],
                             m = val.match(/([^\|]+)\|(\w+)/);
                         if (m) {
-                            if (m[2] == "M" && entity.$.currency) {
+                            var t = m[2];
+                            if (t == "M" && entity.$.currency) {
                                 values[i] = entity.$.currency.formatValue(m[1]);
+                            } else if (t == "D") {
+                                // TODO: localize format date
+                                values[i] = moment(m[1]).format("YYYY/MM/DD");
+                            } else {
+                                values[i] = m[1];
                             }
                         }
                     }
