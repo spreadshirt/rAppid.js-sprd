@@ -135,17 +135,29 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 basketItem.save(null, cb);
             },
 
+            waitForCouponApply: function (callback) {
+                function couponAppliedCallback() {
+                    this.unbind('on:couponApplied', couponAppliedCallback, this);
+                    callback && callback();
+                }
+
+                if (this.$applyingCoupon) {
+                    this.bind('on:couponApplied', couponAppliedCallback, this);
+                } else {
+                    callback();
+                }
+            },
             applyCoupon: function (coupon, cb) {
-                if (!this.$appliyngCoupon) {
-                    this.$appliyngCoupon = true;
+                if (!this.$applyingCoupon) {
+                    this.$applyingCoupon = true;
                     coupon.set('currency', this.get('basket.currency'));
                     var self = this;
                     coupon.validate(function (err) {
-                        self.$appliyngCoupon = false;
                         if (coupon.isValid()) {
                             self.reloadBasket();
                         }
                         self.trigger('on:couponApplied', coupon, self);
+                        self.$applyingCoupon = false;
                         cb && cb(err, coupon);
                     })
                 }
