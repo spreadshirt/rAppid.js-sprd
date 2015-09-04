@@ -1,4 +1,4 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer", "js/data/validator/Validator"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator, TrimTransformer, Validator) {
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer", "js/data/validator/Validator", "sprd/helper/StreetParser"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator, TrimTransformer, Validator, StreetParser) {
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
@@ -37,8 +37,9 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
             // if its HQ don't validate
             if (value && !/^HQ/.test(value)) {
+                var parsedStreet = StreetParser.parseStreet(value);
                 // validate minlength, maxlength and that it contains a number
-                if ((value.length < MIN_LENGTH.STREET || value.length > MAX_LENGTH.STREET || !/\d+/.test(value))) {
+                if ((value.length < MIN_LENGTH.STREET || value.length > MAX_LENGTH.STREET || !parsedStreet)) {
                     return this._createFieldError(this.$.field);
                 }
             }
@@ -320,6 +321,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 }
             }
             return true;
+        },
+        getHouseNUmber: function () {
+            // TODO: implement;
+
         }
     });
 
