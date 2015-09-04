@@ -2,15 +2,20 @@
 
     var matcher = [
         {
-            regex: /^(?:(?:(\D+),\s*)?(?:(?:(\D+str\.))|(?:(\D+?(?:stra0e)?(?:n.\d+)?)[,.\s]))\s?(\d+\.?\s?\/?[a-zA-Z]*(?:(?:\s\w\d+)|(?:\d+\s(?:st\.)?\s?tv\.?)|(?:\s?[-/\s]\s?\d+[a-z°ºª]*\s?\w?))*)(?:\s*[,-]\s*(.*))?)$/i,
+            regex: /^(?:(?:(\D+),\s*)?(?:(?:(\D+str\.))|(?:(\D{3,}?(?:stra0e)?(?:n.\d+)?)[,.\s]))\s?(\d+\.?\s?\/?[a-zA-Z]*(?:(?:\s\w\d+)|(?:\d+\s(?:st\.)?\s?tv\.?)|(?:\s?[-/\s]\s?\d+[a-z°ºª]*\s?\w?))*)(?:\s*[,-]\s*(.*))?)$/i,
             parts: ["ext", "street", "street", "nr", "ext"]
+        },
+
+        {
+            regex: /^(?:(\D+?)[,\s])?(\d+(?:\s\w+)+)\s(\d+)$/i,
+            parts: ["ext", "street", "nr"]
         },
         {
             regex: /^(\D+,\s?)?(\d+\s?\/?[a-z]{0,2}(?:\s?-\s?\d+)?)\s*?[,\s.]\s?(?:((?:\d+th\s)?\D+?(?:\s.*?)?)[,]?)$/i,
             parts: ["ext", "nr", "street"]
         },
         {
-            regex: /^(\D+)(\d+)$/i,
+            regex: /^(\D{3,})(\d+)$/i,
             parts: ["street", "nr"]
         }
     ];
@@ -42,4 +47,4 @@
     };
 
     define && define({parseStreet: exports.parseStreet});
-}(typeof(exports) === "undefined" ? this : exports, define));
+}(typeof(exports) === "undefined" ? this : exports, typeof (define) === "undefined" ? null : define));
