@@ -12,6 +12,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         STREET_ANNEX: 50
     };
 
+    var MIN_LENGTH = {
+        STREET: 3
+    };
+
     var POSTNUMMER = "Postnummer ",
         PACKSTATION = "Packstation ";
 
@@ -24,6 +28,22 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             }
             return null;
         }
+    });
+
+    var StreetValidator = Validator.inherit({
+
+        _validate: function (entity) {
+            var value = entity.get(this.$.field);
+
+            // if its HQ don't validate
+            if (value && !/^HQ/.test(value)) {
+                // validate minlength, maxlength and that it contains a number
+                if ((value.length < MIN_LENGTH.STREET || value.length > MAX_LENGTH.STREET)) {
+                    return this._createFieldError(this.$.field);
+                }
+            }
+        }
+
     });
 
     var Address = Entity.inherit("sprd.entity.Address", {
@@ -142,10 +162,6 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 maxLength: MAX_LENGTH.CITY
             }),
             new LengthValidator({
-                field: "street",
-                maxLength: MAX_LENGTH.STREET
-            }),
-            new LengthValidator({
                 field: "streetAnnex",
                 maxLength: MAX_LENGTH.STREET_ANNEX
             }),
@@ -160,6 +176,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 regEx: /packstation|postnummer/i,
                 inverse: true,
                 errorCode: "packstationError"
+            }),
+            new StreetValidator({
+                field: "street",
+                errorCode: "wrongFormat"
             }),
             new VatValidator({
                 field: "vatId",
@@ -188,8 +208,8 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             }
         },
 
-        _commitCountry: function(country){
-            if(country && this.fieldError("vatId")){
+        _commitCountry: function (country) {
+            if (country && this.fieldError("vatId")) {
                 this.$errors.unset("vatId");
             }
         },
@@ -230,7 +250,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 delete data.postNr;
             }
 
-            if(!this.isCompany()){
+            if (!this.isCompany()) {
                 delete data.company;
                 delete data.vatId;
             } else if (data.vatId && !/^[A-Z]{2}/.test(data.vatId)) {

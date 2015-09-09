@@ -108,7 +108,7 @@ describe('sprd.model.UserAddress', function () {
         });
 
         it('should have an onChange person.salutation binding', function () {
-            expect(C.Address.prototype.isCompany._attributes).to.contain("person.salutation");
+            expect(C.Address.prototype.isCompany._attributes).to.contain("personSalutation");
         });
 
     });

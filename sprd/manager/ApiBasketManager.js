@@ -60,7 +60,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 "on:basketUpdated",
                 "on:basketUpdating",
                 "on:basketSaving",
-                "on:basketInitialized"
+                "on:basketInitialized",
+                "on:couponApplied"
             ],
 
             inject: {
@@ -132,6 +133,42 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 });
 
                 basketItem.save(null, cb);
+            },
+
+            waitForCouponApply: function (callback) {
+                function couponAppliedCallback() {
+                    this.unbind('on:couponApplied', couponAppliedCallback, this);
+                    callback && callback();
+                }
+
+                if (this.$applyingCoupon) {
+                    this.bind('on:couponApplied', couponAppliedCallback, this);
+                } else {
+                    callback();
+                }
+            },
+            applyCoupon: function (coupon, cb) {
+                if (!this.$applyingCoupon) {
+                    this.$applyingCoupon = true;
+                    coupon.set('currency', this.get('basket.currency'));
+                    var self = this;
+                    coupon.validate(function (err) {
+                        if (coupon.isValid()) {
+                            self.reloadBasket();
+                        }
+                        self.trigger('on:couponApplied', coupon, self);
+                        self.$applyingCoupon = false;
+                        cb && cb(err, coupon);
+                    })
+                }
+            },
+
+            removeCoupon: function (coupon, cb) {
+                var self = this;
+                coupon.remove(null, function () {
+                    self.reloadBasket();
+                    cb && cb();
+                });
             },
 
             _triggerBasketSaving: function () {
@@ -217,6 +254,11 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         .seq(function (cb) {
                             self.fetchBasketDiscounts(cb);
                         })
+                        .seq(function (cb) {
+                            self.fetchBasketCoupons(function () {
+                                cb();
+                            });
+                        })
                         .exec(function (err) {
                             if (err) {
                                 // something went wrong
@@ -270,6 +312,17 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     }
                 } else {
                     cb();
+                }
+            },
+
+            fetchBasketCoupons: function (cb) {
+                var basket = this.$.basket;
+                if (basket) {
+                    var coupons = basket.getCollection("coupons");
+                    coupons.invalidatePageCache();
+                    coupons.fetch(cb);
+                } else {
+                    cb && cb();
                 }
             },
 
@@ -386,11 +439,19 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             },
             reloadBasket: function (callback) {
                 this._triggerBasketUpdating();
-                var self = this;
-                this.$.basket.fetch({noCache: true}, function (err, basket) {
-                    self._triggerBasketUpdated();
-                    callback && callback(err, basket)
-                })
+                var self = this,
+                    basket = this.$.basket;
+                flow()
+                    .seq(function (cb) {
+                        basket.fetch({noCache: true}, cb);
+                    })
+                    .seq(function (cb) {
+                        self.fetchBasketCoupons(cb);
+                    })
+                    .exec(function (err, basket) {
+                        self._triggerBasketUpdated();
+                        callback && callback(err, basket)
+                    })
             }
         });
 

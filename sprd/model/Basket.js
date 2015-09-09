@@ -47,7 +47,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return basketItem;
         },
 
-        items: function() {
+        items: function () {
             return this.$.basketItems
         }.onChange("basketItems"),
 
@@ -193,7 +193,10 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             });
         }.onChange("discounts"),
 
-        getGoodsDiscountPrice: function () {
+
+        getDiscountPrice: function () {
+            var types = Array.prototype.slice.call(arguments) || [];
+
             var discounts = this.$.discounts;
             if (!discounts) {
                 return null;
@@ -201,7 +204,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
 
             var price = new Price();
             discounts.each(function (discount) {
-                if (discount.$.price && ["scale", "voucherShipping"].indexOf(discount.$.type) == -1) {
+                if (discount.$.price && types.indexOf(discount.$.type) !== -1) {
                     price.add(discount.$.price);
                 }
             });
@@ -211,21 +214,25 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             } else {
                 return null;
             }
-        }.onChange("discounts"),
-
-        getShippingDiscountPrice: function () {
-            var voucherShipping = this.getDiscount('voucherShipping');
-            return voucherShipping ? voucherShipping.get('price') : null;
         }.onChange('discounts'),
 
-        hasVoucher: function () {
+        getGoodsDiscountPrice: function () {
+            return this.getDiscountPrice("voucherItem");
+        }.onChange('discounts'),
+
+
+        getShippingDiscountPrice: function () {
+            return this.getDiscountPrice("voucherShipping");
+        }.onChange('discounts'),
+
+        hasCoupon: function () {
             var discounts = this.$.discounts;
             if (!discounts) {
                 return false;
             }
 
             return !!discounts.find(function (discount) {
-                return /^voucher/.test(discount.$.type)
+                return /^coupon|^voucher/.test(discount.$.type)
             });
         }.onChange("discounts")
 
