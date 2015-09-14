@@ -210,8 +210,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         if (product.$.productType !== productType) {
                             optimalScale = Math.min(
-                                targetPrintAreaWidth / currentPrintAreaWidth,
-                                targetPrintAreaHeight / currentPrintAreaHeight
+                                    targetPrintAreaWidth / currentPrintAreaWidth,
+                                    targetPrintAreaHeight / currentPrintAreaHeight
                             ) * Math.abs(scale.x);
                         }
 
@@ -236,10 +236,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             var configurationPrintTypeSize = configuration.getSizeForPrintType(printType);
 
                             var maximumScale = Math.min(
-                                printType.get("size.width") / configurationPrintTypeSize.$.width,
-                                printType.get("size.height") / configurationPrintTypeSize.$.height,
-                                targetPrintAreaWidth / configurationPrintTypeSize.$.width,
-                                targetPrintAreaHeight / configurationPrintTypeSize.$.height
+                                    printType.get("size.width") / configurationPrintTypeSize.$.width,
+                                    printType.get("size.height") / configurationPrintTypeSize.$.height,
+                                    targetPrintAreaWidth / configurationPrintTypeSize.$.width,
+                                    targetPrintAreaHeight / configurationPrintTypeSize.$.height
                             );
 
                             if (printType.isShrinkable()) {
@@ -993,11 +993,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     maxHeight = Math.min(printAreaHeight, printTypeHeight),
                     maxWidth = Math.min(printAreaWidth, printTypeWidth),
                     defaultBox = printArea.$.defaultBox || {
-                            x: 0,
-                            y: 0,
-                            width: printAreaWidth,
-                            height: printAreaHeight
-                        },
+                        x: 0,
+                        y: 0,
+                        width: printAreaWidth,
+                        height: printAreaHeight
+                    },
                     boundingBox,
                     defaultBoxCenterX = defaultBox.x + defaultBox.width / 2,
                     defaultBoxCenterY = defaultBox.y + defaultBox.height / 2,
@@ -1122,13 +1122,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     if (!err) {
                         product.$.configurations.remove(specialTextConfiguration);
                         var s = width / config.width();
-                        config.set({
-                            'scale': {
-                                x: s,
-                                y: s
-                            }, 'offset': offset,
-                            rotation: specialTextConfiguration.$.rotation
-                        });
+                        config.set({'scale': {
+                            x: s,
+                            y: s
+                        }, 'offset': offset,
+                            rotation: specialTextConfiguration.$.rotation});
 
                         product._addConfiguration(config);
                         self.$.bus.trigger('Application.productChanged', product);
@@ -1159,11 +1157,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (boundingBox && printArea && printArea.hasSoftBoundary() &&
                     (
-                    boundingBox.x > printArea.width() ||
-                    boundingBox.x + boundingBox.width < 0 ||
-                    boundingBox.y > printArea.height() ||
-                    boundingBox.y + boundingBox.height < 0
-                    )) {
+                        boundingBox.x > printArea.width() ||
+                        boundingBox.x + boundingBox.width < 0 ||
+                        boundingBox.y > printArea.height() ||
+                        boundingBox.y + boundingBox.height < 0
+                        )) {
 
                     product.$.configurations.remove(configuration);
                     return true;
