@@ -317,7 +317,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
             fetchBasketCoupons: function (cb) {
                 var basket = this.$.basket;
-                if (basket) {
+                if (basket && basket.schema.coupons) {
                     var coupons = basket.getCollection("coupons");
                     coupons.invalidatePageCache();
                     coupons.fetch(cb);
@@ -402,10 +402,12 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         .seq(function (cb) {
                             if (self.$.syncToOpossum) {
                                 // TODO: remove this shit after new checkout is live everywhere
-                                rAppid.ajax("/syncBasket", {"method": "GET",
+                                rAppid.ajax("/syncBasket", {
+                                    "method": "GET",
                                     "queryParameter": {
                                         basketId: basket.$.id
-                                    }}, function () {
+                                    }
+                                }, function () {
                                     cb();
                                 });
                             } else {
