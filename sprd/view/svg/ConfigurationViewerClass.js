@@ -357,6 +357,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
                 var selected = this.$.selected;
                 this.$.productViewer.set("selectedConfiguration", this.$.configuration);
+                this.$.bus.trigger('ConfigurationViewer.configurationSelected', {configuration: configuration});
+
 //                this.$stage.focus();
 
                 if (e.defaultPrevented) {
@@ -520,7 +522,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 // shim layer with setTimeout fallback
                 $w.requestAnimFrame = $w.$requestAnimFrame || (function () {
-                    return  $w.requestAnimationFrame ||
+                    return $w.requestAnimationFrame ||
                         $w.webkitRequestAnimationFrame ||
                         $w.mozRequestAnimationFrame ||
                         function (callback) {
@@ -624,7 +626,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var x = e.changedTouches ? e.changedTouches[0].pageX : e.pageX,
                     y = e.changedTouches ? e.changedTouches[0].pageY : e.pageY,
                     factor = this.globalToLocalFactor(),
-                    deltaX = (this.$downPoint.x - x) ,
+                    deltaX = (this.$downPoint.x - x),
                     deltaY = (this.$downPoint.y - y);
 
                 var scaleFactor,
@@ -892,6 +894,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
 
                     if (changed) {
+                        this.$.bus.trigger('ConfigurationViewer.configurationChanged', {
+                            configuration: configuration,
+                            mode: mode
+                        });
                         this.$.bus.trigger('Application.productChanged', this.$.product);
                     }
                 }
@@ -917,13 +923,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this._stopTransformation();
             },
 
-            disableMoveSnipping: function(){
+            disableMoveSnipping: function () {
                 moveSnippingEnabled = false;
                 var snapLines = this.get('printAreaViewer.snapLines');
                 snapLines && snapLines.clear();
             },
 
-            enableMoveSnipping: function(){
+            enableMoveSnipping: function () {
                 moveSnippingEnabled = true;
             },
 
@@ -1035,6 +1041,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         productViewer = this.$.productViewer;
 
                     this.$.product.$.configurations.remove(configuration);
+
+                    this.$.bus.trigger('ConfigurationViewer.configurationRemoved', {configuration: configuration});
                     this.$.bus.trigger('Application.productChanged', this.$.product);
                     if (productViewer && productViewer.$.selectedConfiguration === configuration) {
                         productViewer.set('selectedConfiguration', null);
@@ -1088,7 +1096,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             isSelectedConfigurationOrConfigurationHasError: function () {
                 return this.$.configuration !== null &&
                     (this.get('productViewer.editable') === true &&
-                        this.get("productViewer.selectedConfiguration") === this.$.configuration) ||
+                    this.get("productViewer.selectedConfiguration") === this.$.configuration) ||
                     (!this.$.configuration.isValid());
             }.on(["productViewer", "change:selectedConfiguration"], ["configuration", "isValidChanged"]),
 
