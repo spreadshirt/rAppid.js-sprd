@@ -106,6 +106,12 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.trigger("priceChanged");
             },
 
+            getColors: function () {
+                return this.$.printColors.$items.map(function (printColor) {
+                    return printColor.color();
+                });
+            },
+
             size: function () {
                 return this.getSizeForPrintType(this.$.printType);
             }.onChange("_dpi", "design"),

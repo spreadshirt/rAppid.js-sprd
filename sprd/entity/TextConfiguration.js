@@ -1,5 +1,5 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager", "js/core/List"],
-    function (Configuration, flow, Size, _, PrintType, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager, List) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager", "js/core/List", "js/type/Color"],
+    function (Configuration, flow, Size, _, PrintType, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager, List, Color) {
 
         var copyrightWordList;
 
@@ -293,8 +293,19 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.trigger("priceChanged");
             },
 
-            price: function () {
+            getColors: function () {
+                if (this.$.printColors.length) {
+                    return this.$.printColors.$items.map(function (printColor) {
+                        return printColor.color();
+                    });
+                } else {
+                    return this.$.content.svg.text.content.map(function (text) {
+                        return Color.parse(Color.fromHexString(text.fill));
+                    });
+                }
+            },
 
+            price: function () {
                 var usedPrintColors = [],
                     price = this.callBase();
 
@@ -485,6 +496,24 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new this.$.Style({printTypeColor: color})).doOperation();
 
                     this.$.printColors.reset([color]);
+                }
+
+            },
+
+            getColor: function () {
+                if (this.$.ApplyStyleToElementOperation && this.$.Style) {
+                    var selection = this.$.selection;
+                    if (selection.$.anchorIndex === selection.$.activeIndex) {
+                        selection = selection.clone();
+                        selection.set({
+                            anchorIndex: 0,
+                            activeIndex: this.$.textFlow.textLength() - 1
+                        })
+
+                    }
+                    new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new this.$.Style({printTypeColor: color})).doOperation();
+
+                    return this.$.printColors;
                 }
 
             },
