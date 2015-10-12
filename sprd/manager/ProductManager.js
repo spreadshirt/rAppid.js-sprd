@@ -216,7 +216,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
 
                         var allowScale = configuration.allowScale(),
-                            printTypeFallback;
+                            printTypeFallback = null;
 
                         for (var j = 0; j < possiblePrintTypes.length; j++) {
                             printType = possiblePrintTypes[j];
@@ -297,7 +297,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 y: targetPrintAreaHeight * center.y / currentPrintAreaHeight - configuration.height() / 2
                             };
 
-                            configuration.$.offset.set(preferredOffset, setOptions);
+                            configuration.$.offset.set(preferredOffset);
 
                             // set again with force to trigger events
                             configuration.set({

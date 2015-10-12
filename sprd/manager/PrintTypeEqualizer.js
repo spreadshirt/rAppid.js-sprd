@@ -52,7 +52,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     }
                 }
 
-                if (!targetPrintType) {
+                if (!targetPrintType && configurations.length > 0) {
                     var firstConfiguration = configurations[0];
                     var printTypes = firstConfiguration.getPossiblePrintTypesForPrintArea(printArea, product.get('appearance.id'));
                     printTypes.sort(function (p1, p2) {
