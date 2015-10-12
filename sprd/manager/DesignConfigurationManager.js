@@ -139,6 +139,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     }
 
                     configuration.$.printColors.reset(printColors);
+                    configuration.set('printType', printType, {force: true});
                 })
                 .seq(function () {
 

@@ -29,7 +29,7 @@ define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (Configu
             return this.callBase();
         },
 
-        isNotMobile: function(){
+        isNotMobile: function () {
             return !this.$stage.$browser.isMobile;
         },
 
@@ -51,12 +51,12 @@ define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (Configu
             }
         },
 
-        _handleClick: function(){
-            if (this.$.configuration && this.$.productViewer.$.product.$.restrictions.example && !this.$exampleFirstClick) {
+        _handleClick: function () {
+            if (this.$.configuration && this.get('productViewer.product.restrictions.example') && !this.$exampleFirstClick) {
                 this.$exampleFirstClick = true;
                 this.$.configuration.$.selection.set({
                     anchorIndex: 0,
-                    activeIndex: this.$.configuration.$.textFlow.textLength()-1
+                    activeIndex: this.$.configuration.$.textFlow.textLength() - 1
                 });
             }
         },
@@ -65,7 +65,7 @@ define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (Configu
             this.$.textArea.handleKeyPress(e);
         },
 
-        addChar: function(c) {
+        addChar: function (c) {
             this.$.textArea.addChar(c);
         },
 
@@ -73,7 +73,7 @@ define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (Configu
             this.$.textArea.handleKeyDown(e);
         },
 
-        _focus: function() {
+        _focus: function () {
             var textArea = this.$.textArea;
             if (textArea) {
                 textArea.focus();
