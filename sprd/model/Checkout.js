@@ -22,11 +22,10 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
 
             var dataSource = this.$context.$dataSource;
             var url = dataSource._buildUriForResource(this),
-                parameter = {
-                    mode: "form"
-                };
+                parameter = {};
 
             _.defaults(parameter, this.$context.getQueryParameters(), dataSource.getQueryParameters("put", this));
+            delete parameter.mediaType;
             url += "?" + rAppid.createQueryString(parameter);
 
             var processor = dataSource.getProcessorForModel(this);

@@ -1,4 +1,4 @@
-define(["js/data/Entity"], function(Entity) {
+define(["js/data/Entity"], function (Entity) {
     return Entity.inherit("checkout.entity.Payment", {
         type: "payment",
 
@@ -7,11 +7,11 @@ define(["js/data/Entity"], function(Entity) {
             paymentTypeGroup: null
         },
 
-        getType: function() {
+        getType: function () {
             return this.type;
         },
 
-        clearData: function() {
+        clearData: function () {
             var $ = this.$,
                 data = {};
             for (var key in $) {
@@ -21,6 +21,13 @@ define(["js/data/Entity"], function(Entity) {
             }
 
             this.set(data);
+        },
+
+        /**
+         * Hook to prepare delivery
+         */
+        prepare: function (cb) {
+            cb && cb();
         },
 
         /***

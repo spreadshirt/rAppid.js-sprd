@@ -47,6 +47,9 @@
                                         checkoutTokenRequired="true"/>
             <conf:ResourceConfiguration path="delivery" modelClassName="sprd.model.Delivery" apiKeyRequired="true"
                                         checkoutTokenRequired="true" sessionPreferred="true"/>
+            <conf:ResourceConfiguration path="delivery/applyAmazon" modelClassName="sprd.model.AmazonDelivery" apiKeyRequired="true"
+                                        checkoutTokenRequired="true" sessionPreferred="true"/>
+
             <conf:ResourceConfiguration path="coupons" modelClassName="sprd.model.Coupon" apiKeyRequired="true"
                                         checkoutTokenRequired="true"
                                         sessionPreferred="true"/>
