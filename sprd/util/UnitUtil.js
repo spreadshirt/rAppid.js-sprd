@@ -56,10 +56,13 @@ define(["sprd/entity/Size"], function(Size){
         },
 
         getLocalizedSize: function (mm, locale) {
+            if(mm == null){
+                return null;
+            }
             var converter = ConvertSizes[locale];
 
             if (converter) {
-                var ret = converter.fromMm(mm) + "";
+                var ret = converter.fromMm(mm).toFixed(2) + "";
                 if (ret.split(".").length == 1) {
                     ret += ".0";
                 }

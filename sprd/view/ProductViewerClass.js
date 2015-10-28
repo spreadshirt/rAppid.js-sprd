@@ -177,6 +177,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
         _clickHandler: function (e) {
             if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent && e.domEvent.target !== this.$.textArea.$el) {
+                this.$.bus.trigger('ProductViewer.configurationSelected', {configuration: null});
                 this.set('selectedConfiguration', null);
             }
             e.preventDefault();
@@ -203,9 +204,9 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     // timeout is needed here otherwise IE in windows 8
                     // will throw an additional click event
                     // on the underlying element
-                    setTimeout(function(){
+                    setTimeout(function () {
                         viewer.bringToFront();
-                    },2)
+                    }, 2)
                 }
 
             }
