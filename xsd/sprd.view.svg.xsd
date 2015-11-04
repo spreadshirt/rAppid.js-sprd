@@ -49,6 +49,7 @@
                 <attribute name="focused" default="{isFocused()}"/>
                 <attribute name="selected" default="{isSelectedConfiguration()}"/>
                 <attribute name="imageService"/>
+                <attribute name="preventValidation"/>
             </extension>
         </complexContent>
     </complexType>
@@ -69,6 +70,7 @@
                 <attribute name="focused" default="{isFocused()}"/>
                 <attribute name="selected" default="{isSelectedConfiguration()}"/>
                 <attribute name="imageService"/>
+                <attribute name="preventValidation"/>
             </extension>
         </complexContent>
     </complexType>
@@ -176,6 +178,7 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+                <attribute name="onclick" default="_handleClick"/>
                 <attribute name="tagName" default="g"/>
                 <attribute name="productViewer"/>
                 <attribute name="configurationViewer"/>

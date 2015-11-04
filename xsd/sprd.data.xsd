@@ -51,6 +51,8 @@
                 <attribute name="subDomainCount" default="10"/>
                 <attribute name="endPoint" default="//image.spreadshirt.net/image-server/v1"/>
                 <attribute name="gateway" default="/image-server/v1"/>
+                <attribute name="detectWebP" default="true"/>
+                <attribute name="supportsWebP"/>
             </extension>
         </complexContent>
     </complexType>
@@ -126,6 +128,8 @@
                 <attribute name="apiKey"/>
                 <attribute name="secret"/>
                 <attribute name="session"/>
+                <attribute name="checkoutToken"/>
+                <attribute name="authToken"/>
             </extension>
         </complexContent>
     </complexType>

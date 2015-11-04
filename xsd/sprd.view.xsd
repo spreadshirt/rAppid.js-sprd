@@ -14,6 +14,8 @@
     <element name="ConfigurationColorSelector" type="ns:ConfigurationColorSelector"/>
     <element name="ConfigurationColorSelectorClass" type="ns:ConfigurationColorSelectorClass"/>
     <element name="DesignImage" type="ns:DesignImage"/>
+    <element name="DndImage" type="ns:DndImage"/>
+    <element name="DndImageClass" type="ns:DndImageClass"/>
     <element name="DropDownSizeSelector" type="ns:DropDownSizeSelector"/>
     <element name="DropDownSizeSelectorClass" type="ns:DropDownSizeSelectorClass"/>
     <element name="Image" type="ns:Image"/>
@@ -40,6 +42,8 @@
     <element name="SimpleColorPickerClass" type="ns:SimpleColorPickerClass"/>
     <element name="SimpleHorizontalColorPickerClass" type="ns:SimpleHorizontalColorPickerClass"/>
     <element name="SimpleProductViewSelector" type="ns:SimpleProductViewSelector"/>
+    <element name="SizeFormatter" type="ns:SizeFormatter"/>
+    <element name="SizeFormatterClass" type="ns:SizeFormatterClass"/>
     <element name="SizeSelector" type="ns:SizeSelector"/>
     <element name="SizeSelectorClass" type="ns:SizeSelectorClass"/>
     <element name="UserImage" type="ns:UserImage"/>
@@ -56,6 +60,7 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="appearance"/>
+                <attribute name="title" default="{appearance.name}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -69,6 +74,7 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="appearance"/>
+                <attribute name="title" default="{appearance.name}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -221,6 +227,38 @@
                     </documentation>
                     </annotation>
                 </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="DndImage">
+        <complexContent>
+            <extension base="ns:DndImageClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.DndImage"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="configurationViewer"/>
+                <attribute name="svgContainer"/>
+                <attribute name="design"/>
+                <attribute name="hoverState"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="DndImageClass">
+        <complexContent>
+            <extension base="ns1:View">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.DndImageClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="configurationViewer"/>
+                <attribute name="svgContainer"/>
+                <attribute name="design"/>
+                <attribute name="hoverState"/>
             </extension>
         </complexContent>
     </complexType>
@@ -847,7 +885,6 @@ set the default appearance of the product is used.
                 </sequence>
                 <attribute name="color"/>
                 <attribute name="colors"/>
-                <attribute name="height" default="30"/>
                 <attribute name="itemWidth" default="20"/>
                 <attribute name="oncolorSelect" default="_onColorSelectHandler" type="string"/>
             </extension>
@@ -866,6 +903,34 @@ set the default appearance of the product is used.
                 <attribute name="appearance"/>
                 <attribute name="viewHeight" default="50"/>
                 <attribute name="viewWidth" default="50"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="SizeFormatter">
+        <complexContent>
+            <extension base="ns:SizeFormatterClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.SizeFormatter"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="size"/>
+                <attribute name="string" default="{formatSizeName(size.name)}"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="SizeFormatterClass">
+        <complexContent>
+            <extension base="ns1:TextWrapper">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.SizeFormatterClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="size"/>
+                <attribute name="string" default="{formatSizeName(size.name)}"/>
             </extension>
         </complexContent>
     </complexType>

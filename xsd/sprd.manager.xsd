@@ -13,10 +13,12 @@
     <element name="IErrorTrackingManager" type="ns:IErrorTrackingManager"/>
     <element name="IProductInitializer" type="ns:IProductInitializer"/>
     <element name="LocaleManager" type="ns:LocaleManager"/>
+    <element name="OrderManager" type="ns:OrderManager"/>
     <element name="ProductCreationErrorManager" type="ns:ProductCreationErrorManager"/>
     <element name="ProductInitializer" type="ns:ProductInitializer"/>
     <element name="RaygunErrorTrackingManager" type="ns:RaygunErrorTrackingManager"/>
     <element name="TrackingManager" type="ns:TrackingManager"/>
+    <element name="TrackjsErrorTrackingManager" type="ns:TrackjsErrorTrackingManager"/>
     <element name="VirtualProductManager" type="ns:VirtualProductManager"/>
     <complexType name="ApiBasketManager">
         <complexContent>
@@ -54,28 +56,6 @@ after the basket has been created successfully. The id is written back to this p
                     </documentation>
                     </annotation>
                 </attribute>
-                <attribute name="continueShoppingLink">
-                    <annotation>
-                        <documentation>
-                        continueShopping link is used in checkout as link for continue shopping button.
-It will be automatically added to the element added to basket
-                    </documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="editBasketItemLinkTemplate">
-                    <annotation>
-                        <documentation>
-                        edit link is the link displayed in checkout for editing the basket item.
-It will be automatically added to the element added to the basked.
-
-The following values are replaced
-
-+ ${productId} - with the current productId
-
-                    </documentation>
-                    </annotation>
-                </attribute>
-                <attribute name="editBasketItemLinkHook"/>
                 <attribute name="originId">
                     <annotation>
                         <documentation>
@@ -91,6 +71,13 @@ The following values are replaced
                     </annotation>
                 </attribute>
                 <attribute name="initBasketWithNoCache" default="true"/>
+                <attribute name="basketItem">
+                    <annotation>
+                        <documentation>
+                        if set, the element which is added will be saved under this basket item
+                    </documentation>
+                    </annotation>
+                </attribute>
                 <attribute name="syncToOpossum">
                     <annotation>
                         <documentation>
@@ -109,6 +96,8 @@ BasketItem
                 <attribute name="onbasketUpdated" default="_onBasketUpdatedHandler" type="string"/>
                 <attribute name="onbasketUpdating" default="_onBasketUpdatingHandler" type="string"/>
                 <attribute name="onbasketSaving" default="_onBasketSavingHandler" type="string"/>
+                <attribute name="onbasketInitialized" default="_onBasketInitializedHandler" type="string"/>
+                <attribute name="oncouponApplied" default="_onCouponAppliedHandler" type="string"/>
             </extension>
         </complexContent>
     </complexType>
@@ -159,6 +148,7 @@ BasketItem
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="externalBasket"/>
+                <attribute name="basketItem"/>
             </extension>
         </complexContent>
     </complexType>
@@ -183,6 +173,25 @@ BasketItem
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+                <attribute name="continueShoppingLink">
+                    <annotation>
+                        <documentation>
+                        continueShopping link is used in checkout as link for continue shopping button.
+It will be automatically added to the element added to basket
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="editBasketItemLinkHook"/>
+                <attribute name="editBasketItemUrl">
+                    <annotation>
+                        <documentation>
+                        edit link is the link displayed in checkout for editing the basket item.
+It will be automatically added to the element added to the basked.
+
+
+                    </documentation>
+                    </annotation>
+                </attribute>
             </extension>
         </complexContent>
     </complexType>
@@ -227,6 +236,26 @@ BasketItem
             </extension>
         </complexContent>
     </complexType>
+    <complexType name="OrderManager">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.OrderManager"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="order">
+                    <annotation>
+                        <documentation>
+                        the order model
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="shop"/>
+            </extension>
+        </complexContent>
+    </complexType>
     <complexType name="ProductCreationErrorManager">
         <complexContent>
             <extension base="ns1:Component">
@@ -263,6 +292,7 @@ BasketItem
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="apiKey"/>
+                <attribute name="beforeSendFnc"/>
             </extension>
         </complexContent>
     </complexType>
@@ -275,6 +305,22 @@ BasketItem
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+                <attribute name="appName"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="TrackjsErrorTrackingManager">
+        <complexContent>
+            <extension base="ns:IErrorTrackingManager">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.manager.TrackjsErrorTrackingManager"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="apiKey"/>
+                <attribute name="application"/>
+                <attribute name="ignoreMessages"/>
             </extension>
         </complexContent>
     </complexType>

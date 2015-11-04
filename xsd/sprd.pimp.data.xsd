@@ -1,0 +1,49 @@
+<schema targetNamespace="sprd.pimp.data"
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:ns1="js.data"
+    xmlns:ns2="js.core"
+    xmlns:ns="sprd.pimp.data">
+    <import/>
+    <import/>
+    <element name="PimpDataSource" type="ns:PimpDataSource"/>
+    <element name="PimpDataSourceClass" type="ns:PimpDataSourceClass"/>
+    <element name="PimpImageService" type="ns:PimpImageService"/>
+    <complexType name="PimpDataSource">
+        <complexContent>
+            <extension base="ns:PimpDataSourceClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.pimp.data.PimpDataSource"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="PimpDataSourceClass">
+        <complexContent>
+            <extension base="ns1:RestDataSource">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.pimp.data.PimpDataSourceClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="PimpImageService">
+        <complexContent>
+            <extension base="ns2:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.pimp.data.PimpImageService"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="gateway"/>
+                <attribute name="context"/>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>
