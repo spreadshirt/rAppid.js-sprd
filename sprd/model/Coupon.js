@@ -1,4 +1,6 @@
-define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "moment"], function (SprdModel, Validator, JSON, moment) {
+define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON"], function (SprdModel, Validator, JSON) {
+
+    var parseDate = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/;
 
     var CouponValidator = Validator.inherit({
         validate: function (entity, options, callback) {
@@ -37,7 +39,17 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "moment"],
                                 values[i] = entity.$.currency.formatValue(m[1]);
                             } else if (t == "D") {
                                 // TODO: localize format date
-                                values[i] = moment(m[1]).format("YYYY/MM/DD");
+
+                                var dateMatch = parseDate.exec(m[1]),
+                                    date = new Date(dateMatch[1], dateMatch[2] - 1, dateMatch[3], dateMatch[4], dateMatch[5], dateMatch[6]);
+                                date.setTime(date.getTime() + (date.getTimezoneOffset() * 60 * 1000));
+
+                                values[i] = date.getFullYear() + "/" +
+                                    ("00" + (date.getMonth() + 1)).substr(-2) + "/" +
+                                    ("00" + date.getDate()).substr(-2) + " " +
+                                    ("00" + date.getHours()).substr(-2) +  ":" +
+                                    ("00" + date.getMinutes()).substr(-2);
+
                             } else {
                                 values[i] = m[1];
                             }
