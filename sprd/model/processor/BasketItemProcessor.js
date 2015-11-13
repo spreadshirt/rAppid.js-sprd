@@ -46,6 +46,7 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                     link.href = decodeURI(link.href);
                     link.href = link.href.replace("{BASKET_ID}", model.$context.$contextModel.$.id);
                     link.href = link.href.replace("{BASKET_ITEM_ID}", payload.id);
+                    link.href = encodeURI(link.href);
                     elementPayload.editLink = link.href;
                 } else if (link.type == "continueShopping") {
                     elementPayload.continueShoppingLink = link.href;
