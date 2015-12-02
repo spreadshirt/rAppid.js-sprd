@@ -46,6 +46,19 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
     });
 
+    var PackStationValidation = RegExValidator.inherit({
+        _validate: function(entity, option) {
+            option = option || {};
+
+            if ((option.validationOptions || {}).skipPackStationValidation === true) {
+                return;
+            }
+
+            return this.callBase();
+
+        }
+    });
+
     var Address = Entity.inherit("sprd.entity.Address", {
 
         defaults: {
@@ -171,7 +184,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 inverse: true,
                 errorCode: "postfilialeNotSupported"
             }),
-            new RegExValidator({
+            new PackStationValidation({
                 field: "street",
                 regEx: /packstation|postnummer/i,
                 inverse: true,
