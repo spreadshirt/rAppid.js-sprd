@@ -466,7 +466,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     fontFamilyId: null,
                     fontFamilyName: "Arial",
                     addToProduct: true,
-                    isNew: true
+                    isNew: true,
+                    fontSize: 25
                 });
 
                 var self = this,
@@ -627,7 +628,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq("configuration", function () {
 
                         var textFlow = TextFlow.initializeFromText(text);
-                        var fontSize = 25;
+
+                        var fontSize = params.fontSize;
 
                         if (!printType.isPrintColorColorSpace()) {
                             fontSize = INITIAL_FONT_SIZE_SCALE_FACTOR * printArea.get('_size.height');
