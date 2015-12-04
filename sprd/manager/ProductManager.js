@@ -962,7 +962,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     paragraphStyle;
 
                 if (firstLeaf) {
-                    paragraph = firstLeaf.$parent;
+                    paragraph = firstLeaf.$parent || this.get(configuration, "textFlow.children.at(0)");
                     leafStyle = firstLeaf.$.style;
                     if (paragraph) {
                         paragraphStyle = paragraph.$.style;
