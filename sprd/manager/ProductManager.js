@@ -669,8 +669,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         configuration.set('isNew', params.isNew);
 
+                        configuration.set("maxHeight", 1);
+
                         // determinate position
                         self._positionConfiguration(configuration);
+
+                        configuration.set("maxHeight", null);
                     })
                     .exec(function (err, results) {
                         if (!err && params.addToProduct) {

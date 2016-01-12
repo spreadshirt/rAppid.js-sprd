@@ -245,7 +245,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     return this.callBase(offset, width, height, rotation, scale, onlyContent, distance);
 
                 } else {
-                    return this.callBase();
+                    return this.callBase(offset, width, height || this.$.maxHeight, rotation, scale, onlyContent);
                 }
 
 
