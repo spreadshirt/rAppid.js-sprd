@@ -20,7 +20,11 @@ define(['sprd/data/SprdModel', 'sprd/entity/Price', 'sprd/entity/ConcreteElement
 
         totalVatExcluded: function () {
             return (this.get("price.vatExcluded") || 0) * this.$.quantity;
-        }.onChange("price.vatExcluded").on('change:quantity')
+        }.onChange("price.vatExcluded").on('change:quantity'),
+
+        totalDisplayPrice: function() {
+            return this.get('price.display') * this.$.quantity;
+        }.on('change:quantity')
     });
 
 });
