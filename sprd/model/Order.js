@@ -50,7 +50,7 @@ define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/da
         }.onChange('priceTotal'),
 
         totalVat: function () {
-            return (this.totalVatIncluded() - this.totalVatExcluded()) || 0;
+            return Math.max(0, (this.totalVatIncluded() - this.totalVatExcluded()) || 0);
         }.onChange('priceTotal')
 
 
