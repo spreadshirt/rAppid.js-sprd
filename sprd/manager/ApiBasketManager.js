@@ -1,6 +1,6 @@
 define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/data/SprdApiDataSource",
-        "js/data/LocalStorage", "js/data/Entity", "rAppid"],
-    function (IBasketManager, flow, Basket, SprdApiDataSource, LocalStorage, Entity, rAppid) {
+        "js/data/LocalStorage", "js/data/Entity", "rAppid", "underscore"],
+    function (IBasketManager, flow, Basket, SprdApiDataSource, LocalStorage, Entity, rAppid, _) {
 
         /***
          * @summary A BasketManager to interact with the Spreadshirt Basket API
@@ -374,6 +374,17 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 }, "saveBasketCall", 700, this, [], "DELAY");
             },
 
+            getBasketDiscountCount: function(basket) {
+
+                if (basket.$.discounts) {
+                    return _.filter(basket.$.discounts.$items, function(d) {
+                        return d.$.type != "scale";
+                    }).length;
+                }
+
+                return null;
+            },
+
             saveBasket: function (callback) {
                 if (!this.$savingBasket) {
                     this._triggerBasketUpdating();
@@ -385,7 +396,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         this.$saveCallbacks.push(callback);
                     }
                     var self = this,
-                        basket = this.$.basket;
+                        basket = this.$.basket,
+                        coupon;
 
                     function callCallbacks(err, basket) {
                         var cb;
@@ -394,6 +406,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                             cb && cb(err, basket);
                         }
                     }
+
+                    var discountsBeforeRefresh = this.getBasketDiscountCount(basket);
 
                     flow()
                         .seq(function (cb) {
@@ -419,6 +433,13 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         })
                         .seq(function (cb) {
                             self.fetchBasketDiscounts(cb);
+                        })
+                        .seq(function(cb) {
+                            if (discountsBeforeRefresh != null && self.getBasketDiscountCount(basket) != discountsBeforeRefresh) {
+                                self.fetchBasketCoupons(cb);
+                            } else {
+                                cb();
+                            }
                         })
                         .exec(function (err) {
                             if (self.$basketChanged) {
