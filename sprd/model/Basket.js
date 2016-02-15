@@ -93,8 +93,8 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return total;
         }.on('change'),
 
-        subTotal: function() {
-            return this.get('priceItems.display')
+        subTotal: function(type) {
+            return this.get('priceItems.' + type || "vatIncluded")
         }.on('change'),
 
         vatIncluded: function () {
@@ -140,10 +140,10 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return 0;
         }.onChange("discounts"),
 
-        discountDisplay: function() {
+        discount: function(type) {
             var discount = this.getDiscount("scale");
             if (discount) {
-                return discount.get("price.display")
+                return discount.get("price." + type || "vatIncluded")
             }
 
             return 0;

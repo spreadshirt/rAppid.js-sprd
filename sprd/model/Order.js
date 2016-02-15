@@ -27,8 +27,8 @@ define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/da
             return this.$.orderItems;
         }.onChange("orderItems"),
 
-        subTotal: function() {
-            return this.get('priceItems.display')
+        subTotal: function(type) {
+            return this.get('priceItems.' + type || "vatIncluded")
         }.on('change'),
 
         vatIncluded: function () {

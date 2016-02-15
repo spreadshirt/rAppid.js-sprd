@@ -82,6 +82,15 @@ define(["sprd/data/SprdModel", "sprd/entity/ConcreteElement", "sprd/entity/Price
             return this.displayPrice() * this.$.quantity;
         }.on('change:quantity'),
 
+        totalPrice: function(type) {
+            var fn = {
+                vatIncluded: this.totalVatIncluded,
+                vatExcluded: this.totalVatExcluded,
+                displayPrice: this.totalDisplayPrice
+            }[type || "vatIncluded"];
+            return fn && fn.call(this);
+        }.on('change:quantity'),
+
         totalDiscountVatIncluded: function(){
             return this.discountPriceVatIncluded() * this.$.quantity;
         }.onChange("price","quantity")
