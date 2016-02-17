@@ -23,6 +23,11 @@ define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/da
             priceTotal: Price
         },
 
+        totalItemsCount: function() {
+            var orderItems = this.$.orderItems;
+            return orderItems ? orderItems.$items.length : 0;
+        }.onChange("orderItems"),
+
         items: function() {
             return this.$.orderItems;
         }.onChange("orderItems"),
