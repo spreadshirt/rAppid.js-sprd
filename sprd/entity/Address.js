@@ -38,7 +38,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             // if its HQ don't validate
             if (value && !/^HQ/.test(value)) {
                 // validate minlength, maxlength and that it contains a number
-                if ((value.length < MIN_LENGTH.STREET || value.length > MAX_LENGTH.STREET)) {
+                if (value.length < MIN_LENGTH.STREET || value.length > MAX_LENGTH.STREET || !/\d/.test(value)) {
                     return this._createFieldError(this.$.field);
                 }
             }
