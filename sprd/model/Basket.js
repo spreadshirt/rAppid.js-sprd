@@ -93,6 +93,10 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return total;
         }.on('change'),
 
+        subTotal: function(type) {
+            return this.get('priceItems.' + type || "vatIncluded")
+        }.on('change'),
+
         vatIncluded: function () {
             var total = 0;
             if (this.$.basketItems) {
@@ -114,7 +118,7 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
         }.on('change'),
 
         totalVat: function () {
-            return (this.totalVatIncluded() - this.totalVatExcluded()) || 0;
+            return Math.max(0, (this.totalVatIncluded() - this.totalVatExcluded()) || 0);
         }.on('change'),
 
         vatExcluded: function () {
@@ -131,6 +135,15 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             var discount = this.getDiscount("scale");
             if (discount) {
                 return discount.get("price.vatIncluded")
+            }
+
+            return 0;
+        }.onChange("discounts"),
+
+        discount: function(type) {
+            var discount = this.getDiscount("scale");
+            if (discount) {
+                return discount.get("price." + type || "vatIncluded")
             }
 
             return 0;

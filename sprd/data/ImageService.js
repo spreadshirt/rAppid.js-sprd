@@ -48,6 +48,11 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             if (appearanceId) {
                 params.appearanceId = appearanceId;
             }
+
+            if (options.mediaType) {
+                params.mediaType = options.mediaType;
+            }
+
             return this.buildUrl([
                 type === PRODUCT ? "products" : "compositions",
                 productId,

@@ -23,9 +23,18 @@ define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/da
             priceTotal: Price
         },
 
+        totalItemsCount: function() {
+            var orderItems = this.$.orderItems;
+            return orderItems ? orderItems.$items.length : 0;
+        }.onChange("orderItems"),
+
         items: function() {
             return this.$.orderItems;
         }.onChange("orderItems"),
+
+        subTotal: function(type) {
+            return this.get('priceItems.' + type || "vatIncluded")
+        }.on('change'),
 
         vatIncluded: function () {
             var vatIncluded = 0;
@@ -41,8 +50,12 @@ define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/da
             return this.get('priceTotal.vatIncluded');
         }.onChange('priceTotal'),
 
+        totalVatExcluded: function() {
+            return this.get('priceTotal.vatExcluded');
+        }.onChange('priceTotal'),
+
         totalVat: function () {
-            return this.get('priceTotal.totalVat');
+            return Math.max(0, (this.totalVatIncluded() - this.totalVatExcluded()) || 0);
         }.onChange('priceTotal')
 
 
