@@ -21,7 +21,8 @@ define(["js/core/Bindable", "sprd/model/Design"], function (Bindable, Design) {
             isPrintable: true,
             isVector: false,
             isBackgroundRemovalPossible: false,
-            state: State.NONE
+            state: State.NONE,
+            retries: 0
         },
 
         cancelUpload: function () {
@@ -76,45 +77,68 @@ define(["js/core/Bindable", "sprd/model/Design"], function (Bindable, Design) {
         },
 
         checkDesign: function (cb) {
-            if (this.$.design) {
-                this.$checkCallbacks = this.$checkCallbacks || [];
-                if (cb && this.$checkCallbacks.indexOf(cb) === -1) {
-                    this.$checkCallbacks.push(cb);
-                }
-                var options = {},
-                    self = this;
-                if (this.get('state') == State.CONVERTING) {
-                    options.noCache = true;
-                }
-                this.$.design.fetch(options, function (err, design) {
-                    self.set('designLoaded', true);
-                    var timeout;
-                    if (!err) {
-                        var state = self.$.state;
-                        if (design.isVectorDesign()) {
-                            if (design.$.designServiceState == Design.DesignServiceState.APPROVED) {
-                                state = UploadDesign.State.LOADED;
-                            } else if (design.$.designServiceState == Design.DesignServiceState.TO_BE_APPROVED) {
-                                state = UploadDesign.State.CONVERTING;
-                                self.$checkTimeout && clearTimeout(self.$checkTimeout);
-                                self.$checkTimeout = setTimeout(function () {
-                                    self.checkDesign();
-                                }, 4000);
-                                timeout = self.$checkTimeout;
+            var design = this.$.design,
+                self = this;
+
+            if (design) {
+                this.synchronizeFunctionCall(function(callback) {
+
+                    var timeout,
+                        retries = 0;
+
+                    function checkDesign() {
+
+                        design.fetch({
+                            noCache: true
+                        }, function(err, design) {
+
+                            if (err) {
+                                callback(err);
                             } else {
-                                state = UploadDesign.State.ERROR;
-                                // Some error occurred...
+                                var state = self.$.state;
+
+                                if (design.$.designServiceState == Design.DesignServiceState.NO_IMAGE_UPLOADED) {
+                                    retries++;
+
+                                    if (retries > 10) {
+                                        self.set('state', UploadDesign.State.ERROR);
+                                    } else {
+                                        timeout && clearTimeout(timeout);
+                                        timeout = setTimeout(function() {
+                                            checkDesign();
+                                        }, 3000);
+                                    }
+
+                                } else {
+                                    self.set('designLoaded', true);
+
+                                    if (design.isVectorDesign()) {
+                                        if (design.$.designServiceState == Design.DesignServiceState.APPROVED) {
+                                            self.set('state', UploadDesign.State.LOADED);
+                                            callback(null, self);
+                                        } else if (design.$.designServiceState == Design.DesignServiceState.TO_BE_APPROVED) {
+                                            self.set('state', UploadDesign.State.CONVERTING);
+                                            timeout && clearTimeout(timeout);
+                                            timeout = setTimeout(function() {
+                                                checkDesign();
+                                            }, 4000);
+                                        } else {
+                                            self.set('state', UploadDesign.State.ERROR);
+                                        }
+                                    } else {
+                                        callback(null, self);
+                                    }
+                                }
+
                             }
-                            self.set('state', state);
-                        }
+                        });
                     }
-                    if (!timeout) {
-                        while (self.$checkCallbacks.length) {
-                            var callback = self.$checkCallbacks.pop();
-                            callback(err, self);
-                        }
-                    }
-                })
+
+                    checkDesign();
+
+                }, "checkDesign", cb, this);
+            } else {
+                cb();
             }
         }
     }, {

@@ -10,7 +10,8 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         APPROVED: "APPROVED",
         TO_BE_APPROVED: "TO_BE_APPROVED",
         REJECTED: "REJECTED",
-        TO_BE_APPROVED_BY_USER: "TO_BE_APPROVED_BY_USER"
+        TO_BE_APPROVED_BY_USER: "TO_BE_APPROVED_BY_USER",
+        NO_IMAGE_UPLOADED: "NO_IMAGE_UPLOADED"
     };
 
     var Translation = Entity.inherit('app.model.TranslatedDesign.Translation', {
