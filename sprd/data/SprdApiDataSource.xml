@@ -78,7 +78,7 @@
             <conf:ResourceConfiguration path="fontFamilies" modelClassName="sprd.model.FontFamily" apiKeyRequired="true"
                                         signatureRequired="true"/>
             <conf:ResourceConfiguration path="productTypeDepartments"
-                                        modelClassName="sprd.model.ProductTypeDepartment"/>
+                                        modelClassName="sprd.model.ProductTypeDepartment" apiKeyRequired="true" signatureRequired="true"/>
             <conf:ResourceConfiguration path="shippingTypes" modelClassName="sprd.model.ShippingType"/>
             <conf:ResourceConfiguration path="labels" modelClassName="sprd.model.Label" sessionRequired="true"/>
             <conf:ResourceConfiguration path="objectLabels" modelClassName="sprd.model.ObjectLabel"
