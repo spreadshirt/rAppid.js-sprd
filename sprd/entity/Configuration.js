@@ -27,6 +27,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             rotation: 0,
             printColors: List,
 
+            textEditable: true,
+
             // bind this
             _size: "{size()}",
             _x: "{offset.x}",
