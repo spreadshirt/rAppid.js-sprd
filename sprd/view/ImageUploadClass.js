@@ -1,6 +1,6 @@
-define(["js/ui/View", "js/core/List", "sprd/entity/FileSystemImage", "flow", "xaml!sprd/data/ImageServerDataSource",
-        "sprd/model/UploadImage", "sprd/type/UploadDesign", "sprd/data/ImageUploadService", "js/core/I18n"],
-    function (View, List, FileSystemImage, flow, ImageServerDataSource, UploadImage, UploadDesign, ImageUploadService, I18n) {
+define(["js/ui/View", "js/core/List", "flow", "xaml!sprd/data/ImageServerDataSource",
+        "sprd/type/UploadDesign", "sprd/data/IImageUploadService", "js/core/I18n"],
+    function (View, List, flow, ImageServerDataSource, UploadDesign, IImageUploadService, I18n) {
 
         return View.inherit("sprd.view.ImageUploadClass", {
 
@@ -20,7 +20,7 @@ define(["js/ui/View", "js/core/List", "sprd/entity/FileSystemImage", "flow", "xa
             inject: {
                 i18n: I18n,
                 imageServer: ImageServerDataSource,
-                imageUploadService: ImageUploadService
+                imageUploadService: IImageUploadService
             },
 
             _initializationComplete: function () {
@@ -112,7 +112,7 @@ define(["js/ui/View", "js/core/List", "sprd/entity/FileSystemImage", "flow", "xa
                     image: iFrameUpload
                 });
 
-                this.$.imageUploadService._uploadDesign(uploadDesign, function (err) {
+                this.$.imageUploadService._uploadDesign(uploadDesign, null, function (err) {
                     if (!err) {
                         self.trigger("uploadComplete", {
                             uploadDesign: uploadDesign
@@ -145,20 +145,7 @@ define(["js/ui/View", "js/core/List", "sprd/entity/FileSystemImage", "flow", "xa
                 var self = this,
                     reader = new FileReader();
 
-                var fileSystemImage = new FileSystemImage({
-                    file: file
-                });
-
-                var uploadDesign = new UploadDesign({
-                    image: fileSystemImage
-                });
-
-                reader.onload = function (evt) {
-                    fileSystemImage.set('url', evt.target.result);
-                };
-
-                reader.readAsDataURL(file);
-                this.$.imageUploadService._uploadDesign(uploadDesign, function (err) {
+                var uploadDesign = this.$.imageUploadService.upload(file, function (err) {
                     if (!err) {
                         self.trigger("uploadComplete", {
                             uploadDesign: uploadDesign
@@ -172,6 +159,19 @@ define(["js/ui/View", "js/core/List", "sprd/entity/FileSystemImage", "flow", "xa
 
                     callback && callback(err, uploadDesign);
                 });
+
+                reader.onload = function(evt) {
+
+                    var img = new Image();
+                    img.onload = function() {
+                        uploadDesign.set('previewImage', evt.target.result);
+                    };
+                    img.src = event.target.result;
+
+                };
+
+                reader.readAsDataURL(file);
+
 
                 return uploadDesign;
             },

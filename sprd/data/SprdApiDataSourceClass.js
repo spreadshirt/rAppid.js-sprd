@@ -1,5 +1,38 @@
-define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/model/processor/DefaultProcessor", "sprd/model/processor/BasketProcessor", "sprd/model/processor/BasketItemProcessor", "sprd/data/SprdApiQueryComposer"],
-    function (SprdDataSource, RestDataSource, _, SprdModel, DefaultProcessor, BasketProcessor, BasketItemProcessor, SprdApiQueryComposer) {
+define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/model/processor/DefaultProcessor", "sprd/model/processor/BasketProcessor", "sprd/model/processor/BasketItemProcessor", "sprd/data/SprdApiQueryComposer", "sprd/model/processor/UploadDesignProcessor"],
+    function (SprdDataSource, DataSource, RestDataSource, _, SprdModel, DefaultProcessor, BasketProcessor, BasketItemProcessor, SprdApiQueryComposer, UploadDesignProcessor) {
+
+        var _formatProcessorCache = {},
+            REMOTE = 'remote',
+            ImageFormatProcessor = DataSource.FormatProcessor.inherit({
+
+                ctor: function(type, format) {
+                    this.$type = type;
+                    this.$format = format;
+
+                    this.callBase();
+                },
+
+                serialize: function(data) {
+
+                    if (this.$format == REMOTE) {
+                        return {
+                            href: data.image.src
+                        };
+                    }
+
+                    var ret = new FormData();
+                    ret.append('filedata', data.image.file);
+                    return ret;
+                },
+
+                getContentType: function() {
+                    if (this.$format === REMOTE) {
+                        return "application/json";
+                    }
+
+                    return false;
+                }
+            });
 
         var SprdApiDataSource = SprdDataSource.inherit('sprd.data.SprdApiDataSourceClass', {
 
@@ -15,7 +48,8 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
             $processors: {
                 BasketProcessor: BasketProcessor,
                 BasketItemProcessor: BasketItemProcessor,
-                OrderItemProcessor: BasketItemProcessor
+                OrderItemProcessor: BasketItemProcessor,
+                UploadDesignProcessor: UploadDesignProcessor
             },
 
             getQueryParameters: function (method, resource) {
@@ -28,6 +62,23 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
                 }
                 return ret;
 
+            },
+
+            getFormatProcessor: function(action, model) {
+
+                if (model && model.factory.prototype.constructor.name == "sprd.model.DesignUpload") {
+                    var type = model.$.image.$.type,
+                        format = model.$.image.$.file ? "file" : REMOTE,
+                        cacheId = type + "_" + format;
+
+                    if (!_formatProcessorCache[cacheId]) {
+                        _formatProcessorCache[cacheId] = new ImageFormatProcessor(type, format);
+                    }
+
+                    return _formatProcessorCache[cacheId];
+                }
+
+                return this.callBase();
             },
 
             createContext: function (contextModel, properties, parentContext) {

@@ -22,7 +22,8 @@ define(["js/core/Bindable", "sprd/model/Design"], function (Bindable, Design) {
             isVector: false,
             isBackgroundRemovalPossible: false,
             state: State.NONE,
-            retries: 0
+            retries: 0,
+            previewImage: null
         },
 
         cancelUpload: function () {
@@ -74,72 +75,6 @@ define(["js/core/Bindable", "sprd/model/Design"], function (Bindable, Design) {
          */
         isAllowedExtension: function () {
             return UploadDesign.isAllowedExtension(this.$.image.$.name);
-        },
-
-        checkDesign: function (cb) {
-            var design = this.$.design,
-                self = this;
-
-            if (design) {
-                this.synchronizeFunctionCall(function(callback) {
-
-                    var timeout,
-                        retries = 0;
-
-                    function checkDesign() {
-
-                        design.fetch({
-                            noCache: true
-                        }, function(err, design) {
-
-                            if (err) {
-                                callback(err);
-                            } else {
-                                var state = self.$.state;
-
-                                if (design.$.designServiceState == Design.DesignServiceState.NO_IMAGE_UPLOADED) {
-                                    retries++;
-
-                                    if (retries > 10) {
-                                        self.set('state', UploadDesign.State.ERROR);
-                                    } else {
-                                        timeout && clearTimeout(timeout);
-                                        timeout = setTimeout(function() {
-                                            checkDesign();
-                                        }, 3000);
-                                    }
-
-                                } else {
-                                    self.set('designLoaded', true);
-
-                                    if (design.isVectorDesign()) {
-                                        if (design.$.designServiceState == Design.DesignServiceState.APPROVED) {
-                                            self.set('state', UploadDesign.State.LOADED);
-                                            callback(null, self);
-                                        } else if (design.$.designServiceState == Design.DesignServiceState.TO_BE_APPROVED) {
-                                            self.set('state', UploadDesign.State.CONVERTING);
-                                            timeout && clearTimeout(timeout);
-                                            timeout = setTimeout(function() {
-                                                checkDesign();
-                                            }, 4000);
-                                        } else {
-                                            self.set('state', UploadDesign.State.ERROR);
-                                        }
-                                    } else {
-                                        callback(null, self);
-                                    }
-                                }
-
-                            }
-                        });
-                    }
-
-                    checkDesign();
-
-                }, "checkDesign", cb, this);
-            } else {
-                cb();
-            }
         }
     }, {
 
