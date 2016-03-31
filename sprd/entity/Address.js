@@ -277,8 +277,8 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             return data;
         },
 
-        needsVatId: function () {
-            return this.isCompany() && (this.$.isBillingAddress || this.$.isSameAsBillingAddress);
+        needsVatId: function (platform) {
+            return platform == "EU" && this.isCompany() && (this.$.isBillingAddress || this.$.isSameAsBillingAddress);
         }.onChange('personSalutation', 'isBillingAddress', 'isSameAsBillingAddress'),
 
         isPackStation: function () {
