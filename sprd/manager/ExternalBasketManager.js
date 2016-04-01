@@ -1,4 +1,4 @@
-define(["sprd/manager/IBasketManager", "flow"], function (IBasketManager, flow) {
+define(["sprd/manager/IBasketManager", "flow", "designer/manager/PriceCalculator"], function (IBasketManager, flow, PriceCalculator) {
 
     return IBasketManager.inherit('sprd.manager.ExternalBasketManager', {
 
@@ -7,10 +7,29 @@ define(["sprd/manager/IBasketManager", "flow"], function (IBasketManager, flow) 
             basketItem: null
         },
 
+        inject: {
+            priceCalculator: PriceCalculator
+        },
+
         addElementToBasket: function (element, quantity, callback) {
             var externalBasket = this.$.externalBasket;
 
             this.extendElementWithLinks(element);
+
+
+            var product = element.getProduct(),
+                originalPriceFunction = product.price,
+                priceCalculator = this.$.priceCalculator;
+
+            product.price = function() {
+                var price = originalPriceFunction.call(product);
+
+                price.set({
+                    vatIncluded: priceCalculator.getTotalPrice(product, 1)
+                });
+
+                return price;
+            };
 
             externalBasket.addBasketItem(element, quantity, callback);
         },
