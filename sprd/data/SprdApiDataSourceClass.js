@@ -1,5 +1,5 @@
-define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/model/processor/DefaultProcessor", "sprd/model/processor/BasketProcessor", "sprd/model/processor/BasketItemProcessor", "sprd/data/SprdApiQueryComposer", "sprd/model/processor/UploadDesignProcessor"],
-    function (SprdDataSource, DataSource, RestDataSource, _, SprdModel, DefaultProcessor, BasketProcessor, BasketItemProcessor, SprdApiQueryComposer, UploadDesignProcessor) {
+define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/model/processor/DefaultProcessor", "sprd/model/processor/BasketProcessor", "sprd/model/processor/BasketItemProcessor", "sprd/data/SprdApiQueryComposer", "sprd/model/processor/UploadDesignProcessor", "JSON"],
+    function (SprdDataSource, DataSource, RestDataSource, _, SprdModel, DefaultProcessor, BasketProcessor, BasketItemProcessor, SprdApiQueryComposer, UploadDesignProcessor, JSON) {
 
         var _formatProcessorCache = {},
             REMOTE = 'remote',
@@ -15,9 +15,9 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                 serialize: function(data) {
 
                     if (this.$format == REMOTE) {
-                        return {
+                        return JSON.stringify({
                             href: data.image.src
-                        };
+                        });
                     }
 
                     var ret = new FormData();
