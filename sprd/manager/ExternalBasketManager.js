@@ -21,15 +21,27 @@ define(["sprd/manager/IBasketManager", "flow", "designer/manager/PriceCalculator
                 originalPriceFunction = product.price,
                 priceCalculator = this.$.priceCalculator;
 
-            product.price = function() {
-                var price = originalPriceFunction.call(product);
+            if (!product.price.rewritten) {
+                product.price.rewritten = true;
+                product.price = function() {
+                    var price = originalPriceFunction.call(product);
 
-                price.set({
-                    vatIncluded: priceCalculator.getTotalPrice(product, 1)
-                });
+                    var rewrittenPrice = product.price;
+                    product.price = originalPriceFunction;
 
-                return price;
-            };
+                    price.set({
+                        vatIncluded: priceCalculator.getTotalPrice(product, 1)
+                    });
+
+                    product.price = rewrittenPrice;
+
+                    return price;
+                };
+
+
+
+            }
+
 
             externalBasket.addBasketItem(element, quantity, callback);
         },
