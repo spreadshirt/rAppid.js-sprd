@@ -35,6 +35,7 @@
             <conf:ResourceConfiguration path="shippingOptions" modelClassName="sprd.model.ShippingOption"/>
 
             <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.Application"/>
+            <conf:ResourceConfiguration path="design-uploads" modelClassName="sprd.model.DesignUpload" processor="UploadDesignProcessor" signatureRequired="true"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="currencies" modelClassName="sprd.model.Currency">
 

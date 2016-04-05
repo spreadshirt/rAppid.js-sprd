@@ -1,7 +1,8 @@
-define(["sprd/data/SprdDataSource", "js/data/Model", "js/data/RestDataSource", "js/data/DataSource", "sprd/model/processor/UploadDesignProcessor"],
-    function (SprdDataSource, Model, RestDataSource, DataSource, UploadDesignProcessor) {
+define(["sprd/data/SprdDataSource", "js/data/Model", "js/data/RestDataSource", "js/data/DataSource", "sprd/model/processor/UploadDesignProcessor", "underscore"],
+    function (SprdDataSource, Model, RestDataSource, DataSource, UploadDesignProcessor, _) {
 
         var _formatProcessorCache = {};
+
 
         var ImageServerDataSourceClass = SprdDataSource.inherit('sprd.data.ImageServerDataSourceClass', {
 
@@ -34,11 +35,12 @@ define(["sprd/data/SprdDataSource", "js/data/Model", "js/data/RestDataSource", "
                         _formatProcessorCache[type] = new ImageServerDataSourceClass.FileSystemImageFormatProcessor(type);
                     } else {
                         _formatProcessorCache[type] = new ImageServerDataSourceClass.RemoteImageFormatProcessor(type);
-                    }
+                }
                 }
 
                 return _formatProcessorCache[type];
             },
+
             getQueryParameter: function (method, model) {
                 return _.defaults({mediaType: model.$.file.type.split("/").pop()}, this.callBase());
             }
