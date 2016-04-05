@@ -24,6 +24,10 @@ define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (Configu
             this.callBase();
         },
 
+        and: function(a, b) {
+            return a && b
+        },
+
         render: function () {
             this._loadFonts();
             return this.callBase();

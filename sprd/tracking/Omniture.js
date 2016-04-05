@@ -19,7 +19,9 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
              * the number of tries to find the s object on the window
              * @type Number
              */
-            maxTries: 10
+            maxTries: 10,
+
+            price: null
         },
 
         events: [
@@ -107,6 +109,10 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
 
         track: function (oneTimeIdentifier, data, events, appendToPageName) {
             data = data || {};
+
+            if (this.$.price) {
+                data.eVar72 = data.prop35 = this.$.price;
+            }
 
             if (oneTimeIdentifier) {
                 if (_.indexOf(this.$trackedEvents, oneTimeIdentifier) !== -1) {

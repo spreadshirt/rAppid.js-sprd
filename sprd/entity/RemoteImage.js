@@ -1,4 +1,4 @@
-define(['sprd/entity/Image', 'underscore'], function(Image, _) {
+define(['sprd/entity/Image'], function(Image) {
 
     return Image.inherit('sprd.entity.RemoteImage', {
 
