@@ -164,7 +164,10 @@ define(["js/ui/View", "js/core/List", "flow", "xaml!sprd/data/ImageServerDataSou
 
                     var img = new Image();
                     img.onload = function() {
-                        uploadDesign.set('previewImage', evt.target.result);
+                        uploadDesign.set({
+                            previewImage: evt.target.result,
+                            localImage: evt.target.result
+                        });
                     };
                     img.src = event.target.result;
 
