@@ -15,6 +15,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             textAreaPosition: null,
 
             removeEmptyTextConfiguration: true,
+            bringSelectedConfigurationToFront: true,
 
             imageService: null,
 
@@ -189,14 +190,15 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             if ($ && $.hasOwnProperty('selectedConfiguration')) {
                 var configuration = $['selectedConfiguration'],
                     viewer = null;
-                if (!configuration) {
-                    viewer = null;
-                } else {
+
+                if (configuration) {
                     viewer = this.getViewerForConfiguration(configuration);
                 }
+
                 this.trigger('on:configurationSelect', configuration);
                 this.set('selectedConfigurationViewer', viewer);
-                if (viewer && this.$.product.$.configurations.size() > 1) {
+
+                if (this.$.bringSelectedConfigurationToFront && viewer && this.$.product.$.configurations.size() > 1) {
                     // rearange configurations in list
                     this.$.product.$.configurations.remove(configuration, {silent: true});
                     this.$.product.$.configurations.add(configuration, {silent: true});
