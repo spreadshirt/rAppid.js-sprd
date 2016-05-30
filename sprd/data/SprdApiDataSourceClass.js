@@ -40,7 +40,8 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                 locale: "en_EU",
                 parsePayloadOnCreate: false,
                 parsePayloadOnUpdate: false,
-                keepRawData: false
+                keepRawData: false,
+                noCache: false
             },
 
             $defaultProcessorFactory: DefaultProcessor,
@@ -50,6 +51,23 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                 BasketItemProcessor: BasketItemProcessor,
                 OrderItemProcessor: BasketItemProcessor,
                 UploadDesignProcessor: UploadDesignProcessor
+            },
+
+            loadModel: function(model, options, callback) {
+
+                if (this.$.noCache && options && !options.hasOwnProperty('noCache')) {
+                    options.noCache = true;
+                }
+
+                return this.callBase(model, options, callback);
+            },
+
+            loadCollectionPage: function(collectionPage, options, callback) {
+                if (this.$.noCache && options && !options.hasOwnProperty('noCache')) {
+                    options.noCache = true;
+                }
+
+                return this.callBase(collectionPage, options, callback);
             },
 
             getQueryParameters: function (method, resource) {
