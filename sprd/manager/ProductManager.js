@@ -461,7 +461,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printArea: null,
                     printType: null,
                     font: null,
-                    fontFamily: null,
                     fontStyle: "normal",
                     fontWeight: "normal",
                     printTypeId: null,
