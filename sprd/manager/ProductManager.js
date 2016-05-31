@@ -460,6 +460,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     view: null,
                     printArea: null,
                     printType: null,
+                    font: null,
+                    fontFamily: null,
                     fontStyle: "normal",
                     fontWeight: "normal",
                     printTypeId: null,
@@ -515,6 +517,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq("fontFamily", function () {
                         var fontFamily,
                             fontFamilies = this.vars['fontFamilies'];
+
+                        if (params.font && params.fontFamily) {
+                            font = params.font;
+                            return params.fontFamily;
+                        }
 
                         if (params.fontFamily) {
                             fontFamily = params.fontFamily;
@@ -1088,18 +1095,22 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            convertTextToSpecialText: function (product, textConfiguration, params) {
+            convertTextToSpecialText: function (product, textConfiguration, params, callback) {
                 params = params || {};
                 var offset = textConfiguration.$.offset.clone();
                 var width = textConfiguration.width();
-                _.extend(params, {
-                    addToProduct: false,
+                _.defaults(params, {
+                    addToProduct: true,
+                    removeConfiguration: true,
                     text: textConfiguration.$.textFlow.text(0, -1, "\n")
                 });
                 var self = this;
                 this.addSpecialText(product, params, function (err, config) {
-                    product.$.configurations.remove(textConfiguration);
-                    if (!err) {
+
+                    if (err) {
+                        callback && callback(err);
+                    } else {
+                        params.removeConfiguration && product.$.configurations.remove(textConfiguration);
                         var s = width / config.width(1);
                         config.set({
                             'scale': {
@@ -1108,25 +1119,34 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             }, 'offset': offset,
                             rotation: textConfiguration.$.rotation
                         });
-                        product._addConfiguration(config);
+                        params.addToProduct && product._addConfiguration(config);
+                        callback && callback(err, config);
+
                         self.$.bus.trigger('Application.productChanged', product);
                     }
+
+
                 });
             },
 
-            convertSpecialTextToText: function (product, specialTextConfiguration, params) {
+            convertSpecialTextToText: function (product, specialTextConfiguration, params, callback) {
                 params = params || {};
                 var offset = specialTextConfiguration.$.offset.clone();
                 var width = specialTextConfiguration.width();
-                _.extend(params, {
+                _.defaults(params, {
                     isNew: false,
-                    addToProduct: false,
+                    addToProduct: true,
+                    removeConfiguration: true,
                     text: (specialTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, "")
                 });
                 var self = this;
                 this.addText(product, params, function (err, config) {
-                    if (!err) {
-                        product.$.configurations.remove(specialTextConfiguration);
+
+                    if (err) {
+                        callback && callback(err);
+                    } else {
+
+                        params.removeConfiguration && product.$.configurations.remove(specialTextConfiguration);
                         var s = width / config.width();
                         config.set({
                             'scale': {
@@ -1136,7 +1156,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             rotation: specialTextConfiguration.$.rotation
                         });
 
-                        product._addConfiguration(config);
+                        params.addToProduct && product._addConfiguration(config);
+                        callback && callback(err, config);
+
                         self.$.bus.trigger('Application.productChanged', product);
                     }
                 });

@@ -82,7 +82,6 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                 return this.callBase();
             },
 
-
             extractIdFromLocation: function(location, request) {
                 var param = rIdExtractor.exec(location);
 
