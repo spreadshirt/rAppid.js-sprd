@@ -3,6 +3,7 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
 
         var _formatProcessorCache = {},
             REMOTE = 'remote',
+            rIdExtractor = /\/([^/]+)$/,
             ImageFormatProcessor = DataSource.FormatProcessor.inherit({
 
                 ctor: function(type, format) {
@@ -79,6 +80,17 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                 }
 
                 return this.callBase();
+            },
+
+
+            extractIdFromLocation: function(location, request) {
+                var param = rIdExtractor.exec(location);
+
+                if (param) {
+                    return param[1];
+                }
+
+                return null;
             },
 
             createContext: function (contextModel, properties, parentContext) {
