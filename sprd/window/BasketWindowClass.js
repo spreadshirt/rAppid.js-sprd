@@ -1,6 +1,6 @@
 define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBasketManager",
         "js/core/History", "underscore", 'sprd/manager/FeatureManager', "js/core/I18n", "js/core/Bus"],
-    function (Window, TrackingManager, ApiBasketManager, History, _, FeatureManager, I18n, Bus) {
+    function(Window, TrackingManager, ApiBasketManager, History, _, FeatureManager, I18n, Bus) {
 
     return Window.inherit("sprd.window.BasketWindowClass", {
         inject: {
@@ -62,85 +62,18 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
                 return;
             }
 
-            var self = this,
-                wrapper = e.target.$parent;
+                var self = this;
+                var showLoading = e.$.showLoading;
 
-            setTimeout(function () {
-                self.openBasketItem(basketItem, function () {
-                    wrapper.removeClass('loading');
-                });
+                setTimeout(function() {
+                    self.openBasketItem(e.$.basketItem, function() {
+                        showLoading(false);
+                    });
 
-            }, 200);
+                }, 200);
 
-            wrapper.addClass('loading');
-        },
-
-        onQuantityChange: function (e) {
-            var basketItem = e.target.find('item');
-
-            if (basketItem) {
-                var value = e.target.$.value;
-                if (_.isString(value) && !value.match(/^[0-9]{1,3}$/)) {
-                    value = Number.NaN;
-                } else {
-                    value = parseInt(value);
-                }
-
-                if (isNaN(value)) {
-                    e.target.set("value", basketItem.$.quantity);
-                } else if (value === 0) {
-                    this.removeBasketItem(basketItem)
-                } else {
-                    basketItem.set('quantity', value);
-                    this.updateBasket();
-                }
-            }
-        },
-
-        onSizeChange: function (e) {
-            var basketItem = e.target.find('item');
-            if (basketItem) {
-                this.$.basket.mergeBasketItem(basketItem);
-                this.updateBasket();
-            }
-        },
-
-        updateBasket: function () {
-            this.$.basketManager.saveBasketDebounced();
-        },
-
-        removeBasketItem: function (basketItem) {
-            var basketManager = this.$.basketManager;
-
-            basketManager.removeBasketItem(basketItem);
-
-            if (basketManager.$.basket.$.basketItems.$items.length === 0) {
-                this._emptyBasket();
-            }
-        },
-
-        decreaseQuantity: function (e) {
-            var item = e.target.find('item');
-            item.decreaseQuantity();
-
-            this.updateBasket();
-
-        },
-
-        increaseQuantity: function (e) {
-            var item = e.target.find('item');
-            item.increaseQuantity();
-
-            this.updateBasket();
-        },
-
-        gt: function (quantity, b) {
-            return quantity > b;
-        },
-
-        eql: function (a, b) {
-            return a == b;
-        },
+                showLoading(true);
+            },
 
         showVat: function () {
             return this.$stage.$parameter.platform !== "NA";
@@ -177,24 +110,20 @@ define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBaske
             // HOOK: Will be overridden.
         },
 
-        basketItemInfo: function (item) {
-            return this.get(item, "element.getProduct().productType.brand");
-        },
+            start: function(callback) {
+                var self = this;
+                this.$.basketManager.initBasket(function(err) {
+                    if (!err) {
+                        self.set('basketItems', self.$.basket.$.basketItems);
 
-        start: function (callback) {
-            var self = this;
-            this.$.basketManager.initBasket(function (err) {
-                if (!err) {
-                    self.set('basketItems', self.$.basket.$.basketItems);
-
-                    var itemsCount = self.get(self.$.basket.$.basketItems, "$items.length");
-                    if (itemsCount === 0) {
-                        self._emptyBasket();
+                        var itemsCount = self.get(self.$.basket.$.basketItems, "$items.length");
+                        if (itemsCount === 0) {
+                            self._emptyBasket();
+                        }
                     }
-                }
 
-                callback(err);
-            });
-        }
+                    callback && callback(err);
+                });
+            }
+        });
     });
-});
