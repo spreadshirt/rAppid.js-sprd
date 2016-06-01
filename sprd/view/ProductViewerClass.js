@@ -10,6 +10,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             editable: true,
             focused: true,
 
+            autoDeselectConfiguration: true,
+
             productViewerSvg: null,
             textArea: null,
             textAreaPosition: null,
@@ -29,7 +31,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             imageService: ImageService
         },
 
-        events: ['on:configurationSelect'],
+        events: ['on:configurationSelect', "on:deselectConfiguration"],
 
         ctor: function () {
             this.callBase();
@@ -178,8 +180,15 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
         _clickHandler: function (e) {
             if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent && e.domEvent.target !== this.$.textArea.$el) {
-                this.$.bus.trigger('ProductViewer.configurationSelected', {configuration: null});
-                this.set('selectedConfiguration', null);
+
+                if (this.$.autoDeselectConfiguration)  {
+                    this.$.bus.trigger('ProductViewer.configurationSelected', {configuration: null});
+                    this.set('selectedConfiguration', null);
+                }
+
+                this.trigger("on:deselectConfiguration", {
+                    clickEvent: e
+                });
             }
             e.preventDefault();
             this.set('focused', true);
