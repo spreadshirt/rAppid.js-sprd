@@ -1,49 +1,10 @@
 <window:BasketWindowClass xmlns="http://www.w3.org/1999/xhtml"
-                          xmlns:ui="js.ui" xmlns:js="js.core" xmlns:sprdView="sprd.view" xmlns:window="sprd.window"
+                          xmlns:window="sprd.window" xmlns:designerView="designer.view"
                           name="basket-window">
     <div class="basket-items-wrapper">
-        <ui:ItemsView items="{basketItems}" tagName="ul" class="basket-items">
-            <js:Template name="item">
-                <li>
-                    <div class="basket-item-wrapper product-{item.element.getProduct().id}">
-                        <sprdView:ProductImage class="composition"
-                                               product="{item.element.getProduct()}"
-                                               appearance="{item.element.appearance}"
-                                               width="75" height="75"
-                                               onclick="openBasketItemHandler(event,item)"/>
-                        <div class="basket-item-info appearance-{item.appearance.id}">
-                            <div class="basket-item-product-type">
-                                <p class="name">{item.element.getProduct().productType.name}</p>
-                                <p class="brand">{basketItemInfo(item)}</p>
-                            </div>
-                            <div class="basket-item-size">
-                                <select items="{item.element.getProduct().productType.getAvailableSizesForAppearance(item.element.appearance)}"
-                                        selectedItem="{{item.element.size}}" class="input-small dropdown-toggle btn" itemKey="size"
-                                        keyPath="id"
-                                        needsSelection="false"
-                                        onchange="onSizeChange">
-                                    <js:Template name="item">
-                                        <option value="${size.id}">${size.name}</option>
-                                    </js:Template>
-                                </select>
-                            </div>
-                            <div class="basket-item-quantity">
-                                <a class="basket-item-remove round-action btn" onclick="removeBasketItem(item)" visible="{eql(item.quantity,1)}"/>
-                                <a class="round-action removeArticle btn" onclick="decreaseQuantity" visible="{gt(item.quantity,1)}"/>
-                                <input type="number" value="{item.quantity}" class="input-mini quantity-input"
-                                       onchange="onQuantityChange"/>
-                                <a class="round-action addArticle btn" onclick="increaseQuantity"/>
-                            </div>
-                            <div class="basket-item-price">
-                                {context.currency.formatValue(item.totalDisplayPrice())}
-                            </div>
-
-                        </div>
-                    </div>
-
-                </li>
-            </js:Template>
-        </ui:ItemsView>
+        <designerView:BasketItemsView basketItems="{basketItems}"
+                                      onproductItemHandler="openBasketItemHandler"
+                                      onemptyBasket="_emptyBasket()"/>
         <div class="basket-summary">
             <div class="basket-discount" visible="{basket.discountVatIncluded()}">
                 ${i18n.t('basket.volumeDiscount')}:

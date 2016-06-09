@@ -10,11 +10,14 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             editable: true,
             focused: true,
 
+            autoDeselectConfiguration: true,
+
             productViewerSvg: null,
             textArea: null,
             textAreaPosition: null,
 
             removeEmptyTextConfiguration: true,
+            bringSelectedConfigurationToFront: true,
 
             imageService: null,
 
@@ -28,7 +31,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             imageService: ImageService
         },
 
-        events: ['on:configurationSelect'],
+        events: ['on:configurationSelect', "on:deselectConfiguration"],
 
         ctor: function () {
             this.callBase();
@@ -177,8 +180,15 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
         _clickHandler: function (e) {
             if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent && e.domEvent.target !== this.$.textArea.$el) {
-                this.$.bus.trigger('ProductViewer.configurationSelected', {configuration: null});
-                this.set('selectedConfiguration', null);
+
+                if (this.$.autoDeselectConfiguration)  {
+                    this.$.bus.trigger('ProductViewer.configurationSelected', {configuration: null});
+                    this.set('selectedConfiguration', null);
+                }
+
+                this.trigger("on:deselectConfiguration", {
+                    clickEvent: e
+                });
             }
             e.preventDefault();
             this.set('focused', true);
@@ -189,14 +199,15 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             if ($ && $.hasOwnProperty('selectedConfiguration')) {
                 var configuration = $['selectedConfiguration'],
                     viewer = null;
-                if (!configuration) {
-                    viewer = null;
-                } else {
+
+                if (configuration) {
                     viewer = this.getViewerForConfiguration(configuration);
                 }
+
                 this.trigger('on:configurationSelect', configuration);
                 this.set('selectedConfigurationViewer', viewer);
-                if (viewer && this.$.product.$.configurations.size() > 1) {
+
+                if (this.$.bringSelectedConfigurationToFront && viewer && this.$.product.$.configurations.size() > 1) {
                     // rearange configurations in list
                     this.$.product.$.configurations.remove(configuration, {silent: true});
                     this.$.product.$.configurations.add(configuration, {silent: true});
