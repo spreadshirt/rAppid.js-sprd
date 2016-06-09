@@ -11,7 +11,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             aspectRatio: 1,
             _allowScale: true,
             loading: false,
-            align: null,
+            align: "center",
             initialized: false,
             commission: null,
 
@@ -89,7 +89,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                 return;
             }
 
-            if (this._hasSome($, ["pimpImageService", "text", "font"]) && !options.initial) {
+            if (this._hasSome($, ["pimpImageService", "text", "font", "align"]) && !options.initial) {
                 this._debounceFunctionCall(this.fetchImage, "fetchImage", 430, this, [], "DELAY");
             }
 
@@ -154,7 +154,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                     text: text,
                     size: "M",
                     font: font,
-                    taskId: this.$.taskId
+                    taskId: this.$.taskId,
+                    align: this.$.align
                 }, function (err, data) {
                     if (listener.cancelled) {
                         return;
