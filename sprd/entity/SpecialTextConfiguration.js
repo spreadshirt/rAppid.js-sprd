@@ -231,7 +231,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                             var split = design.$.name.split(";");
                             self.set({
                                 font: self.$.pimpDataSource.createEntity(Font, split[1]),
-                                align: split
+                                align: split.pop()
                             }, {
                                 silent: true
                             });
