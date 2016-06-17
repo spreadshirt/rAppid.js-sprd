@@ -5,7 +5,7 @@
                           tagName="ul"
                           class="appearance-list">
             <js:Template name="item">
-                <sprdView:AppearanceColor appearance="{appearanceItem}" tagName="li" />
+                <sprdView:AppearanceColor data-title="{appearanceItem.name}" appearance="{appearanceItem}" tagName="li" />
             </js:Template>
         </ui:SelectionView>
 
