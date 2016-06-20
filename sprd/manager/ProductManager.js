@@ -1118,7 +1118,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             }, 'offset': offset,
                             rotation: textConfiguration.$.rotation
                         });
-                        params.addToProduct && product._addConfiguration(config);
+
+                        config.set("_size", config.$._size, {force: true});
+
                         callback && callback(err, config);
 
                         self.$.bus.trigger('Application.productChanged', product);
@@ -1155,7 +1157,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             rotation: specialTextConfiguration.$.rotation
                         });
 
-                        params.addToProduct && product._addConfiguration(config);
                         callback && callback(err, config);
 
                         self.$.bus.trigger('Application.productChanged', product);
