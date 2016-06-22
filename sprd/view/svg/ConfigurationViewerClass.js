@@ -894,10 +894,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
 
                     if (changed) {
-                        this.$.bus.trigger('ConfigurationViewer.configurationChanged', {
-                            configuration: configuration,
-                            mode: mode
-                        });
                         this.$.bus.trigger('Application.productChanged', this.$.product);
                     }
                 }
@@ -1042,7 +1038,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     this.$.product.$.configurations.remove(configuration);
 
-                    this.$.bus.trigger('ConfigurationViewer.configurationRemoved', {configuration: configuration});
                     this.$.bus.trigger('Application.productChanged', this.$.product);
                     if (productViewer && productViewer.$.selectedConfiguration === configuration) {
                         productViewer.set('selectedConfiguration', null);
