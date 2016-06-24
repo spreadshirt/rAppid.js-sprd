@@ -1,4 +1,4 @@
-define(["js/core/Component", "sprd/entity/FileSystemImage", "sprd/entity/RemoteImage", "sprd/type/UploadDesign", "sprd/data/IframeUpload"], function(Component, FileSystemImage, RemoteImage, UploadDesign, iFrameUpload) {
+define(["js/core/Component", "sprd/entity/FileSystemImage", "sprd/entity/RemoteImage", "sprd/type/UploadDesign", "sprd/data/IframeUpload", "underscore"], function(Component, FileSystemImage, RemoteImage, UploadDesign, iFrameUpload, _) {
 
     return Component.inherit('sprd.data.ImageUploadService', {
 
