@@ -29,7 +29,11 @@ define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (Configu
         },
 
         render: function () {
-            this._loadFonts();
+
+            if (this.$stage && this.$stage.$el && this.$stage.$el.parentNode) {
+                this._loadFonts();
+            }
+
             return this.callBase();
         },
 
@@ -83,7 +87,11 @@ define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (Configu
                 textArea.focus();
             }
 
-        }
+        },
+
+        bus_StageRendered: function() {
+            this._loadFonts();
+        }.bus("Stage.Rendered")
 
     });
 });
