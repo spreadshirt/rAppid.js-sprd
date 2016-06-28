@@ -11,6 +11,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             focused: true,
 
             autoDeselectConfiguration: true,
+            showConfigurationInformation: false,
 
             productViewerSvg: null,
             textArea: null,

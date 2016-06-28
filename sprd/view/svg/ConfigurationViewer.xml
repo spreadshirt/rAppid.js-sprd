@@ -23,6 +23,21 @@
                   x="0" y="0"
                   width="{_configurationWidth}" height="{_configurationHeight}"/>
 
+        <svg:g class="configuration-info" visible="{_configurationInfo}"
+        _fontSize="{pixelToViewBox(15)}" translateY="-{pixelToViewBox(20)}">
+            <svg:text visible="{isScaling()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
+                {getLocalizedSize(_configurationWidth,0)} x
+                {getLocalizedSize(_configurationHeight,0)}
+            </svg:text>
+            <svg:text visible="{isRotating()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
+                {formatSize(_rotation)} °
+            </svg:text>
+            <svg:text visible="{isMoving()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
+                X: {getLocalizedSize(_offset.x,0)} ,
+                Y: {getLocalizedSize(_offset.y,0)}
+            </svg:text>
+        </svg:g>
+
         <svg:rect cid="_moveHandle" class="configuration-handle move"
                   selected="{isMovable()}"
                   x="{pixelToViewBox(_handle-Offset)}"
