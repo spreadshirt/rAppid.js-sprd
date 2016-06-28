@@ -3,6 +3,7 @@
         <conf:ResourceConfiguration modelClassName="sprd.model.Registration" path="register" signatureRequired="true"/>
         <conf:ResourceConfiguration path="languages" modelClassName="sprd.model.Language"/>
         <conf:ResourceConfiguration path="countries" modelClassName="sprd.model.Country"/>
+        <conf:ResourceConfiguration path="priceStrategies" modelClassName="sprd.model.PriceStrategy"/>
         <conf:ResourceConfiguration path="shops" modelClassName="sprd.model.Shop" sessionRequired="true">
             <conf:ResourceConfiguration path="address" modelClassName="sprd.model.Address"/>
             <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.Application"
@@ -34,6 +35,7 @@
             <conf:ResourceConfiguration path="shippingOptions" modelClassName="sprd.model.ShippingOption"/>
 
             <conf:ResourceConfiguration path="applications" modelClassName="sprd.model.Application"/>
+            <conf:ResourceConfiguration path="design-uploads" modelClassName="sprd.model.DesignUpload" processor="UploadDesignProcessor" signatureRequired="true"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration path="currencies" modelClassName="sprd.model.Currency">
 

@@ -1,5 +1,39 @@
-define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/model/processor/DefaultProcessor", "sprd/model/processor/BasketProcessor", "sprd/model/processor/BasketItemProcessor", "sprd/data/SprdApiQueryComposer"],
-    function (SprdDataSource, RestDataSource, _, SprdModel, DefaultProcessor, BasketProcessor, BasketItemProcessor, SprdApiQueryComposer) {
+define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSource", "underscore", "sprd/data/SprdModel", "sprd/model/processor/DefaultProcessor", "sprd/model/processor/BasketProcessor", "sprd/model/processor/BasketItemProcessor", "sprd/data/SprdApiQueryComposer", "sprd/model/processor/UploadDesignProcessor", "JSON"],
+    function (SprdDataSource, DataSource, RestDataSource, _, SprdModel, DefaultProcessor, BasketProcessor, BasketItemProcessor, SprdApiQueryComposer, UploadDesignProcessor, JSON) {
+
+        var _formatProcessorCache = {},
+            REMOTE = 'remote',
+            rIdExtractor = /\/([^/]+)$/,
+            ImageFormatProcessor = DataSource.FormatProcessor.inherit({
+
+                ctor: function(type, format) {
+                    this.$type = type;
+                    this.$format = format;
+
+                    this.callBase();
+                },
+
+                serialize: function(data) {
+
+                    if (this.$format == REMOTE) {
+                        return JSON.stringify({
+                            href: data.image.src
+                        });
+                    }
+
+                    var ret = new FormData();
+                    ret.append('filedata', data.image.file);
+                    return ret;
+                },
+
+                getContentType: function() {
+                    if (this.$format === REMOTE) {
+                        return "application/json";
+                    }
+
+                    return false;
+                }
+            });
 
         var SprdApiDataSource = SprdDataSource.inherit('sprd.data.SprdApiDataSourceClass', {
 
@@ -7,7 +41,8 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
                 locale: "en_EU",
                 parsePayloadOnCreate: false,
                 parsePayloadOnUpdate: false,
-                keepRawData: false
+                keepRawData: false,
+                noCache: false
             },
 
             $defaultProcessorFactory: DefaultProcessor,
@@ -15,7 +50,25 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
             $processors: {
                 BasketProcessor: BasketProcessor,
                 BasketItemProcessor: BasketItemProcessor,
-                OrderItemProcessor: BasketItemProcessor
+                OrderItemProcessor: BasketItemProcessor,
+                UploadDesignProcessor: UploadDesignProcessor
+            },
+
+            loadModel: function(model, options, callback) {
+
+                if (this.$.noCache && options && !options.hasOwnProperty('noCache')) {
+                    options.noCache = true;
+                }
+
+                return this.callBase(model, options, callback);
+            },
+
+            loadCollectionPage: function(collectionPage, options, callback) {
+                if (this.$.noCache && options && !options.hasOwnProperty('noCache')) {
+                    options.noCache = true;
+                }
+
+                return this.callBase(collectionPage, options, callback);
             },
 
             getQueryParameters: function (method, resource) {
@@ -28,6 +81,33 @@ define(["sprd/data/SprdDataSource", "js/data/RestDataSource", "underscore", "spr
                 }
                 return ret;
 
+            },
+
+            getFormatProcessor: function(action, model) {
+
+                if (model && model.factory.prototype.constructor.name == "sprd.model.DesignUpload") {
+                    var type = model.$.image.$.type,
+                        format = model.$.image.$.file ? "file" : REMOTE,
+                        cacheId = type + "_" + format;
+
+                    if (!_formatProcessorCache[cacheId]) {
+                        _formatProcessorCache[cacheId] = new ImageFormatProcessor(type, format);
+                    }
+
+                    return _formatProcessorCache[cacheId];
+                }
+
+                return this.callBase();
+            },
+
+            extractIdFromLocation: function(location, request) {
+                var param = rIdExtractor.exec(location);
+
+                if (param) {
+                    return param[1];
+                }
+
+                return null;
             },
 
             createContext: function (contextModel, properties, parentContext) {

@@ -1,4 +1,4 @@
-define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer", "js/data/validator/Validator"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator, TrimTransformer, Validator) {
+define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "sprd/entity/Person", "sprd/data/validator/LengthValidator", "js/data/validator/RegExValidator", "js/data/transformer/TrimTransformer", "js/data/validator/Validator", "underscore"], function (Entity, ShippingState, Country, Person, LengthValidator, RegExValidator, TrimTransformer, Validator, _) {
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
@@ -38,7 +38,9 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             // if its HQ don't validate
             if (value && !/^HQ/.test(value)) {
                 // validate minlength, maxlength and that it contains a number
-                if ((value.length < MIN_LENGTH.STREET || value.length > MAX_LENGTH.STREET)) {
+                if (value.length < MIN_LENGTH.STREET || value.length > MAX_LENGTH.STREET ||
+                    (!/\d/.test(value) && _.indexOf(["GB", "FR"], entity.get("country.code")) === -1)
+                ) {
                     return this._createFieldError(this.$.field);
                 }
             }
@@ -277,8 +279,8 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             return data;
         },
 
-        needsVatId: function () {
-            return this.isCompany() && (this.$.isBillingAddress || this.$.isSameAsBillingAddress);
+        needsVatId: function (platform) {
+            return platform == "EU" && this.isCompany() && (this.$.isBillingAddress || this.$.isSameAsBillingAddress);
         }.onChange('personSalutation', 'isBillingAddress', 'isSameAsBillingAddress'),
 
         isPackStation: function () {

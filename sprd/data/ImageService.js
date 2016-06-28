@@ -64,8 +64,9 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         },
 
         productTypeImage: function (productTypeId, viewId, appearanceId, options) {
+            var parameter = _.defaults(ImageService.getImageSizeParameter(options), options);
             return this.buildUrl(['productTypes', productTypeId, 'views', viewId, 'appearances', appearanceId],
-                ImageService.getImageSizeParameter(options), parseInt(productTypeId || 0) + parseInt(viewId || 0) + parseInt(appearanceId || 0));
+                parameter, parseInt(productTypeId || 0) + parseInt(viewId || 0) + parseInt(appearanceId || 0));
         },
 
         productTypeSizeImage: function (productTypeId, options) {
@@ -112,13 +113,15 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             var imgServer,
                 subDomainCount = this.$.subDomainCount;
 
-            if (!isNaN(parseInt(cacheId))) {
+            if (!isNaN(parseInt(cacheId)) && !parameter.sameOrigin) {
                 // use the full qualified endpoint
                 imgServer = this.$.endPoint;
                 imgServer = imgServer.replace(/(\/\/image)\./, '$1' + (cacheId % subDomainCount) + ".");
             } else {
                 imgServer = this.$.gateway;
             }
+
+            delete parameter.sameOrigin;
 
             url = url || [];
             url.unshift(imgServer);

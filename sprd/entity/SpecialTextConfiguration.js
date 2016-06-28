@@ -1,4 +1,4 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'sprd/pimp/data/PimpImageService', "sprd/entity/Size", 'sprd/data/ImageUploadService', "flow", 'sprd/util/UnitUtil', 'sprd/pimp/data/PimpDataSourceClass', 'js/data/Collection', 'sprd/pimp/model/Commission', 'sprd/pimp/model/Font', 'sprd/entity/Price', 'underscore'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, ImageUploadService, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price, _) {
+define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'sprd/pimp/data/PimpImageService', "sprd/entity/Size", "flow", 'sprd/util/UnitUtil', 'sprd/pimp/data/PimpDataSourceClass', 'js/data/Collection', 'sprd/pimp/model/Commission', 'sprd/pimp/model/Font', 'sprd/entity/Price', 'underscore'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price, _) {
 
     var previewSizeRatio = 3;
 
@@ -11,7 +11,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             aspectRatio: 1,
             _allowScale: true,
             loading: false,
-            align: null,
+            align: "center",
             initialized: false,
             commission: null,
 
@@ -89,7 +89,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                 return;
             }
 
-            if (this._hasSome($, ["pimpImageService", "text", "font"]) && !options.initial) {
+            if (this._hasSome($, ["pimpImageService", "text", "font", "align"]) && !options.initial) {
                 this._debounceFunctionCall(this.fetchImage, "fetchImage", 430, this, [], "DELAY");
             }
 
@@ -154,7 +154,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                     text: text,
                     size: "M",
                     font: font,
-                    taskId: this.$.taskId
+                    taskId: this.$.taskId,
+                    align: this.$.align
                 }, function (err, data) {
                     if (listener.cancelled) {
                         return;
@@ -230,7 +231,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                             var split = design.$.name.split(";");
                             self.set({
                                 font: self.$.pimpDataSource.createEntity(Font, split[1]),
-                                align: split
+                                align: split.pop()
                             }, {
                                 silent: true
                             });

@@ -61,7 +61,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 "on:basketUpdating",
                 "on:basketSaving",
                 "on:basketInitialized",
-                "on:couponApplied"
+                "on:couponApplied",
+                "on:couponRemoved"
             ],
 
             inject: {
@@ -396,8 +397,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         this.$saveCallbacks.push(callback);
                     }
                     var self = this,
-                        basket = this.$.basket,
-                        coupon;
+                        basket = this.$.basket;
 
                     function callCallbacks(err, basket) {
                         var cb;
@@ -436,7 +436,16 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                         })
                         .seq(function(cb) {
                             if (discountsBeforeRefresh != null && self.getBasketDiscountCount(basket) != discountsBeforeRefresh) {
-                                self.fetchBasketCoupons(cb);
+
+                                var couponCount = basket.get("coupons.size()");
+
+                                self.fetchBasketCoupons(function(err) {
+                                    if (basket.get("coupons.size()") < couponCount) {
+                                        self.trigger("on:couponRemoved");
+                                    }
+
+                                    cb(err);
+                                });
                             } else {
                                 cb();
                             }
@@ -464,12 +473,20 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 this._triggerBasketUpdating();
                 var self = this,
                     basket = this.$.basket;
+                var couponCount;
+
                 flow()
                     .seq(function (cb) {
                         basket.fetch({noCache: true}, cb);
                     })
                     .seq(function (cb) {
+                        couponCount = basket.get("coupons.size()");
                         self.fetchBasketCoupons(cb);
+                    })
+                    .seq(function(){
+                        if (basket.get("coupons.size()") < couponCount) {
+                            self.trigger("on:couponRemoved");
+                        }
                     })
                     .exec(function (err, basket) {
                         self._triggerBasketUpdated();
