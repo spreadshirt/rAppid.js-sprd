@@ -37,6 +37,10 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                     elementPayload["article"] = this.$dataSource.getContextForChild(Article, shop).createEntity(Article, prop.value);
                 }
 
+                if(prop.key === "product") {
+                    elementPayload["product"] = this.$dataSource.getContextForChild(Product, shop).createEntity(Product, prop.value);
+                }
+
             }
 
             var links = payload.links || [];
@@ -53,8 +57,15 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                 }
             }
 
+
+
             if (element.type === TYPE_ARTICLE) {
-                elementPayload.item = this.$dataSource.getContextForChild(Article, shop).createEntity(Article, element.id);
+                var article =  this.$dataSource.getContextForChild(Article, shop).createEntity(Article, element.id);
+
+                article.set('product', elementPayload.product);
+
+                elementPayload.item = article;
+
             } else if (element.type === TYPE_PRODUCT) {
                 elementPayload.item = this.$dataSource.getContextForChild(Product, shop).createEntity(Product, element.id);
             } else {
