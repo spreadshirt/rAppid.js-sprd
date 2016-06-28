@@ -126,6 +126,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return UnitUtil.getLocalizedSize(mm, this.PARAMETER().locale);
             },
 
+            and: function(a, b) {
+                return a && b
+            },
+
             formatSize: function(size) {
                 if (size != null) {
                     return parseInt(size).toFixed(0);

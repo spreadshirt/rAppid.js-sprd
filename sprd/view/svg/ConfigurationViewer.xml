@@ -23,7 +23,7 @@
                   x="0" y="0"
                   width="{_configurationWidth}" height="{_configurationHeight}"/>
 
-        <svg:g class="configuration-info" visible="{_configurationInfo}"
+        <svg:g class="configuration-info" visible="{and(_configurationInfo, productViewer.$parent.showConfigurationInformation)}"
         _fontSize="{pixelToViewBox(15)}" translateY="-{pixelToViewBox(20)}">
             <svg:text visible="{isScaling()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
                 {getLocalizedSize(_configurationWidth,0)} x
