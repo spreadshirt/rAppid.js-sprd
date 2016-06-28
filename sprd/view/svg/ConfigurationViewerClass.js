@@ -1,5 +1,5 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus"],
-    function (SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer", "sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus", "sprd/util/UnitUtil"],
+    function (SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus, UnitUtil) {
 
         var MOVE = "move",
             SCALE = "scale",
@@ -63,6 +63,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _handleIconScale: 1,
 
                 _mode: null,
+                _configurationInfo: false,
                 _rotationRadius: null,
 
                 imageService: null,
@@ -116,6 +117,20 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             invert: function (value) {
                 return value * -1;
+            },
+
+            getLocalizedSize: function(mm, fixed) {
+                if (fixed != null && typeof(mm) == "number") {
+                    mm = mm.toFixed(fixed);
+                }
+                return UnitUtil.getLocalizedSize(mm, this.PARAMETER().locale);
+            },
+
+            formatSize: function(size) {
+                if (size != null) {
+                    return parseInt(size).toFixed(0);
+                }
+                return size;
             },
 
             _initializeCapabilities: function (window) {
@@ -562,6 +577,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         if (configuration.$.offset && configuration.$.offset !== self.$._offset) {
                             configuration.set('offset', self.$._offset);
                         }
+                        self.set('_configurationInfo', false);
                     }
                 };
 
@@ -639,6 +655,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     newConfigurationWidth,
                     newConfigurationHeight,
                     distanceX, distanceY;
+
+                this.set('_configurationInfo', true);
 
                 if (mode === MOVE) {
                     var newX = configuration.$.offset.$.x - deltaX * factor.x,
@@ -1117,6 +1135,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             isRotating: function () {
                 return this.$._mode === ROTATE;
+            }.onChange("_mode"),
+
+            isMoving: function() {
+                return this.$._mode === MOVE;
+            }.onChange("_mode"),
+
+            isScaling: function() {
+                return this.$._mode === SCALE;
             }.onChange("_mode"),
 
             hasError: function () {
