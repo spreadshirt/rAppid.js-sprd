@@ -6,7 +6,7 @@ define(["js/ui/View", "js/core/I18n"], function (View, I18n) {
 
         defaults: {
             appearance: null,
-
+            showTitle: true,
             productType: null,
             product: null
         },

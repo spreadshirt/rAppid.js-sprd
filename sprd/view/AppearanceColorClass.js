@@ -12,11 +12,18 @@ define(["js/ui/View", "sprd/data/ImageService"], function (View, ImageService) {
         defaults: {
             appearance: null,
             componentClass: "appearance-color appearance-{appearance.id}",
-            title: "{appearance.name}"
+            title: "{appearance.name}",
+            showTitle: true
         },
 
         inject: {
             imageService: ImageService
+        },
+
+        _renderTitle: function(title) {
+            if (this.$.showTitle) {
+                this._setAttribute("title", title)
+            }
         },
 
         colorWidth: function (index) {
