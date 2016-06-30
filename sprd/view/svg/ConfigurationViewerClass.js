@@ -1059,6 +1059,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         productViewer = this.$.productViewer;
 
                     this.$.product.$.configurations.remove(configuration);
+                    e.preventDefault();
 
                     this.$.bus.trigger('Application.productChanged', this.$.product);
                     if (productViewer && productViewer.$.selectedConfiguration === configuration) {
