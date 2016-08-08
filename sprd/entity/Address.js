@@ -39,7 +39,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             if (value && !/^HQ/.test(value)) {
                 // validate minlength, maxlength and that it contains a number
                 if (value.length < MIN_LENGTH.STREET || value.length > MAX_LENGTH.STREET ||
-                    (!/\d/.test(value) && _.indexOf(["GB", "FR"], entity.get("country.code")) === -1)
+                    (!/\d/.test(value) && _.indexOf(["GB", "FR", "IE"], entity.get("country.code")) === -1)
                 ) {
                     return this._createFieldError(this.$.field);
                 }
