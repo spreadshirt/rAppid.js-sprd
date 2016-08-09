@@ -43,6 +43,9 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON"], function 
                                 var dateMatch = parseDate.exec(m[1]),
                                     date = new Date(dateMatch[1], dateMatch[2] - 1, dateMatch[3], dateMatch[4], dateMatch[5], dateMatch[6]);
                                 var timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
+                                // timeZoneOffset is positive if the current computer's local time is behind UTC (e.g., Pacific Daylight Time),
+                                // and negative if the current computer's local time is ahead of UTC (e.g., Germany).
+                                // For this reason timeZoneOffset should subtracted from the time of the parse date (UTC)
                                 date.setTime(date.getTime() - timeZoneOffset);
 
                                 values[i] = date.getFullYear() + "/" +
