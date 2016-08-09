@@ -42,7 +42,7 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON"], function 
 
                                 var dateMatch = parseDate.exec(m[1]),
                                     date = new Date(dateMatch[1], dateMatch[2] - 1, dateMatch[3], dateMatch[4], dateMatch[5], dateMatch[6]);
-                                date.setTime(date.getTime() + (date.getTimezoneOffset() * 60 * 1000));
+                                date.setTime(date.getTime() + (new Date().getTimezoneOffset() * 60 * 1000));
 
                                 values[i] = date.getFullYear() + "/" +
                                     ("00" + (date.getMonth() + 1)).substr(-2) + "/" +
