@@ -90,7 +90,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.set("rawText", rawText);
             },
 
-            _onTextFlowChange: function () {
+            _onTextFlowChange: function (e) {
                 var self = this;
 
                 this.validateText();
@@ -100,7 +100,12 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         self.$.bus && self.$.bus.trigger('Application.productChanged', null, self);
                     }, "productChanged", 300);
                 });
-                this.set('isNew', false);
+
+                if (e && e.$.operation && e.$.operation.$text) {
+                    // if there was a text change, handle it as configuration is not new anymore
+                    this.set('isNew', false);
+                }
+
 
                 this.trigger("priceChanged");
                 this.trigger("configurationChanged");

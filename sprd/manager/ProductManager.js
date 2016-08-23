@@ -703,7 +703,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printType: null,
                     printTypeId: null,
                     font: null,
-                    addToProduct: true
+                    addToProduct: true,
+                    isNew: true
                 });
 
                 var self = this,
@@ -818,6 +819,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         var configuration = this.vars["configuration"];
                         bus.setUp(configuration);
                         configuration.init(cb);
+
+                        configuration.set('isNew', params.isNew);
                     })
                     .seq(function () {
                         var configuration = this.vars["configuration"];
@@ -1120,6 +1123,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         });
 
                         config.set("_size", config.$._size, {force: true});
+                        config.set("isNew", textConfiguration.$.isNew);
 
                         callback && callback(err, config);
 
@@ -1154,7 +1158,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 x: s,
                                 y: s
                             }, 'offset': offset,
-                            rotation: specialTextConfiguration.$.rotation
+                            rotation: specialTextConfiguration.$.rotation,
+                            isNew: specialTextConfiguration.$.isNew
                         });
 
                         callback && callback(err, config);
