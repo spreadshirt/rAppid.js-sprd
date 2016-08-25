@@ -101,7 +101,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     }, "productChanged", 300);
                 });
 
-                if (e && e.$.operation && e.$.operation.$text) {
+                if (e && e.$ && e.$.operation && e.$.operation.$text) {
                     // if there was a text change, handle it as configuration is not new anymore
                     this.set('isNew', false);
                 }
