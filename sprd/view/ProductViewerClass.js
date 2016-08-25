@@ -405,7 +405,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
         showTextAreaOverlay: function () {
             return this.$.editable &&
                 this.$.selectedConfiguration && this.$.selectedConfiguration.type === "text" &&
-                this.runsInBrowser() && ('ontouchstart' in window);
+                this.runsInBrowser() && ('ontouchstart' in window) && this.$stage.$browser.isMobile;
         }.onChange("selectedConfiguration", "editable")
     });
 });
