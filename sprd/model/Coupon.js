@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON"], function (SprdModel, Validator, JSON) {
+define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "sprd/lib/DateFormat"], function (SprdModel, Validator, JSON, DateFormat) {
 
     var parseDate = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/;
 
@@ -38,7 +38,6 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON"], function 
                             if (t == "M" && entity.$.currency) {
                                 values[i] = entity.$.currency.formatValue(m[1]);
                             } else if (t == "D") {
-                                // TODO: localize format date
 
                                 var dateMatch = parseDate.exec(m[1]),
                                     date = new Date(dateMatch[1], dateMatch[2] - 1, dateMatch[3], dateMatch[4], dateMatch[5], dateMatch[6]);
@@ -48,11 +47,7 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON"], function 
                                 // For this reason timeZoneOffset should subtracted from the time of the parse date (UTC)
                                 date.setTime(date.getTime() - timeZoneOffset);
 
-                                values[i] = date.getFullYear() + "/" +
-                                    ("00" + (date.getMonth() + 1)).substr(-2) + "/" +
-                                    ("00" + date.getDate()).substr(-2) + " " +
-                                    ("00" + date.getHours()).substr(-2) +  ":" +
-                                    ("00" + date.getMinutes()).substr(-2);
+                                values[i] = dateFormat(date, entity.$.locale);
 
                             } else {
                                 values[i] = m[1];
