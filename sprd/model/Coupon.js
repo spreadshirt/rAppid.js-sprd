@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "sprd/lib/DateFormat"], function (SprdModel, Validator, JSON, DateFormat) {
+define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "sprd/manager/DateFormat"], function (SprdModel, Validator, JSON, DateFormat) {
 
     var parseDate = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/;
 
