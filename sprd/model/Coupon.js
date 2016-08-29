@@ -47,7 +47,7 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "sprd/lib/
                                 // For this reason timeZoneOffset should subtracted from the time of the parse date (UTC)
                                 date.setTime(date.getTime() - timeZoneOffset);
 
-                                values[i] = dateFormat(date, entity.$.locale);
+                                values[i] = date.format(entity.$.locale);
 
                             } else {
                                 values[i] = m[1];
