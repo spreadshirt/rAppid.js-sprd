@@ -106,7 +106,7 @@ define([], function () {
         isoTime: "HH:MM:ss",
         isoDateTime: "yyyy-mm-dd'T'HH:MM:ss",
         isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'",
-        de_DE: "yyyy-mm-dd HH:MM",
+        de_DE: "dd.mm.yyyy HH:MM",
         de_AT: "d.m.yyyy HH:MM",
         de_CH: "dd.mm.yyyy HH:MM",
         en_GB: "dd/mm/yyyy h:MM TT",
@@ -142,8 +142,9 @@ define([], function () {
         ]
     };
 
-// For convenience...
+    // For convenience...
     Date.prototype.format = function (mask, utc) {
         return dateFormat(this, mask, utc);
     };
+    return dateFormat;
 });
