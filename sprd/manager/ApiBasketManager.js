@@ -153,7 +153,9 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     this.$applyingCoupon = true;
                     coupon.set('currency', this.get('basket.currency'));
                     var self = this;
-                    coupon.validate(function (err) {
+                    coupon.validate({
+                        locale: locale
+                    }, function (err) {
                         if (coupon.isValid()) {
                             self.reloadBasket();
                         }
