@@ -24,7 +24,12 @@ define(['sprd/view/svg/ConfigurationRenderer'], function (Renderer) {
                 options.printColors = this.$.configuration.getPrintColorsAsRGB();
                 options.version = design.$.version;
 
-                return design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
+                if (!design.isVectorDesign()) {
+                    return design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
+                } else {
+                    return this.$.imageService.designImage(design.$.wtfMbsId, options)
+                }
+
             }
 
 
