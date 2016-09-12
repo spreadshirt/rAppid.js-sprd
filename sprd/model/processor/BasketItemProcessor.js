@@ -41,6 +41,10 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                     elementPayload["product"] = this.$dataSource.getContextForChild(Product, shop).createEntity(Product, prop.value);
                 }
 
+
+                if (prop.key === "productTypeName") {
+                    elementPayload["productTypeName"] = prop.value;
+                }
             }
 
             var links = payload.links || [];

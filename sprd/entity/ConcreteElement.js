@@ -5,7 +5,11 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
     return Entity.inherit("sprd.entity.ConcreteElement", {
         schema: {
             appearance: Appearance,
-            size: Entity
+            size: Entity,
+            productTypeName: {
+                required: false,
+                type: String
+            }
         },
 
         defaults: {
