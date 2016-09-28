@@ -141,10 +141,10 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
                 translation;
 
             if (translations) {
-                for (var i = 0, num = translations.length; i > num; i++) {
+                for (var i = 0, num = translations.length; i < num; i++) {
                     translation = translations[i];
 
-                    if (translation.get('locale.id') === locale) {
+                    if (translation.get('locale.id') === locale.get('id')) {
                         return translation;
                     }
                 }
