@@ -144,7 +144,7 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
                 for (var i = 0, num = translations.length; i < num; i++) {
                     translation = translations[i];
 
-                    if (translation.get('locale.id') === locale) {
+                    if (translation.get('locale.id') === locale.get('id')) {
                         return translation;
                     }
                 }
