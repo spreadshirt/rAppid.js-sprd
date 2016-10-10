@@ -1119,7 +1119,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 x: s,
                                 y: s
                             }, 'offset': offset,
-                            rotation: textConfiguration.$.rotation
+                            rotation: textConfiguration.$.rotation,
+                            originalConfiguration: textConfiguration
                         });
 
                         config.set("_size", config.$._size, {force: true});
@@ -1159,7 +1160,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 y: s
                             }, 'offset': offset,
                             rotation: specialTextConfiguration.$.rotation,
-                            isNew: specialTextConfiguration.$.isNew
+                            isNew: specialTextConfiguration.$.isNew,
+                            originalConfiguration: specialTextConfiguration
                         });
 
                         callback && callback(err, config);
