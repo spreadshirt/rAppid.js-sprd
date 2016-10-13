@@ -84,6 +84,10 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
                 }
             }
 
+            if (options.backgroundColor) {
+                parameter.backgroundColor = options.backgroundColor;
+            }
+
             if (options.version) {
                 parameter.version = options.version;
             }

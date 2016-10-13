@@ -1,6 +1,6 @@
-define(['sprd/view/svg/ConfigurationRenderer', 'js/core/Bus'], function (ConfigurationRenderer, Bus) {
+define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', 'js/core/Bus'], function (SpecialFlexConfigurationRenderer, Bus) {
 
-    return ConfigurationRenderer.inherit("sprd.view.svg.TextConfigurationRendererClass", {
+    return SpecialFlexConfigurationRenderer.inherit("sprd.view.svg.TextConfigurationRendererClass", {
 
         defaults: {
             tagName: "g",
