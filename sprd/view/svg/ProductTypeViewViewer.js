@@ -247,9 +247,9 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     configView.removeClass('hide-configuration');
                     configView.enableMoveSnipping();
                 }
-                //dndObject.dndImage.set({
-                //    'visible': false
-                //});
+                dndObject.dndImage.set({
+                    'visible': false
+                });
                 dndObject = null;
             }
         },
