@@ -10,6 +10,12 @@ define(["js/ui/SelectionView", "sprd/manager/FeatureManager"], function (Selecti
 
         hasErrorClass: function (error) {
             return error ? "error" : "";
+        },
+
+        mouse: function(e, over) {
+            if (e && e.target) {
+                over ? e.target.addClass("hover") : e.target.removeClass("hover");
+            }
         }
     });
 });

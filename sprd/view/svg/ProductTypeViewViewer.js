@@ -173,9 +173,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                                         }
                                         dndObject.dndImage.set('hoverState', hovered);
                                     }
-                                }, "setHoverState", 100, self, [x, y], "BOUNCE"
-                            )
-                            ;
+                                }, "setHoverState", 300, self, [x, y]);
 
                             if (clientRect.left > x || clientRect.right < x || clientRect.top > y || clientRect.bottom < y) {
                                 if (configViewer) {
@@ -249,9 +247,9 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     configView.removeClass('hide-configuration');
                     configView.enableMoveSnipping();
                 }
-                dndObject.dndImage.set({
-                    'visible': false
-                });
+                //dndObject.dndImage.set({
+                //    'visible': false
+                //});
                 dndObject = null;
             }
         },
