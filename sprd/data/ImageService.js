@@ -53,12 +53,20 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
                 params.mediaType = options.mediaType;
             }
 
-            return this.buildUrl([
+            if (options.hideProductType) {
+                params.noPt = true;
+            }
+
+            var urlParts = [
                 type === PRODUCT ? "products" : "compositions",
-                productId,
-                "views",
-                viewId
-            ],
+                productId
+            ];
+
+            if (viewId != null) {
+                urlParts.push("views", viewId);
+            }
+
+            return this.buildUrl(urlParts,
                 params,
             parseInt(productId || 0) + parseInt(viewId || 0) + parseInt(appearanceId || 0));
         },

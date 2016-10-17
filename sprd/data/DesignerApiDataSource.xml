@@ -1,0 +1,7 @@
+<data:RestDataSource xmlns:data="js.data" xmlns:conf="js.conf">
+    <conf:DataSourceConfiguration>
+        <conf:ResourceConfiguration modelClassName="sprd.model.TemplateCategory" path="categories">
+            <conf:ResourceConfiguration modelClassName="sprd.model.Template" path="templates"/>
+        </conf:ResourceConfiguration>
+    </conf:DataSourceConfiguration>
+</data:RestDataSource>
