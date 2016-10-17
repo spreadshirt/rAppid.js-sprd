@@ -41,6 +41,9 @@ define(["js/core/Component"], function (Component) {
             Mail: "ES",
             Facebook: "FS",
             Twitter: "TS",
+            Pinterest: "PS",
+            GooglePlus: "GS",
+            WhatsApp: "WS",
             Link: "LS"
         }
     });
