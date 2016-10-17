@@ -6,7 +6,7 @@ define(["js/ui/View"], function (View) {
         NO: "NO"
     };
 
-    var DndImage = View.inherit({
+    return View.inherit({
 
         defaults: {
             componentClass: 'dnd-image',
@@ -20,7 +20,7 @@ define(["js/ui/View"], function (View) {
 
         $classAttributes: ["design", "svgElement", "svgContainer"],
 
-        _renderConfigurationViewer: function (configViewer) {
+        _renderConfigurationViewer: function(configViewer) {
             if (this.$.svgContainer) {
                 if (this.$currentElement) {
                     this.$.svgContainer.$el.removeChild(this.$currentElement);
@@ -36,14 +36,22 @@ define(["js/ui/View"], function (View) {
                 }
             }
         },
-        _renderHoverState: function (hovered) {
+        _renderHoverState: function(hovered) {
             this.removeClass('ok invalid');
+
+            var stage = this.$stage;
+            if (stage) {
+                stage.removeClass("dnd-ok dnd-invalid");
+            }
+
             switch (hovered) {
                 case DROP_HOVERED.YES :
                     this.addClass('ok');
+                    stage && stage.addClass("dnd-ok");
                     break;
                 case DROP_HOVERED.INVALID:
                     this.addClass('invalid');
+                    stage && stage.addClass("dnd-invalid");
                     break;
             }
 
@@ -51,7 +59,5 @@ define(["js/ui/View"], function (View) {
     }, {
         DROP_HOVERED: DROP_HOVERED
     });
-
-    return DndImage;
 
 });

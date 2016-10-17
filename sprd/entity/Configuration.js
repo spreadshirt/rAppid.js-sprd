@@ -186,7 +186,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
                 if (preferredPrintType && preferredPrintType !== printType) {
                     this.$.bus && this.$.bus.trigger("Configuration.automaticallyPrintTypeChange", {
-                        printType: preferredPrintType
+                        printType: preferredPrintType,
+                        scale: scale
                     });
                     this.set('printType', preferredPrintType, {preventValidation: true, printTypeTransformed: true});
                     ret.minBound = false;

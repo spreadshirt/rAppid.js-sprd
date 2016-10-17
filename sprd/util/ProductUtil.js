@@ -3,6 +3,11 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
     return {
 
         getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearanceId) {
+
+            if (!(design && design.$.printTypes)) {
+                return [];
+            }
+
             return ArrayUtil.average(design.$.printTypes.$items,
                 this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId));
         },

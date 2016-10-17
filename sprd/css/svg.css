@@ -107,6 +107,10 @@ image {
     stroke-width: 3;
 }
 
+.configuration-viewer.printType-16 tspan {
+    fill: inherit;
+}
+
 .configuration-viewer .rotation-center {
     fill: #ffa53b;
     stroke: none;
