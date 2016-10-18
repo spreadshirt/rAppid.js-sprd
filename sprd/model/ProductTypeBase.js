@@ -162,7 +162,7 @@ define(["sprd/data/SprdModel", 'js/core/List', 'js/data/Entity'],
                     return this.$.sizes;
                 }
                 return sizes;
-            }.on(['stockStates', 'reset']),
+            }.on(['stockStates', 'reset'], ['sizes', 'reset']).onChange("sizes"),
 
             isSizeAndAppearanceAvailable: function (size, appearance) {
                 if (this.$.stockStates) {
