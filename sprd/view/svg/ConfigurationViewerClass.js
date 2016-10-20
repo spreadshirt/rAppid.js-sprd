@@ -374,9 +374,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         anchorIndex: cursorIndex
                     });
                 }
-                var selected = this.$.selected;
-                this.$.productViewer.set("selectedConfiguration", this.$.configuration);
-                this.$.bus.trigger('ConfigurationViewer.configurationSelected', {configuration: configuration});
+                var selected = this.$.selected,
+                    productViewer = this.$.productViewer,
+                    previousSelectedConfiguration = this.$.productViewer.$.selectedConfiguration;
+
+                productViewer.set("selectedConfiguration", this.$.configuration);
+                this.$.bus.trigger('ConfigurationViewer.configurationSelected', {
+                    configuration: configuration
+                });
 
 //                this.$stage.focus();
 
@@ -429,8 +434,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                                 height,
                                 width;
 
-                            if (this.$.productViewer && this.$.productViewer.$.product) {
-                                var configurationsOnPrintArea = this.$.productViewer.$.product.getConfigurationsOnPrintAreas([printArea]) || [],
+                            if (productViewer && productViewer.$.product) {
+                                var configurationsOnPrintArea = productViewer.$.product.getConfigurationsOnPrintAreas([printArea]) || [],
                                     myIndex = _.indexOf(configurationsOnPrintArea, configuration);
 
                                 if (myIndex !== -1) {
@@ -574,6 +579,16 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 };
 
                 this.$upHandler = function (e) {
+                    var distance = self.getDistance(configuration.$.offset, self.$._offset);
+                    var onlyPointed = !(distance) && mode === MOVE && !self.$moveInitiator;
+
+                    if(onlyPointed && configuration == previousSelectedConfiguration) {
+                        self.$.bus.trigger('ConfigurationViewer.configurationReselected', {
+                            configuration: configuration,
+                            previousConfiguration: previousSelectedConfiguration
+                        });
+                    }
+
                     if (selected) {
                         self._up(e, mode);
                     } else {
@@ -582,6 +597,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             configuration.set('offset', self.$._offset);
                         }
                         self.set('_configurationInfo', false);
+
+                        self._stopTransformation();
                     }
                 };
 
@@ -1179,7 +1196,25 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 return null;
 
-            }.on(["configuration", "isValidChanged"])
+            }.on(["configuration", "isValidChanged"]),
+
+            getDistance: function(point1, point2) {
+                return this.hypot(point1.$.x - point2.$.x, point1.$.y - point2.$.y);
+
+            },
+
+            hypot: function() {
+                var y = 0;
+                var length = arguments.length;
+
+                for (var i = 0; i < length; i++) {
+                    if (arguments[i] === Infinity || arguments[i] === -Infinity) {
+                        return Infinity;
+                    }
+                    y += arguments[i] * arguments[i];
+                }
+                return Math.sqrt(y);
+            }
 
 
         });
