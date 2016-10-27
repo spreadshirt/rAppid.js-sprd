@@ -20,11 +20,23 @@ define(['js/core/Component', 'underscore'], function(Component, _){
                 return;
             }
 
+            this.parseDeeplinksFromUrl(window);
+
+            if (window != window.top) {
+                try {
+                    this.parseDeeplinksFromUrl(window.top);
+                } catch (e) {
+                }
+            }
+
+        },
+
+        parseDeeplinksFromUrl: function(window) {
             var search = window.location.search.replace(/^\?/, "").split("&");
             for (var i = 0; i < search.length; i++) {
                 var keyValue = search[i].split("="),
-                    key = keyValue.shift(),
-                    value = keyValue.join("=");
+                key = keyValue.shift(),
+                value = keyValue.join("=");
 
                 if (this.$.hasOwnProperty(key)) {
 
@@ -40,7 +52,6 @@ define(['js/core/Component', 'underscore'], function(Component, _){
                     this.set(key, value);
                 }
             }
-
         },
 
         getFeatureState: function(feature){

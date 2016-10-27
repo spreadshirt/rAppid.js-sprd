@@ -278,7 +278,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                                             .seq(function (cb) {
                                                 item.$.element.init(cb);
                                             })
-                                            .seq(function (cb) {
+                                            .seq("product", function (cb) {
                                                 item.$.element.getProduct().fetch({
                                                     fetchSubModels: ["productType"]
                                                 }, cb);
