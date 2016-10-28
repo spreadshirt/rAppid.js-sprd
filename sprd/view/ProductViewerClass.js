@@ -166,7 +166,12 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
         },
 
         _onConfigurationsReset: function () {
-            this.set('selectedConfiguration', null);
+            var configurations = this.$.product.$.configurations,
+                selectedConfiguration = this.$.selectedConfiguration;
+
+            if(!configurations.contains(selectedConfiguration)) {
+                this.set('selectedConfiguration', null);
+            }
         },
 
         _onConfigurationViewerAdded: function (e) {
