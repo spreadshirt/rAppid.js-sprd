@@ -6,7 +6,11 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
         return Configuration.inherit('sprd.model.DesignConfiguration', {
 
             schema: {
-                design: Design
+                design: Design,
+                designs: {
+                    type: Object,
+                    required: false
+                }
             },
 
             defaults: {
@@ -214,6 +218,11 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                         }
                     }
                 };
+
+                ret.designs = [{
+                    id: designId,
+                    href: "/" + this.get("design.id")
+                }];
 
                 delete ret.design;
 
