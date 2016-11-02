@@ -64,7 +64,7 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
                 return null;
             }
 
-            if (this.getColorIndex()) {
+            if (this.getColorIndex() != null) {
                 return "url(" + this.baseUrl("sprd/img/specialFlex.png") + ")";
             } else {
                 return this.$.imageService.printColorImage(this.$.printColor.$.id, {
