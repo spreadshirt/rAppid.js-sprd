@@ -251,7 +251,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             }
 
             var copiedConfiguration = this.$.copiedConfiguration;
-            if (e.ctrlKey && e.keyCode === 86 && copiedConfiguration) {
+            if ((e.metaKey || e.ctrlKey) && e.keyCode === 86 && copiedConfiguration) {
                 var newConfiguration = copiedConfiguration.clone();
 
                 this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view);
@@ -321,7 +321,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     e.stopPropagation();
                 }
 
-                if (e.ctrlKey && e.keyCode === 67) {
+                if ((e.metaKey || e.ctrlKey) && e.keyCode === 67) {
                     this.set('copiedConfiguration', selectedConfiguration.clone());
 
                     e.preventDefault();

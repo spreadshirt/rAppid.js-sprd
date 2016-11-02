@@ -980,10 +980,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this.set("shiftKey", true);
                 }
 
-                if (e.keyCode === 17) {
-                    this.set("ctrlKey", true);
-                }
-
                 if (e.keyCode === 27) {
                     // esc
                     this._cancelTransformation();
@@ -996,8 +992,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             _keyUp: function (e, mode) {
                 if (e.keyCode === 16) {
                     this.set("shiftKey", false);
-                } else if (e.keyCode === 17) {
-                    this.set("ctrlKey", false)
                 }
             },
 
