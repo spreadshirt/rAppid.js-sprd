@@ -10,7 +10,8 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
             componentClass: "print-color-image",
             backgroundColor: "{backgroundColor()}",
             backgroundImage: "{backgroundImage()}",
-            backgroundPosition: "{backgroundPosition()}"
+            backgroundPosition: "{backgroundPosition()}",
+            backgroundSize: "34px"
         },
 
         inject: {
@@ -75,13 +76,15 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
         }.onChange('printColor', "imageService"),
 
         backgroundPosition: function() {
-            var index = this.getColorIndex();
+            var index = this.getColorIndex(),
+                backgroundSize = this.$.backgroundSize,
+                scalingFactor = parseInt(backgroundSize.replace(/[^\d.]/g, ''));
 
             if (index == null) {
                 return "";
             }
 
-            return "0 " + ((index) * -34) + "px";
+            return "0 " + ((index) * -scalingFactor) + "px";
         }.onChange('printColor'),
 
         getColorIndex: function() {
