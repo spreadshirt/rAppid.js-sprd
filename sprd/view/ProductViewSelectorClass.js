@@ -1,7 +1,10 @@
 define(["js/ui/SelectionView", "sprd/manager/FeatureManager"], function (SelectionView, FeatureManager) {
     return SelectionView.inherit("sprd.view.ProductViewSelectorClass", {
         defaults: {
-            showViewNames: false
+            showViewNames: false,
+            product: null,
+            viewHeight: 50,
+            viewWidth: 50
         },
 
         inject: {
