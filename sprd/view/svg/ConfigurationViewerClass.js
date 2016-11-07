@@ -1,5 +1,5 @@
 define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer", "xaml!sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus", "sprd/util/UnitUtil"],
-    function (SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus, UnitUtil) {
+    function(SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus, UnitUtil) {
 
         var MOVE = "move",
             SCALE = "scale",
@@ -77,7 +77,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer", "clipPath", "imageService"],
 
-            ctor: function () {
+            ctor: function() {
 
                 this.callBase();
 
@@ -94,14 +94,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 this.bind('productViewer', 'change:width', this._productViewerSizeChanged, this);
-                this.bind(["productViewer", "change:selectedConfiguration"], function () {
+                this.bind(["productViewer", "change:selectedConfiguration"], function() {
                     if (this.isSelectedConfiguration()) {
                         this.focus();
                     }
                 }, this);
             },
 
-            _initializationComplete: function () {
+            _initializationComplete: function() {
 
                 var clipPath = this.$.clipPath;
                 var transformations = clipPath.$.transformations;
@@ -111,11 +111,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.callBase();
             },
 
-            id: function () {
+            id: function() {
                 return "c" + this.$cid;
             },
 
-            invert: function (value) {
+            invert: function(value) {
                 return value * -1;
             },
 
@@ -137,7 +137,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return size;
             },
 
-            _initializeCapabilities: function (window) {
+            _initializeCapabilities: function(window) {
                 var runsInBrowser = this.runsInBrowser(),
                     hasTouch = runsInBrowser && ('ontouchstart' in window);
 
@@ -153,7 +153,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _renderFocused: function (focused) {
+            _renderFocused: function(focused) {
                 if (focused) {
                     this.addClass('focused');
                 } else {
@@ -162,7 +162,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _initializeRenderer: function () {
+            _initializeRenderer: function() {
 
                 var rendererFactory,
                     assetContainer = this.$._assetContainer,
@@ -213,7 +213,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.callBase();
             },
 
-            _bindDomEvents: function () {
+            _bindDomEvents: function() {
                 this.callBase();
 
                 var self = this,
@@ -231,45 +231,45 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         moveHandle = this.$._moveHandle;
 
 
-                    assetContainer.bindDomEvent("click", function () {
+                    assetContainer.bindDomEvent("click", function() {
                         self._showKeyBoard();
                     });
 
-                    assetContainer.bindDomEvent("pointerdown", function (e) {
+                    assetContainer.bindDomEvent("pointerdown", function(e) {
                         self._down(e, self._isGesture(e) ? GESTURE : MOVE);
                     });
 
-                    scaleHandle && scaleHandle.bindDomEvent("pointerdown", function (e) {
+                    scaleHandle && scaleHandle.bindDomEvent("pointerdown", function(e) {
                         self._down(e, self._isGesture(e) ? GESTURE : SCALE, scaleHandle);
                     });
 
-                    resizeHandle && resizeHandle.bindDomEvent("pointerdown", function (e) {
+                    resizeHandle && resizeHandle.bindDomEvent("pointerdown", function(e) {
                         self._down(e, RESIZE);
                     });
 
-                    rotateHandle && rotateHandle.bindDomEvent("pointerdown", function (e) {
+                    rotateHandle && rotateHandle.bindDomEvent("pointerdown", function(e) {
                         self._down(e, self._isGesture(e) ? GESTURE : ROTATE, rotateHandle);
                     });
 
-                    moveHandle && moveHandle.bindDomEvent("pointerdown", function (e) {
+                    moveHandle && moveHandle.bindDomEvent("pointerdown", function(e) {
                         self._down(e, self._isGesture(e) ? GESTURE : MOVE, moveHandle);
                     });
 
 
                     if (productViewer && this.$hasTouch) {
-                        productViewer.bindDomEvent("pointerdown", function (e) {
+                        productViewer.bindDomEvent("pointerdown", function(e) {
                             if (productViewer.$.selectedConfiguration === self.$.configuration && self._isGesture(e)) {
                                 self._down(e, GESTURE);
                             }
                         });
                     }
 
-                    var preventDefault = function (e) {
+                    var preventDefault = function(e) {
                         e.preventDefault && e.preventDefault();
                         return false;
                     };
 
-                    assetContainer.bindDomEvent("click", function (e) {
+                    assetContainer.bindDomEvent("click", function(e) {
                         e.stopPropagation && e.stopPropagation();
                         return false;
                     });
@@ -282,15 +282,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _isGesture: function (e) {
+            _isGesture: function(e) {
                 return e.touches && e.touches.length > 1;
             },
 
-            _productViewerSizeChanged: function () {
+            _productViewerSizeChanged: function() {
                 this.set('_globalToLocalFactor', this.$.productViewer.globalToLocalFactor());
             },
 
-            _showKeyBoard: function () {
+            _showKeyBoard: function() {
 
                 var parent = this.$.productViewer.$parent;
 
@@ -308,13 +308,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _transformationChanged: function () {
+            _transformationChanged: function() {
 
                 var configuration = this.$.configuration;
                 if (configuration) {
 
                     var self = this;
-                    this._debounceFunctionCall(function () {
+                    this._debounceFunctionCall(function() {
                         if (!self.$.preventValidation) {
                             configuration._setError(configuration._validateTransform({
                                 offset: this.$._offset,
@@ -326,11 +326,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _commitSelected: function () {
+            _commitSelected: function() {
                 this.$wasSelected = false;
             },
 
-            _down: function (e, mode, initiator) {
+            _down: function(e, mode, initiator) {
 
                 var self = this,
                     configuration = this.$.configuration,
@@ -545,20 +545,20 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var window = this.$window;
 
                 // shim layer with setTimeout fallback
-                $w.requestAnimFrame = $w.$requestAnimFrame || (function () {
-                    return $w.requestAnimationFrame ||
-                        $w.webkitRequestAnimationFrame ||
-                        $w.mozRequestAnimationFrame ||
-                        function (callback) {
-                            $w.setTimeout(callback, 1000 / 60);
-                        };
-                })();
+                $w.requestAnimFrame = $w.$requestAnimFrame || (function() {
+                        return $w.requestAnimationFrame ||
+                            $w.webkitRequestAnimationFrame ||
+                            $w.mozRequestAnimationFrame ||
+                            function(callback) {
+                                $w.setTimeout(callback, 1000 / 60);
+                            };
+                    })();
 
-                this.$requestAnimCallback = this.$requestAnimCallback || function () {
-                    self._callMove();
-                };
+                this.$requestAnimCallback = this.$requestAnimCallback || function() {
+                        self._callMove();
+                    };
 
-                this.$moveHandler = function (e) {
+                this.$moveHandler = function(e) {
                     e.preventDefault();
 
                     window.unbindDomEvent("pointermove", self.$moveHandler);
@@ -566,10 +566,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     selected = true;
 
                     self.$moveState = self.$moveState || {
-                        active: false,
-                        e: e,
-                        mode: mode
-                    };
+                            active: false,
+                            e: e,
+                            mode: mode
+                        };
                     self.$moveState.e = e;
                     self.$moveState.mode = mode;
                     if (!self.$moveState.active) {
@@ -578,11 +578,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
                 };
 
-                this.$upHandler = function (e) {
+                this.$upHandler = function(e) {
                     var distance = self.getDistance(configuration.$.offset, self.$._offset);
                     var onlyPointed = !(distance) && mode === MOVE && !self.$moveInitiator;
 
-                    if(onlyPointed && configuration == previousSelectedConfiguration && (configuration instanceof TextConfiguration || configuration instanceof SpecialTextConfiguration)) {
+                    if (onlyPointed && configuration == previousSelectedConfiguration && (configuration instanceof TextConfiguration || configuration instanceof SpecialTextConfiguration)) {
                         self.$.bus.trigger('ConfigurationViewer.configurationReselected', {
                             configuration: configuration,
                             previousConfiguration: previousSelectedConfiguration
@@ -602,11 +602,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
                 };
 
-                this.$keyDownHandler = function (e) {
+                this.$keyDownHandler = function(e) {
                     self._keyDown(e, mode);
                 };
 
-                this.$keyUpHandler = function (e) {
+                this.$keyUpHandler = function(e) {
                     self._keyUp(e, mode);
                 };
 
@@ -621,7 +621,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _beforeDestroy: function () {
+            _beforeDestroy: function() {
                 this.callBase();
 
                 var snapLines = this.$.printAreaViewer.$.snapLines;
@@ -637,7 +637,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _callMove: function () {
+            _callMove: function() {
                 if (this.$moveState && this.$moveState.active) {
                     this.$moveState.active = false;
                     this._move(this.$moveState.e, this.$moveState.mode);
@@ -647,7 +647,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _move: function (e, mode) {
+            _move: function(e, mode) {
 
                 if (!this.$moving) {
                     return;
@@ -878,7 +878,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     scaleWithFactor(second.subtract(first).distance() / this.$scaleDiagonalDistance);
                 }
 
-                function scaleWithFactor(scaleFactor) {
+                function scaleWithFactor (scaleFactor) {
 
                     var scale = {
                         x: scaleFactor * configuration.$.scale.x,
@@ -896,7 +896,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _up: function (e, mode) {
+            _up: function(e, mode) {
                 if (!this.$moving) {
                     return;
                 }
@@ -939,7 +939,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
 
                 var window = this.dom(this.$stage.$window),
-                    f = function (e) {
+                    f = function(e) {
                         // capture phase event to prevent click
                         // which closes menus etc.
                         e.stopPropagation();
@@ -950,7 +950,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 // chrome does it right and dispatches a click, but
                 // the mobile devices and also ff, safari needs to unbind it time based. sucks.
-                setTimeout(function () {
+                setTimeout(function() {
                     window.unbindDomEvent("click", f, true);
                 }, 100);
 
@@ -958,23 +958,23 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this._stopTransformation();
             },
 
-            disableMoveSnipping: function () {
+            disableMoveSnipping: function() {
                 moveSnippingEnabled = false;
                 var snapLines = this.get('printAreaViewer.snapLines');
                 snapLines && snapLines.clear();
             },
 
-            enableMoveSnipping: function () {
+            enableMoveSnipping: function() {
                 moveSnippingEnabled = true;
             },
 
-            focus: function () {
+            focus: function() {
                 if (this.$asset) {
                     this.$asset._focus();
                 }
             },
 
-            _keyDown: function (e, mode) {
+            _keyDown: function(e, mode) {
 
                 if (e.keyCode === 16) {
                     this.set("shiftKey", true);
@@ -989,21 +989,21 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$asset.handleKeyDown && this.$asset.handleKeyDown(e);
             },
 
-            _keyUp: function (e, mode) {
+            _keyUp: function(e, mode) {
                 if (e.keyCode === 16) {
                     this.set("shiftKey", false);
                 }
             },
 
-            _keyPress: function (e) {
+            _keyPress: function(e) {
                 this.$asset.handleKeyPress && this.$asset.handleKeyPress(e);
             },
 
-            addChar: function (c) {
+            addChar: function(c) {
                 this.$asset.addChar && this.$asset.addChar(c);
             },
 
-            _stopTransformation: function () {
+            _stopTransformation: function() {
 
                 this._unbindTransformationHandler();
 
@@ -1011,7 +1011,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$moving = false;
             },
 
-            _unbindTransformationHandler: function () {
+            _unbindTransformationHandler: function() {
                 var window = this.dom(this.$stage.$window);
                 window.unbindDomEvent("pointermove", this.$moveHandler);
                 window.unbindDomEvent("pointerup", this.$upHandler);
@@ -1021,7 +1021,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$upHandler = null;
             },
 
-            _resetTransformation: function () {
+            _resetTransformation: function() {
                 var configuration = this.$.configuration;
 
                 if (configuration) {
@@ -1040,14 +1040,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _cancelTransformation: function () {
+            _cancelTransformation: function() {
 
                 this._resetTransformation();
                 this._stopTransformation();
 
             },
 
-            getButtonSize: function (size) {
+            getButtonSize: function(size) {
                 var globalToLocalFactor = this.globalToLocalFactor();
 
                 return {
@@ -1056,15 +1056,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 };
             },
 
-            pixelToViewBox: function (pixel) {
+            pixelToViewBox: function(pixel) {
                 return pixel * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
-            scaleIconToViewBox: function () {
+            scaleIconToViewBox: function() {
                 return 0.1 * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
-            deleteConfiguration: function (e) {
+            deleteConfiguration: function(e) {
 
                 if (!this.$hasTouch && e.domEvent.which !== 1) {
                     // not a first mouse button click
@@ -1087,19 +1087,19 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
 
-            substract: function (value, minuend) {
+            substract: function(value, minuend) {
                 return value - minuend;
             },
 
-            mul: function (value, multiplicator) {
+            mul: function(value, multiplicator) {
                 return value * multiplicator;
             },
 
-            half: function (value) {
+            half: function(value) {
                 return value / 2;
             },
 
-            flipOffsetX: function () {
+            flipOffsetX: function() {
                 if (this.$._scale.x < 0) {
                     return -this.$.configuration.width();
                 }
@@ -1107,7 +1107,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return 0;
             }.onChange("_scale"),
 
-            flipOffsetY: function () {
+            flipOffsetY: function() {
                 if (this.$._scale.y < 0) {
                     return -this.$.configuration.height();
                 }
@@ -1115,47 +1115,47 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return 0;
             }.onChange("_scale"),
 
-            errorClass: function () {
+            errorClass: function() {
                 return this.$._configurationValid ? "" : "error";
             }.onChange("_configurationValid"),
 
-            isFocused: function () {
+            isFocused: function() {
                 return this.isSelectedConfiguration() && this.get('productViewer.focused');
             }.on(["productViewer", "change:selectedConfiguration"], ['productViewer', 'change:focused']),
 
-            isSelectedConfiguration: function () {
+            isSelectedConfiguration: function() {
                 return this.$.configuration !== null &&
                     this.get('productViewer.editable') === true && this.get("productViewer.selectedConfiguration") === this.$.configuration
             }.on(["productViewer", "change:selectedConfiguration"]),
 
-            isSelectedConfigurationOrConfigurationHasError: function () {
+            isSelectedConfigurationOrConfigurationHasError: function() {
                 return this.$.configuration !== null &&
                     (this.get('productViewer.editable') === true &&
                     this.get("productViewer.selectedConfiguration") === this.$.configuration) ||
                     (!this.$.configuration.isValid());
             }.on(["productViewer", "change:selectedConfiguration"], ["configuration", "isValidChanged"]),
 
-            isScalable: function () {
+            isScalable: function() {
                 return this.isSelectedConfiguration() && this.get("configuration.isScalable()");
             }.onChange("selected"),
 
-            isResizeable: function () {
+            isResizeable: function() {
                 return this.isSelectedConfiguration() && this.get("configuration.type") === "text";
             }.onChange("selected"),
 
-            isRotatable: function () {
+            isRotatable: function() {
                 return this.isSelectedConfiguration() && this.get("configuration.isRotatable()");
             }.onChange("selected"),
 
-            isMovable: function () {
+            isMovable: function() {
                 return this.isSelectedConfiguration();
             }.onChange("selected"),
 
-            isRemovable: function () {
+            isRemovable: function() {
                 return this.isSelectedConfiguration() && this.get("configuration.isRemovable()");
             }.onChange("selected"),
 
-            isRotating: function () {
+            isRotating: function() {
                 return this.$._mode === ROTATE;
             }.onChange("_mode"),
 
@@ -1167,11 +1167,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return this.$._mode === SCALE;
             }.onChange("_mode"),
 
-            hasError: function () {
+            hasError: function() {
                 return !this.$.configuration.isValid() && this.get('productViewer.editable') === true;
             }.on(["configuration", "isValidChanged"]),
 
-            errorDescription: function () {
+            errorDescription: function() {
 
                 var error = null,
                     configuration = this.$.configuration;
@@ -1214,8 +1214,20 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     y += arguments[i] * arguments[i];
                 }
                 return Math.sqrt(y);
+            },
+
+            toPolar: function(x, y) {
+                return {
+                    angle: Math.atan(y / x),
+                    length: this.hypot(x, y)
+                };
+            },
+
+            toCartesian: function(angle, length) {
+                return {
+                    x: length * Math.cos(angle),
+                    y: length * Math.sin(angle)
+                }
             }
-
-
         });
     });
