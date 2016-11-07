@@ -47,6 +47,12 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             this.callBase();
         },
 
+        compose: function() {
+            var ret = this.callBase();
+            delete ret.designs;
+            return ret;
+        },
+
         /***
          * saves assets asynchronously
          * @param callback
