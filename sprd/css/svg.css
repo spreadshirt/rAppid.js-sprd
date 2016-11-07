@@ -36,11 +36,7 @@ image {
 }
 
 .configuration-viewer.hide-configuration {
-    visibility: hidden;
-}
-
-.configuration-viewer.hide-configuration * {
-    visibility: hidden !important;
+    opacity: 0;
 }
 
 .product-viewer.active.bright .print-area-border,
