@@ -16,7 +16,8 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             commission: null,
 
             renderedText: null,
-            renderedFontId: null
+            renderedFontId: null,
+            renderedAlign: null
         },
 
         schema: {
@@ -155,12 +156,14 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
                 this.$lastListener = listener;
 
+                var align = this.$.align;
+
                 pimpImageService.generateImage({
                     text: text,
                     size: "M",
                     font: font,
                     taskId: this.$.taskId,
-                    align: this.$.align
+                    align: align
                 }, function (err, data) {
                     if (listener.cancelled) {
                         return;
@@ -194,6 +197,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                             taskId: data.task.id,
                             renderedText: text,
                             renderedFontId: font.$.id,
+                            renderedAlign: align,
                             _size: size,
                             scale: scale,
                             design: null
