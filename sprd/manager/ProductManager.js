@@ -1112,7 +1112,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 _.defaults(params, {
                     addToProduct: true,
                     removeConfiguration: true,
-                    text: textConfiguration.$.textFlow.text(0, -1, "\n")
+                    text: textConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "")
                 });
                 var self = this;
                 this.addSpecialText(product, params, function (err, config) {
