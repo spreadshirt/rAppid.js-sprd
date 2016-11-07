@@ -31,7 +31,7 @@ define(["js/core/Component", "underscore", "flow", "js/lib/extension"], function
 
             platform: "EU",
 
-            basePath: "/sprd-frontend/wellness/track"
+            basePath: "/shopData/wellness"
         },
 
         ctor: function () {
