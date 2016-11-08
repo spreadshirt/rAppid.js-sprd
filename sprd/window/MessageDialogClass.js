@@ -9,7 +9,7 @@ define(["xaml!js/ui/Dialog"], function (Dialog) {
         },
 
         _closeDialog: function (button) {
-            this.close(button);
+            this.close(button.confirm);
         }
     });
 });
