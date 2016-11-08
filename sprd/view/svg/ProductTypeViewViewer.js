@@ -224,31 +224,41 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
         _handleUp: function (e) {
             var domEvent = e.domEvent;
             if (dndObject) {
-                var viewer = this;
+                var viewer = this,
+                    productManager = dndObject.viewer.get('product.manager'),
+                    hoverState = dndObject.dndImage.get('hoverState');
+
                 dndObject.viewer.unbindMoveEvent();
+
                 if (domEvent.changedTouches && domEvent.changedTouches.length) {
                     viewer = findProductTypeViewViewer(domEvent.changedTouches[0].clientX, domEvent.changedTouches[0].clientY, viewer);
                 }
+
                 var configView = dndObject.configurationViewer;
-                if (viewer && dndObject.viewer !== viewer) {
+                var product = dndObject.viewer.$.product;
+
+                if(hoverState == DROP_HOVERED.INVALID) {
+                    productManager.moveConfigurationToView(product, dndObject.config, product.$.view);
+                } else if (viewer && dndObject.viewer !== viewer) {
                     e.stopPropagation && e.stopPropagation();
                     configView.$moving = false;
                     dndObject.dndImage.set('hoverState', DROP_HOVERED.NO);
 
-                    var productManager = dndObject.viewer.get('product.manager');
-                    productManager.moveConfigurationToView(dndObject.viewer.$.product, dndObject.config, viewer.$._view, function (err) {
+                    productManager.moveConfigurationToView(product, dndObject.config, viewer.$._view, function (err) {
                         if (!err) {
                             dndObject.viewer.$.product.set('view', viewer.$._view);
                         }
                     });
                     configView && configView.set('preventValidation', false);
                 }
+
                 if (configView) {
                     configView.removeClass('hide-configuration');
                     configView.enableMoveSnipping();
                 }
                 dndObject.dndImage.set({
-                    'visible': false
+                    'visible': false,
+                    'hoverState': DROP_HOVERED.NO
                 });
                 dndObject = null;
             }
