@@ -60,7 +60,22 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                     options.noCache = true;
                 }
 
-                return this.callBase(model, options, callback);
+                model.options = options;
+                var ret = this.callBase(model, options, callback);
+                delete model.options;
+
+                return ret;
+            },
+
+            _buildUriForResource: function(resource) {
+                var uri = this.callBase();
+
+                var options = resource.options;
+                if (options && options.fetchInShop) {
+                    uri = uri.replace(/\/(users|shops)\/\d+\//, "/shops/" + options.fetchInShop + "/");
+                }
+
+                return uri;
             },
 
             loadCollectionPage: function(collectionPage, options, callback) {
