@@ -583,6 +583,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var onlyPointed = !(distance) && mode === MOVE && !self.$moveInitiator;
 
                     if(onlyPointed && configuration == previousSelectedConfiguration && (configuration instanceof TextConfiguration || configuration instanceof SpecialTextConfiguration)) {
+                        self._stopTransformation();
                         self.$.bus.trigger('ConfigurationViewer.configurationReselected', {
                             configuration: configuration,
                             previousConfiguration: previousSelectedConfiguration
