@@ -23,7 +23,9 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             imageService: null,
 
             error: "{product.configurationsOnViewError(view)}",
-            componentClass: "product-viewer"
+            componentClass: "product-viewer",
+
+            copiedConfiguration: null
         },
 
         inject: {
@@ -166,7 +168,12 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
         },
 
         _onConfigurationsReset: function () {
-            this.set('selectedConfiguration', null);
+            var configurations = this.$.product.$.configurations,
+                selectedConfiguration = this.$.selectedConfiguration;
+
+            if(!configurations.contains(selectedConfiguration)) {
+                this.set('selectedConfiguration', null);
+            }
         },
 
         _onConfigurationViewerAdded: function (e) {
@@ -243,6 +250,24 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 }
             }
 
+            var copiedConfiguration = this.$.copiedConfiguration;
+            if ((e.metaKey || e.ctrlKey) && e.keyCode === 86 && copiedConfiguration) {
+                var newConfiguration = copiedConfiguration.clone();
+
+                this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view);
+
+                this.set('selectedConfiguration', newConfiguration);
+
+                offset = newConfiguration.$.offset;
+                offset.set({
+                    x: offset.$.x + 20,
+                    y: offset.$.y + 20
+                });
+
+                newConfiguration.$stage = null;
+                this.$.bus.setUp(newConfiguration);
+            }
+
             var selectedConfiguration = self.$.selectedConfiguration;
 
             if (selectedConfiguration && product) {
@@ -263,6 +288,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     case 39:
                         deltaX = 1;
                 }
+                var offset;
 
                 if (deltaX || deltaY) {
 
@@ -271,7 +297,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                         deltaY *= 10;
                     }
 
-                    var offset = selectedConfiguration.$.offset.clone();
+                    offset = selectedConfiguration.$.offset.clone();
                     offset.set({
                         x: offset.$.x + deltaX,
                         y: offset.$.y + deltaY
@@ -290,6 +316,13 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
                     product.$.configurations.remove(selectedConfiguration);
                     self.set('selectedConfiguration', null);
+
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+
+                if ((e.metaKey || e.ctrlKey) && e.keyCode === 67) {
+                    this.set('copiedConfiguration', selectedConfiguration.clone());
 
                     e.preventDefault();
                     e.stopPropagation();

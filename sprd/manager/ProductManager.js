@@ -1038,10 +1038,18 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     // scale to fit into default box
                     var scaleToFixDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
 
+                    newScale = scaleToFixDefaultBox; // scaleToFixDefaultBox;
+
+                    if (configuration instanceof DesignConfiguration && printType.isEnlargeable()) {
+                        var minimumScale = (configuration.get("design.restrictions.minimumScale") || 100) / 100;
+                        if (scaleToFixDefaultBox < minimumScale) {
+                            newScale = minimumScale;
+                        }
+                    }
+
                     // TODO: first use scaleToFixDefaultBox and use scaleToAvoidCollission only if
                     // scaleToFitDefaultBox is not possible for print type
 
-                    newScale = scaleToFixDefaultBox; // scaleToFixDefaultBox;
 
                     configuration.set("scale", {
                         x: newScale,
@@ -1104,7 +1112,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 _.defaults(params, {
                     addToProduct: true,
                     removeConfiguration: true,
-                    text: textConfiguration.$.textFlow.text(0, -1, "\n")
+                    text: textConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "")
                 });
                 var self = this;
                 this.addSpecialText(product, params, function (err, config) {

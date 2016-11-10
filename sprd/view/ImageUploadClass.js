@@ -169,7 +169,7 @@ define(["js/ui/View", "js/core/List", "flow", "xaml!sprd/data/ImageServerDataSou
                             localImage: evt.target.result
                         });
                     };
-                    img.src = event.target.result;
+                    img.src = evt.target.result;
 
                 };
 

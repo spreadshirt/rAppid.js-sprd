@@ -32,7 +32,7 @@ define(['sprd/view/svg/ConfigurationRenderer'], function (Renderer) {
 
             var colorId = this.get("configuration.printColors[0].id");
 
-            if (colorId == null) {
+            if (colorId == null || !this.isSpecialFlex()) {
                 return;
             }
 
