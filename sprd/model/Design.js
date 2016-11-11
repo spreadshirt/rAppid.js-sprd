@@ -60,7 +60,8 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             name: '',
             description: '',
             restrictions: null,
-            designServiceState: null
+            designServiceState: null,
+            localImage: null
         },
 
         schema: {
@@ -103,6 +104,13 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         isVectorDesign: function () {
             return this.$.colors && this.$.colors.length > 0;
         },
+
+        supportsMasks: function() {
+            //TODO: remove next line
+            return true;
+
+            //return !!this.get('localImage');
+        }.onChange("localImage"),
 
         hasBackgroundColor: function () {
 

@@ -18,15 +18,21 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 _dpi: "{printType.dpi}",
 
                 design: null,
+                mask: null,
 
                 _designCommission: "{design.price}",
                 _allowScale: "{design.restrictions.allowScale}"
+
             },
 
             ctor: function () {
                 this.$sizeCache = {};
                 this.$$ = {};
                 this.callBase();
+
+                this.bind("change:mask", this.applyMask, this);
+                this.bind("design", "change:localImage", this.applyMask, this);
+
             },
 
             inject: {
@@ -74,6 +80,21 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return ret;
+            },
+
+            applyMask: function() {
+                var design = this.$.design;
+                if(!design) {
+                    return;
+                }
+
+                var mask = this.$.mask,
+                    localImage = design.$.localImage;
+                if(mask && localImage){
+                    mask.applyMask(design, {preview: true}, function(err, transformedImage) {
+                        design.set("transformedImage");
+                    })
+                }
             },
 
             setColor: function (layerIndex, color) {
