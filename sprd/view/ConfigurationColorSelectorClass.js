@@ -127,8 +127,11 @@ define(["js/ui/View", "sprd/entity/TextConfiguration", "sprd/entity/DesignConfig
         },
 
         _handleColorSelect: function (e) {
-            if (this.$.configuration) {
-                this.$.configuration.setColor(this.$.selectedLayer.index, e.$);
+            var configuration = this.$.configuration,
+                selectedLayer = this.$.selectedLayer;
+
+            if (configuration && selectedLayer) {
+                configuration.setColor(selectedLayer.index, e.$);
                 this.trigger("on:colorSelected");
 
                 // TODO: trigger custom event
