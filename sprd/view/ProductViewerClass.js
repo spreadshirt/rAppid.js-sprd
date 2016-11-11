@@ -250,8 +250,10 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 }
             }
 
-            var copiedConfiguration = this.$.copiedConfiguration;
-            if ((e.metaKey || e.ctrlKey) && e.keyCode === 86 && copiedConfiguration) {
+            var copiedConfiguration = this.$.copiedConfiguration,
+                ctrlKey = e.metaKey || e.ctrlKey;
+
+            if (ctrlKey && e.keyCode === 86 && copiedConfiguration) {
                 var newConfiguration = copiedConfiguration.clone();
 
                 this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view);
@@ -321,8 +323,13 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     e.stopPropagation();
                 }
 
-                if ((e.metaKey || e.ctrlKey) && e.keyCode === 67) {
+                if (ctrlKey && (e.keyCode === 67 || e.keyCode === 88)) {
                     this.set('copiedConfiguration', selectedConfiguration.clone());
+
+                    if(e.keyCode === 88) {
+                        product.$.configurations.remove(selectedConfiguration);
+                        self.set('selectedConfiguration', null);
+                    }
 
                     e.preventDefault();
                     e.stopPropagation();
