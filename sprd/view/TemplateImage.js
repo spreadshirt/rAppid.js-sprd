@@ -1,4 +1,4 @@
-define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, ImageService) {
+define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function(Image, ImageService) {
 
     return Image.inherit("sprd.view.TemplateImage", {
 
@@ -10,26 +10,32 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
              * @type {sprd.model.Template}
              * @required
              */
-            template: null
+            template: null,
+            templateId: null
         },
 
         inject: {
             imageService: ImageService
         },
 
-        imageUrl: function () {
-            var template = this.$.template;
-            if (template) {
+        imageUrl: function() {
+            var template = this.$.template,
+                id = this.$.templateId;
 
-                return this.$.imageService.productImage(template.$.id, 0, null, "composition", {
-                    width: this.$.width,
-                    height: this.$.height,
-                    hideProductType: true
-                });
+            if (!template && !id) {
+                return null;
             }
-            return null;
+            else if (template) {
+                this.set('templateId', template.$.id);
+                id = template.$.id;
+            }
+
+            return this.$.imageService.productImage(id, 0, null, "composition", {
+                width: this.$.width,
+                height: this.$.height,
+                hideProductType: true
+            });
 
         }.onChange('template', 'width', 'height')
-
     });
 });
