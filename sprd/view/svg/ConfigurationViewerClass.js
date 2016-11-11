@@ -597,9 +597,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             configuration.set('offset', self.$._offset);
                         }
                         self.set('_configurationInfo', false);
-
-                        self._stopTransformation();
                     }
+
+                    self._stopTransformation();
                 };
 
                 this.$keyDownHandler = function (e) {
