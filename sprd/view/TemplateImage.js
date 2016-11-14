@@ -10,8 +10,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function(Image, Image
              * @type {sprd.model.Template}
              * @required
              */
-            template: null,
-            templateId: null
+            template: null
         },
 
         inject: {
@@ -19,23 +18,16 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function(Image, Image
         },
 
         imageUrl: function() {
-            var template = this.$.template,
-                id = this.$.templateId;
-
-            if (!template && !id) {
+            var template = this.$.template;
+            if (!template) {
                 return null;
             }
-            else if (template) {
-                this.set('templateId', template.$.id);
-                id = template.$.id;
-            }
 
-            return this.$.imageService.productImage(id, 0, null, "composition", {
+            return this.$.imageService.productImage(template.$.id, 0, null, "composition", {
                 width: this.$.width,
                 height: this.$.height,
                 hideProductType: true
             });
-
         }.onChange('template', 'width', 'height')
     });
 });
