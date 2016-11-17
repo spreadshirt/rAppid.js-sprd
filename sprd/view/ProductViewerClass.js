@@ -267,9 +267,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                         setTimeout(function() {
                             bus.trigger("errorMessage", null);
                         }, 5000);
+                        newConfiguration = null;
                     } else {
-                        self.set('selectedConfiguration', newConfiguration);
-
                         offset = newConfiguration.$.offset;
                         offset.set({
                             x: offset.$.x + 20,
@@ -279,6 +278,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                         newConfiguration.$stage = null;
                         bus.setUp(newConfiguration);
                     }
+
+                    self.set('selectedConfiguration', newConfiguration);
                 });
             }
 
