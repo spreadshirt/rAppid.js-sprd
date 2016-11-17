@@ -254,20 +254,32 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 ctrlKey = e.metaKey || e.ctrlKey;
 
             if (ctrlKey && e.keyCode === 86 && copiedConfiguration) {
-                var newConfiguration = copiedConfiguration.clone();
+                var newConfiguration = copiedConfiguration.clone(),
+                    bus = self.$.bus;
 
-                this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view);
+                this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view, function(err) {
+                    if(err) {
+                        bus.trigger("errorMessage", {
+                            key: "invalidView",
+                            value: "error.invalidView"
+                        });
 
-                this.set('selectedConfiguration', newConfiguration);
+                        setTimeout(function() {
+                            bus.trigger("errorMessage", null);
+                        }, 5000);
+                    } else {
+                        self.set('selectedConfiguration', newConfiguration);
 
-                offset = newConfiguration.$.offset;
-                offset.set({
-                    x: offset.$.x + 20,
-                    y: offset.$.y + 20
+                        offset = newConfiguration.$.offset;
+                        offset.set({
+                            x: offset.$.x + 20,
+                            y: offset.$.y + 20
+                        });
+
+                        newConfiguration.$stage = null;
+                        bus.setUp(newConfiguration);
+                    }
                 });
-
-                newConfiguration.$stage = null;
-                this.$.bus.setUp(newConfiguration);
             }
 
             var selectedConfiguration = self.$.selectedConfiguration;
