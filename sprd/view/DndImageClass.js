@@ -63,6 +63,11 @@ define(["js/ui/View", "js/core/Bus"], function(View, Bus) {
                         value: "error.invalidView"
                     });
                     break;
+                case DROP_HOVERED.NO:
+                    setTimeout(function() {
+                        bus.trigger("errorMessage", null);
+                    }, 5000);
+                    break;
             }
 
         },
