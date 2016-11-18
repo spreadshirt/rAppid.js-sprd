@@ -278,8 +278,6 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                         newConfiguration.$stage = null;
                         bus.setUp(newConfiguration);
                     }
-
-                    self.set('selectedConfiguration', newConfiguration);
                 });
             }
 
