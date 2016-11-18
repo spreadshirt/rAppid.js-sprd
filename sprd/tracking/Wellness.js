@@ -1,4 +1,4 @@
-define(["js/core/Component", "underscore", "flow", "js/lib/extension"], function (Component, _, flow, extension) {
+define(["js/core/Component", "underscore", "flow", "js/lib/extension", "rAppid"], function (Component, _, flow, extension, rAppid) {
 
     var undefined;
 
@@ -39,25 +39,14 @@ define(["js/core/Component", "underscore", "flow", "js/lib/extension"], function
             this.$trackedEvents = [];
 
             var self = this,
-                trackRequest = 0,
-                callbackNamePrototype;
+                trackRequest = 0;
 
             this.$tracker = {
                 track: function(action, data) {
 
                     trackRequest++;
 
-                    var head,
-                        script,
-                        url = [self.$.basePath,
-                            (self.$.platform || "EU").toLowerCase(),
-                            self.$.context === "shop" ? self.$.contextId : -1,  // TODO: send context, needs a fix from jbe in wellness
-                            self.$.application,
-                            self.$.version || -1,
-                            action],
-                        callbackName = data.callback = callbackNamePrototype + trackRequest;
-
-                    window[callbackName] = removeScriptNode;
+                    var url = [self.$.basePath, action];
 
                     for (var key in data) {
                         if (data.hasOwnProperty(key) && (data[key] === null || data[key] === undefined)) {
@@ -67,41 +56,22 @@ define(["js/core/Component", "underscore", "flow", "js/lib/extension"], function
 
                     data.locale = data.locale || self.$.locale || "";
                     data.localTime = data.localTime || Date.now().toString();
+                    data.platform = (self.$.platform || "").toLowerCase();
+                    data.context = self.$.context || "";
+                    data.contextId = self.$.contextId || "";
+                    data.application = self.$.application || "";
+                    data.version = self.$.version || "";
 
                     url = url.join("/") + "?" + rAppid.createQueryString(data);
 
-                    if (self.$.host) {
-                        url = "//www" + (trackRequest % 10) + "." + self.$.host + url;
-                    }
-
-                    head = document.getElementsByTagName('head')[0];
-
-                    script = document.createElement("script");
-                    script.type = "text/javascript";
-                    script.src = url;
-                    script.async = true;
-                    script.onerror = removeScriptNode;
-
-                    head && head.appendChild(script);
-
-                    function removeScriptNode() {
-                        // empty jsonp callback
-                        if (script && script.parentNode) {
-                            script.parentNode.removeChild(script);
-                        }
-
-                        window[callbackName] = null;
-                        delete window[callbackName];
-                    }
+                    var img = new Image();
+                    img.src = url;
 
                 }
             };
 
             this.callBase();
 
-            if (this.runsInBrowser()) {
-                callbackNamePrototype = "wellnessTracking" + this.$cid + "_";
-            }
         },
 
         _queueOrExecute: function (executeFunction) {
