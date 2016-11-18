@@ -53,20 +53,15 @@ define(["js/ui/View", "js/core/Bus"], function(View, Bus) {
                 case DROP_HOVERED.YES :
                     this.addClass('ok');
                     stage && stage.addClass("dnd-ok");
-                    bus.trigger("errorMessage", null);
+                    bus.trigger("DndImage.DropHoverStatus", DROP_HOVERED.YES);
                     break;
                 case DROP_HOVERED.INVALID:
                     this.addClass('invalid');
                     stage && stage.addClass("dnd-invalid");
-                    bus.trigger("errorMessage", {
-                        key: "invalidView",
-                        value: "error.invalidView"
-                    });
+                    bus.trigger("DndImage.DropHoverStatus", DROP_HOVERED.INVALID);
                     break;
                 case DROP_HOVERED.NO:
-                    setTimeout(function() {
-                        bus.trigger("errorMessage", null);
-                    }, 5000);
+                    bus.trigger("DndImage.DropHoverStatus", DROP_HOVERED.NO);
                     break;
             }
 

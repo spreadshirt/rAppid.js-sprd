@@ -238,6 +238,18 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             return null;
         },
 
+        getConfigurationsOnActiveView: function(configurations) {
+            var self = this,
+                printArea = null,
+                view = null;
+
+            return configurations.$items.filter(function(configuration) {
+                printArea = configuration.$.printArea;
+                view = self.$.view;
+                return view.containsPrintArea(printArea)
+            });
+        },
+
         _keyDownHandler: function (e) {
             var self = this,
                 product = self.$.product;
@@ -259,21 +271,29 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
                 this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view, function(err) {
                     if(err) {
-                        bus.trigger("errorMessage", {
-                            key: "invalidView",
-                            value: "error.invalidView"
-                        });
-
-                        setTimeout(function() {
-                            bus.trigger("errorMessage", null);
-                        }, 5000);
+                        bus.trigger("ProductViewer.copyToViewError", err);
                         newConfiguration = null;
                     } else {
-                        offset = newConfiguration.$.offset;
-                        offset.set({
-                            x: offset.$.x + 20,
-                            y: offset.$.y + 20
+                        var configurations = self.$.product.$.configurations,
+                            configurationsOnView = self.getConfigurationsOnActiveView(configurations);
+
+                        var newOffset = newConfiguration.$.offset,
+                            newX = Math.round(newOffset.$.x),
+                            newY = Math.round(newOffset.$.y);
+
+                        configurationsOnView = configurationsOnView.filter(function(configuration) {
+                            var offset = configuration.$.offset,
+                                x = Math.round(offset.$.x),
+                                y = Math.round(offset.$.y);
+
+                            return (newX == x) && (newY == y);
                         });
+                        if(configurationsOnView.length > 0) {
+                            newOffset.set({
+                                x: newOffset.$.x + 20,
+                                y: newOffset.$.y + 20
+                            });
+                        }
 
                         newConfiguration.$stage = null;
                         bus.setUp(newConfiguration);
