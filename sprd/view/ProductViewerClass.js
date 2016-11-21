@@ -238,6 +238,18 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             return null;
         },
 
+        getConfigurationsOnActiveView: function(configurations) {
+            var self = this,
+                printArea = null,
+                view = null;
+
+            return configurations.$items.filter(function(configuration) {
+                printArea = configuration.$.printArea;
+                view = self.$.view;
+                return view.containsPrintArea(printArea)
+            });
+        },
+
         _keyDownHandler: function (e) {
             var self = this,
                 product = self.$.product;
@@ -250,22 +262,47 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 }
             }
 
-            var copiedConfiguration = this.$.copiedConfiguration;
-            if ((e.metaKey || e.ctrlKey) && e.keyCode === 86 && copiedConfiguration) {
-                var newConfiguration = copiedConfiguration.clone();
+            var copiedConfiguration = this.$.copiedConfiguration,
+                ctrlKey = e.metaKey || e.ctrlKey;
 
-                this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view);
+            if (ctrlKey && e.keyCode === 86 && copiedConfiguration) {
+                var newConfiguration = copiedConfiguration.clone(),
+                    bus = self.$.bus;
 
-                this.set('selectedConfiguration', newConfiguration);
+                this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view, function(err) {
+                    if(err) {
+                        bus.trigger("ProductViewer.copyToViewError", err);
+                        newConfiguration = null;
+                    } else {
+                        var configurations = self.$.product.$.configurations,
+                            configurationsOnView = self.getConfigurationsOnActiveView(configurations);
 
-                offset = newConfiguration.$.offset;
-                offset.set({
-                    x: offset.$.x + 20,
-                    y: offset.$.y + 20
+                        var newOffset = newConfiguration.$.offset,
+                            newX = Math.round(newOffset.$.x),
+                            newY = Math.round(newOffset.$.y);
+
+                        configurationsOnView = configurationsOnView.filter(function(configuration) {
+                            var offset = configuration.$.offset,
+                                x = Math.round(offset.$.x),
+                                y = Math.round(offset.$.y);
+
+                            return (newX == x) && (newY == y);
+                        });
+                        if(configurationsOnView.length > 0) {
+                            newOffset.set({
+                                x: newOffset.$.x + 20,
+                                y: newOffset.$.y + 20
+                            });
+                        }
+
+                        newConfiguration.$stage = null;
+                        bus.setUp(newConfiguration);
+
+                        if(newConfiguration.type == "specialText") {
+                            newConfiguration.fetchImage();
+                        }
+                    }
                 });
-
-                newConfiguration.$stage = null;
-                this.$.bus.setUp(newConfiguration);
             }
 
             var selectedConfiguration = self.$.selectedConfiguration;
@@ -321,8 +358,13 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     e.stopPropagation();
                 }
 
-                if ((e.metaKey || e.ctrlKey) && e.keyCode === 67) {
+                if (ctrlKey && (e.keyCode === 67 || e.keyCode === 88)) {
                     this.set('copiedConfiguration', selectedConfiguration.clone());
+
+                    if(e.keyCode === 88) {
+                        product.$.configurations.remove(selectedConfiguration);
+                        self.set('selectedConfiguration', null);
+                    }
 
                     e.preventDefault();
                     e.stopPropagation();

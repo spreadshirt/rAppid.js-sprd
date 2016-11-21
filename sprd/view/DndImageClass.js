@@ -1,4 +1,4 @@
-define(["js/ui/View"], function (View) {
+define(["js/ui/View", "js/core/Bus"], function(View, Bus) {
 
     var DROP_HOVERED = {
         YES: "YES",
@@ -16,6 +16,10 @@ define(["js/ui/View"], function (View) {
             design: null,
             hoverState: DROP_HOVERED.NO,
             initializeInvisibleChildren: true
+        },
+
+        inject: {
+            bus: Bus
         },
 
         $classAttributes: ["design", "svgElement", "svgContainer"],
@@ -39,7 +43,8 @@ define(["js/ui/View"], function (View) {
         _renderHoverState: function(hovered) {
             this.removeClass('ok invalid');
 
-            var stage = this.$stage;
+            var stage = this.$stage,
+                bus = this.$.bus;
             if (stage) {
                 stage.removeClass("dnd-ok dnd-invalid");
             }
@@ -48,14 +53,22 @@ define(["js/ui/View"], function (View) {
                 case DROP_HOVERED.YES :
                     this.addClass('ok');
                     stage && stage.addClass("dnd-ok");
+                    bus.trigger("DndImage.DropHoverStatus", DROP_HOVERED.YES);
                     break;
                 case DROP_HOVERED.INVALID:
                     this.addClass('invalid');
                     stage && stage.addClass("dnd-invalid");
+                    bus.trigger("DndImage.DropHoverStatus", DROP_HOVERED.INVALID);
+                    break;
+                case DROP_HOVERED.NO:
+                    bus.trigger("DndImage.DropHoverStatus", DROP_HOVERED.NO);
                     break;
             }
 
-        }
+        },
+        isInvalid: function() {
+            return this.$.hoverState == DROP_HOVERED.INVALID;
+        }.onChange("hoverState")
     }, {
         DROP_HOVERED: DROP_HOVERED
     });

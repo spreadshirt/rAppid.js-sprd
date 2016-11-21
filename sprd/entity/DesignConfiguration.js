@@ -18,10 +18,13 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 _dpi: "{printType.dpi}",
 
                 design: null,
-                mask: null,
 
                 _designCommission: "{design.price}",
-                _allowScale: "{design.restrictions.allowScale}"
+                _allowScale: "{design.restrictions.allowScale}",
+
+                mask: null,
+                filter: null,
+                processedImage: null
 
             },
 
@@ -29,10 +32,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.$sizeCache = {};
                 this.$$ = {};
                 this.callBase();
-
-                this.bind("change:mask", this.applyMask, this);
-                this.bind("design", "change:localImage", this.applyMask, this);
-
             },
 
             inject: {
@@ -67,6 +66,25 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.trigger("priceChanged");
             },
 
+            _commitMask: function(mask) {
+                var self = this;
+
+                if (!mask) {
+                    return;
+                }
+
+                var design = this.$.design;
+                if(design) {
+                    mask.apply(design, null,  function(err, result) {
+                        if (!err) {
+                            self.set('processedImage', result);
+                        } else {
+                            console.error(err);
+                        }
+                    })
+                }
+            },
+
             getPrintColorsAsRGB: function () {
                 var ret = [];
 
@@ -80,21 +98,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return ret;
-            },
-
-            applyMask: function() {
-                var design = this.$.design;
-                if(!design) {
-                    return;
-                }
-
-                var mask = this.$.mask,
-                    localImage = design.$.localImage;
-                if(mask && localImage){
-                    mask.applyMask(design, {preview: true}, function(err, transformedImage) {
-                        design.set("transformedImage");
-                    })
-                }
             },
 
             setColor: function (layerIndex, color) {

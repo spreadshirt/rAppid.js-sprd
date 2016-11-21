@@ -398,16 +398,18 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                                 self._setUpConfiguration(configuration);
                                 configuration.init(cb);
                             })
-                            .exec(cb);
+                            .exec(function(err) {
+                                cb(err);
+                            });
                     })
                     .exec(function (err) {
-                        self.initialized = true;
                         self.trigger("productInitialized");
                         self.trigger("priceChanged");
 
                         if (err) {
                             callback && callback(err);
                         } else {
+                            self.initialized = true;
                             callback && callback(null, self);
                         }
                     });
