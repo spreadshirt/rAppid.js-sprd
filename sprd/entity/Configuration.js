@@ -13,6 +13,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
             content: Object,
             restrictions: Object,
+            properties: Object,
             type: String
         },
 
