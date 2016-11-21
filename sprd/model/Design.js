@@ -105,13 +105,6 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             return this.$.colors && this.$.colors.length > 0;
         },
 
-        supportsMasks: function() {
-            //TODO: remove next line
-            return true;
-
-            //return !!this.get('localImage');
-        }.onChange("localImage"),
-
         hasBackgroundColor: function () {
 
             if (this.$hasBackgroundColor === true || this.$.backgroundColor) {
