@@ -173,6 +173,10 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
 
                 this.$.translations.push(translation);
             }
+        },
+
+        supportsMasks: function() {
+            return !!this.get('localImage');
         }
     });
 

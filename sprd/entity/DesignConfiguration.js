@@ -20,7 +20,12 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 design: null,
 
                 _designCommission: "{design.price}",
-                _allowScale: "{design.restrictions.allowScale}"
+                _allowScale: "{design.restrictions.allowScale}",
+
+                mask: null,
+                filter: null,
+                processedImage: null
+
             },
 
             ctor: function () {
@@ -59,6 +64,25 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 printColors.reset(colors);
                 this.trigger('configurationChanged');
                 this.trigger("priceChanged");
+            },
+
+            _commitMask: function(mask) {
+                var self = this;
+
+                if (!mask) {
+                    return;
+                }
+
+                var design = this.$.design;
+                if(design) {
+                    mask.apply(design, null,  function(err, result) {
+                        if (!err) {
+                            self.set('processedImage', result);
+                        } else {
+                            console.error(err);
+                        }
+                    })
+                }
             },
 
             getPrintColorsAsRGB: function () {
