@@ -942,6 +942,18 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         configuration.clearErrors();
                         self._positionConfiguration(configuration);
                     })
+                    .seq(function() {
+                        var xScale = printArea.get("boundary.size.width") / configuration.get('_size.width'),
+                            yScale = printArea.get("boundary.size.height") / configuration.get('_size.height');
+                        var scale = {
+                            x: Math.min(xScale, yScale),
+                            y: Math.min(xScale, yScale)
+                        };
+                        var validation = configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), scale);
+                        if (validation.minBound || validation.dpiBound) {
+                            throw new Error("configuration does not fit in this print area")
+                        }
+                    })
                     .exec(function (err) {
                         callback && callback(err);
 

@@ -1,11 +1,11 @@
-define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/view/DndImage", "sprd/view/DndImageClass", "sprd/util/ProductUtil"], function (SvgElement, PrintAreaViewer, DndImage, DndImageClass, ProductUtil) {
+define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/view/DndImage", "sprd/view/DndImageClass", "sprd/util/ProductUtil"], function(SvgElement, PrintAreaViewer, DndImage, DndImageClass, ProductUtil) {
 
 
     var dndObject = null,
         productTypeViewViewer = [],
         DROP_HOVERED = DndImageClass.DROP_HOVERED;
 
-    function findProductTypeViewViewer(x, y, requestor) {
+    function findProductTypeViewViewer (x, y, requestor) {
         var ret = null;
         for (var i = 0; i < productTypeViewViewer.length; i++) {
             var viewer = productTypeViewViewer[i];
@@ -41,7 +41,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
         $classAttributes: ["productViewer", "product", "imageService"],
 
-        ctor: function () {
+        ctor: function() {
             this.$printAreas = [];
 
             this.callBase();
@@ -49,7 +49,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             productTypeViewViewer.push(this);
         },
 
-        url: function () {
+        url: function() {
             if (this.$.imageService && this.$._productType && this.$._view && this.$._productType.containsAppearance(this.$._appearance)) {
                 return this.$.imageService.productTypeImage(this.$._productType.$.id, this.$._view.$.id, this.$._appearance.$.id, {
                     width: Math.max(this.$._width, this.$._height),
@@ -60,7 +60,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             return "";
         }.onChange("_width", "_height", "_appearance"),
 
-        isPointInElement: function (x, y) {
+        isPointInElement: function(x, y) {
 
             if (this.$el) {
                 var clientRect = this.$el.getBoundingClientRect();
@@ -76,12 +76,12 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
          * @param y
          * @returns {Boolean}
          */
-        checkForDropHover: function (x, y) {
+        checkForDropHover: function(x, y) {
             return this.isPointInElement(x, y);
         },
 
 
-        _initializeRenderer: function () {
+        _initializeRenderer: function() {
 
             var width = this.get("_view.size.width");
             var height = this.get("_view.size.height");
@@ -110,7 +110,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
         },
 
-        _removePrintAreas: function () {
+        _removePrintAreas: function() {
             for (var i = 0; i < this.$printAreas.length; i++) {
                 var printArea = this.$printAreas[i];
                 printArea.remove();
@@ -120,16 +120,58 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             this.$printAreas = [];
         },
 
-        _bindDomEvents: function () {
+        _handleOver: function(e) {
+            var self = this;
+            if (dndObject) {
+                var configViewer = dndObject.configurationViewer;
+
+                if (configViewer && configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
+                    if (dndObject && dndObject.dndImage) {
+                        var hovered = DROP_HOVERED.NO;
+
+                        var configuration = configViewer.$.configuration;
+                        // Check if there is a hover with a view unequal current one
+
+                        var printArea = self.$printAreas[0].getPrintArea();
+                        var possiblePrintTypes;
+                        // Check printArea constraints
+                        if (configuration.$.design) {
+                            possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, printArea, this.get('_appearance.id'));
+                        } else {
+                            possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, this.get('_appearance.id'));
+                        }
+                        if (possiblePrintTypes.length) {
+                            hovered = DROP_HOVERED.YES;
+                            var xScale = printArea.get("boundary.size.width") / configuration.get('_size.width'),
+                                yScale = printArea.get("boundary.size.height") / configuration.get('_size.height');
+                            var scale = {
+                                x: Math.min(xScale, yScale),
+                                y: Math.min(xScale, yScale)
+                            };
+                            var validation = configuration._validatePrintTypeSize(possiblePrintTypes[0], configuration.get('size.width'), configuration.get('size.height'), scale);
+                            if (validation.minBound || validation.dpiBound) {
+                                hovered = DROP_HOVERED.INVALID;
+                            }
+                        } else {
+                            hovered = DROP_HOVERED.INVALID;
+                        }
+                    }
+                    dndObject.dndImage.set('hoverState', hovered);
+                }
+            }
+        },
+
+        _bindDomEvents: function() {
             this.callBase();
             this.bind('on:pointerup', this._handleUp, this);
             this.bind('on:pointerdown', this._handleDown, this);
+            this.bind('on:mouseover', this._handleOver, this)
         },
 
-        bindMoveEvent: function () {
+        bindMoveEvent: function() {
             var self = this;
             if (!this.$moveHandler) {
-                this.$moveHandler = function (e) {
+                this.$moveHandler = function(e) {
                     if (dndObject) {
                         var clientRect = dndObject.boundingRect,
                             configViewer = dndObject.configurationViewer,
@@ -138,42 +180,6 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                             y = pointerEvent.clientY;
 
                         if (configViewer && configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
-                            self._debounceFunctionCall(function (x, y) {
-                                    if (dndObject && dndObject.dndImage) {
-                                        var hovered = DROP_HOVERED.NO;
-                                        for (var i = 0; i < productTypeViewViewer.length; i++) {
-                                            var configuration = configViewer.$.configuration;
-                                            if (productTypeViewViewer[i] !== self && productTypeViewViewer[i].checkForDropHover(x, y)) {
-                                                var printArea = productTypeViewViewer[i].$printAreas[0].getPrintArea();
-                                                var possiblePrintTypes;
-                                                if (configuration.$.design) {
-                                                    possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, printArea, this.get('_appearance.id'));
-                                                } else {
-                                                    possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, this.get('_appearance.id'));
-                                                }
-                                                if (possiblePrintTypes.length) {
-                                                    hovered = DROP_HOVERED.YES;
-                                                    var xScale = printArea.get("boundary.size.width") / configuration.get('_size.width'),
-                                                        yScale = printArea.get("boundary.size.height") / configuration.get('_size.height');
-                                                    var scale = {
-                                                        x: Math.min(xScale, yScale),
-                                                        y: Math.min(xScale, yScale)
-                                                    };
-                                                    var validation = configuration._validatePrintTypeSize(possiblePrintTypes[0], configuration.get('size.width'), configuration.get('size.height'), scale);
-                                                    if (validation.minBound || validation.dpiBound) {
-                                                        hovered = DROP_HOVERED.INVALID;
-                                                    }
-                                                } else {
-                                                    hovered = DROP_HOVERED.INVALID;
-                                                }
-                                            }
-                                            if (hovered != DROP_HOVERED.NO) {
-                                                break;
-                                            }
-                                        }
-                                        dndObject.dndImage.set('hoverState', hovered);
-                                    }
-                                }, "setHoverState", 300, self, [x, y]);
 
                             if (clientRect.left > x || clientRect.right < x || clientRect.top > y || clientRect.bottom < y) {
                                 if (configViewer) {
@@ -204,7 +210,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 }
             }
             if (!this.$upHandler) {
-                this.$upHandler = function (e) {
+                this.$upHandler = function(e) {
                     self._handleUp({
                         domEvent: e
                     });
@@ -213,7 +219,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             this.dom(this.$stage.$window).bindDomEvent('pointerup', this.$upHandler);
             this.dom(this.$stage.$window).bindDomEvent('pointermove', this.$moveHandler);
         },
-        unbindMoveEvent: function () {
+        unbindMoveEvent: function() {
             if (this.$moveHandler) {
                 this.dom(this.$stage.$window).unbindDomEvent('pointermove', this.$moveHandler);
             }
@@ -221,7 +227,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 this.dom(this.$stage.$window).unbindDomEvent('pointerup', this.$upHandler);
             }
         },
-        _handleUp: function (e) {
+        _handleUp: function(e) {
             var domEvent = e.domEvent;
             if (dndObject) {
                 var viewer = this,
@@ -237,14 +243,14 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 var configView = dndObject.configurationViewer;
                 var product = dndObject.viewer.$.product;
 
-                if(hoverState == DROP_HOVERED.INVALID) {
+                if (hoverState == DROP_HOVERED.INVALID) {
                     productManager.moveConfigurationToView(product, dndObject.config, product.$.view);
                 } else if (viewer && dndObject.viewer !== viewer) {
                     e.stopPropagation && e.stopPropagation();
                     configView.$moving = false;
                     dndObject.dndImage.set('hoverState', DROP_HOVERED.NO);
 
-                    productManager.moveConfigurationToView(product, dndObject.config, viewer.$._view, function (err) {
+                    productManager.moveConfigurationToView(product, dndObject.config, viewer.$._view, function(err) {
                         if (!err) {
                             dndObject.viewer.$.product.set('view', viewer.$._view);
                         }
@@ -265,7 +271,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
         },
 
 
-        _handleDown: function () {
+        _handleDown: function() {
             var productViewer = this.$.productViewer,
                 selectedConfiguration = productViewer.$.selectedConfiguration;
             if (selectedConfiguration && this.$printAreas.length && !dndObject) {
@@ -285,7 +291,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             }
         },
 
-        _render_view: function (view) {
+        _render_view: function(view) {
 
             this._removePrintAreas();
 
@@ -312,7 +318,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             }
         },
 
-        getViewerForConfiguration: function (configuration) {
+        getViewerForConfiguration: function(configuration) {
             var viewer;
             for (var i = 0; i < this.$printAreas.length; i++) {
                 viewer = this.$printAreas[i].getViewerForConfiguration(configuration);
@@ -323,13 +329,13 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             return null;
         },
 
-        _commitProduct: function (product) {
+        _commitProduct: function(product) {
             for (var i = 0; i < this.$printAreas.length; i++) {
                 this.$printAreas[i].set('product', product);
             }
         },
 
-        destroy: function () {
+        destroy: function() {
 
             this._removePrintAreas();
             this.callBase();

@@ -1,6 +1,8 @@
 <view:DndImageClass xmlns="http://www.w3.org/1999/xhtml"
                     xmlns:svg="js.svg"
                     xmlns:view="sprd.view" componentClass="dnd-image">
-    <div class="dnd-image-inner"/>
+    <div class="dnd-image-inner">
+        <div visible="{isInvalid()}" class="icon-inactive"/>
+    </div>
     <svg:Svg cid="svgContainer" class="dnd-image-svg" viewBox="0 0 100 100" preserveAspectRatio="xMinYMax meet"/>
 </view:DndImageClass>
