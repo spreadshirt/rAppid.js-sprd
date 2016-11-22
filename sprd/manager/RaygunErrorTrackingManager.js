@@ -33,7 +33,8 @@ define(["sprd/manager/IErrorTrackingManager", "require"], function (IErrorTracki
 
                     Raygun.init(apiKey, {
                         allowInsecureSubmissions: true,  // IE8,
-                        ignore3rdPartyErrors: true // This option removes nonsense 'Script Error's from your Raygun dashboard
+                        ignore3rdPartyErrors: true, // This option removes nonsense 'Script Error's from your Raygun dashboard
+                        disablePulse: true
                     }).attach();
 
                     if(self.$.beforeSendFnc){
