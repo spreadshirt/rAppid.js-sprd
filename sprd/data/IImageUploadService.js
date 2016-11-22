@@ -1,4 +1,5 @@
-define(["js/core/Component", "sprd/entity/FileSystemImage", "sprd/entity/RemoteImage", "sprd/type/UploadDesign", "sprd/data/IframeUpload", "underscore"], function(Component, FileSystemImage, RemoteImage, UploadDesign, iFrameUpload, _) {
+define(["js/core/Component", "sprd/entity/FileSystemImage", "sprd/entity/RemoteImage", "sprd/type/UploadDesign", "sprd/data/IframeUpload", "sprd/entity/BlobImage", "underscore"]
+    , function(Component, FileSystemImage, RemoteImage, UploadDesign, iFrameUpload, BlobImage, _) {
 
     return Component.inherit('sprd.data.ImageUploadService', {
 
@@ -23,7 +24,7 @@ define(["js/core/Component", "sprd/entity/FileSystemImage", "sprd/entity/RemoteI
                 restrictions = null;
             }
 
-            if (data instanceof Image || data instanceof iFrameUpload) {
+            if (data instanceof BlobImage || data instanceof iFrameUpload) {
                 image = data;
             } else if (_.isString(data)) {
                 image = new RemoteImage({

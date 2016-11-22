@@ -22,7 +22,12 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                     }
 
                     var ret = new FormData();
-                    ret.append('filedata', data.image.file);
+                    if (data.image.file) {
+                        ret.append('filedata', data.image.file);
+                    } else if (data.image.blob) {
+                        ret.append('filedata', data.image.blob, "blob.png");
+                    }
+
                     return ret;
                 },
 
@@ -102,7 +107,7 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
 
                 if (model && model.factory.prototype.constructor.name == "sprd.model.DesignUpload") {
                     var type = model.$.image.$.type,
-                        format = model.$.image.$.file ? "file" : REMOTE,
+                        format = model.$.image.$.file || model.$.image.$.blob ? "file" : REMOTE,
                         cacheId = type + "_" + format;
 
                     if (!_formatProcessorCache[cacheId]) {

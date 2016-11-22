@@ -1,5 +1,6 @@
-define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore", "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager"],
-    function (Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager) {
+define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
+        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage"],
+    function (Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage) {
 
         var undefined;
 
@@ -24,18 +25,21 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
                 mask: null,
                 filter: null,
-                processedImage: null
+                processedImage: null,
+                originalDesign: null
 
             },
 
             ctor: function () {
                 this.$sizeCache = {};
+                this.$processedImageCache = {};
                 this.$$ = {};
                 this.callBase();
             },
 
             inject: {
-                manager: IDesignConfigurationManager
+                manager: IDesignConfigurationManager,
+                imageUploadService: IImageUploadService
             },
 
             type: "design",
@@ -66,18 +70,37 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.trigger("priceChanged");
             },
 
-            _commitMask: function(mask) {
+            _commitMask: function (mask) {
+                this.applyMask(mask);
+            },
+
+            applyMask: function (mask, options, callback) {
                 var self = this;
+                    options = options || {};
 
                 if (!mask) {
                     return;
                 }
 
-                var design = this.$.design;
-                if(design) {
-                    mask.apply(design, null,  function(err, result) {
+                var design = this.$.originalDesign || this.$.design,
+                    cacheId = [mask.id, design.$.id].join('#');
+
+                if (!design) {
+                    return;
+                }
+
+                var cachedImage = self.$processedImageCache[mask.id];
+                if (cachedImage) {
+                    self.set('processedImage', cachedImage);
+                } else {
+                    mask.apply(design, options, function(err, result) {
                         if (!err) {
-                            self.set('processedImage', result);
+
+                            if (!options.exportAsBlob) {
+                                self.$processedImageCache[cacheId] = result;
+                                self.set('processedImage', result);
+                            }
+                            callback && callback(null, result);
                         } else {
                             console.error(err);
                         }
@@ -270,7 +293,45 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                     changeable: true
                 };
 
+                var mask = this.get('mask');
+                if (mask) {
+                    ret.properties = ret.properties || {};
+                    ret.properties.maskId = mask.$.id;
+                    ret.properties.originalDesignId = this.get('originalDesign.id');
+                    ret.properties.maskProperties = mask.getProperties();
+                }
+
                 return ret;
+            },
+
+            save: function(callback) {
+                var self = this,
+                    design = this.$.design,
+                    mask = this.$.mask;
+
+                if (!mask) {
+                    callback  && callback();
+                } else {
+                    flow()
+                        .seq('processedImage', function(cb) {
+                            self.applyMask(mask, {exportAsBlob: true}, cb);
+                        })
+                        .seq('uploadDesign', function(cb) {
+                            var img = new BlobImage({
+                                    blob: this.vars.processedImage
+                                });
+
+                            self.$.imageUploadService.upload(img, cb);
+                        })
+                        .seq(function() {
+                            if (!self.$.originalDesign) {
+                                self.set('originalDesign', design);
+                            }
+
+                            self.set('design', this.vars.uploadDesign.$.design);
+                        })
+                        .exec(callback)
+                }
             },
 
             parse: function (data) {
