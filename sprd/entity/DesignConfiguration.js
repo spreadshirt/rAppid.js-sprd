@@ -71,10 +71,19 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             },
 
             _commitMask: function (mask) {
-                this.applyMask(mask);
+                var self = this;
+                if (mask) {
+                    this.computeMaskedDesign(mask, {}, function(err, result) {
+                        if (!err) {
+                            self.set('processedImage', result)
+                        } else {
+                            console.error(err)
+                        }
+                    })
+                }
             },
 
-            applyMask: function (mask, options, callback) {
+            computeMaskedDesign: function (mask, options, callback) {
                 var self = this;
                     options = options || {};
 
@@ -91,18 +100,17 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
                 var cachedImage = self.$processedImageCache[mask.id];
                 if (cachedImage) {
-                    self.set('processedImage', cachedImage);
+                    callback && callback(null, cachedImage);
                 } else {
                     mask.apply(design, options, function(err, result) {
                         if (!err) {
 
                             if (!options.exportAsBlob) {
                                 self.$processedImageCache[cacheId] = result;
-                                self.set('processedImage', result);
                             }
                             callback && callback(null, result);
                         } else {
-                            console.error(err);
+                            callback && callback(err, result);
                         }
                     })
                 }
@@ -314,7 +322,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 } else {
                     flow()
                         .seq('processedImage', function(cb) {
-                            self.applyMask(mask, {exportAsBlob: true}, cb);
+                            self.computeMaskedDesign(mask, {exportAsBlob: true}, cb);
                         })
                         .seq('uploadDesign', function(cb) {
                             var img = new BlobImage({
