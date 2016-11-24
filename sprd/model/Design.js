@@ -86,7 +86,6 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             },
 
             translations: [Translation],
-
             resources: Object
         },
 
@@ -176,7 +175,7 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             }
         },
 
-        supportsMasks: function() {
+        supportsAfterEffect: function() {
             return !!this.get('localImage');
         }
     });

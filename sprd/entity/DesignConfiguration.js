@@ -1,8 +1,8 @@
 define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
         "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage"],
-    function (Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage) {
+    function(Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage) {
 
-        var undefined;
+        var processedImageCache = {};
 
         return Configuration.inherit('sprd.model.DesignConfiguration', {
 
@@ -23,16 +23,14 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 _designCommission: "{design.price}",
                 _allowScale: "{design.restrictions.allowScale}",
 
-                mask: null,
-                filter: null,
+                afterEffect: null,
+                //filter: null,
                 processedImage: null,
                 originalDesign: null
-
             },
 
-            ctor: function () {
+            ctor: function() {
                 this.$sizeCache = {};
-                this.$processedImageCache = {};
                 this.$$ = {};
                 this.callBase();
             },
@@ -44,7 +42,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             type: "design",
 
-            _commitPrintType: function (printType) {
+            _commitPrintType: function(printType) {
                 // print type changed -> convert colors
 
                 if (!printType) {
@@ -54,7 +52,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 var colors = [],
                     printColors = this.$.printColors;
 
-                printColors.each(function (printColor) {
+                printColors.each(function(printColor) {
                     colors.push(printType.getClosestPrintColor(printColor.color()));
                 });
 
@@ -70,10 +68,10 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.trigger("priceChanged");
             },
 
-            _commitMask: function (mask) {
+            _commitAfterEffect: function(afterEffect) {
                 var self = this;
-                if (mask) {
-                    this.computeMaskedDesign(mask, {}, function(err, result) {
+                if (afterEffect) {
+                    this.applyAfterEffect(afterEffect, {}, function(err, result) {
                         if (!err) {
                             self.set('processedImage', result)
                         } else {
@@ -83,40 +81,44 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
             },
 
-            computeMaskedDesign: function (mask, options, callback) {
+            applyAfterEffect: function(afterEffect, options, callback) {
                 var self = this;
-                    options = options || {};
+                options = options || {};
 
-                if (!mask) {
+                if (!callback) {
                     return;
+                }
+
+                if (!afterEffect) {
+                    callback(new Error("No mask supplied"));
                 }
 
                 var design = this.$.originalDesign || this.$.design,
-                    cacheId = [mask.id, design.$.id].join('#');
+                    cacheId = [afterEffect.$.id, design.$.wtfMbsId || design.$.id].join('#');
 
                 if (!design) {
-                    return;
+                    callback(new Error("No design"));
                 }
 
-                var cachedImage = self.$processedImageCache[mask.id];
+                var cachedImage = processedImageCache[cacheId];
                 if (cachedImage) {
                     callback && callback(null, cachedImage);
                 } else {
-                    mask.apply(design, options, function(err, result) {
+                    afterEffect.apply(design, options, function(err, result) {
                         if (!err) {
 
                             if (!options.exportAsBlob) {
-                                self.$processedImageCache[cacheId] = result;
+                                processedImageCache[cacheId] = result;
                             }
-                            callback && callback(null, result);
+                            callback(null, result);
                         } else {
-                            callback && callback(err, result);
+                            callback(err, result);
                         }
                     })
                 }
             },
 
-            getPrintColorsAsRGB: function () {
+            getPrintColorsAsRGB: function() {
                 var ret = [];
 
                 if (this.$.design.$.colors.size() === this.$.printColors.size()) {
@@ -131,7 +133,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 return ret;
             },
 
-            setColor: function (layerIndex, color) {
+            setColor: function(layerIndex, color) {
                 var printType = this.$.printType;
 
                 if (!(color instanceof PrintTypeColor)) {
@@ -165,11 +167,11 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.trigger("priceChanged");
             },
 
-            size: function () {
+            size: function() {
                 return this.getSizeForPrintType(this.$.printType);
             }.onChange("_dpi", "design"),
 
-            getSizeForPrintType: function (printType) {
+            getSizeForPrintType: function(printType) {
                 if (this.$.design && this.$.design.$.size && printType && printType.$.dpi) {
                     var dpi = printType.$.dpi;
                     if (!this.$sizeCache[dpi]) {
@@ -183,15 +185,15 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             },
 
             // TODO: add onchange for design.restriction.allowScale
-            isScalable: function () {
+            isScalable: function() {
                 return this.get("printType.isScalable()") && this.$._allowScale;
             }.onChange("printType", "_allowScale"),
 
-            allowScale: function () {
+            allowScale: function() {
                 return this.$._allowScale;
             },
 
-            _validatePrintTypeSize: function (printType, width, height, scale) {
+            _validatePrintTypeSize: function(printType, width, height, scale) {
                 var ret = this.callBase();
 
                 var design = this.$.design;
@@ -207,12 +209,12 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             },
 
-            price: function () {
+            price: function() {
 
                 var usedPrintColors = [],
                     price = this.callBase();
 
-                this.$.printColors.each(function (printColor) {
+                this.$.printColors.each(function(printColor) {
                     if (_.indexOf(usedPrintColors, printColor) === -1) {
                         usedPrintColors.push(printColor);
                     }
@@ -230,7 +232,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             }.on("priceChanged").onChange("_designCommission", "_printTypePrice"),
 
-            getPossiblePrintTypes: function (appearance) {
+            getPossiblePrintTypes: function(appearance) {
                 var ret = [],
                     printArea = this.$.printArea,
                     design = this.$.design;
@@ -242,7 +244,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 return ret;
             }.onChange("printArea", "design"),
 
-            compose: function () {
+            compose: function() {
                 var ret = this.callBase();
 
                 var transform = [],
@@ -284,7 +286,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 var printColorIds = [],
                     printColorRGBs = [];
 
-                this.$.printColors.each(function (printColor) {
+                this.$.printColors.each(function(printColor) {
                     printColorIds.push(printColor.$.id);
                     printColorRGBs.push(printColor.color().toRGB().toString());
                 });
@@ -318,16 +320,16 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                     mask = this.$.mask;
 
                 if (!mask) {
-                    callback  && callback();
+                    callback && callback();
                 } else {
                     flow()
                         .seq('processedImage', function(cb) {
-                            self.computeMaskedDesign(mask, {exportAsBlob: true}, cb);
+                            self.applyAfterEffect(mask, {exportAsBlob: true}, cb);
                         })
                         .seq('uploadDesign', function(cb) {
                             var img = new BlobImage({
-                                    blob: this.vars.processedImage
-                                });
+                                blob: this.vars.processedImage
+                            });
 
                             self.$.imageUploadService.upload(img, cb);
                         })
@@ -342,7 +344,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
             },
 
-            parse: function (data) {
+            parse: function(data) {
                 data = this.callBase();
 
                 if (data.designs) {
@@ -365,19 +367,19 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 return data;
             },
 
-            init: function (callback) {
+            init: function(callback) {
                 this.$.manager.initializeConfiguration(this, callback);
             },
 
-            isAllowedOnPrintArea: function (printArea) {
+            isAllowedOnPrintArea: function(printArea) {
                 return printArea && printArea.get("restrictions.designAllowed") == true;
             },
 
-            getPossiblePrintTypesForPrintArea: function (printArea, appearanceId) {
+            getPossiblePrintTypesForPrintArea: function(printArea, appearanceId) {
                 return ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(this.$.design, printArea, appearanceId);
             },
 
-            minimumScale: function () {
+            minimumScale: function() {
                 return (this.get("design.restrictions.minimumScale") || 100 ) / 100;
             }
         });
