@@ -1,5 +1,5 @@
-define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer'],
-    function (IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer) {
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "js/core/List"],
+    function (IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, List) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
@@ -453,6 +453,103 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             addText: function (product, params, callback) {
 
+                var self = this;
+
+                var finalizeFnc = function(configuration) {
+
+                    configuration.$.selection.set({
+                        activeIndex: configuration.$.textFlow.textLength() - 1,
+                        anchorIndex: 0
+                    });
+
+                    configuration.set('isNew', params.isNew);
+
+                    configuration.set("maxHeight", 1);
+
+                    // determinate position
+                    self._positionConfiguration(configuration);
+
+                    configuration.set("maxHeight", null);
+
+                };
+
+                var configurationFnc = function(params, text, printType, printArea, font, printTypeColor) {
+
+                    var textFlow = TextFlow.initializeFromText(text);
+
+                    var fontSize = params.fontSize;
+
+                    if (!printType.isPrintColorColorSpace()) {
+                        fontSize = INITIAL_FONT_SIZE_SCALE_FACTOR * printArea.get('_size.height');
+                    }
+
+                    (new ApplyStyleToElementOperation(TextRange.createTextRange(0, textFlow.textLength()), textFlow, new Style({
+                        font: font,
+                        fontSize: fontSize,
+                        lineHeight: 1.2,
+                        printTypeColor: printTypeColor
+                    }), new
+                        Style({
+                        textAnchor: "middle"
+                    }))).doOperation();
+
+                    var entity = product.createEntity(TextConfiguration);
+
+                    entity.set({
+                        printType: printType,
+                        printArea: printArea,
+                        textFlow: textFlow,
+                        selection: TextRange.createTextRange(0, textFlow.textLength())
+                    });
+                    return entity;
+
+                };
+
+                this._addText(product, params, configurationFnc, finalizeFnc, callback);
+
+
+            },
+
+            addBendingText: function(product, params, callback) {
+
+                var self = this;
+
+                var createConfigurationFnc = function(params, text, printType, printArea, font, printTypeColor) {
+                    var fontSize = params.fontSize,
+
+                        printColors = new List;
+                    printColors.add(printTypeColor);
+
+                    var entity = product.createEntity(BendingTextConfiguration);
+
+                    entity.set({
+                        printType: printType,
+                        printArea: printArea,
+                        text: text,
+                        fontSize: fontSize,
+                        font: font,
+                        printColors: printColors
+                    });
+                    return entity;
+                };
+
+                var finalizeFnc = function(configuration) {
+                    configuration.set('isNew', params.isNew);
+
+                    configuration.set("maxHeight", 1);
+
+                    // determinate position
+                    self._positionConfiguration(configuration);
+
+                    configuration.set("maxHeight", null);
+                };
+
+
+                this._addText(product, params, createConfigurationFnc, finalizeFnc, callback)
+            },
+
+            _addText: function(product, params, createConfigurationFnc, finalizeFnc, callback) {
+
                 params = _.defaults({}, params, {
                     text: null,
                     fontFamily: null,
@@ -500,7 +597,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 flow()
                     .par({
-                        fontFamilies: function (cb) {
+                        fontFamilies: function(cb) {
                             if (params.fontFamily) {
                                 cb();
                             } else {
@@ -509,11 +606,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 }, cb);
                             }
                         },
-                        productType: function (cb) {
+                        productType: function(cb) {
                             productType.fetch(null, cb);
                         }
                     })
-                    .seq("fontFamily", function () {
+                    .seq("fontFamily", function() {
                         var fontFamily,
                             fontFamilies = this.vars['fontFamilies'];
 
@@ -534,15 +631,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 }
                             }
                         } else if (params.fontFamilyName) {
-                            fontFamily = fontFamilies.find(function (fontFamily) {
+                            fontFamily = fontFamilies.find(function(fontFamily) {
                                 return fontFamily.$.name === params.fontFamilyName;
                             });
                         }
 
                         // use first font that is not deprecated
-                        fontFamily = fontFamily || fontFamilies.find(function (fontFamily) {
-                            return !fontFamily.$.deprecated
-                        });
+                        fontFamily = fontFamily || fontFamilies.find(function(fontFamily) {
+                                return !fontFamily.$.deprecated
+                            });
 
                         if (!fontFamily) {
                             throw new Error("No found");
@@ -562,7 +659,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return fontFamily;
                     })
-                    .seq("printArea", function () {
+                    .seq("printArea", function() {
 
                         if (!printArea && params.perspective && !view) {
                             view = productType.getViewByPerspective(params.perspective);
@@ -593,7 +690,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printArea;
                     })
-                    .seq("printType", function () {
+                    .seq("printType", function() {
                         var fontFamily = this.vars.fontFamily;
                         var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance.$.id);
 
@@ -618,10 +715,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printType;
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         printType.fetch(null, cb);
                     })
-                    .seq("printTypeColor", function () {
+                    .seq("printTypeColor", function() {
                         var color = product.appearanceBrightness() !== "dark" ? "#000000" : "#FFFFFF";
                         color = printType.getClosestPrintColor(color);
 
@@ -631,58 +728,18 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return color;
                     })
-                    .seq("configuration", function () {
-
-                        var textFlow = TextFlow.initializeFromText(text);
-
-                        var fontSize = params.fontSize;
-
-                        if (!printType.isPrintColorColorSpace()) {
-                            fontSize = INITIAL_FONT_SIZE_SCALE_FACTOR * printArea.get('_size.height');
-                        }
-
-                        (new ApplyStyleToElementOperation(TextRange.createTextRange(0, textFlow.textLength()), textFlow, new Style({
-                            font: font,
-                            fontSize: fontSize,
-                            lineHeight: 1.2,
-                            printTypeColor: this.vars["printTypeColor"]
-                        }), new
-                            Style({
-                            textAnchor: "middle"
-                        }))).doOperation();
-
-                        var entity = product.createEntity(TextConfiguration);
-
-                        entity.set({
-                            printType: printType,
-                            printArea: printArea,
-                            textFlow: textFlow,
-                            selection: TextRange.createTextRange(0, textFlow.textLength())
-                        });
-                        return entity;
+                    .seq("configuration", function() {
+                        return createConfigurationFnc(params, text, printType, printArea, font, this.vars.printTypeColor);
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         var configuration = this.vars["configuration"];
                         bus.setUp(configuration);
                         configuration.init(cb);
                     })
-                    .seq(function () {
-                        var configuration = this.vars["configuration"];
-                        configuration.$.selection.set({
-                            activeIndex: configuration.$.textFlow.textLength() - 1,
-                            anchorIndex: 0
-                        });
-
-                        configuration.set('isNew', params.isNew);
-
-                        configuration.set("maxHeight", 1);
-
-                        // determinate position
-                        self._positionConfiguration(configuration);
-
-                        configuration.set("maxHeight", null);
+                    .seq(function() {
+                        finalizeFnc(this.vars.configuration);
                     })
-                    .exec(function (err, results) {
+                    .exec(function(err, results) {
                         if (!err && params.addToProduct) {
                             product.removeExampleConfiguration();
                             product._addConfiguration(results.configuration);
