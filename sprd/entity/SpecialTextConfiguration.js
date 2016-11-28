@@ -1,8 +1,8 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'sprd/pimp/data/PimpImageService', "sprd/entity/Size", "flow", 'sprd/util/UnitUtil', 'sprd/pimp/data/PimpDataSourceClass', 'js/data/Collection', 'sprd/pimp/model/Commission', 'sprd/pimp/model/Font', 'sprd/entity/Price', 'underscore'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price, _) {
+define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core/Bindable", 'sprd/pimp/data/PimpImageService', "sprd/entity/Size", "flow", 'sprd/util/UnitUtil', 'sprd/pimp/data/PimpDataSourceClass', 'js/data/Collection', 'sprd/pimp/model/Commission', 'sprd/pimp/model/Font', 'sprd/entity/Price', 'underscore'], function (DesignConfigurationBase, ProductUtil, Bindable, PimpImageService, Size, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price, _) {
 
     var previewSizeRatio = 3;
 
-    return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
+    return DesignConfigurationBase.inherit('sprd.model.SpecialTextConfiguration', {
 
         defaults: {
             text: null,
@@ -235,7 +235,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
                 flow()
                     .seq(function (cb) {
-                        DesignConfiguration.prototype.init.call(self, cb);
+                        DesignConfigurationBase.prototype.init.call(self, cb);
                     })
                     .seq(function () {
                         var printType = self.$.printType,

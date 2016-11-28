@@ -1,36 +1,18 @@
-define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore", "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager"],
-    function (Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager) {
+define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore", "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager"],
+    function (DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager) {
 
         var undefined;
 
-        return Configuration.inherit('sprd.model.DesignConfiguration', {
-
-            schema: {
-                design: Design,
-                designs: {
-                    type: Object,
-                    required: false
-                }
-            },
-
+        return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
-                type: 'design',
                 _dpi: "{printType.dpi}",
-
-                design: null,
-
                 _designCommission: "{design.price}",
                 _allowScale: "{design.restrictions.allowScale}"
             },
 
             ctor: function () {
                 this.$sizeCache = {};
-                this.$$ = {};
                 this.callBase();
-            },
-
-            inject: {
-                manager: IDesignConfigurationManager
             },
 
             type: "design",
@@ -186,95 +168,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
                 return ret;
             }.onChange("printArea", "design"),
-
-            compose: function () {
-                var ret = this.callBase();
-
-                var transform = [],
-                    scale = this.$.scale,
-                    rotation = this.$.rotation,
-
-                    width = this.width(),
-                    height = this.height();
-
-                if (rotation) {
-                    transform.push("rotate(" + rotation + "," + Math.round(width / 2, 3) + "," + Math.round(height / 2, 3) + ")");
-                }
-
-                if (scale && (scale.x < 0 || scale.y < 0)) {
-                    transform.push("scale(" + (scale.x < 0 ? -1 : 1) + "," + (scale.y < 0 ? -1 : 1) + ")");
-                }
-
-                var designId = this.get('design.wtfMbsId') || "";
-                ret.content = {
-                    unit: "mm",
-                    dpi: "25.4",
-                    svg: {
-                        image: {
-                            transform: transform.join(" "),
-                            width: Math.round(width, 3),
-                            height: Math.round(height, 3),
-                            designId: designId
-                        }
-                    }
-                };
-
-                ret.designs = [{
-                    id: designId,
-                    href: "/" + this.get("design.id")
-                }];
-
-                delete ret.design;
-
-                var printColorIds = [],
-                    printColorRGBs = [];
-
-                this.$.printColors.each(function (printColor) {
-                    printColorIds.push(printColor.$.id);
-                    printColorRGBs.push(printColor.color().toRGB().toString());
-                });
-
-                if (this.$.printType.isPrintColorColorSpace()) {
-                    ret.content.svg.image.printColorIds = printColorIds.join(" ");
-                } else {
-                    ret.content.svg.image.printColorRGBs = printColorRGBs.join(" ");
-                }
-
-                ret.printColors = undefined;
-
-                ret.restrictions = {
-                    changeable: true
-                };
-
-                return ret;
-            },
-
-            parse: function (data) {
-                data = this.callBase();
-
-                if (data.designs) {
-                    this.$$.design = data.designs[0];
-                }
-
-                data.designs = undefined;
-
-                if (data.printArea) {
-                    // remove printArea from payload since it is the wrong one
-                    // it will be set within the initSchema methods
-                    this.$$.printArea = data.printArea;
-                    data.printArea = null;
-                }
-
-                if (data.content) {
-                    this.$$.svg = data.content.svg;
-                }
-
-                return data;
-            },
-
-            init: function (callback) {
-                this.$.manager.initializeConfiguration(this, callback);
-            },
 
             isAllowedOnPrintArea: function (printArea) {
                 return printArea && printArea.get("restrictions.designAllowed") == true;
