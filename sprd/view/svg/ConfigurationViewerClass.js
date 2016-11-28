@@ -170,12 +170,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 if (configuration instanceof SpecialTextConfiguration) {
                     rendererFactory = SpecialTextConfigurationRenderer;
+                } else if (configuration instanceof BendingTextConfiguration) {
+                    rendererFactory = BendingTextConfigurationRenderer;
                 } else if (configuration instanceof DesignConfiguration) {
                     rendererFactory = DesignConfigurationRenderer;
                 } else if (configuration instanceof TextConfiguration) {
                     rendererFactory = TextConfigurationRenderer;
-                } else if (configuration instanceof BendingTextConfiguration) {
-                    rendererFactory = BendingTextConfigurationRenderer;
                 }
 
                 if (rendererFactory) {

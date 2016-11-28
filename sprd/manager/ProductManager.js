@@ -1,5 +1,5 @@
 define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "js/core/List"],
-    function (IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, List) {
+    function(IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, List) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
@@ -26,7 +26,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @param {sprd.entity.Appearance} appearance
              * @param callback
              */
-            setProductType: function (product, productType, appearance, callback) {
+            setProductType: function(product, productType, appearance, callback) {
                 if (appearance instanceof Function) {
                     callback = appearance;
                     appearance = null;
@@ -35,10 +35,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     view;
 
                 flow()
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         productType.fetch(null, cb);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         if (!appearance) {
                             if (product.$.appearance) {
                                 appearance = productType.getClosestAppearance(product.$.appearance.getMainColor());
@@ -47,7 +47,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             }
                         }
                     })
-                    .seq(function () {
+                    .seq(function() {
                         // determinate closest view for new product type
                         var currentView = product.$.view;
 
@@ -60,7 +60,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
 
                     })
-                    .seq(function () {
+                    .seq(function() {
 
                         // remove example configuration
                         if (product && product.get("restrictions.example") === true && product.$.configurations.size() > 0) {
@@ -71,7 +71,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         self.convertConfigurations(product, productType, appearance);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         // first set product type
                         // and then the appearance, because appearance depends on product type
                         product.set({
@@ -86,7 +86,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            setAppearance: function (product, appearance) {
+            setAppearance: function(product, appearance) {
 
                 if (product.$.appearance.$.id === appearance.$.id) {
                     // same appearance, nothing to do
@@ -106,7 +106,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @param {sprd.model.ProductType} productType
              * @param {sprd.entity.Appearance} appearance
              */
-            convertConfigurations: function (product, productType, appearance) {
+            convertConfigurations: function(product, productType, appearance) {
                 var configurations = product.$.configurations.$items,
                     removeConfigurations = [],
                     setOptions = {silent: true};
@@ -210,9 +210,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         if (product.$.productType !== productType) {
                             optimalScale = Math.min(
-                                targetPrintAreaWidth / currentPrintAreaWidth,
-                                targetPrintAreaHeight / currentPrintAreaHeight
-                            ) * Math.abs(scale.x);
+                                    targetPrintAreaWidth / currentPrintAreaWidth,
+                                    targetPrintAreaHeight / currentPrintAreaHeight
+                                ) * Math.abs(scale.x);
                         }
 
                         var allowScale = configuration.allowScale(),
@@ -329,7 +329,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @param {Object} params
              * @param {Function} callback
              */
-            addDesign: function (product, params, callback) {
+            addDesign: function(product, params, callback) {
                 params = _.defaults({}, params, {
                     design: null,
                     perspective: null, // front, back, etc...
@@ -366,12 +366,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
 
                 flow()
-                    .par(function (cb) {
+                    .par(function(cb) {
                         design.fetch(null, cb);
-                    }, function (cb) {
+                    }, function(cb) {
                         productType.fetch(null, cb);
                     })
-                    .seq("printArea", function () {
+                    .seq("printArea", function() {
 
                         if (!printArea && params.perspective && !view) {
                             view = productType.getViewByPerspective(params.perspective);
@@ -402,7 +402,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printArea;
                     })
-                    .seq("printType", function () {
+                    .seq("printType", function() {
                         possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
 
                         if (printType && !_.contains(possiblePrintTypes, printType)) {
@@ -417,10 +417,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printType;
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         printType.fetch(null, cb);
                     })
-                    .seq("designConfiguration", function () {
+                    .seq("designConfiguration", function() {
                         var entity = product.createEntity(DesignConfiguration);
                         entity.set({
                             printType: printType,
@@ -431,16 +431,16 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }, PREVENT_VALIDATION_OPTIONS);
                         return entity;
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         var designConfiguration = this.vars["designConfiguration"];
                         bus.setUp(designConfiguration);
                         designConfiguration.init(cb);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         // determinate position
                         self._positionConfiguration(this.vars["designConfiguration"]);
                     })
-                    .exec(function (err, results) {
+                    .exec(function(err, results) {
                         if (!err) {
                             product.removeExampleConfiguration();
                             product._addConfiguration(results.designConfiguration);
@@ -451,7 +451,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            addText: function (product, params, callback) {
+            addText: function(product, params, callback) {
 
                 var self = this;
 
@@ -516,8 +516,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 var createConfigurationFnc = function(params, text, printType, printArea, font, printTypeColor) {
                     var fontSize = params.fontSize,
-
                         printColors = new List;
+
                     printColors.add(printTypeColor);
 
                     var entity = product.createEntity(BendingTextConfiguration);
@@ -565,7 +565,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     fontFamilyName: "Arial",
                     addToProduct: true,
                     isNew: true,
-                    fontSize: 25
+                    fontSize: 25,
+                    printColor: null
                 });
 
                 var self = this,
@@ -578,7 +579,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     font = null,
                     appearance = product.$.appearance,
                     printType = params.printType,
-                    printTypeId = params.printTypeId;
+                    printTypeId = params.printTypeId,
+                    printColor = params.printColor;
 
                 if (!text) {
                     callback(new Error("No text"));
@@ -720,7 +722,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     })
                     .seq("printTypeColor", function() {
                         var color = product.appearanceBrightness() !== "dark" ? "#000000" : "#FFFFFF";
-                        color = printType.getClosestPrintColor(color);
+
+                        if (printColor) {
+                            color = printType.getClosestPrintColor(printColor.toHexString());
+                        } else {
+                            color = printType.getClosestPrintColor(color);
+                        }
+
 
                         if (!color) {
                             throw "No print type color";
@@ -750,7 +758,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            addSpecialText: function (product, params, callback) {
+            addSpecialText: function(product, params, callback) {
 
                 params = _.defaults({}, params, {
                     text: null,
@@ -796,10 +804,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
 
                 flow()
-                    .seq("productType", function (cb) {
+                    .seq("productType", function(cb) {
                         productType.fetch(null, cb);
                     })
-                    .seq("printArea", function () {
+                    .seq("printArea", function() {
 
                         if (!printArea && params.perspective && !view) {
                             view = productType.getViewByPerspective(params.perspective);
@@ -831,7 +839,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printArea;
                     })
-                    .seq("printType", function () {
+                    .seq("printType", function() {
 
                         var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance.$.id);
 
@@ -856,10 +864,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printType;
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         printType.fetch(null, cb);
                     })
-                    .seq("configuration", function () {
+                    .seq("configuration", function() {
 
                         var entity = product.createEntity(SpecialTextConfiguration);
 
@@ -872,14 +880,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return entity;
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         var configuration = this.vars["configuration"];
                         bus.setUp(configuration);
                         configuration.init(cb);
 
                         configuration.set('isNew', params.isNew);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         var configuration = this.vars["configuration"];
                         // determinate position
                         self._positionConfiguration(configuration);
@@ -891,7 +899,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             configuration.set('scale', params.scale, PREVENT_VALIDATION_OPTIONS);
                         }
                     })
-                    .exec(function (err, results) {
+                    .exec(function(err, results) {
                         if (!err && params.addToProduct) {
                             product.removeExampleConfiguration();
                             product._addConfiguration(results.configuration);
@@ -902,7 +910,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            moveConfigurationToView: function (product, configuration, view, callback) {
+            moveConfigurationToView: function(product, configuration, view, callback) {
 
                 var self = this,
                     bus = this.$.bus,
@@ -917,7 +925,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
 
                 flow()
-                    .seq("printArea", function () {
+                    .seq("printArea", function() {
 
                         if (!printArea && params.perspective && !view) {
                             view = productType.getViewByPerspective(params.perspective);
@@ -949,15 +957,19 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printArea;
                     })
-                    .seq("printType", function () {
-                        var possiblePrintTypes;
+                    .seq("printType", function() {
+                        var possiblePrintTypes,
+                            fontFamily = null;
                         if (configuration instanceof SpecialTextConfiguration) {
                             possiblePrintTypes = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance.$.id);
                         } else if (configuration instanceof TextConfiguration) {
-                            var fontFamily = configuration.$.textFlow.findLeaf(0).$.style.$.font.$parent;
+                            fontFamily = configuration.$.textFlow.findLeaf(0).$.style.$.font.$parent;
                             possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance.$.id);
                         } else if (configuration instanceof DesignConfiguration) {
                             possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, printArea, appearance.$.id);
+                        } else if (configuration instanceof BendingTextConfiguration) {
+                            fontFamily = configuration.$.font.getFontFamily();
+                            possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance.$.id);
                         }
 
                         if (printType && !_.contains(possiblePrintTypes, printType)) {
@@ -981,10 +993,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printType;
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         printType.fetch(null, cb);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         product.$.configurations.remove(configuration);
                         configuration.set({
                             rotation: 0,
@@ -992,10 +1004,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             printType: printType,
                             printArea: printArea
                         }, {silent: true});
-
+                        configuration.mainConfigurationRenderer = null;
 
                     })
-                    .seq(function () {
+                    .seq(function() {
                         configuration.clearErrors();
                         self._positionConfiguration(configuration);
                     })
@@ -1011,7 +1023,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             throw new Error("configuration does not fit in this print area")
                         }
                     })
-                    .exec(function (err) {
+                    .exec(function(err) {
                         callback && callback(err);
 
                         if (!err) {
@@ -1029,7 +1041,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            setTextForConfiguration: function (text, configuration, options) {
+            setTextForConfiguration: function(text, configuration, options) {
                 if (!(configuration instanceof TextConfiguration)) {
                     throw new Error("Configuration is not a TextConfiguration");
                 }
@@ -1066,7 +1078,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 this.$.bus.trigger('Application.productChanged', null);
             },
 
-            _positionConfiguration: function (configuration) {
+            _positionConfiguration: function(configuration) {
 
                 var printArea = configuration.$.printArea,
                     printType = configuration.$.printType,
@@ -1174,7 +1186,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            convertTextToSpecialText: function (product, textConfiguration, params, callback) {
+            convertTextToSpecialText: function(product, textConfiguration, params, callback) {
                 params = params || {};
                 var offset = textConfiguration.$.offset.clone();
                 var width = textConfiguration.width();
@@ -1184,7 +1196,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     text: textConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "")
                 });
                 var self = this;
-                this.addSpecialText(product, params, function (err, config) {
+                this.addSpecialText(product, params, function(err, config) {
 
                     if (err) {
                         callback && callback(err);
@@ -1212,7 +1224,43 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 });
             },
 
-            convertSpecialTextToText: function (product, specialTextConfiguration, params, callback) {
+            convertTextToBendingText: function(product, textConfiguration, params, callback) {
+                params = params || {};
+                var offset = textConfiguration.$.offset.clone();
+                var width = textConfiguration.width();
+                _.defaults(params, {
+                    addToProduct: true,
+                    removeConfiguration: true,
+                    text: textConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "")
+                });
+                var self = this;
+                this.addBendingText(product, params, function(err, config) {
+                    if (err) {
+                        callback && callback(err);
+                    } else {
+                        params.removeConfiguration && product.$.configurations.remove(textConfiguration);
+                        var s = width / config.width(1);
+                        config.set({
+                            'scale': {
+                                x: s,
+                                y: s
+                            }, 'offset': offset,
+                            rotation: textConfiguration.$.rotation,
+                            originalConfiguration: textConfiguration
+                        });
+
+                        config.set("_size", config.$._size, {force: true});
+                        config.set("isNew", textConfiguration.$.isNew);
+
+                        callback && callback(err, config);
+
+                        self.$.bus.trigger('Application.productChanged', product);
+                    }
+
+                });
+            },
+
+            convertSpecialTextToText: function(product, specialTextConfiguration, params, callback) {
                 params = params || {};
                 var offset = specialTextConfiguration.$.offset.clone();
                 var width = specialTextConfiguration.width();
@@ -1223,7 +1271,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     text: (specialTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, "")
                 });
                 var self = this;
-                this.addText(product, params, function (err, config) {
+                this.addText(product, params, function(err, config) {
 
                     if (err) {
                         callback && callback(err);
@@ -1248,7 +1296,43 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 });
             },
 
-            checkConfigurationOffset: function (product, configuration) {
+            convertBendingTextToText: function(product, bendingTextConfiguration, params, callback) {
+                params = params || {};
+                var offset = bendingTextConfiguration.$.offset.clone();
+                var width = bendingTextConfiguration.width();
+                _.defaults(params, {
+                    isNew: false,
+                    addToProduct: true,
+                    removeConfiguration: true,
+                    text: (bendingTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, "")
+                });
+                var self = this;
+                this.addText(product, params, function(err, config) {
+
+                    if (err) {
+                        callback && callback(err);
+                    } else {
+
+                        params.removeConfiguration && product.$.configurations.remove(bendingTextConfiguration);
+                        var s = width / config.width();
+                        config.set({
+                            'scale': {
+                                x: s,
+                                y: s
+                            }, 'offset': offset,
+                            rotation: bendingTextConfiguration.$.rotation,
+                            isNew: bendingTextConfiguration.$.isNew,
+                            originalConfiguration: bendingTextConfiguration
+                        });
+
+                        callback && callback(err, config);
+
+                        self.$.bus.trigger('Application.productChanged', product);
+                    }
+                });
+            },
+
+            checkConfigurationOffset: function(product, configuration) {
 
                 if (this._checkConfigurationOutsideViewPort(product, configuration)) {
                     // configuration has been removed
@@ -1259,7 +1343,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            _checkConfigurationOutsidePrintArea: function (product, configuration) {
+            _checkConfigurationOutsidePrintArea: function(product, configuration) {
 
                 if (!(product && configuration)) {
                     return;
@@ -1271,10 +1355,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (boundingBox && printArea && printArea.hasSoftBoundary() &&
                     (
-                    boundingBox.x > printArea.width() ||
-                    boundingBox.x + boundingBox.width < 0 ||
-                    boundingBox.y > printArea.height() ||
-                    boundingBox.y + boundingBox.height < 0
+                        boundingBox.x > printArea.width() ||
+                        boundingBox.x + boundingBox.width < 0 ||
+                        boundingBox.y > printArea.height() ||
+                        boundingBox.y + boundingBox.height < 0
                     )) {
 
                     product.$.configurations.remove(configuration);
@@ -1285,7 +1369,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            _checkConfigurationOutsideViewPort: function (product, configuration) {
+            _checkConfigurationOutsideViewPort: function(product, configuration) {
 
                 if (!this.$.removeConfigurationOutsideViewPort) {
                     return;
@@ -1348,7 +1432,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 return false;
 
             }
-
 
 
         });

@@ -22,13 +22,21 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             this.bind("configuration", "change:font", this.loadFont, this);
         },
 
+        render: function() {
+            if (this.$stage && this.$stage.$el && this.$stage.$el.parentNode) {
+                this.loadFont();
+            }
+
+            return this.callBase();
+        },
+
         loadFont: function() {
             var svgRoot = this.getSvgRoot(),
                 font = this.get("configuration.font"),
                 extension = this.$stage.$browser.isIOS ? "svg#font" : "woff",
                 self = this;
 
-            if (!font) {
+            if (!font || !svgRoot) {
                 return;
             }
 
@@ -53,8 +61,8 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                     textPathRect = textPath.$el.getBBox(),
                     pathRect = path.$el.getBBox();
 
-                var pathBoundingClientRect = path.$el.getBoundingClientRect();
-                var textPathBoundingClientRect = textPath.$el.getBoundingClientRect();
+                var pathBoundingClientRect = path.$el.getBoundingClientRect(),
+                    textPathBoundingClientRect = textPath.$el.getBoundingClientRect();
 
                 configuration.set({
                     _size: new Size({
@@ -65,7 +73,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                     textPathOffsetY: (pathBoundingClientRect.top - textPathBoundingClientRect.top) * globalToLocalFactor.x / configuration.$.scale.x
                 });
 
-
+                configuration.trigger("sizeChanged");
             }
         },
 
@@ -74,12 +82,12 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                 printColors = configuration.$.printColors,
                 printColor = null;
 
-            if(printColors && printColors.size()) {
+            if(printColors && printColors.size() && !this.isSpecialFlex()) {
                 printColor = printColors.at(0).toHexString();
             }
 
             return printColor;
-        }.on(["configuration.printColors", "reset"])
+        }.on(["configuration.printColors", "reset"]).onChange("configuration.printType")
 
     });
 });

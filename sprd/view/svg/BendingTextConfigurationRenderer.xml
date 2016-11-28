@@ -12,7 +12,7 @@
     <!--<use xlink:href="#coords"/>-->
     <!--<use xlink:href="#MyPath" fill="none" stroke="none"/>-->
 
-    <text cid="text" font-family="{configuration.font.getUniqueFontName()}" font-size="20" id="text" text-anchor="middle" style="fill: url(#p{maskId})">
+    <text cid="text" font-family="{configuration.font.getUniqueFontName()}" font-size="16" id="text" text-anchor="middle" style="fill: url(#p{maskId})">
         <textPath xlink:href="#textPath{maskId}" cid="textPath" startOffset="50%" fill="{getPrintColor()}">
             {configuration.text}
         </textPath>
