@@ -51,6 +51,13 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
         compose: function() {
             var ret = this.callBase();
             delete ret.designs;
+
+            ret.properties = ret.properties || {};
+            ret.properties.fontId = this.get("font.id");
+            ret.properties.text = this.$.text;
+            ret.properties.specialText = true;
+            ret.properties.alignment = this.$.align;
+
             return ret;
         },
 
@@ -239,9 +246,20 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
                     })
                     .seq(function () {
                         var printType = self.$.printType,
-                            design = self.$.design;
+                            design = self.$.design,
+                            properties = self.$.properties;
 
-                        if (design) {
+                        if (properties && properties.specialText) {
+
+                            self.set({
+                                font: self.$.pimpDataSource.createEntity(Font, properties.fontId),
+                                align: properties.alignment,
+                                text: properties.text
+                            }, {
+                                silent: true
+                            })
+
+                        } else if (design) {
 
                             var split = design.$.name.split(";");
                             self.set({

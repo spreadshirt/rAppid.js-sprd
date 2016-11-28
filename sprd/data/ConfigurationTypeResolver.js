@@ -7,7 +7,13 @@ define(['js/data/TypeResolver'], function (TypeResolver) {
         },
 
         resolve: function (value) {
-            var type = value.text ? "specialText" : value.type;
+
+            var type = value.type;
+
+            if (value.text || (value.properties && value.properties.specialText)) {
+                type = "specialText";
+            }
+
             return this.$options.mapping[type];
         }
 
