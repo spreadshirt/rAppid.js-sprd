@@ -24,7 +24,11 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                     type: Price,
                     generated: true
                 },
-                creator: String
+                creator: String,
+                templateId: {
+                    type: String,
+                    required: false
+                }
             },
 
             defaults: {
