@@ -71,7 +71,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Render
 
 
             return null;
-        }.onChange("design", "_width", "_height").on(["configuration.printColors", "reset"]),
+        }.onChange("design", "_width", "_height").on(["configuration.printColors", "reset"])
 
 
     })

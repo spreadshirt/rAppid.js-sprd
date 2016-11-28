@@ -24,7 +24,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 _allowScale: "{design.restrictions.allowScale}",
 
                 afterEffect: null,
-                //filter: null,
                 processedImage: null,
                 originalDesign: null
             },
@@ -71,7 +70,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             _commitAfterEffect: function(afterEffect) {
                 var self = this;
                 if (afterEffect) {
-                    this.applyAfterEffect(afterEffect, {}, function(err, result) {
+                    this.applyAfterEffect(afterEffect, function(err, result) {
                         if (!err) {
                             self.set('processedImage', result)
                         } else {
@@ -94,7 +93,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 var design = this.$.originalDesign || this.$.design,
-                    cacheId = [afterEffect.$.id, design.$.wtfMbsId || design.$.id].join('#');
+                    cacheId = [this.$.afterEffect.id(), options.grayScale ? 'g' : ''
+                        , design.$.wtfMbsId || design.$.id].join('#');
 
                 if (!design) {
                     callback(new Error("No design"));
