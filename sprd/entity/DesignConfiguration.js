@@ -32,6 +32,10 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.$sizeCache = {};
                 this.$$ = {};
                 this.callBase();
+
+                this.bind('change:afterEffect', this.computeProcessedImage, this);
+                this.bind('afterEffect.offset', 'change', this.computeProcessedImage, this);
+                this.bind('afterEffect.scale', 'change', this.computeProcessedImage, this);
             },
 
             inject: {
@@ -67,10 +71,10 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.trigger("priceChanged");
             },
 
-            _commitAfterEffect: function(afterEffect) {
+            computeProcessedImage: function() {
                 var self = this;
-                if (afterEffect) {
-                    this.applyAfterEffect(afterEffect, function(err, result) {
+                if (this.$.afterEffect) {
+                    this.applyAfterEffect(this.$.afterEffect, function(err, result) {
                         if (!err) {
                             self.set('processedImage', result)
                         } else {
