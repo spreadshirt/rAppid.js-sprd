@@ -74,7 +74,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             computeProcessedImage: function() {
                 var self = this;
                 if (this.$.afterEffect) {
-                    this.applyAfterEffect(this.$.afterEffect, function(err, result) {
+                    this.applyAfterEffect(this.$.afterEffect, null, function(err, result) {
                         if (!err) {
                             self.set('processedImage', result)
                         } else {
@@ -96,13 +96,14 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                     callback(new Error("No mask supplied"));
                 }
 
-                var design = this.$.originalDesign || this.$.design,
-                    cacheId = [this.$.afterEffect.id(), options.grayScale ? 'g' : ''
-                        , design.$.wtfMbsId || design.$.id].join('#');
+                var design = this.$.originalDesign || this.$.design;
 
                 if (!design) {
                     callback(new Error("No design"));
                 }
+
+                var cacheId = [this.$.afterEffect.id(), options.grayScale ? 'g' : ''
+                    , design.$.wtfMbsId || design.$.id].join('#');
 
                 var cachedImage = processedImageCache[cacheId];
                 if (cachedImage) {
