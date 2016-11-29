@@ -102,7 +102,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                     callback(new Error("No design"));
                 }
 
-                var cacheId = [this.$.afterEffect.id(), options.grayScale ? 'g' : ''
+                var cacheId = [this.$.afterEffect.id(), options.greyScale ? 'g' : ''
                     , design.$.wtfMbsId || design.$.id].join('#');
 
                 var cachedImage = processedImageCache[cacheId];
