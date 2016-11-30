@@ -60,7 +60,8 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                     var price = new Price();
                     var printType = possiblePrintTypes[i];
                     if (printType.isPrintColorColorSpace()) {
-                        var printColor = printType.getClosestPrintColor(design.$.colors.at(0).get('default'));
+                        var firstColor = design.$.colors.at(0);
+                        var printColor = printType.getClosestPrintColor(firstColor.get('default') || firstColor.get("origin"));
                         if (!printColor) {
                             continue;
                         }
