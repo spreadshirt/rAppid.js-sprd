@@ -130,7 +130,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         printColors = [];
 
                         designColors.each(function (designColor) {
-                            var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"]);
+                            var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"] || designColor.$["origin"]);
                             printColors.push(closestPrintColor);
                             defaultPrintColors.push(closestPrintColor);
                         });
