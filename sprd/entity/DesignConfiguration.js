@@ -33,8 +33,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.callBase();
 
                 this.bind('change:afterEffect', this.computeProcessedImage, this);
-                this.bind('afterEffect.offset', 'change', this.computeProcessedImage, this);
-                this.bind('afterEffect.scale', 'change', this.computeProcessedImage, this);
             },
 
             inject: {
@@ -75,7 +73,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 if (this.$.afterEffect) {
                     this.applyAfterEffect(this.$.afterEffect, null, function(err, result) {
                         if (!err) {
-                            self.set('processedImage', result.normal)
+                            self.set('processedImage', result)
                         } else {
                             console.error(err)
                         }
@@ -85,6 +83,10 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
 
             prepareForAfterEffect: function(design, afterEffect, callback) {
+                var self = this;
+                this.unbind('afterEffect.offset', 'change', this.computeProcessedImage, this);
+                this.unbind('afterEffect.scale', 'change', this.computeProcessedImage, this);
+
                 flow()
                     .seq('designImage', function(cb) {
                         if (!design.$.localHtmlImage) {
@@ -120,7 +122,11 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                         afterEffect.set('destinationWidth', this.vars.ctx.canvas.width);
                         afterEffect.set('destinationHeight', this.vars.ctx.canvas.height);
                     })
-                    .exec(callback);
+                    .exec(function(err, results) {
+                        self.bind('afterEffect.offset', 'change', self.computeProcessedImage, self);
+                        self.bind('afterEffect.scale', 'change', self.computeProcessedImage, self);
+                        callback(err, results);
+                    });
             },
 
             _applyAfterEffect: function(design, afterEffect, options, callback) {
@@ -270,8 +276,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             size: function() {
                 return this.getSizeForPrintType(this.$.printType);
-            }
-                .onChange("_dpi", "design"),
+            }.onChange("_dpi", "design"),
 
             getSizeForPrintType: function(printType) {
                 if (this.$.design && this.$.design.$.size && printType && printType.$.dpi) {
@@ -291,14 +296,11 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             // TODO: add onchange for design.restriction.allowScale
             isScalable: function() {
                 return this.get("printType.isScalable()") && this.$._allowScale;
-            }
-                .onChange("printType", "_allowScale"),
+            }.onChange("printType", "_allowScale"),
 
             allowScale: function() {
                 return this.$._allowScale;
-            }
-
-            ,
+            },
 
             _validatePrintTypeSize: function(printType, width, height, scale) {
                 var ret = this.callBase();
@@ -313,9 +315,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 ret.dpiBound = printType.isShrinkable() && !design.isVectorDesign() && Math.max(Math.abs(scale.x), Math.abs(scale.y)) > 1;
 
                 return ret;
-
-            }
-            ,
+            },
 
             price: function() {
 
@@ -338,8 +338,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
                 return price;
 
-            }
-                .on("priceChanged").onChange("_designCommission", "_printTypePrice"),
+            }.on("priceChanged").onChange("_designCommission", "_printTypePrice"),
 
             getPossiblePrintTypes: function(appearance) {
                 var ret = [],
@@ -351,9 +350,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return ret;
-            }
-
-                .onChange("printArea", "design"),
+            }.onChange("printArea", "design"),
 
             compose: function() {
                 var ret = this.callBase();
@@ -423,9 +420,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return ret;
-            }
-
-            ,
+            },
 
             save: function(callback) {
                 var self = this,
@@ -455,8 +450,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                         })
                         .exec(callback)
                 }
-            }
-            ,
+            },
 
             parse: function(data) {
                 data = this.callBase();
