@@ -96,6 +96,12 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                     mediaType: "json"
                 }, this.callBase());
 
+                if (/\bProduct\b/.test(resource.constructor.name)) {
+                    _.defaults(ret, {
+                        mode: "designer"
+                    });
+                }
+
                 if (resource.constructor.name.indexOf("Label") > -1) {
                     ret.fullData = true
                 }
