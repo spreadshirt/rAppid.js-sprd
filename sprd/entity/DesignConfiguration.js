@@ -78,6 +78,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                             console.error(err)
                         }
                     })
+                } else {
+                    self.set('processedImage', null);
                 }
             },
 
@@ -212,7 +214,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                         self.prepareForAfterEffect(design, afterEffect, cb)
                     })
                     .seq('images', function(cb) {
-                        var cacheId = [afterEffect.id(), design.$.wtfMbsId || design.$.id].join('#');
+                        var cacheId = [afterEffect.id(), options.exportAsBlob ? 'b' : '', design.$.wtfMbsId || design.$.id].join('#');
                         self.synchronizeFunctionCall(function(syncCB) {
                             self._applyAfterEffect(design, afterEffect, options, syncCB);
                         }, cacheId, cb, self);
@@ -411,13 +413,12 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                     changeable: true
                 };
 
-                var mask = this.get('mask');
-                if (mask) {
-                    ret.properties = ret.properties || {};
-                    ret.properties.maskId = mask.$.id;
-                    ret.properties.originalDesignId = this.get('originalDesign.id');
-                    ret.properties.maskProperties = mask.getProperties();
-                }
+                // var afterEffect = this.get('afterEffect');
+                // if (afterEffect) {
+                //     ret.properties = ret.properties || {};
+                //     ret.properties.mask= afterEffect.compose();
+                //     ret.properties.originalDesignId = this.get('originalDesign.id');
+                // }
 
                 return ret;
             },
@@ -425,18 +426,18 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             save: function(callback) {
                 var self = this,
                     design = this.$.design,
-                    mask = this.$.mask;
+                    afterEffect = this.$.afterEffect;
 
-                if (!mask) {
+                if (!afterEffect) {
                     callback && callback();
                 } else {
                     flow()
                         .seq('processedImage', function(cb) {
-                            self.applyAfterEffect(mask, {exportAsBlob: true}, cb);
+                            self.applyAfterEffect(afterEffect, {exportAsBlob: true}, cb);
                         })
                         .seq('uploadDesign', function(cb) {
                             var img = new BlobImage({
-                                blob: this.vars.processedImage
+                                blob: this.vars.processedImage.normal
                             });
 
                             self.$.imageUploadService.upload(img, cb);
@@ -448,7 +449,9 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
                             self.set('design', this.vars.uploadDesign.$.design);
                         })
-                        .exec(callback)
+                        .exec(function(err, results) {
+                            callback(err, results);
+                        })
                 }
             },
 
