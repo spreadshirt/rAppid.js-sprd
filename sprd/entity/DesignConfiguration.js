@@ -272,6 +272,10 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
             },
 
+            saveTakesTime: function() {
+                return this.$.mask;
+            },
+
             parse: function (data) {
                 data = this.callBase();
 

@@ -110,7 +110,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return data;
-            },
+            }
         });
 
     }

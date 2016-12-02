@@ -17,7 +17,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
 
                 designId = designId || svg.image.designId;
-                if (designId) {
+                if (designId && designId != "undefined") {
                     design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
                 }
             } else {
@@ -144,7 +144,11 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 .seq(function () {
 
                     if (svg) {
-                        var size;
+                        var size = new Size({
+                            width: 100,
+                            height: 100
+                        });
+
                         if (design) {
                             size = UnitUtil.convertSizeToMm(design.$.size, configuration.$.printType.$.dpi);
                         } else if(configuration.$.generatedWidth){

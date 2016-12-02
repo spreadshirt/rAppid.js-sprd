@@ -22,6 +22,12 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             this.bind("configuration", "change:font", this.loadFont, this);
         },
 
+        _initializationComplete: function() {
+            this.callBase();
+            this.loadFont();
+            this.recalculateSize();
+        },
+
         render: function() {
             if (this.$stage && this.$stage.$el && this.$stage.$el.parentNode) {
                 this.loadFont();

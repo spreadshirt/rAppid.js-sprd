@@ -95,6 +95,9 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
                 .exec(callback);
         },
 
+        saveTakesTime: function() {
+            return true;
+        },
 
         _commitChangedAttributes: function ($, options) {
             this.callBase($, options);

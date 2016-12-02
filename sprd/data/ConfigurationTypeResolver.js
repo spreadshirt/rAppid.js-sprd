@@ -14,6 +14,10 @@ define(['js/data/TypeResolver'], function (TypeResolver) {
                 type = "specialText";
             }
 
+            if (value.properties.type == "bendingText") {
+                type = "bendingText";
+            }
+
             return this.$options.mapping[type];
         }
 
