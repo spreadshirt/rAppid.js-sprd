@@ -29,7 +29,13 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Render
                 options.version = design.$.version;
 
                 if (!design.isVectorDesign()) {
-                    return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
+                    var processedImage = this.$.configuration.$.processedImage;
+                    if (processedImage) {
+                        return processedImage.normal;
+                    }
+
+                    return design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
+
                 } else {
                     return this.$.imageService.designImage(design.$.wtfMbsId, options)
                 }

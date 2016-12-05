@@ -1,8 +1,7 @@
 define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
-        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage"],
-    function(Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage) {
-
-        var processedImageCache = {};
+        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage",
+        "sketchomat/helper/GreyScaler", "sketchomat/model/AfterEffect"],
+    function(Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, GreyScaler, AfterEffect) {
 
         return Configuration.inherit('sprd.model.DesignConfiguration', {
 
@@ -32,6 +31,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.$sizeCache = {};
                 this.$$ = {};
                 this.callBase();
+
+                this.bind('change:afterEffect', this.computeProcessedImage, this);
             },
 
             inject: {
@@ -67,17 +68,119 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.trigger("priceChanged");
             },
 
-            _commitAfterEffect: function(afterEffect) {
+            computeProcessedImage: function() {
                 var self = this;
-                if (afterEffect) {
-                    this.applyAfterEffect(afterEffect, function(err, result) {
+                if (this.$.afterEffect) {
+                    this.applyAfterEffect(this.$.afterEffect, null, function(err, result) {
                         if (!err) {
                             self.set('processedImage', result)
                         } else {
                             console.error(err)
                         }
                     })
+                } else {
+                    self.set('processedImage', null);
                 }
+            },
+
+
+            prepareForAfterEffect: function(design, afterEffect, callback) {
+                var self = this;
+                this.unbind('afterEffect.offset', 'change', this.computeProcessedImage, this);
+                this.unbind('afterEffect.scale', 'change', this.computeProcessedImage, this);
+
+                flow()
+                    .seq('designImage', function(cb) {
+                        if (!design.$.localHtmlImage) {
+                            var originalImage = new Image();
+                            originalImage.src = design.$.localImage;
+                            originalImage.onerror = cb;
+                            originalImage.onload = function() {
+                                design.set('localHtmlImage', originalImage);
+                                cb(null, originalImage);
+                            };
+                        } else {
+                            cb(null, design.$.localHtmlImage);
+                        }
+                    })
+                    .seq('ctx', function(cb) {
+                        var ctx;
+                        if (!design.$.canvasCtx) {
+                            var img = this.vars.designImage;
+                            var canvas = document.createElement('canvas');
+                            var factor = AfterEffect.canvasScalingFactor(img);
+                            canvas.width = img.width * factor;
+                            canvas.height = img.height * factor;
+
+                            ctx = canvas.getContext('2d');
+                            design.set('canvasCtx', ctx);
+                        } else {
+                            ctx = design.$.canvasCtx;
+                        }
+
+                        cb(null, ctx);
+                    })
+                    .seq(function() {
+                        afterEffect.set('destinationWidth', this.vars.ctx.canvas.width);
+                        afterEffect.set('destinationHeight', this.vars.ctx.canvas.height);
+                    })
+                    .exec(function(err, results) {
+                        self.bind('afterEffect.offset', 'change', self.computeProcessedImage, self);
+                        self.bind('afterEffect.scale', 'change', self.computeProcessedImage, self);
+                        callback(err, results);
+                    });
+            },
+
+            _applyAfterEffect: function(design, afterEffect, options, callback) {
+                var self = this;
+                var ctx = design.$.canvasCtx;
+                var designImage = design.$.localHtmlImage;
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+                flow()
+                    .seq(function(cb) {
+                        afterEffect.apply(designImage, ctx, options, cb);
+                    })
+                    .seq('src', function(cb) {
+                        if (options.exportAsBlob) {
+                            ctx.canvas.toBlob(function(blob) {
+                                cb(null, blob);
+                            }, "image/png")
+                        } else {
+                            cb(null, ctx.canvas.toDataURL());
+                        }
+                    })
+                    .seq('greyScale', function(cb) {
+                        var cachedPreview = design.get('greyScalePreview');
+                        var self = this;
+
+                        if (cachedPreview) {
+                            cb(null, cachedPreview)
+                        } else {
+                            GreyScaler.greyScaleImage(designImage, function(err, result) {
+                                if (!err) {
+                                    design.set('greyScalePreview', result);
+                                }
+                                cb(err, result)
+                            });
+                        }
+                    })
+                    .seq(function() {
+                        ctx.globalCompositeOperation = 'destination-over';
+                        ctx.drawImage(this.vars.greyScale, 0, 0, ctx.canvas.width, ctx.canvas.height);
+                    })
+                    .seq('gSrc', function(cb) {
+                        if (options.exportAsBlob) {
+                            ctx.canvas.toBlob(function(blob) {
+                                cb(null, blob);
+                            }, "image/png")
+                        } else {
+                            cb(null, ctx.canvas.toDataURL());
+                        }
+                    })
+                    .exec(function(err, results) {
+                        callback(err, {normal: results.src, greyScale: results.gSrc});
+                    });
             },
 
             applyAfterEffect: function(afterEffect, options, callback) {
@@ -89,34 +192,38 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 if (!afterEffect) {
-                    callback(new Error("No mask supplied"));
+                    callback(new Error("No mask supplied."));
+                    return;
                 }
 
-                var design = this.$.originalDesign || this.$.design,
-                    cacheId = [this.$.afterEffect.id(), options.grayScale ? 'g' : ''
-                        , design.$.wtfMbsId || design.$.id].join('#');
+                var design = this.$.originalDesign || this.$.design;
 
                 if (!design) {
-                    callback(new Error("No design"));
+                    callback(new Error("No design."));
+                    return;
                 }
 
-                var cachedImage = processedImageCache[cacheId];
-                if (cachedImage) {
-                    callback && callback(null, cachedImage);
-                } else {
-                    afterEffect.apply(design, options, function(err, result) {
-                        if (!err) {
+                if (!design.$.localImage) {
+                    callback(new Error("Design has no local image."));
+                    return;
+                }
 
-                            if (!options.exportAsBlob) {
-                                processedImageCache[cacheId] = result;
-                            }
-                            callback(null, result);
-                        } else {
-                            callback(err, result);
-                        }
+
+                flow()
+                    .seq(function(cb) {
+                        self.prepareForAfterEffect(design, afterEffect, cb)
                     })
-                }
+                    .seq('images', function(cb) {
+                        var cacheId = [afterEffect.id(), options.exportAsBlob ? 'b' : '', design.$.wtfMbsId || design.$.id].join('#');
+                        self.synchronizeFunctionCall(function(syncCB) {
+                            self._applyAfterEffect(design, afterEffect, options, syncCB);
+                        }, cacheId, cb, self);
+                    })
+                    .exec(function(err, results) {
+                        callback(err, results.images);
+                    });
             },
+
 
             getPrintColorsAsRGB: function() {
                 var ret = [];
@@ -131,7 +238,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return ret;
-            },
+            }
+            ,
 
             setColor: function(layerIndex, color) {
                 var printType = this.$.printType;
@@ -165,7 +273,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
                 this.trigger('configurationChanged');
                 this.trigger("priceChanged");
-            },
+            }
+            ,
 
             size: function() {
                 return this.getSizeForPrintType(this.$.printType);
@@ -182,7 +291,9 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return Size.empty;
-            },
+            }
+
+            ,
 
             // TODO: add onchange for design.restriction.allowScale
             isScalable: function() {
@@ -206,7 +317,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 ret.dpiBound = printType.isShrinkable() && !design.isVectorDesign() && Math.max(Math.abs(scale.x), Math.abs(scale.y)) > 1;
 
                 return ret;
-
             },
 
             price: function() {
@@ -303,13 +413,12 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                     changeable: true
                 };
 
-                var mask = this.get('mask');
-                if (mask) {
-                    ret.properties = ret.properties || {};
-                    ret.properties.maskId = mask.$.id;
-                    ret.properties.originalDesignId = this.get('originalDesign.id');
-                    ret.properties.maskProperties = mask.getProperties();
-                }
+                // var afterEffect = this.get('afterEffect');
+                // if (afterEffect) {
+                //     ret.properties = ret.properties || {};
+                //     ret.properties.mask= afterEffect.compose();
+                //     ret.properties.originalDesignId = this.get('originalDesign.id');
+                // }
 
                 return ret;
             },
@@ -317,18 +426,18 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             save: function(callback) {
                 var self = this,
                     design = this.$.design,
-                    mask = this.$.mask;
+                    afterEffect = this.$.afterEffect;
 
-                if (!mask) {
+                if (!afterEffect) {
                     callback && callback();
                 } else {
                     flow()
                         .seq('processedImage', function(cb) {
-                            self.applyAfterEffect(mask, {exportAsBlob: true}, cb);
+                            self.applyAfterEffect(afterEffect, {exportAsBlob: true}, cb);
                         })
                         .seq('uploadDesign', function(cb) {
                             var img = new BlobImage({
-                                blob: this.vars.processedImage
+                                blob: this.vars.processedImage.normal
                             });
 
                             self.$.imageUploadService.upload(img, cb);
@@ -340,7 +449,9 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
                             self.set('design', this.vars.uploadDesign.$.design);
                         })
-                        .exec(callback)
+                        .exec(function(err, results) {
+                            callback(err, results);
+                        })
                 }
             },
 
@@ -365,22 +476,27 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return data;
-            },
+            }
+            ,
 
             init: function(callback) {
                 this.$.manager.initializeConfiguration(this, callback);
-            },
+            }
+            ,
 
             isAllowedOnPrintArea: function(printArea) {
                 return printArea && printArea.get("restrictions.designAllowed") == true;
-            },
+            }
+            ,
 
             getPossiblePrintTypesForPrintArea: function(printArea, appearanceId) {
                 return ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(this.$.design, printArea, appearanceId);
-            },
+            }
+            ,
 
             minimumScale: function() {
                 return (this.get("design.restrictions.minimumScale") || 100 ) / 100;
             }
         });
-    });
+    })
+;

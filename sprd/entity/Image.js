@@ -1,4 +1,4 @@
-define(['js/data/Entity'], function (Entity) {
+define(['js/data/Entity', 'flow'], function(Entity, flow) {
 
     var Image = Entity.inherit('sprd.entity.Image', {
         defaults: {
@@ -15,7 +15,7 @@ define(['js/data/Entity'], function (Entity) {
         getDimension: function(callback) {
             var self = this;
 
-            Image.getDimension(this.src, function (err, dimension) {
+            Image.getDimension(this.src, function(err, dimension) {
                 if (!err && dimension) {
                     // set width and height
                     self.set(dimension);
@@ -25,10 +25,10 @@ define(['js/data/Entity'], function (Entity) {
             });
         }
     }, {
-        getDimension: function (src, callback) {
+        getDimension: function(src, callback) {
             if (typeof window !== "undefined") {
                 var img = new window.Image();
-                img.onload = function (e) {
+                img.onload = function(e) {
                     callback(null, {
                         width: img.width,
                         height: img.height
