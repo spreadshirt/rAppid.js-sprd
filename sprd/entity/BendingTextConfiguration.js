@@ -44,7 +44,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 context = this.$.context,
                 self = this;
 
-            if (Object.values(properties).length) {
+            if (!_.isEmpty(properties)) {
                 flow()
                     .seq(function(cb) {
                         DesignConfigurationBase.prototype.init.call(self, cb);

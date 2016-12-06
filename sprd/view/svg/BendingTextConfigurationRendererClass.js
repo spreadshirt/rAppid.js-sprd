@@ -10,7 +10,9 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             configuration: null,
 
             textPath: null,
-            path : null
+            path : null,
+
+            textOffset: null
 
         },
 
@@ -20,6 +22,9 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
 
             this.bind("configuration", "recalculateSize", this.recalculateSize, this);
             this.bind("configuration", "change:font", this.loadFont, this);
+            this.bind("configuration", "change:text", function() {
+                this.set("textOffset", null);
+            }, this)
         },
 
         _initializationComplete: function() {
@@ -63,12 +68,29 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
 
                 configuration.mainConfigurationRenderer = this;
 
-                var globalToLocalFactor = this.globalToLocalFactor(),
-                    textPathRect = textPath.$el.getBBox(),
-                    pathRect = path.$el.getBBox();
+                var textOffset = this.$.textOffset,
+                    textPathRect = textPath.$parent.$el.getBBox();
 
-                var pathBoundingClientRect = path.$el.getBoundingClientRect(),
-                    textPathBoundingClientRect = textPath.$el.getBoundingClientRect();
+                if(!textOffset) {
+                    configuration.set({
+                        _size: new Size({
+                            width: textPathRect.width,
+                            height: textPathRect.height
+                        }),
+                        textPathOffsetX: 0,
+                        textPathOffsetY: 0
+                    });
+
+                    var textBBox = textPath.$parent.$el.getBBox();
+
+                    this.set("textOffset", {
+                        x : textBBox.x,
+                        y : textBBox.y
+                    })
+                }
+
+                var pathRect = path.$el.getBBox();
+                textOffset = this.$.textOffset;
 
                 configuration.set({
                     _size: new Size({
@@ -76,7 +98,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                         height: textPathRect.height
                     }),
                     textPathOffsetX: (textPathRect.width - pathRect.width) * 0.5,
-                    textPathOffsetY: (pathBoundingClientRect.top - textPathBoundingClientRect.top) * globalToLocalFactor.x / configuration.$.scale.x
+                    textPathOffsetY: -textOffset.y
                 });
 
                 configuration.trigger("sizeChanged");

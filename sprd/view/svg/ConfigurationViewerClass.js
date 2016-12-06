@@ -584,7 +584,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var distance = self.getDistance(configuration.$.offset, self.$._offset);
                     var onlyPointed = !(distance) && mode === MOVE && !self.$moveInitiator;
 
-                    if(onlyPointed && configuration == previousSelectedConfiguration && (configuration instanceof TextConfiguration || configuration instanceof SpecialTextConfiguration)) {
+                    if(onlyPointed && configuration == previousSelectedConfiguration && (configuration instanceof TextConfiguration || configuration instanceof SpecialTextConfiguration || configuration instanceof  BendingTextConfiguration)) {
                         self.$.bus.trigger('ConfigurationViewer.configurationReselected', {
                             configuration: configuration,
                             previousConfiguration: previousSelectedConfiguration

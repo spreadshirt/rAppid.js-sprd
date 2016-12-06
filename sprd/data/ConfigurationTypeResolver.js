@@ -8,13 +8,12 @@ define(['js/data/TypeResolver'], function (TypeResolver) {
 
         resolve: function (value) {
 
-            var type = value.type;
+            var type = value.type,
+                properties = value.properties || {};
 
-            if (value.text || (value.properties && value.properties.specialText)) {
+            if (value.text || (properties.specialText)) {
                 type = "specialText";
-            }
-
-            if (value.properties.type == "bendingText") {
+            } else if (properties.type == "bendingText") {
                 type = "bendingText";
             }
 
