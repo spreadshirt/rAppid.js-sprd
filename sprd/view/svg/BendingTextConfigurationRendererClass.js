@@ -10,10 +10,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             configuration: null,
 
             textPath: null,
-            path : null,
-
-            textOffset: null
-
+            path: null
         },
 
         ctor: function() {
@@ -22,9 +19,6 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
 
             this.bind("configuration", "recalculateSize", this.recalculateSize, this);
             this.bind("configuration", "change:font", this.loadFont, this);
-            this.bind("configuration", "change:text", function() {
-                this.set("textOffset", null);
-            }, this)
         },
 
         _initializationComplete: function() {
@@ -62,35 +56,22 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             if (textPath && textPath.$el && path && path.$el) {
 
                 var configuration = this.$.configuration;
-                if(configuration && configuration.mainConfigurationRenderer && configuration.mainConfigurationRenderer != this ) {
+                if (configuration && configuration.mainConfigurationRenderer && configuration.mainConfigurationRenderer != this) {
                     return;
                 }
 
                 configuration.mainConfigurationRenderer = this;
 
-                var textOffset = this.$.textOffset,
-                    textPathRect = textPath.$parent.$el.getBBox();
-
-                if(!textOffset) {
-                    configuration.set({
-                        _size: new Size({
-                            width: textPathRect.width,
-                            height: textPathRect.height
-                        }),
-                        textPathOffsetX: 0,
-                        textPathOffsetY: 0
-                    });
-
-                    var textBBox = textPath.$parent.$el.getBBox();
-
-                    this.set("textOffset", {
-                        x : textBBox.x,
-                        y : textBBox.y
-                    })
-                }
+                var textPathRect = textPath.$parent.$el.getBBox();
 
                 var pathRect = path.$el.getBBox();
-                textOffset = this.$.textOffset;
+
+                configuration.set({
+                    textPathOffsetX: 0,
+                    textPathOffsetY: 0
+                });
+
+                var textBBox = this.$.text.$el.getBBox();
 
                 configuration.set({
                     _size: new Size({
@@ -98,7 +79,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                         height: textPathRect.height
                     }),
                     textPathOffsetX: (textPathRect.width - pathRect.width) * 0.5,
-                    textPathOffsetY: -textOffset.y
+                    textPathOffsetY: -textBBox.y
                 });
 
                 configuration.trigger("sizeChanged");

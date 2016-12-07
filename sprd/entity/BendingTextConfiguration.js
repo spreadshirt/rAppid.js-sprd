@@ -20,7 +20,12 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             isNew: false,
 
             angle: 50,
-            path: PATH_TYPE.OUTER_CIRCLE
+            path: PATH_TYPE.OUTER_CIRCLE,
+            textPath: "{textPath()}",
+            dy: "{dy()}",
+
+            textPathOffsetX: 0,
+            textPathOffsetY: 0
         },
 
         type: "bendingText",
@@ -143,9 +148,24 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             var a = this.$.angle;
 
             this.set("path", PATH_TYPE.OUTER_CIRCLE);
-            return "M 0 0 m oneTime,twoTime a oneTime,oneTime 0 1,1 0,-twoTime a oneTime,oneTime 0 1,1 0,twoTime"
-                .replace(/oneTime/g, "" + a)
-                .replace(/twoTime/g, "" + (2 * a));
+            if (a < 0) {
+                a = -a;
+
+                return "M 0 0 m oneTime,twoTime a oneTime,oneTime 0 1,0 0,twoTime a oneTime,oneTime 0 1,0 0,-twoTime"
+                    .replace(/oneTime/g, "" + a)
+                    .replace(/twoTime/g, "" + (2 * a));
+
+            } else {
+                return "M 0 0 m oneTime,0 a oneTime,oneTime 0 1,1 0,-twoTime a oneTime,oneTime 0 1,1 0,twoTime"
+                    .replace(/oneTime/g, "" + a)
+                    .replace(/twoTime/g, "" + (2 * a));
+            }
+
+
+        }.on("recalculateSize"),
+
+        dy: function() {
+            return this.$.angle < 0 ? 16 : 0;
         }.onChange("angle"),
 
         getPossiblePrintTypes: function(appearance) {

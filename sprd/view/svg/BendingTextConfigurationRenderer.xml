@@ -1,18 +1,10 @@
 <sprdSvg:BendingTextConfigurationRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sprdSvg="sprd.view.svg">
 
 
-    <path cid="path" id="textPath{maskId}" fill="none" stroke="none" translateY="{configuration.textPathOffsetY}" translateX="{configuration.textPathOffsetX}"
-          d="{configuration.textPath()}"/>
-          <!--d="-->
-                    <!--M 0 0-->
-                    <!--m 50,100-->
-                    <!--a 50,50 0 1,1 0,-100-->
-                    <!--a 50,50 0 1,1 0,100"/>-->
+    <path cid="path" id="textPath{maskId}" fill="none" stroke="none" _transform="translate({configuration.textPathOffsetX}, {configuration.textPathOffsetY})"
+          d="{configuration.textPath}"/>
 
-    <!--<use xlink:href="#coords"/>-->
-    <!--<use xlink:href="#MyPath" fill="none" stroke="none"/>-->
-
-    <text cid="text" font-family="{configuration.font.getUniqueFontName()}" font-size="16" id="text" text-anchor="middle" style="fill: url(#p{maskId})">
+    <text cid="text" font-family="{configuration.font.getUniqueFontName()}" font-size="16" id="text" text-anchor="middle" style="fill: url(#p{maskId})" dy="{configuration.dy}">
         <textPath xlink:href="#textPath{maskId}" cid="textPath" startOffset="50%" fill="{getPrintColor()}">
             {configuration.text}
         </textPath>
