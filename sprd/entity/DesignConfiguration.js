@@ -32,7 +32,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.$$ = {};
                 this.callBase();
 
-                this.bind('change:afterEffect', this.computeProcessedImage, this);
+                this.bind('change:afterEffect', this.computeProcessedImageDebounced, this);
+                this.bind("afterEffect", "processingParametersChanged", this.computeProcessedImageDebounced, this);
             },
 
             inject: {
@@ -68,10 +69,27 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 this.trigger("priceChanged");
             },
 
+            computeProcessedImageDebounced: function() {
+                // TODO: debounce with requestAnimationFrame
+
+                // this._debounceFunctionCall(this.computeProcessedImage, "processImage", 100);
+                this.computeProcessedImage();
+            },
+
             computeProcessedImage: function() {
                 var self = this;
                 if (this.$.afterEffect) {
+
+
+                    if (this.afterEffectProcessing) {
+                        return;
+                    }
+
+                    this.afterEffectProcessing = true;
+
                     this.applyAfterEffect(this.$.afterEffect, null, function(err, result) {
+                        self.afterEffectProcessing = false;
+
                         if (!err) {
                             self.set('processedImage', result)
                         } else {
@@ -85,9 +103,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
 
             prepareForAfterEffect: function(design, afterEffect, callback) {
-                var self = this;
-                this.unbind('afterEffect.offset', 'change', this.computeProcessedImage, this);
-                this.unbind('afterEffect.scale', 'change', this.computeProcessedImage, this);
 
                 flow()
                     .seq('designImage', function(cb) {
@@ -103,38 +118,36 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                             cb(null, design.$.localHtmlImage);
                         }
                     })
-                    .seq('ctx', function(cb) {
-                        var ctx;
-                        if (!design.$.canvasCtx) {
-                            var img = this.vars.designImage;
-                            var canvas = document.createElement('canvas');
-                            var factor = AfterEffect.canvasScalingFactor(img);
-                            canvas.width = img.width * factor;
-                            canvas.height = img.height * factor;
-
-                            ctx = canvas.getContext('2d');
-                            design.set('canvasCtx', ctx);
-                        } else {
-                            ctx = design.$.canvasCtx;
+                    .seq('ctx', function() {
+                        if (design.$.canvasCtx) {
+                            return design.$.canvasCtx;
                         }
 
-                        cb(null, ctx);
+                        var img = this.vars.designImage;
+                        var canvas = document.createElement('canvas');
+
+                        var factor = AfterEffect.canvasScalingFactor(img);
+
+                        canvas.width = img.naturalWidth * factor;
+                        canvas.height = img.naturalHeight * factor;
+
+                        return canvas.getContext('2d');
+
                     })
                     .seq(function() {
-                        afterEffect.set('destinationWidth', this.vars.ctx.canvas.width);
-                        afterEffect.set('destinationHeight', this.vars.ctx.canvas.height);
+                        var ctx = this.vars.ctx;
+
+                        design.set('canvasCtx', ctx);
+                        afterEffect.set('destinationWidth', ctx.canvas.width);
+                        afterEffect.set('destinationHeight', ctx.canvas.height);
                     })
-                    .exec(function(err, results) {
-                        self.bind('afterEffect.offset', 'change', self.computeProcessedImage, self);
-                        self.bind('afterEffect.scale', 'change', self.computeProcessedImage, self);
-                        callback(err, results);
-                    });
+                    .exec(callback);
             },
 
             _applyAfterEffect: function(design, afterEffect, options, callback) {
-                var self = this;
                 var ctx = design.$.canvasCtx;
                 var designImage = design.$.localHtmlImage;
+
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
                 flow()
@@ -150,9 +163,10 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                             cb(null, ctx.canvas.toDataURL());
                         }
                     })
+
+                    // TODO: remove the greyscaling and replace it inside the mask panel
                     .seq('greyScale', function(cb) {
                         var cachedPreview = design.get('greyScalePreview');
-                        var self = this;
 
                         if (cachedPreview) {
                             cb(null, cachedPreview)
@@ -187,27 +201,20 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 var self = this;
                 options = options || {};
 
-                if (!callback) {
-                    return;
-                }
 
                 if (!afterEffect) {
-                    callback(new Error("No mask supplied."));
-                    return;
+                    return callback && callback(new Error("No mask supplied."));
                 }
 
                 var design = this.$.originalDesign || this.$.design;
 
                 if (!design) {
-                    callback(new Error("No design."));
-                    return;
+                    return callback && callback(new Error("No design."));
                 }
 
                 if (!design.$.localImage) {
-                    callback(new Error("Design has no local image."));
-                    return;
+                    return callback && callback(new Error("Design has no local image."));
                 }
-
 
                 flow()
                     .seq(function(cb) {
@@ -220,7 +227,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                         }, cacheId, cb, self);
                     })
                     .exec(function(err, results) {
-                        callback(err, results.images);
+                        callback && callback(err, results.images);
                     });
             },
 
@@ -238,8 +245,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return ret;
-            }
-            ,
+            },
 
             setColor: function(layerIndex, color) {
                 var printType = this.$.printType;
@@ -273,8 +279,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
                 this.trigger('configurationChanged');
                 this.trigger("priceChanged");
-            }
-            ,
+            },
 
             size: function() {
                 return this.getSizeForPrintType(this.$.printType);
@@ -416,7 +421,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 // var afterEffect = this.get('afterEffect');
                 // if (afterEffect) {
                 //     ret.properties = ret.properties || {};
-                //     ret.properties.mask= afterEffect.compose();
+                //     ret.properties.mask = afterEffect.compose();
                 //     ret.properties.originalDesignId = this.get('originalDesign.id');
                 // }
 
@@ -476,23 +481,19 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return data;
-            }
-            ,
+            },
 
             init: function(callback) {
                 this.$.manager.initializeConfiguration(this, callback);
-            }
-            ,
+            },
 
             isAllowedOnPrintArea: function(printArea) {
                 return printArea && printArea.get("restrictions.designAllowed") == true;
-            }
-            ,
+            },
 
             getPossiblePrintTypesForPrintArea: function(printArea, appearanceId) {
                 return ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(this.$.design, printArea, appearanceId);
-            }
-            ,
+            },
 
             minimumScale: function() {
                 return (this.get("design.restrictions.minimumScale") || 100 ) / 100;

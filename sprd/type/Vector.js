@@ -23,6 +23,10 @@ define(['js/core/Base'], function (Base) {
 
         subtract: function(vector) {
             return Vector.subtract(this, vector);
+        },
+
+        add: function(vector) {
+            return Vector.add(this, vector);
         }
     }, {
         distance: function(vector) {
@@ -48,6 +52,10 @@ define(['js/core/Base'], function (Base) {
             }
 
             return new Vector(ret);
+        },
+
+        add: function(vector1, vector2) {
+            return Vector.subtract(vector1, Vector.multiply(vector2, -1));
         },
 
         multiply: function(vector, scalar) {
