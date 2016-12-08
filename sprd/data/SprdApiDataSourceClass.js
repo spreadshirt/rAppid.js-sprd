@@ -25,7 +25,7 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                     if (data.image.file) {
                         ret.append('filedata', data.image.file);
                     } else if (data.image.blob) {
-                        ret.append('filedata', data.image.blob, "blob.png");
+                        ret.append('filedata', data.image.blob, data.image.filename);
                     }
 
                     return ret;

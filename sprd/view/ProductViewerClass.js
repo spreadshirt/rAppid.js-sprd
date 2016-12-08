@@ -269,6 +269,9 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 var newConfiguration = copiedConfiguration.clone(),
                     bus = self.$.bus;
 
+                e.preventDefault();
+                e.stopPropagation();
+
                 this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view, function(err) {
                     if(err) {
                         bus.trigger("ProductViewer.copyToViewError", err);
