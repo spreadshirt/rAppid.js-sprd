@@ -37,7 +37,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
             _isDeletable: true,
 
-            _printTypePrice: "{printType.price}"
+            _printTypePrice: "{printType.price}",
+            properties: Object
         },
 
         inject: {
@@ -46,6 +47,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         save: function(callback) {
             callback && callback();
+        },
+
+        saveTakesTime: function() {
+            return false;
         },
 
         _commitChangedAttributes: function ($, options) {

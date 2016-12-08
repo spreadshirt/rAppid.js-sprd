@@ -1,5 +1,5 @@
-define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType', 'sprd/entity/Appearance'],
-    function (ProductBase, List, ConfigurationTypeResolver, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType, Appearance) {
+define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType', 'sprd/entity/Appearance', 'sprd/entity/BendingTextConfiguration'],
+    function (ProductBase, List, ConfigurationTypeResolver, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType, Appearance, BendingTextConfiguration) {
 
         var undefined;
 
@@ -11,7 +11,8 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                     mapping: {
                         "design": DesignConfiguration,
                         "text": TextConfiguration,
-                        "specialText": SpecialTextConfiguration
+                        "specialText": SpecialTextConfiguration,
+                        "bendingText": BendingTextConfiguration
                     }
                 })],
                 appearance: {

@@ -1,24 +1,12 @@
-define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
-        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage",
-        "sketchomat/helper/GreyScaler", "sketchomat/model/AfterEffect"],
-    function(Configuration, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, GreyScaler, AfterEffect) {
+define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
+        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sketchomat/helper/GreyScaler", "sketchomat/model/AfterEffect"],
+    function(DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, GreyScaler, AfterEffect) {
 
-        return Configuration.inherit('sprd.model.DesignConfiguration', {
+        var processedImageCache = {};
 
-            schema: {
-                design: Design,
-                designs: {
-                    type: Object,
-                    required: false
-                }
-            },
-
+        return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
-                type: 'design',
                 _dpi: "{printType.dpi}",
-
-                design: null,
-
                 _designCommission: "{design.price}",
                 _allowScale: "{design.restrictions.allowScale}",
 
@@ -29,14 +17,12 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             ctor: function() {
                 this.$sizeCache = {};
-                this.$$ = {};
                 this.callBase();
 
                 this.bind('change:afterEffect', this.computeProcessedImage, this);
             },
 
             inject: {
-                manager: IDesignConfigurationManager,
                 imageUploadService: IImageUploadService
             },
 
@@ -354,71 +340,15 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 return ret;
             }.onChange("printArea", "design"),
 
-            compose: function() {
-                var ret = this.callBase();
-
-                var transform = [],
-                    scale = this.$.scale,
-                    rotation = this.$.rotation,
-
-                    width = this.width(),
-                    height = this.height();
-
-                if (rotation) {
-                    transform.push("rotate(" + rotation + "," + Math.round(width / 2, 3) + "," + Math.round(height / 2, 3) + ")");
+            compose: function () {
+               var ret = this.callBase();
+                var mask = this.get('mask');
+                if (mask) {
+                    ret.properties = ret.properties || {};
+                    ret.properties.maskId = mask.$.id;
+                    ret.properties.originalDesignId = this.get('originalDesign.id');
+                    ret.properties.maskProperties = mask.getProperties();
                 }
-
-                if (scale && (scale.x < 0 || scale.y < 0)) {
-                    transform.push("scale(" + (scale.x < 0 ? -1 : 1) + "," + (scale.y < 0 ? -1 : 1) + ")");
-                }
-
-                var designId = this.get('design.wtfMbsId') || "";
-                ret.content = {
-                    unit: "mm",
-                    dpi: "25.4",
-                    svg: {
-                        image: {
-                            transform: transform.join(" "),
-                            width: Math.round(width, 3),
-                            height: Math.round(height, 3),
-                            designId: designId
-                        }
-                    }
-                };
-
-                ret.designs = [{
-                    id: designId,
-                    href: "/" + this.get("design.id")
-                }];
-
-                delete ret.design;
-
-                var printColorIds = [],
-                    printColorRGBs = [];
-
-                this.$.printColors.each(function(printColor) {
-                    printColorIds.push(printColor.$.id);
-                    printColorRGBs.push(printColor.color().toRGB().toString());
-                });
-
-                if (this.$.printType.isPrintColorColorSpace()) {
-                    ret.content.svg.image.printColorIds = printColorIds.join(" ");
-                } else {
-                    ret.content.svg.image.printColorRGBs = printColorRGBs.join(" ");
-                }
-
-                ret.printColors = undefined;
-
-                ret.restrictions = {
-                    changeable: true
-                };
-
-                // var afterEffect = this.get('afterEffect');
-                // if (afterEffect) {
-                //     ret.properties = ret.properties || {};
-                //     ret.properties.mask= afterEffect.compose();
-                //     ret.properties.originalDesignId = this.get('originalDesign.id');
-                // }
 
                 return ret;
             },
@@ -455,7 +385,11 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
             },
 
-            parse: function(data) {
+            saveTakesTime: function() {
+                return this.$.mask;
+            },
+
+            parse: function (data) {
                 data = this.callBase();
 
                 if (data.designs) {
@@ -479,12 +413,12 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             }
             ,
 
-            init: function(callback) {
+            init: function (callback) {
                 this.$.manager.initializeConfiguration(this, callback);
             }
             ,
 
-            isAllowedOnPrintArea: function(printArea) {
+            isAllowedOnPrintArea: function (printArea) {
                 return printArea && printArea.get("restrictions.designAllowed") == true;
             }
             ,
