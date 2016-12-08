@@ -176,7 +176,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                         }
                     })
 
-                    // TODO: remove the greyscaling and replace it inside the mask panel
+                    // // TODO: remove the greyscaling and replace it inside the mask panel
                     .seq('greyScale', function(cb) {
                         var cachedPreview = design.get('greyScalePreview');
 
@@ -205,7 +205,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                         }
                     })
                     .exec(function(err, results) {
-                        callback(err, {normal: results.src, greyScale: results.src});
+                        callback(err, {normal: results.src, greyScale: results.gSrc});
                     });
             },
 
