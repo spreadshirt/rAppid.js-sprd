@@ -71,9 +71,21 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             computeProcessedImageDebounced: function() {
                 // TODO: debounce with requestAnimationFrame
+                var $w = this.$stage.$window;
+                var self = this;
 
+                $w.requestAnimFrame = $w.$requestAnimFrame || (function() {
+                        return $w.requestAnimationFrame ||
+                            $w.webkitRequestAnimationFrame ||
+                            $w.mozRequestAnimationFrame ||
+                            function(callback) {
+                                $w.setTimeout(callback, 1000 / 60);
+                            };
+                    })();
                 // this._debounceFunctionCall(this.computeProcessedImage, "processImage", 100);
-                this.computeProcessedImage();
+                $w.requestAnimFrame(function() {
+                    self.computeProcessedImage();
+                });
             },
 
             computeProcessedImage: function() {
@@ -193,7 +205,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                         }
                     })
                     .exec(function(err, results) {
-                        callback(err, {normal: results.src, greyScale: results.gSrc});
+                        callback(err, {normal: results.src, greyScale: results.src});
                     });
             },
 
