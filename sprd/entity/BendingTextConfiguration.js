@@ -283,6 +283,17 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
         isAllowedOnPrintArea: function(printArea) {
             return printArea && printArea.get("restrictions.textAllowed") == true;
+        },
+
+        _additionalValidation: function($, options) {
+            if (this._hasSome($, ["angle", "text"])) {
+                return {
+                    angle: $.angle,
+                    text: $.text,
+                    validateHardBoundary: true
+                };
+            }
+
         }
     });
 });

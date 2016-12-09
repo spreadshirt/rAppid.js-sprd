@@ -80,7 +80,14 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 this.trigger('configurationChanged');
             }
 
+            validate(this._additionalValidation($, options));
+
             function validate(attributes) {
+
+                if (!attributes) {
+                    return;
+                }
+
                 _.extend(combinedAttributes, attributes);
                 self._debounceFunctionCall(performValidate, "validateTransform", delay, self);
             }
@@ -90,6 +97,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 combinedAttributes = {};
             }
 
+        },
+
+        _additionalValidation: function($, options) {
+            return null;
         },
 
         _validateTransform: function ($) {
@@ -104,7 +115,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 ret = {},
                 printArea = this.$.printArea;
 
-            if (sizeChanged || rotationChanged) {
+            if (sizeChanged || rotationChanged || $.validateHardBoundary) {
                 width = this.width(scale.x);
                 height = this.height(scale.y);
 
@@ -119,7 +130,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
             }
 
-            if (sizeChanged || printTypeChanged) {
+            if (sizeChanged || printTypeChanged || $.validatePrintTypeSize) {
                 width = width || this.width();
                 height = height || this.height();
                 _.extend(ret, this._validatePrintTypeSize(printType, width, height, scale));
