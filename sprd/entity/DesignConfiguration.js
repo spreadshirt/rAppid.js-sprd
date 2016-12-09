@@ -18,8 +18,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.$sizeCache = {};
                 this.callBase();
 
-                this.bind('change:afterEffect', this.computeProcessedImageDebounced, this);
-                this.bind("afterEffect", "processingParametersChanged", this.computeProcessedImageDebounced, this);
+                this.afterEffectProcessing = false;
             },
 
             inject: {
@@ -54,10 +53,14 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.trigger("priceChanged");
             },
 
-            computeProcessedImageDebounced: function() {
+            computeProcessedImageDebounced: function(ctx) {
                 // TODO: debounce with requestAnimationFrame
                 var $w = this.$stage.$window;
                 var self = this;
+
+                if (!this.$.afterEffect) {
+                    return;
+                }
 
                 $w.requestAnimFrame = $w.$requestAnimFrame || (function() {
                         return $w.requestAnimationFrame ||
@@ -67,26 +70,23 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                                 $w.setTimeout(callback, 1000 / 60);
                             };
                     })();
-                // this._debounceFunctionCall(this.computeProcessedImage, "processImage", 100);
-                $w.requestAnimFrame(function() {
-                    self.computeProcessedImage();
-                });
+
+                self.computeHandler = function() {
+                    self.computeProcessedImage(ctx);
+                };
+
+                if (!self.afterEffectProcessing) {
+                    $w.requestAnimFrame(self.computeHandler);
+                    self.afterEffectProcessing = true;
+                }
+
             },
 
-            computeProcessedImage: function() {
+            computeProcessedImage: function(ctx) {
                 var self = this;
                 if (this.$.afterEffect) {
-
-
-                    if (this.afterEffectProcessing) {
-                        return;
-                    }
-
-                    this.afterEffectProcessing = true;
-
-                    this.applyAfterEffect(this.$.afterEffect, null, function(err, result) {
+                    this.applyAfterEffect(ctx, this.$.afterEffect, null, function(err, result) {
                         self.afterEffectProcessing = false;
-
                         if (!err) {
                             self.set('processedImage', result)
                         } else {
@@ -99,7 +99,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
 
-            prepareForAfterEffect: function(design, afterEffect, callback) {
+            prepareForAfterEffect: function(ctx, design, afterEffect, callback) {
 
                 flow()
                     .seq('designImage', function(cb) {
@@ -115,41 +115,28 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                             cb(null, design.$.localHtmlImage);
                         }
                     })
-                    .seq('ctx', function() {
-                        if (design.$.canvasCtx) {
-                            return design.$.canvasCtx;
-                        }
-
+                    .seq(function() {
                         var img = this.vars.designImage;
-                        var canvas = document.createElement('canvas');
 
                         var factor = AfterEffect.canvasScalingFactor(img);
 
-                        canvas.width = img.naturalWidth * factor;
-                        canvas.height = img.naturalHeight * factor;
-
-                        return canvas.getContext('2d');
+                        ctx.canvas.width = img.naturalWidth * factor;
+                        ctx.canvas.height = img.naturalHeight * factor;
 
                     })
                     .seq(function() {
-                        var ctx = this.vars.ctx;
-
-                        design.set('canvasCtx', ctx);
                         afterEffect.set('destinationWidth', ctx.canvas.width);
                         afterEffect.set('destinationHeight', ctx.canvas.height);
                     })
                     .exec(callback);
             },
 
-            _applyAfterEffect: function(design, afterEffect, options, callback) {
-                var ctx = design.$.canvasCtx;
+            _applyAfterEffect: function(ctx, design, afterEffect, options, callback) {
                 var designImage = design.$.localHtmlImage;
-
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
                 flow()
                     .seq(function(cb) {
-                        afterEffect.apply(designImage, ctx, options, cb);
+                        afterEffect.apply(ctx, designImage, options, cb);
                     })
                     .seq('src', function(cb) {
                         if (options.exportAsBlob) {
@@ -161,40 +148,41 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                         }
                     })
 
-                    // // TODO: remove the greyscaling and replace it inside the mask panel
-                    .seq('greyScale', function(cb) {
-                        var cachedPreview = design.get('greyScalePreview');
-
-                        if (cachedPreview) {
-                            cb(null, cachedPreview)
-                        } else {
-                            GreyScaler.greyScaleImage(designImage, function(err, result) {
-                                if (!err) {
-                                    design.set('greyScalePreview', result);
-                                }
-                                cb(err, result)
-                            });
-                        }
-                    })
-                    .seq(function() {
-                        ctx.globalCompositeOperation = 'destination-over';
-                        ctx.drawImage(this.vars.greyScale, 0, 0, ctx.canvas.width, ctx.canvas.height);
-                    })
-                    .seq('gSrc', function(cb) {
-                        if (options.exportAsBlob) {
-                            ctx.canvas.toBlob(function(blob) {
-                                cb(null, blob);
-                            }, "image/png")
-                        } else {
-                            cb(null, ctx.canvas.toDataURL());
-                        }
-                    })
+                    // TODO: remove the greyscaling and replace it inside the mask panel
+                    // .seq('greyScale', function(cb) {
+                    //     var cachedPreview = design.get('greyScalePreview');
+                    //
+                    //     if (cachedPreview) {
+                    //         cb(null, cachedPreview)
+                    //     } else {
+                    //         GreyScaler.greyScaleImage(designImage, function(err, result) {
+                    //             if (!err) {
+                    //                 design.set('greyScalePreview', result);
+                    //             }
+                    //             cb(err, result)
+                    //         });
+                    //     }
+                    // })
+                    // .seq(function() {
+                    //     ctx.globalCompositeOperation = 'destination-over';
+                    //     ctx.drawImage(this.vars.greyScale, 0, 0, ctx.canvas.width, ctx.canvas.height);
+                    // })
+                    // .seq('gSrc', function(cb) {
+                    //     if (options.exportAsBlob) {
+                    //         ctx.canvas.toBlob(function(blob) {
+                    //             cb(null, blob);
+                    //         }, "image/png")
+                    //     } else {
+                    //         cb(null, ctx.canvas.toDataURL());
+                    //     }
+                    // })
                     .exec(function(err, results) {
-                        callback(err, {normal: results.src, greyScale: results.gSrc});
+                        callback(err, {normal: results.src, greyScale: results.src});
                     });
+
             },
 
-            applyAfterEffect: function(afterEffect, options, callback) {
+            applyAfterEffect: function(ctx, afterEffect, options, callback) {
                 var self = this;
                 options = options || {};
 
@@ -215,13 +203,10 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
                 flow()
                     .seq(function(cb) {
-                        self.prepareForAfterEffect(design, afterEffect, cb)
+                        self.prepareForAfterEffect(ctx, design, afterEffect, cb)
                     })
                     .seq('images', function(cb) {
-                        var cacheId = [afterEffect.id(), options.exportAsBlob ? 'b' : '', design.$.wtfMbsId || design.$.id].join('#');
-                        self.synchronizeFunctionCall(function(syncCB) {
-                            self._applyAfterEffect(design, afterEffect, options, syncCB);
-                        }, cacheId, cb, self);
+                        self._applyAfterEffect(ctx, design, afterEffect, options, cb);
                     })
                     .exec(function(err, results) {
                         callback && callback(err, results.images);
@@ -356,8 +341,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return ret;
             }.onChange("printArea", "design"),
 
-            compose: function () {
-               var ret = this.callBase();
+            compose: function() {
+                var ret = this.callBase();
                 var mask = this.get('mask');
                 if (mask) {
                     ret.properties = ret.properties || {};
@@ -424,11 +409,11 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return data;
             },
 
-            init: function (callback) {
+            init: function(callback) {
                 this.$.manager.initializeConfiguration(this, callback);
             },
 
-            isAllowedOnPrintArea: function (printArea) {
+            isAllowedOnPrintArea: function(printArea) {
                 return printArea && printArea.get("restrictions.designAllowed") == true;
             },
 
