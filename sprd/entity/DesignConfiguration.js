@@ -53,7 +53,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.trigger("priceChanged");
             },
 
-            computeProcessedImageDebounced: function(ctx) {
+            computeProcessedImageDebounced: function(ctx, options) {
                 // TODO: debounce with requestAnimationFrame
                 var $w = this.$stage.$window;
                 var self = this;
@@ -72,7 +72,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     })();
 
                 self.computeHandler = function() {
-                    self.computeProcessedImage(ctx);
+                    self.computeProcessedImage(ctx, options);
                 };
 
                 if (!self.afterEffectProcessing) {
@@ -82,24 +82,24 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             },
 
-            computeProcessedImage: function(ctx) {
+            computeProcessedImage: function(ctx, options) {
                 var self = this;
                 if (this.$.afterEffect) {
-                    this.applyAfterEffect(ctx, this.$.afterEffect, null, function(err, result) {
+                    this.applyAfterEffect(ctx, this.$.afterEffect, options, function(err, result) {
                         self.afterEffectProcessing = false;
                         if (!err) {
-                            self.set('processedImage', result)
+                            //self.set('processedImage', result)
                         } else {
                             console.error(err)
                         }
                     })
                 } else {
-                    self.set('processedImage', null);
+                    //self.set('processedImage', null);
                 }
             },
 
 
-            prepareForAfterEffect: function(ctx, design, afterEffect, callback) {
+            prepareForAfterEffect: function(ctx, design, afterEffect, options, callback) {
 
                 flow()
                     .seq('designImage', function(cb) {
@@ -118,7 +118,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     .seq(function() {
                         var img = this.vars.designImage;
 
-                        var factor = AfterEffect.canvasScalingFactor(img);
+                        var factor = options.fullSize ? 1 : AfterEffect.canvasScalingFactor(img);
 
                         ctx.canvas.width = img.naturalWidth * factor;
                         ctx.canvas.height = img.naturalHeight * factor;
@@ -132,21 +132,21 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             _applyAfterEffect: function(ctx, design, afterEffect, options, callback) {
-                var designImage = design.$.localHtmlImage;
-
-                flow()
-                    .seq(function(cb) {
-                        afterEffect.apply(ctx, designImage, options, cb);
-                    })
-                    .seq('src', function(cb) {
-                        if (options.exportAsBlob) {
-                            ctx.canvas.toBlob(function(blob) {
-                                cb(null, blob);
-                            }, "image/png")
-                        } else {
-                            cb(null, ctx.canvas.toDataURL());
-                        }
-                    })
+                // var designImage = design.$.localHtmlImage;
+                // afterEffect.apply(ctx, designImage, options, callback);
+                // flow()
+                //     .seq(function(cb) {
+                //
+                //     })
+                // .seq('src', function(cb) {
+                //     if (options.exportAsBlob) {
+                //         ctx.canvas.toBlob(function(blob) {
+                //             cb(null, blob);
+                //         }, "image/png");
+                //     } else {
+                //         cb(null, ctx.canvas.toDataURL());
+                //     }
+                // })
 
                     // TODO: remove the greyscaling and replace it inside the mask panel
                     // .seq('greyScale', function(cb) {
@@ -176,9 +176,9 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     //         cb(null, ctx.canvas.toDataURL());
                     //     }
                     // })
-                    .exec(function(err, results) {
-                        callback(err, {normal: results.src, greyScale: results.src});
-                    });
+                // .exec(function(err, results) {
+                //     callback(err, {normal: results.src, greyScale: results.src});
+                // });
 
             },
 
@@ -203,14 +203,13 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
                 flow()
                     .seq(function(cb) {
-                        self.prepareForAfterEffect(ctx, design, afterEffect, cb)
+                        self.prepareForAfterEffect(ctx, design, afterEffect, options, cb)
                     })
-                    .seq('images', function(cb) {
-                        self._applyAfterEffect(ctx, design, afterEffect, options, cb);
+                    .seq(function(cb) {
+                        var designImage = design.$.localHtmlImage;
+                        afterEffect.apply(ctx, designImage, options, callback);
                     })
-                    .exec(function(err, results) {
-                        callback && callback(err, results.images);
-                    });
+                    .exec(callback);
             },
 
 
@@ -362,23 +361,38 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 if (!afterEffect) {
                     callback && callback();
                 } else {
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext('2d');
                     flow()
                         .seq('processedImage', function(cb) {
-                            self.applyAfterEffect(afterEffect, {exportAsBlob: true}, cb);
+                            if (afterEffect) {
+                                self.applyAfterEffect(ctx, afterEffect, {fullSize: true}, cb);
+                            }
+                        })
+                        .seq('blob', function(cb) {
+                            if (afterEffect) {
+                                canvas.toBlob(function(blob) {
+                                    cb(null, blob);
+                                }, "image/png");
+                            }
                         })
                         .seq('uploadDesign', function(cb) {
-                            var img = new BlobImage({
-                                blob: this.vars.processedImage.normal
-                            });
+                            if (afterEffect) {
+                                var img = new BlobImage({
+                                    blob: this.vars.blob
+                                });
 
-                            self.$.imageUploadService.upload(img, cb);
+                                self.$.imageUploadService.upload(img, cb);
+                            }
                         })
                         .seq(function() {
-                            if (!self.$.originalDesign) {
-                                self.set('originalDesign', design);
-                            }
+                            if (afterEffect) {
+                                if (!self.$.originalDesign) {
+                                    self.set('originalDesign', design);
+                                }
 
-                            self.set('design', this.vars.uploadDesign.$.design);
+                                self.set('design', this.vars.uploadDesign.$.design);
+                            }
                         })
                         .exec(function(err, results) {
                             callback(err, results);
