@@ -297,7 +297,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     ret.properties = ret.properties || {};
                     ret.properties.afterEffect = afterEffect.compose();
 
-                    ret.properties.afterEffect.originalDesign = {
+                    ret.properties.originalDesign = {
                         id: originalDesign.get('wtfMbsId'),
                         href: "/" + originalDesign.get("id")
                     };
