@@ -126,6 +126,12 @@ image {
     vector-effect: non-scaling-stroke;
 }
 
+.configuration-viewer .bendingText-configuration .path {
+    fill: none;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+}
+
 .text-configuration-background {
     fill: rgba(255,255,255,0);
     fill-opacity: 0.01;

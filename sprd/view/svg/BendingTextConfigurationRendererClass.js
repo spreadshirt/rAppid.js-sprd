@@ -10,7 +10,9 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             configuration: null,
 
             textPath: null,
-            path: null
+            path: null,
+
+            oldSize: null
         },
 
         ctor: function() {
@@ -19,6 +21,29 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
 
             this.bind("configuration", "recalculateSize", this.recalculateSize, this);
             this.bind("configuration", "change:font", this.loadFont, this);
+            this.bind("productViewer.product", ["configurations", "reset"], function() {
+                var configuration = this.$.configuration;
+                if (configuration) {
+                    configuration.mainConfigurationRenderer = null;
+                }
+            }, this);
+
+            var timer = null;
+            this.bind("configuration", "change:angle", function() {
+                var path = this.$.path;
+
+                if (timer) {
+                    clearTimeout(timer);
+                }
+
+                if (path) {
+                    path.set("selected", true);
+
+                    timer = setTimeout(function() {
+                        path.set("selected", false);
+                    }, 1000);
+                }
+            }, this);
         },
 
         _initializationComplete: function() {
@@ -63,7 +88,6 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                 configuration.mainConfigurationRenderer = this;
 
                 var textPathRect = textPath.$parent.$el.getBBox();
-
                 var pathRect = path.$el.getBBox();
 
                 configuration.set({
@@ -81,6 +105,18 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                     textPathOffsetX: (textPathRect.width - pathRect.width) * 0.5,
                     textPathOffsetY: -textBBox.y
                 });
+
+                var oldSize = this.$.oldSize;
+                var newSize = configuration.$._size;
+
+                if(oldSize) {
+                    var offset = configuration.$.offset;
+                    configuration.$.offset.set({
+                        x: offset.$.x - (newSize.$.width - oldSize.$.width)
+                    })
+                }
+
+                this.set("oldSize", newSize);
 
                 configuration.trigger("sizeChanged");
             }
