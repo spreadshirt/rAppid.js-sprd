@@ -29,12 +29,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Render
                 options.version = design.$.version;
 
                 if (!design.isVectorDesign()) {
-                    var processedImage = this.$.configuration.$.processedImage;
-                    if (processedImage) {
-                        return processedImage.normal;
-                    }
-
-                    return design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
+                    return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
 
                 } else {
                     return this.$.imageService.designImage(design.$.wtfMbsId, options)
@@ -68,7 +63,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Render
                 options.version = design.$.version;
 
                 if (!design.isVectorDesign()) {
-                    return design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
+                    return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
                 } else {
                     return this.$.imageService.designImage(design.$.wtfMbsId, options)
                 }
