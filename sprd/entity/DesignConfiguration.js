@@ -290,12 +290,17 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             compose: function() {
                 var ret = this.callBase();
-                var mask = this.get('mask');
-                if (mask) {
+                var afterEffect = this.get('afterEffect');
+                var originalDesign = this.get('originalDesign');
+
+                if (afterEffect && originalDesign) {
                     ret.properties = ret.properties || {};
-                    ret.properties.maskId = mask.$.id;
-                    ret.properties.originalDesignId = this.get('originalDesign.id');
-                    ret.properties.maskProperties = mask.getProperties();
+                    ret.properties.afterEffect = afterEffect.compose();
+
+                    ret.properties.afterEffect.originalDesign = {
+                        id: originalDesign.get('wtfMbsId'),
+                        href: "/" + originalDesign.get("id")
+                    };
                 }
 
                 return ret;
