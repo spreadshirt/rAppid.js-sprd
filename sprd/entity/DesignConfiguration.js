@@ -1,6 +1,6 @@
 define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
-        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sketchomat/helper/GreyScaler", "sketchomat/model/AfterEffect"],
-    function(DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, GreyScaler, AfterEffect) {
+        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage"],
+    function(DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage) {
 
         return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
@@ -90,14 +90,13 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                         if (!err) {
                             //self.set('processedImage', result)
                         } else {
-                            console.error(err)
+                            console.error(err);
                         }
                     })
                 } else {
                     //self.set('processedImage', null);
                 }
             },
-
 
             prepareForAfterEffect: function(ctx, design, afterEffect, options, callback) {
 
@@ -118,7 +117,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     .seq(function() {
                         var img = this.vars.designImage;
 
-                        var factor = options.fullSize ? 1 : AfterEffect.canvasScalingFactor(img);
+                        var factor = options.fullSize ? 1 : afterEffect.canvasScalingFactor(img);
 
                         ctx.canvas.width = img.naturalWidth * factor;
                         ctx.canvas.height = img.naturalHeight * factor;
@@ -129,57 +128,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                         afterEffect.set('destinationHeight', ctx.canvas.height);
                     })
                     .exec(callback);
-            },
-
-            _applyAfterEffect: function(ctx, design, afterEffect, options, callback) {
-                // var designImage = design.$.localHtmlImage;
-                // afterEffect.apply(ctx, designImage, options, callback);
-                // flow()
-                //     .seq(function(cb) {
-                //
-                //     })
-                // .seq('src', function(cb) {
-                //     if (options.exportAsBlob) {
-                //         ctx.canvas.toBlob(function(blob) {
-                //             cb(null, blob);
-                //         }, "image/png");
-                //     } else {
-                //         cb(null, ctx.canvas.toDataURL());
-                //     }
-                // })
-
-                    // TODO: remove the greyscaling and replace it inside the mask panel
-                    // .seq('greyScale', function(cb) {
-                    //     var cachedPreview = design.get('greyScalePreview');
-                    //
-                    //     if (cachedPreview) {
-                    //         cb(null, cachedPreview)
-                    //     } else {
-                    //         GreyScaler.greyScaleImage(designImage, function(err, result) {
-                    //             if (!err) {
-                    //                 design.set('greyScalePreview', result);
-                    //             }
-                    //             cb(err, result)
-                    //         });
-                    //     }
-                    // })
-                    // .seq(function() {
-                    //     ctx.globalCompositeOperation = 'destination-over';
-                    //     ctx.drawImage(this.vars.greyScale, 0, 0, ctx.canvas.width, ctx.canvas.height);
-                    // })
-                    // .seq('gSrc', function(cb) {
-                    //     if (options.exportAsBlob) {
-                    //         ctx.canvas.toBlob(function(blob) {
-                    //             cb(null, blob);
-                    //         }, "image/png")
-                    //     } else {
-                    //         cb(null, ctx.canvas.toDataURL());
-                    //     }
-                    // })
-                // .exec(function(err, results) {
-                //     callback(err, {normal: results.src, greyScale: results.src});
-                // });
-
             },
 
             applyAfterEffect: function(ctx, afterEffect, options, callback) {
