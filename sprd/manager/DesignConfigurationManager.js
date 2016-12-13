@@ -1,55 +1,65 @@
-define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size"], function (Base, UnitUtil, Design, flow, Size) {
+define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "sprd/config/AfterEffects", "underscore", "rAppid"], function(Base, UnitUtil, Design, flow, Size, AfterEffects, _, rappid) {
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
-        initializeConfiguration: function (configuration, callback) {
+        initializeConfiguration: function(configuration, callback) {
 
             var content = configuration.$$ || {},
                 designReference = content.design,
                 svg = content.svg,
                 printType = configuration.$.printType,
                 printArea,
-                design;
+                properties = configuration.$.properties,
+                self = this,
+                design = configuration.$.design;
 
             if (svg) {
                 var designId;
 
                 if (designReference && designReference.href) {
-                    designId = designReference.href.split("/").pop()
+                    designId = designReference.href.split("/").pop();
                 }
 
                 designId = designId || svg.image.designId;
                 if (designId && designId != "undefined") {
                     design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
                 }
-            } else {
-                design = configuration.$.design;
+            }
+
+            if (properties) {
+                var afterEffect = properties.afterEffect,
+                    originalDesign = properties.originalDesign;
+
+                if (afterEffect && originalDesign) {
+                    designId = originalDesign.href.split("/").pop();
+                    design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
+                    design.set('WtfMbsId', originalDesign.id);
+                }
             }
 
             flow()
-                .par(function (cb) {
-
+                .par(function(cb) {
                     if (design) {
                         design.fetch(null, cb);
                     } else {
                         cb();
                     }
 
-                }, function (cb) {
+                }, function(cb) {
                     printType.fetch(null, cb);
                 })
-                .seq(function () {
+                .seq(function() {
                     if (content.printArea) {
                         printArea = configuration.$context.$contextModel.$.productType.getPrintAreaById(content.printArea.$.id);
                     } else {
                         printArea = configuration.$.printArea;
                     }
                 })
-                .seq(function () {
+                .seq(function() {
                     configuration.set({
                         design: design,
                         printArea: printArea
                     });
                 })
-                .seq(function () {
+                .seq(function() {
                     var printType = configuration.$.printType;
 
                     // set print colors
@@ -129,7 +139,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     if (!colorsSet && designColors) {
                         printColors = [];
 
-                        designColors.each(function (designColor) {
+                        designColors.each(function(designColor) {
                             var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"] || designColor.$["origin"]);
                             printColors.push(closestPrintColor);
                             defaultPrintColors.push(closestPrintColor);
@@ -141,7 +151,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     configuration.$.printColors.reset(printColors);
                     configuration.set('printType', printType, {force: true});
                 })
-                .seq(function () {
+                .seq(function() {
 
                     if (svg) {
                         var size = new Size({
@@ -151,10 +161,14 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
                         if (design) {
                             size = UnitUtil.convertSizeToMm(design.$.size, configuration.$.printType.$.dpi);
-                        } else if(configuration.$.generatedWidth){
+                        } else if (configuration.$.generatedWidth) {
                             // here we have a special text configuration
                             // with a generated image width
-                            size = UnitUtil.convertSizeToMm(new Size({width: configuration.$.generatedWidth, height: svg.image.height / svg.image.width * configuration.$.generatedWidth, unit: "px"}), configuration.$.printType.$.dpi);
+                            size = UnitUtil.convertSizeToMm(new Size({
+                                width: configuration.$.generatedWidth,
+                                height: svg.image.height / svg.image.width * configuration.$.generatedWidth,
+                                unit: "px"
+                            }), configuration.$.printType.$.dpi);
                         }
 
                         var match,
@@ -184,9 +198,39 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         configuration.set(ret, {preventValidation: true});
                     }
                 })
+                .seq(function() {
+                    if (properties && properties.afterEffect) {
+                        var baseUrl = function(url) {
+                            return self.$stage.baseUrl ? self.$stage.baseUrl.call(self, url) : url;
+                        };
+
+                        var afterEffects = AfterEffects(baseUrl);
+
+                        var afterEffect = _.find(afterEffects.masks, function(mask) {
+                            return mask.$.id == properties.afterEffect.id;
+                        });
+
+                        afterEffect.$.offset.set({
+                            'x': properties.afterEffect.offset.x,
+                            'y': properties.afterEffect.offset.y
+                        });
+
+                        afterEffect.$.scale.set({
+                            'x': properties.afterEffect.scale.x,
+                            'y': properties.afterEffect.scale.y
+                        });
+
+                        afterEffect.set('initialized', true);
+                        configuration.set('afterEffect', afterEffect);
+                    }
+                })
+                .seq(function() {
+                    if (properties && properties.originalDesign) {
+                        var design = configuration.$.design;
+                        design.set('localImage', '/bims/v1/designs/' + design.$.WtfMbsId + '.jpeg,watermarks=false.orig');
+                    }
+                })
                 .exec(callback);
-
-
         }
     });
 });
