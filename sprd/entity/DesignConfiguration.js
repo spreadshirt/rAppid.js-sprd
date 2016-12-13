@@ -90,11 +90,11 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 options = options || {};
 
                 if (this.$.afterEffect) {
-                    this.applyAfterEffect(this.$.afterEffect, options, function(err, result) {
+                    this.applyAfterEffect(this.$.afterEffect, options, function(err, ctx) {
                         self.afterEffectProcessing = false;
                         if (!err) {
                             if (options.keep) {
-                                self.set('processedImage', result.ctx.canvas.toDataURL());
+                                self.set('processedImage', ctx.canvas.toDataURL());
                             }
                         } else {
                             console.error(err);
@@ -175,7 +175,9 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                         var designImage = design.$.localHtmlImage;
                         afterEffect.apply(this.vars.ctx, designImage, options, cb);
                     })
-                    .exec(callback);
+                    .exec(function(err, results) {
+                        callback && callback(err, results.ctx);
+                    });
             },
 
 
@@ -319,7 +321,9 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             _setOriginalDesignProperties: function() {
+                var properties = this.get('properties');
                 var originalDesign = this.get('originalDesign');
+
                 if (originalDesign) {
                     //Mask is already applied and processedImage uploaded
                     properties.originalDesign = {
@@ -337,19 +341,21 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 if (!afterEffect) {
                     callback && callback();
                 } else {
-                    var canvas = document.createElement('canvas');
-                    var ctx = canvas.getContext('2d');
                     flow()
-                        .seq('processedImage', function(cb) {
+                        .seq('ctx', function(cb) {
                             if (afterEffect) {
-                                self.applyAfterEffect(ctx, afterEffect, {fullSize: true}, cb);
+                                self.applyAfterEffect(afterEffect, {fullSize: true}, cb);
+                            } else {
+                                cb();
                             }
                         })
                         .seq('blob', function(cb) {
                             if (afterEffect) {
-                                canvas.toBlob(function(blob) {
+                                this.vars.ctx.canvas.toBlob(function(blob) {
                                     cb(null, blob);
                                 }, "image/png");
+                            } else {
+                                cb();
                             }
                         })
                         .seq('uploadDesign', function(cb) {
@@ -359,6 +365,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                                 });
 
                                 self.$.imageUploadService.upload(img, cb);
+                            } else {
+                                cb();
                             }
                         })
                         .seq(function() {
@@ -370,9 +378,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                                 self.set('design', this.vars.uploadDesign.$.design);
                             }
                         })
-                        .exec(function(err, results) {
-                            callback(err, results);
-                        })
+                        .exec(callback);
                 }
             },
 
