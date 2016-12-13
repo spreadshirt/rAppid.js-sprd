@@ -24,15 +24,14 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
             }
 
-            if (properties) {
-                var afterEffect = properties.afterEffect,
-                    originalDesign = properties.originalDesign;
 
-                if (afterEffect && originalDesign) {
-                    designId = originalDesign.href.split("/").pop();
-                    design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
-                    design.set('WtfMbsId', originalDesign.id);
-                }
+            var afterEffect = properties.afterEffect,
+                originalDesign = properties.originalDesign;
+
+            if (self.$stage.PARAMETER().mode == "admin" && properties.type == 'afterEffect' && afterEffect && originalDesign) {
+                designId = originalDesign.href.split("/").pop();
+                design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
+                design.set('wtfMbsId', originalDesign.id);
             }
 
             flow()
@@ -199,7 +198,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     }
                 })
                 .seq(function() {
-                    if (properties && properties.afterEffect) {
+                    if (self.$stage.PARAMETER().mode == "admin" && properties && properties.afterEffect) {
                         var baseUrl = function(url) {
                             return self.$stage.baseUrl ? self.$stage.baseUrl.call(self, url) : url;
                         };
@@ -225,9 +224,14 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     }
                 })
                 .seq(function() {
-                    if (properties && properties.originalDesign) {
-                        var design = configuration.$.design;
-                        design.set('localImage', '/bims/v1/designs/' + design.$.WtfMbsId + '.jpeg,watermarks=false.orig');
+                    var afterEffect = configuration.$.afterEffect;
+                    var design = configuration.$.design;
+                    var id = design.$.wtfMbsId;
+
+                    if (self.$stage.PARAMETER().mode == 'admin' && afterEffect && id) {
+
+                        design.set('localImage', '/bims/v1/designs/' + id + '.orig');
+                        configuration.computeProcessedImage({keep: true});
                     }
                 })
                 .exec(callback);

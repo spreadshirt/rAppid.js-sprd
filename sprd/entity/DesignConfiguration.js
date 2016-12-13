@@ -14,11 +14,14 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 originalDesign: null
             },
 
+
             ctor: function() {
                 this.$sizeCache = {};
                 this.callBase();
 
                 this.afterEffectProcessing = false;
+                this.bind('change:processedImage', this._setAfterEffectProperties, this);
+                this.bind('change:originalDesign', this._setOriginalDesignProperties, this);
             },
 
             inject: {
@@ -53,7 +56,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.trigger("priceChanged");
             },
 
-            computeProcessedImageDebounced: function(ctx, options) {
+            computeProcessedImageDebounced: function(options) {
                 // TODO: debounce with requestAnimationFrame
                 var $w = this.$stage.$window;
                 var self = this;
@@ -72,7 +75,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     })();
 
                 self.computeHandler = function() {
-                    self.computeProcessedImage(ctx, options);
+                    self.computeProcessedImage(options);
                 };
 
                 if (!self.afterEffectProcessing) {
@@ -82,23 +85,26 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             },
 
-            computeProcessedImage: function(ctx, options) {
+            computeProcessedImage: function(options) {
                 var self = this;
+                options = options || {};
+
                 if (this.$.afterEffect) {
-                    this.applyAfterEffect(ctx, this.$.afterEffect, options, function(err, result) {
+                    this.applyAfterEffect(this.$.afterEffect, options, function(err, result) {
                         self.afterEffectProcessing = false;
                         if (!err) {
-                            //self.set('processedImage', result)
+                            if (options.keep) {
+                                self.set('processedImage', result.ctx.canvas.toDataURL());
+                            }
                         } else {
                             console.error(err);
                         }
                     })
-                } else {
-                    //self.set('processedImage', null);
                 }
             },
 
-            prepareForAfterEffect: function(ctx, design, afterEffect, options, callback) {
+            prepareForAfterEffect: function(design, afterEffect, options, callback) {
+                options = options || {};
 
                 flow()
                     .seq('designImage', function(cb) {
@@ -114,8 +120,17 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                             cb(null, design.$.localHtmlImage);
                         }
                     })
+                    .seq('ctx', function() {
+                        if (!options.ctx) {
+                            var canvas = document.createElement('canvas');
+                            return canvas.getContext('2d');
+                        } else {
+                            return options.ctx;
+                        }
+                    })
                     .seq(function() {
                         var img = this.vars.designImage;
+                        var ctx = this.vars.ctx;
 
                         var factor = options.fullSize ? 1 : afterEffect.canvasScalingFactor(img);
 
@@ -124,13 +139,16 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
                     })
                     .seq(function() {
+                        var ctx = this.vars.ctx;
                         afterEffect.set('destinationWidth', ctx.canvas.width);
                         afterEffect.set('destinationHeight', ctx.canvas.height);
                     })
-                    .exec(callback);
+                    .exec(function(err, results) {
+                        callback(err, results.ctx);
+                    });
             },
 
-            applyAfterEffect: function(ctx, afterEffect, options, callback) {
+            applyAfterEffect: function(afterEffect, options, callback) {
                 var self = this;
                 options = options || {};
 
@@ -150,12 +168,12 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
 
                 flow()
-                    .seq(function(cb) {
-                        self.prepareForAfterEffect(ctx, design, afterEffect, options, cb)
+                    .seq('ctx', function(cb) {
+                        self.prepareForAfterEffect(design, afterEffect, options, cb)
                     })
                     .seq(function(cb) {
                         var designImage = design.$.localHtmlImage;
-                        afterEffect.apply(ctx, designImage, options, callback);
+                        afterEffect.apply(this.vars.ctx, designImage, options, cb);
                     })
                     .exec(callback);
             },
@@ -288,22 +306,27 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return ret;
             }.onChange("printArea", "design"),
 
-            compose: function() {
-                var ret = this.callBase();
+            _setAfterEffectProperties: function() {
                 var afterEffect = this.get('afterEffect');
                 var originalDesign = this.get('originalDesign');
+                var properties = this.get('properties');
 
-                if (afterEffect && originalDesign) {
-                    ret.properties = ret.properties || {};
-                    ret.properties.afterEffect = afterEffect.compose();
+                if (afterEffect) {
+                    properties.afterEffect = afterEffect.compose();
+                    properties.type = 'afterEffect';
+                    this.trigger('configurationChanged');
+                }
+            },
 
-                    ret.properties.originalDesign = {
+            _setOriginalDesignProperties: function() {
+                var originalDesign = this.get('originalDesign');
+                if (originalDesign) {
+                    //Mask is already applied and processedImage uploaded
+                    properties.originalDesign = {
                         id: originalDesign.get('wtfMbsId'),
                         href: "/" + originalDesign.get("id")
                     };
                 }
-
-                return ret;
             },
 
             save: function(callback) {
