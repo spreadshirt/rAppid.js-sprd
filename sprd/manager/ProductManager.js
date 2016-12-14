@@ -923,6 +923,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     currentScale = configuration.$.scale,
                     currentOffset = configuration.$.offset.clone();
 
+                if (product.$.view == view) {
+                    callback && callback(null);
+                    return;
+                }
 
                 flow()
                     .seq("printArea", function() {
