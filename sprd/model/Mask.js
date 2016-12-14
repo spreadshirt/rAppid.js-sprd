@@ -19,22 +19,28 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             this.$.offset.set('unit', 'px');
             this.$.maxOffset.set('unit', 'px');
 
-            this.bind('change:destinationWidth', this.repositionMask, this);
-            this.bind('change:destinationHeight', this.repositionMask, this);
+            this.bind('change:destinationWidth', this.initMask, this);
+            this.bind('change:destinationHeight', this.initMask, this);
             this.bind('offset', 'change', this.offsetChanged, this);
             this.bind('scale', 'change', this.scaleChanged, this);
+        },
 
-            this.initMaxScale();
+        initialized: function() {
+
         },
 
         scaleChanged: function() {
-            this.recalculateMaxOffset();
+            this.calculateMaxOffset();
             this.trigger("processingParametersChanged");
         },
 
         offsetChanged: function() {
-            this.recalculateMaxScale();
+            this.calculateMaxScale();
             this.trigger("processingParametersChanged");
+        },
+
+        clamp: function(value, min, max) {
+            return Math.max(min, Math.min(max, value));
         },
 
         initImage: function(callback) {
@@ -42,9 +48,13 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
         },
 
         centerAt: function(x, y) {
+            this.calculateMaxOffset();
+            var newX = this.clamp(x - this.width() / 2, 0, this.$.maxOffset.$.x);
+            var newY = this.clamp(y - this.height() / 2, 0, this.$.maxOffset.$.y);
+
             this.$.offset.set({
-                'x': x - this.width() / 2,
-                'y': y - this.height() / 2
+                'x': newX,
+                'y': newY
             });
         },
 
@@ -66,10 +76,9 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             return null;
         },
 
-        repositionMask: function() {
+        initMask: function() {
             var width = this.$.destinationWidth;
             var height = this.$.destinationHeight;
-            this.unbind('scale', 'change', this.adjustOffset, this);
 
             var originalWidth = this.width(1);
             var originalHeight = this.height(1);
@@ -78,20 +87,11 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
                 this.$.scale.set('y', factor);
                 this.$.scale.set('x', factor);
 
-                this.$.offset.set('x', Math.floor((width - this.width()) / 2));
-                this.$.offset.set('y', Math.floor((height - this.height()) / 2));
+                this.calculateMaxOffset();
+
+                this.centerAt(width / 2, height / 2);
                 this.set('initialized', true);
             }
-
-            this.bind('scale', 'change', this.adjustOffset, this);
-        },
-
-        initMaxOffSet: function() {
-            this.calculateMaxOffset(1, 1);
-        },
-
-        recalculateMaxOffset: function() {
-            this.calculateMaxOffset(this.$.scale.$.x, this.$.scale.$.y);
         },
 
         calculateMaxOffset: function(x, y) {
@@ -99,27 +99,18 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             var width = this.$.destinationWidth;
             var height = this.$.destinationHeight;
 
-            if (!maxOffset) {
+            if (!maxOffset || !width || !height) {
                 return;
             }
-            var xScale = x;
-            var yScale = y;
 
+            var xScale = x || this.$.scale.$.x;
+            var yScale = y || this.$.scale.$.y;
             if (xScale) {
                 this.$.maxOffset.set('x', Math.max(this.get('offset.x'), width - this.width(xScale), 1));
             }
-
             if (yScale) {
                 this.$.maxOffset.set('y', Math.max(this.get('offset.y'), height - this.height(yScale), 1));
             }
-        },
-
-        initMaxScale: function() {
-            this.calculateMaxScale(0, 0);
-        },
-
-        recalculateMaxScale: function() {
-            this.calculateMaxScale(this.$.offset.$.x, this.$.offset.$.y);
         },
 
         calculateMaxScale: function(x, y) {
@@ -131,8 +122,8 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
                 return;
             }
 
-            var xOffset = x;
-            var yOffset = y;
+            var xOffset = x || this.$.offset.$.x;
+            var yOffset = y || this.$.offset.$.y;
 
             if (typeof xOffset === 'number') {
                 this.$.maxScale.set('x', Math.max(this.get('scale.x'), (width - xOffset) / this.width(1)));
