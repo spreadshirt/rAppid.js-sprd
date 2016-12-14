@@ -1,6 +1,6 @@
 define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "sprd/config/AfterEffects", "underscore", "rAppid"], function(Base, UnitUtil, Design, flow, Size, AfterEffects, _, rappid) {
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
-        initializeConfiguration: function(configuration, callback) {
+        initializeConfiguration: function(configuration, options, callback) {
 
             var content = configuration.$$ || {},
                 designReference = content.design,
@@ -37,7 +37,9 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             flow()
                 .par(function(cb) {
                     if (design) {
-                        design.fetch(null, cb);
+                        design.fetch({
+                            fetchInShop: options.fetchInShop
+                        }, cb);
                     } else {
                         cb();
                     }

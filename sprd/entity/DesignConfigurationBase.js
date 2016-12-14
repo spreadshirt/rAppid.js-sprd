@@ -23,8 +23,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 manager: IDesignConfigurationManager
             },
 
-            init: function(callback) {
-                this.$.manager.initializeConfiguration(this, callback);
+            init: function(options, callback) {
+                this.$.manager.initializeConfiguration(this, options, callback);
             },
 
             compose: function() {

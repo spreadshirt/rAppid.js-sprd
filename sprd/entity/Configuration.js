@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List' , "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore", "js/core/Bus"], function (Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _, Bus) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List', "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore", "js/core/Bus"], function(Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _, Bus) {
 
     return Entity.inherit('sprd.entity.Configuration', {
 
@@ -53,7 +53,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return false;
         },
 
-        _commitChangedAttributes: function ($, options) {
+        _commitChangedAttributes: function($, options) {
 
             var delay = options && options.userInteraction ? 300 : 0,
                 self = this,
@@ -67,7 +67,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                     this.$.printTypeWasScaled = false;
                 }
                 if ($.printType && !options.printTypeEqualized) {
-                    this.trigger('printTypeSwitched', {printType: $.printType, scaledDown: !!options.scaledDown}, this);
+                    this.trigger('printTypeSwitched', {
+                        printType: $.printType,
+                        scaledDown: !!options.scaledDown
+                    }, this);
                 }
                 if (!options.preventValidation && !options.initial) {
                     validate($);
@@ -82,7 +85,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
             validate(this._additionalValidation($, options));
 
-            function validate(attributes) {
+            function validate (attributes) {
 
                 if (!attributes) {
                     return;
@@ -92,7 +95,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 self._debounceFunctionCall(performValidate, "validateTransform", delay, self);
             }
 
-            function performValidate() {
+            function performValidate () {
                 self._setError(self._validateTransform(combinedAttributes));
                 combinedAttributes = {};
             }
@@ -103,7 +106,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return null;
         },
 
-        _validateTransform: function ($) {
+        _validateTransform: function($) {
 
             var rotationChanged = this._hasSome($, ["rotation"]),
                 sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale", "offset", "bound"]),
@@ -206,7 +209,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                         printType: preferredPrintType,
                         scale: scale
                     });
-                    this.set('printType', preferredPrintType, {preventValidation: true, printTypeTransformed: true});
+                    this.set('printType', preferredPrintType, {
+                        preventValidation: true,
+                        printTypeTransformed: true
+                    });
                     ret.minBound = false;
                 }
             }
@@ -215,7 +221,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         },
 
-        _validatePrintTypeSize: function (printType, width, height, scale) {
+        _validatePrintTypeSize: function(printType, width, height, scale) {
             if (!printType) {
                 return {};
             }
@@ -238,14 +244,14 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         },
 
-        isPrintTypeAvailable: function (printType) {
+        isPrintTypeAvailable: function(printType) {
 
             var ret = this._validatePrintTypeSize(printType, this.get('size.width'), this.get('size.height'), this.$.scale);
 
             return !ret.maxBound && !ret.minBound && !ret.printTypeScaling && !ret.dpiBound;
         }.onChange('_size.width', '_size.height', 'scale'),
 
-        _hasHardBoundaryError: function (offset, width, height, rotation, scale) {
+        _hasHardBoundaryError: function(offset, width, height, rotation, scale) {
 
             var printArea = this.$.printArea;
 
@@ -256,12 +262,12 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             var boundingBox = this._getBoundingBox(offset, width, height, rotation, scale, true);
 
             return !(boundingBox.x >= -0.1 && boundingBox.y >= -0.1 &&
-                (boundingBox.x + boundingBox.width - 0.1) <= printArea.get("boundary.size.width") &&
-                (boundingBox.y + boundingBox.height - 0.1) <= printArea.get("boundary.size.height"));
+            (boundingBox.x + boundingBox.width - 0.1) <= printArea.get("boundary.size.width") &&
+            (boundingBox.y + boundingBox.height - 0.1) <= printArea.get("boundary.size.height"));
 
         },
 
-        _getBoundingBox: function (offset, width, height, rotation, scale, onlyContent, xOffset) {
+        _getBoundingBox: function(offset, width, height, rotation, scale, onlyContent, xOffset) {
 
             offset = offset || this.$.offset;
             width = width || this.width();
@@ -320,12 +326,12 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         },
 
-        size: function () {
+        size: function() {
             this.log("size() not implemented", "debug");
             return Size.empty;
         },
 
-        height: function (scale) {
+        height: function(scale) {
 
             if (!scale && scale !== 0) {
                 scale = this.get('scale.y') || 0;
@@ -334,7 +340,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return Math.abs(this.size().$.height * scale);
         }.onChange("scale", "size()").on("sizeChanged"),
 
-        width: function (scale) {
+        width: function(scale) {
 
             if (!scale && scale !== 0) {
                 scale = this.get('scale.x') || 0;
@@ -343,19 +349,19 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return Math.abs(this.size().$.width * scale);
         }.onChange("scale", "size()").on("sizeChanged"),
 
-        isScalable: function () {
+        isScalable: function() {
             return this.get("printType.isScalable()");
         }.onChange("printType"),
 
-        isRotatable: function () {
+        isRotatable: function() {
             return true;
         },
 
-        isRemovable: function () {
+        isRemovable: function() {
             return true;
         },
 
-        price: function () {
+        price: function() {
             var printTypePrice = this.get('printType.price');
             if (printTypePrice) {
                 return printTypePrice.clone();
@@ -368,11 +374,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
          * @param {sprd.model.PrintType} printType
          * @return {sprd.entity.Size}
          */
-        getSizeForPrintType: function (printType) {
+        getSizeForPrintType: function(printType) {
             return Size.empty;
         },
 
-        possiblePrintTypes: function (appearance) {
+        possiblePrintTypes: function(appearance) {
             var ret = [],
                 printArea = this.$.printArea;
 
@@ -383,23 +389,23 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return ret;
         }.onChange("printArea"),
 
-        isAllowedOnPrintArea: function (printArea) {
+        isAllowedOnPrintArea: function(printArea) {
             return false;
         },
 
-        getPossiblePrintTypesForPrintArea: function () {
+        getPossiblePrintTypesForPrintArea: function() {
             return [];
         },
 
-        allowScale: function () {
+        allowScale: function() {
             return true;
         },
 
-        minimumScale: function () {
+        minimumScale: function() {
             return 0;
         },
 
-        isReadyForCompose: function () {
+        isReadyForCompose: function() {
             return true;
         }
     });

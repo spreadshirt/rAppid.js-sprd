@@ -44,7 +44,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             this.$synchronizeCache = designCache;
         },
 
-        init: function(callback) {
+        init: function(options, callback) {
             var properties = this.$.properties,
                 context = this.$.context,
                 self = this;
@@ -52,7 +52,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             if (!_.isEmpty(properties)) {
                 flow()
                     .seq(function(cb) {
-                        DesignConfigurationBase.prototype.init.call(self, cb);
+                        DesignConfigurationBase.prototype.init.call(self, options, cb);
                     })
                     .seq(function(cb) {
                         var fontFamilies = context.$.fontFamilies;
@@ -100,9 +100,10 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                         self.set("initialized", true);
                         callback && callback(err);
                     });
+            } else {
+                callback && callback();
             }
 
-            callback && callback(false);
         },
 
         size: function() {

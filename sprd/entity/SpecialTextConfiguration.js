@@ -237,7 +237,7 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
             }
         },
 
-        init: function (callback) {
+        init: function (options, callback) {
 
             this.synchronizeFunctionCall(function (callback) {
 

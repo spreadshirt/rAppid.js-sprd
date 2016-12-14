@@ -39,7 +39,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }, this);
             },
 
-            init: function (callback) {
+            init: function (options, callback) {
 
                 var self = this,
                     productManager = this.$.manager;

@@ -21,6 +21,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
 
             this.bind("configuration", "recalculateSize", this.recalculateSize, this);
             this.bind("configuration", "change:font", this.loadFont, this);
+            this.bind("configuration", "change:_size", this.balanceConfiguration, this);
             this.bind("productViewer.product", ["configurations", "reset"], function() {
                 var configuration = this.$.configuration;
                 if (configuration) {
@@ -106,10 +107,17 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                     textPathOffsetY: -textBBox.y
                 });
 
-                var oldSize = this.$.oldSize;
-                var newSize = configuration.$._size;
+                configuration.trigger("sizeChanged");
+            }
+        },
 
-                if(oldSize) {
+        balanceConfiguration: function() {
+            var configuration = this.$.configruation;
+            if (configuration) {
+                var oldSize = this.$.oldSize,
+                    newSize = configuration.$._size;
+
+                if (oldSize) {
                     var offset = configuration.$.offset;
                     configuration.$.offset.set({
                         x: offset.$.x - (newSize.$.width - oldSize.$.width)
@@ -117,8 +125,6 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                 }
 
                 this.set("oldSize", newSize);
-
-                configuration.trigger("sizeChanged");
             }
         },
 
@@ -127,7 +133,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                 printColors = configuration.$.printColors,
                 printColor = null;
 
-            if(printColors && printColors.size() && !this.isSpecialFlex()) {
+            if (printColors && printColors.size() && !this.isSpecialFlex()) {
                 printColor = printColors.at(0).toHexString();
             }
 

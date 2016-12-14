@@ -362,7 +362,18 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
 
             },
 
-            init: function (callback) {
+            /***
+             *
+             * @param [options]
+             * @param callback
+             */
+            init: function (options, callback) {
+
+                if (options instanceof Function) {
+                    callback = options;
+                    options = {};
+                }
+
                 if (this.initialized) {
                     callback && callback(null, this);
                     return;
@@ -401,7 +412,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                         flow()
                             .parEach(self.$.configurations.$items, function (configuration, cb) {
                                 self._setUpConfiguration(configuration);
-                                configuration.init(cb);
+                                configuration.init(options, cb);
                             })
                             .exec(function(err) {
                                 cb(err);

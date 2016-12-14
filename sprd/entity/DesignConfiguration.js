@@ -409,8 +409,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return this.get('afterEffect');
             },
 
-            init: function(callback) {
-                this.$.manager.initializeConfiguration(this, callback);
+            init: function(options, callback) {
+                this.$.manager.initializeConfiguration(this, options, callback);
             },
 
             isAllowedOnPrintArea: function(printArea) {
