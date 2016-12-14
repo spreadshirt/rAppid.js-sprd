@@ -405,6 +405,10 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return data;
             },
 
+            saveTakesTime: function() {
+                return this.get('afterEffect');
+            },
+
             init: function(callback) {
                 this.$.manager.initializeConfiguration(this, callback);
             },
