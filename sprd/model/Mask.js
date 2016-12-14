@@ -90,6 +90,7 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
                 this.calculateMaxOffset();
 
                 this.centerAt(width / 2, height / 2);
+                this.calculateMaxScale();
                 this.set('initialized', true);
             }
         },
@@ -105,6 +106,7 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
 
             var xScale = x || this.$.scale.$.x;
             var yScale = y || this.$.scale.$.y;
+
             if (xScale) {
                 this.$.maxOffset.set('x', Math.max(this.get('offset.x'), width - this.width(xScale), 1));
             }
@@ -118,7 +120,7 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             var width = this.$.destinationWidth;
             var height = this.$.destinationHeight;
 
-            if (!maxScale) {
+            if (!maxScale || !width || !height) {
                 return;
             }
 
@@ -134,23 +136,7 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             }
         },
 
-        adjustOffset: function(e) {
-            var offset = this.get('offset');
-
-            var newScaleX = e.$.x;
-            var oldScaleX = e.target.$previousAttributes['x'];
-            if (newScaleX && oldScaleX) {
-                offset.set('x', Math.max(0, offset.get('x') + 0.5 * this.width(oldScaleX - newScaleX)));
-            }
-
-            var newScaleY = e.$.y;
-            var oldScaleY = e.target.$previousAttributes['y'];
-            if (newScaleY && oldScaleY) {
-                offset.set('y', Math.max(0, offset.get('y') + 0.5 * this.height(oldScaleY - newScaleY)));
-            }
-        },
-
-
+        //one scaleStep increases image one pixel increase for any dimension
         scaleStepX: function() {
             return 1 / this.width(1);
         }.onChange('htmlImage'),
