@@ -245,7 +245,7 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
 
                 flow()
                     .seq(function (cb) {
-                        DesignConfigurationBase.prototype.init.call(self, cb);
+                        DesignConfigurationBase.prototype.init.call(self, {}, cb);
                     })
                     .seq(function () {
                         var printType = self.$.printType,

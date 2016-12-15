@@ -46,7 +46,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 flow()
                     .seq(function (cb) {
-                        productManager.initializeConfiguration(self, cb);
+                        productManager.initializeConfiguration(self, options, cb);
                     })
                     .seq(function (cb) {
                         if (self.$stageRendered || (self.$stage && self.$stage.rendered)) {

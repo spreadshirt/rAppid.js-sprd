@@ -434,7 +434,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq(function(cb) {
                         var designConfiguration = this.vars["designConfiguration"];
                         bus.setUp(designConfiguration);
-                        designConfiguration.init(cb);
+                        designConfiguration.init({}, cb);
                     })
                     .seq(function() {
                         // determinate position
@@ -742,7 +742,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq(function(cb) {
                         var configuration = this.vars["configuration"];
                         bus.setUp(configuration);
-                        configuration.init(cb);
+                        configuration.init({}, cb);
                     })
                     .seq(function() {
                         finalizeFnc(this.vars.configuration);
@@ -883,7 +883,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq(function(cb) {
                         var configuration = this.vars["configuration"];
                         bus.setUp(configuration);
-                        configuration.init(cb);
+                        configuration.init({}, cb);
 
                         configuration.set('isNew', params.isNew);
                     })

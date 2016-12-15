@@ -226,14 +226,17 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     }
                 })
                 .seq(function() {
-                    var afterEffect = configuration.$.afterEffect;
                     var design = configuration.$.design;
-                    var id = design.$.wtfMbsId;
 
-                    if (self.$stage.PARAMETER().mode == 'admin' && afterEffect && id) {
+                    if (design) {
+                        var afterEffect = configuration.$.afterEffect;
+                        var id = design.$.wtfMbsId;
 
-                        design.set('localImage', '/bims/v1/designs/' + id + '.orig');
-                        configuration.computeProcessedImage({keep: true});
+                        if (self.$stage.PARAMETER().mode == 'admin' && afterEffect && id) {
+
+                            design.set('localImage', '/bims/v1/designs/' + id + '.orig');
+                            configuration.computeProcessedImage({keep: true});
+                        }
                     }
                 })
                 .exec(callback);
