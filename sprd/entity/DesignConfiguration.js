@@ -8,6 +8,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
                 _designCommission: "{design.price}",
                 _allowScale: "{design.restrictions.allowScale}",
+                _afterEffectApplied: false,
 
                 afterEffect: null,
 
@@ -18,12 +19,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
 
             ctor: function() {
-                //this.$sizeCache = {};
                 this.callBase();
 
-                this.afterEffectProcessing = false;
-
-                this.bind('change:processedImage', this._setAfterEffectProperties, this);
                 this.bind('change:processedImage', this._setProcessedSize, this);
                 this.bind('change:originalDesign', this._setOriginalDesignProperties, this);
             },
@@ -71,6 +68,12 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
 
                 this.trigger('sizeChanged');
+            },
+
+            applyAfterEffect: function(ctx) {
+                this.setProcessedImage(ctx);
+                this.set('_afterEffectApplied', true);
+                this.trigger('configurationChanged');
             },
 
             setProcessedImage: function(ctx) {
@@ -204,13 +207,11 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             _setAfterEffectProperties: function() {
                 var afterEffect = this.get('afterEffect');
-                var originalDesign = this.get('originalDesign');
                 var properties = this.get('properties');
 
                 if (afterEffect) {
                     properties.afterEffect = afterEffect.compose();
                     properties.type = 'afterEffect';
-                    this.trigger('configurationChanged');
                 }
             },
 
@@ -225,6 +226,14 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                         href: "/" + originalDesign.get("id")
                     };
                 }
+            },
+
+            compose: function() {
+                var ret = this.callBase();
+                this._setAfterEffectProperties();
+                this._setOriginalDesignProperties();
+                ret.properties = this.$.properties;
+                return ret;
             },
 
             save: function(callback) {
@@ -270,6 +279,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                                 }
 
                                 self.set('design', this.vars.uploadDesign.$.design);
+                                self.trigger('configurationChanged');
                             }
                         })
                         .exec(callback);
