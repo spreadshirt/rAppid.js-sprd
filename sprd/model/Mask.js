@@ -23,10 +23,7 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             this.bind('change:destinationHeight', this.initMask, this);
             this.bind('offset', 'change', this.offsetChanged, this);
             this.bind('scale', 'change', this.scaleChanged, this);
-        },
-
-        initialized: function() {
-
+            this.bind('scale', 'change', this.adjustOffsetHandler, this);
         },
 
         scaleChanged: function() {
@@ -95,7 +92,6 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
                     this.calculateMaxOffset();
                     this.calculateMaxScale();
                 }
-
             }
         },
 
@@ -112,10 +108,10 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             var yScale = y || this.$.scale.$.y;
 
             if (xScale) {
-                this.$.maxOffset.set('x', Math.max(this.get('offset.x'), width - this.width(xScale), 1));
+                this.$.maxOffset.set('x', Math.max(width - this.width(xScale), 1));
             }
             if (yScale) {
-                this.$.maxOffset.set('y', Math.max(this.get('offset.y'), height - this.height(yScale), 1));
+                this.$.maxOffset.set('y', Math.max(height - this.height(yScale), 1));
             }
         },
 
@@ -132,11 +128,35 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             var yOffset = y || this.$.offset.$.y;
 
             if (typeof xOffset === 'number') {
-                this.$.maxScale.set('x', Math.max(this.get('scale.x'), (width - xOffset) / this.width(1)));
+                this.$.maxScale.set('x', Math.max(this.get('scale.x'), (width) / this.width(1)));
             }
 
             if (typeof yOffset === 'number') {
-                this.$.maxScale.set('y', Math.max(this.get('scale.y'), (height - yOffset) / this.height(1)));
+                this.$.maxScale.set('y', Math.max(this.get('scale.y'), (height) / this.height(1)));
+            }
+        },
+
+        adjustOffsetHandler: function(e) {
+            var newScaleX = e.$.x;
+            var oldScaleX = e.target.$previousAttributes['x'];
+
+            var newScaleY = e.$.y;
+            var oldScaleY = e.target.$previousAttributes['y'];
+            this.adjustOffsetAfterScaling(oldScaleX, newScaleX, oldScaleY, newScaleY);
+        },
+
+        adjustOffsetAfterScaling: function(oldScaleX, newScaleX, oldScaleY, newScaleY) {
+            if (this.$.initialized) {
+                var offset = this.get('offset');
+                if (newScaleX && oldScaleX) {
+                    var desiredOffsetX = offset.get('x') + 0.5 * this.width(oldScaleX - newScaleX);
+                    offset.set('x', this.clamp(desiredOffsetX, 0, this.$.maxOffset.$.x));
+                }
+
+                if (newScaleY && oldScaleY) {
+                    var desiredOffsetY = offset.get('y') + 0.5 * this.height(oldScaleY - newScaleY);
+                    offset.set('y', this.clamp(desiredOffsetY, 0, this.$.maxOffset.$.y));
+                }
             }
         },
 
