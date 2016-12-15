@@ -1,4 +1,4 @@
-define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "sprd/config/AfterEffects", "underscore", "rAppid", "sprd/helper/afterEffectHelper"], function(Base, UnitUtil, Design, flow, Size, AfterEffects, _, rappid, afterEffectHelper) {
+define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "sprd/config/AfterEffects", "underscore", "rAppid", "sprd/helper/AfterEffectHelper"], function(Base, UnitUtil, Design, flow, Size, AfterEffects, _, rappid, AfterEffectHelper) {
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
         initializeConfiguration: function(configuration, options, callback) {
 
@@ -24,14 +24,10 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
             }
 
-
-            var afterEffect = properties.afterEffect,
-                originalDesign = properties.originalDesign;
-
-            if (self.$stage.PARAMETER().mode == "admin" && properties.type == 'afterEffect' && afterEffect && originalDesign) {
-                designId = originalDesign.href.split("/").pop();
+            if (self.$stage.PARAMETER().mode == "admin" && properties.type == 'afterEffect' && properties.afterEffect && properties.originalDesign) {
+                designId = properties.originalDesign.href.split("/").pop();
                 design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
-                design.set('wtfMbsId', originalDesign.id);
+                design.set('wtfMbsId', properties.originalDesign.id);
             }
 
             flow()
@@ -226,29 +222,25 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     }
                 })
                 .seq('ctx', function(cb) {
-                    var afterEffect = configuration.$.afterEffect;
-                    var design = configuration.$.design;
-
-                    if (design) {
+                    if (!design) {
+                        cb()
+                    } else {
                         var afterEffect = configuration.$.afterEffect;
                         var id = design.$.wtfMbsId;
 
                         if (self.$stage.PARAMETER().mode == 'admin' && afterEffect && id) {
                             design.set('localImage', '/bims/v1/designs/' + id + '.orig');
-                            afterEffectHelper.applyAfterEffect(configuration.$.design, configuration.$.afterEffect, null, cb);
+                            AfterEffectHelper.applyAfterEffect(configuration.$.design, configuration.$.afterEffect, null, cb);
                         } else {
                             cb();
                         }
-                    } else {
-                        cb()
                     }
-                }
-                    )
-                    .seq(function() {
-                        if (self.$stage.PARAMETER().mode == 'admin' && this.vars.ctx) {
-                            configuration.setProcessedImage(this.vars.ctx);
-                        }
-                    })
+                })
+                .seq(function() {
+                    if (self.$stage.PARAMETER().mode == 'admin' && this.vars.ctx) {
+                        configuration.setProcessedImage(this.vars.ctx);
+                    }
+                })
                 .exec(callback);
         }
     });
