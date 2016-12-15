@@ -1,4 +1,4 @@
-define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "sprd/config/AfterEffects", "underscore", "rAppid"], function(Base, UnitUtil, Design, flow, Size, AfterEffects, _, rappid) {
+define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "sprd/config/AfterEffects", "underscore", "rAppid", "sprd/helper/afterEffectHelper"], function(Base, UnitUtil, Design, flow, Size, AfterEffects, _, rappid, afterEffectHelper) {
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
         initializeConfiguration: function(configuration, options, callback) {
 
@@ -225,7 +225,8 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         configuration.set('afterEffect', afterEffect);
                     }
                 })
-                .seq(function() {
+                .seq('ctx', function(cb) {
+                    var afterEffect = configuration.$.afterEffect;
                     var design = configuration.$.design;
 
                     if (design) {
@@ -233,12 +234,21 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         var id = design.$.wtfMbsId;
 
                         if (self.$stage.PARAMETER().mode == 'admin' && afterEffect && id) {
-
                             design.set('localImage', '/bims/v1/designs/' + id + '.orig');
-                            configuration.computeProcessedImage({keep: true});
+                            afterEffectHelper.applyAfterEffect(configuration.$.design, configuration.$.afterEffect, null, cb);
+                        } else {
+                            cb();
                         }
+                    } else {
+                        cb()
                     }
-                })
+                }
+                    )
+                    .seq(function() {
+                        if (self.$stage.PARAMETER().mode == 'admin' && this.vars.ctx) {
+                            configuration.setProcessedImage(this.vars.ctx);
+                        }
+                    })
                 .exec(callback);
         }
     });
