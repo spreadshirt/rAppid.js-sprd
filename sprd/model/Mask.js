@@ -82,16 +82,20 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
 
             var originalWidth = this.width(1);
             var originalHeight = this.height(1);
-            if (width && height && originalWidth && originalHeight && !this.$.initialized) {
-                var factor = Math.min(width / originalWidth, height / originalHeight);
-                this.$.scale.set('y', factor);
-                this.$.scale.set('x', factor);
+            if (width && height && originalWidth && originalHeight) {
+                if (!this.$.initialized) {
+                    var factor = Math.min(width / originalWidth, height / originalHeight);
+                    this.$.scale.set('y', factor);
+                    this.$.scale.set('x', factor);
+                    this.calculateMaxOffset();
+                    this.centerAt(width / 2, height / 2);
+                    this.calculateMaxScale();
+                    this.set('initialized', true);
+                } else {
+                    this.calculateMaxOffset();
+                    this.calculateMaxScale();
+                }
 
-                this.calculateMaxOffset();
-
-                this.centerAt(width / 2, height / 2);
-                this.calculateMaxScale();
-                this.set('initialized', true);
             }
         },
 
