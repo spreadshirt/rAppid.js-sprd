@@ -57,6 +57,10 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.trigger("priceChanged");
             },
 
+            _commitAfterEffect: function(afterEffect) {
+                this.set('processedImage', null);
+            },
+
             _setProcessedSize: function() {
                 var afterEffect = this.$.afterEffect;
                 var design = this.$.design;
