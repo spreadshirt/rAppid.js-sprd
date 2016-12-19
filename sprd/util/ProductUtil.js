@@ -2,6 +2,10 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
     return {
 
+        sortPrintTypeByWeight: function(a, b) {
+            return a.$.weight - b.$.weight;
+        },
+
         getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearanceId) {
 
             if (!(design && design.$.printTypes)) {
@@ -9,7 +13,8 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             }
 
             return ArrayUtil.average(design.$.printTypes.$items,
-                this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId));
+                this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId))
+                .sort(this.sortPrintTypeByWeight);
         },
 
         getPossiblePrintTypesForDesignOnProduct: function (design, product) {
@@ -19,7 +24,8 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
         getPossiblePrintTypesForTextOnPrintArea: function (fontFamily, printArea, appearanceId) {
             return ArrayUtil.average(fontFamily.$.printTypes.$items,
-                this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId));
+                this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId))
+                .sort(this.sortPrintTypeByWeight);
         },
 
         getPossiblePrintTypesForPrintAreas: function (printAreas, appearanceId) {
@@ -40,6 +46,8 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                     });
                 }
             });
+
+            ret.sort(this.sortPrintTypeByWeight);
 
             return ret;
         },
