@@ -244,6 +244,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 var product = dndObject.viewer.$.product;
 
                 if (hoverState == DROP_HOVERED.INVALID) {
+                    dndObject.config.set("printArea", null);
                     productManager.moveConfigurationToView(product, dndObject.config, product.$.view);
                 } else if (viewer && dndObject.viewer !== viewer) {
                     e.stopPropagation && e.stopPropagation();
