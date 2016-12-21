@@ -112,16 +112,19 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
         },
 
         balanceConfiguration: function() {
-            var configuration = this.$.configruation;
+            var configuration = this.$.configuration;
             if (configuration) {
                 var oldSize = this.$.oldSize,
-                    newSize = configuration.$._size;
+                    newSize = configuration.$._size,
+                    scale = configuration.$.scale.x;
 
                 if (oldSize) {
                     var offset = configuration.$.offset;
                     configuration.$.offset.set({
-                        x: offset.$.x - (newSize.$.width - oldSize.$.width)
-                    })
+                        x: offset.$.x - ((newSize.$.width - oldSize.$.width) / 2 ) * (scale / this.$.normalScale)
+                    });
+                } else {
+                    this.set("normalScale", configuration.$.scale.x)
                 }
 
                 this.set("oldSize", newSize);
