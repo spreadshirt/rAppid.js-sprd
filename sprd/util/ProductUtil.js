@@ -18,7 +18,13 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
         },
 
         getPossiblePrintTypesForDesignOnProduct: function (design, product) {
-            return this.getPossiblePrintTypesForDesignOnPrintArea(design, product.$.view.getDefaultPrintArea(), product.$.appearance.$.id);
+            var defaultPrintArea = product.$.view.getDefaultPrintArea();
+
+            if (!defaultPrintArea) {
+                return [];
+            }
+
+            return this.getPossiblePrintTypesForDesignOnPrintArea(design, defaultPrintArea, product.$.appearance.$.id);
 
         },
 
