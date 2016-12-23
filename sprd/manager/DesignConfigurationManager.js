@@ -178,7 +178,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 })
                 .seq('ctx', function(cb) {
                     var afterEffect = configuration.$.afterEffect;
-                    var id = design.$.wtfMbsId;
+                    var id = design ? design.$.wtfMbsId : null;
 
                     if (!configuration.$.processedImage && self.$stage.PARAMETER().mode == 'admin' && afterEffect && id) {
                         design.set('localImage', '/bims/v1/designs/' + id + '.orig');
