@@ -45,13 +45,12 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
         },
 
         centerAt: function(x, y) {
-            this.calculateMaxOffset();
             var newX = this.clamp(x - this.width() / 2, 0, this.$.maxOffset.$.x);
             var newY = this.clamp(y - this.height() / 2, 0, this.$.maxOffset.$.y);
 
             this.$.offset.set({
-                'x': newX,
-                'y': newY
+                'x': Math.round(newX),
+                'y': Math.round(newY)
             });
         },
 
@@ -124,16 +123,8 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
                 return;
             }
 
-            var xOffset = x || this.$.offset.$.x;
-            var yOffset = y || this.$.offset.$.y;
-
-            if (typeof xOffset === 'number') {
-                this.$.maxScale.set('x', Math.max(this.get('scale.x'), (width) / this.width(1)));
-            }
-
-            if (typeof yOffset === 'number') {
-                this.$.maxScale.set('y', Math.max(this.get('scale.y'), (height) / this.height(1)));
-            }
+            this.$.maxScale.set('x', Math.max(this.get('scale.x'), (width) / this.width(1)));
+            this.$.maxScale.set('y', Math.max(this.get('scale.y'), (height) / this.height(1)));
         },
 
         adjustOffsetHandler: function(e) {
@@ -150,12 +141,12 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
                 var offset = this.get('offset');
                 if (newScaleX && oldScaleX) {
                     var desiredOffsetX = offset.get('x') + 0.5 * this.width(oldScaleX - newScaleX);
-                    offset.set('x', this.clamp(desiredOffsetX, 0, this.$.maxOffset.$.x));
+                    offset.set('x', Math.round(this.clamp(desiredOffsetX, 0, this.$.maxOffset.$.x)));
                 }
 
                 if (newScaleY && oldScaleY) {
                     var desiredOffsetY = offset.get('y') + 0.5 * this.height(oldScaleY - newScaleY);
-                    offset.set('y', this.clamp(desiredOffsetY, 0, this.$.maxOffset.$.y));
+                    offset.set('y', Math.round(this.clamp(desiredOffsetY, 0, this.$.maxOffset.$.y)));
                 }
             }
         },

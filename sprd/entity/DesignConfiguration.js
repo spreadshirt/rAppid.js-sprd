@@ -140,10 +140,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             getSizeForPrintType: function(printType) {
                 if (this.$.design && this.$.design.$.size && printType && printType.$.dpi) {
                     var dpi = printType.$.dpi;
-                    // if (!this.$sizeCache[dpi]) {
-                    //     this.$sizeCache[dpi] = UnitUtil.convertSizeToMm(this.$.design.$.size, dpi);
-                    // }
-
                     return UnitUtil.convertSizeToMm(this.$.processedSize || this.$.design.$.size, dpi);
                 }
 

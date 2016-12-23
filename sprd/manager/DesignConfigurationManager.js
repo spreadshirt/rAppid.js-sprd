@@ -26,8 +26,10 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
             if (self.$stage.PARAMETER().mode == "admin" && properties.type == 'afterEffect' && properties.afterEffect && properties.originalDesign) {
                 designId = properties.originalDesign.href.split("/").pop();
-                design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
-                design.set('wtfMbsId', properties.originalDesign.id);
+                if (designId != design.$.id) {
+                    design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
+                    design.set('wtfMbsId', properties.originalDesign.id);
+                }
             }
 
             flow()
@@ -149,6 +151,48 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     configuration.set('printType', printType, {force: true});
                 })
                 .seq(function() {
+                    if (self.$stage.PARAMETER().mode == "admin" && properties && properties.afterEffect && !configuration.$.afterEffect) {
+                        var baseUrl = function(url) {
+                            return self.$stage.baseUrl ? self.$stage.baseUrl.call(self, url) : url;
+                        };
+
+                        var afterEffects = AfterEffects(baseUrl);
+
+                        var afterEffect = _.find(afterEffects.masks, function(mask) {
+                            return mask.$.id == properties.afterEffect.id;
+                        });
+
+                        afterEffect.$.offset.set({
+                            'x': properties.afterEffect.offset.x,
+                            'y': properties.afterEffect.offset.y
+                        });
+
+                        afterEffect.$.scale.set({
+                            'x': properties.afterEffect.scale.x,
+                            'y': properties.afterEffect.scale.y
+                        });
+
+                        afterEffect.set('initialized', true);
+                        configuration.set('afterEffect', afterEffect);
+                    }
+                })
+                .seq('ctx', function(cb) {
+                    var afterEffect = configuration.$.afterEffect;
+                    var id = design.$.wtfMbsId;
+
+                    if (!configuration.$.processedImage && self.$stage.PARAMETER().mode == 'admin' && afterEffect && id) {
+                        design.set('localImage', '/bims/v1/designs/' + id + '.orig');
+                        AfterEffectHelper.applyAfterEffect(configuration.$.design, configuration.$.afterEffect, null, cb);
+                    } else {
+                        cb();
+                    }
+                })
+                .seq(function() {
+                    if (self.$stage.PARAMETER().mode == 'admin' && this.vars.ctx) {
+                        configuration.applyAfterEffect(this.vars.ctx);
+                    }
+                })
+                .seq(function() {
 
                     if (svg) {
                         var size = new Size({
@@ -156,7 +200,9 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                             height: 100
                         });
 
-                        if (design) {
+                        if (configuration.$.processedImage || design) {
+                            size = configuration.size();
+                        } else if (design) {
                             size = UnitUtil.convertSizeToMm(design.$.size, configuration.$.printType.$.dpi);
                         } else if (configuration.$.generatedWidth) {
                             // here we have a special text configuration
@@ -193,52 +239,6 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         }
 
                         configuration.set(ret, {preventValidation: true});
-                    }
-                })
-                .seq(function() {
-                    if (self.$stage.PARAMETER().mode == "admin" && properties && properties.afterEffect) {
-                        var baseUrl = function(url) {
-                            return self.$stage.baseUrl ? self.$stage.baseUrl.call(self, url) : url;
-                        };
-
-                        var afterEffects = AfterEffects(baseUrl);
-
-                        var afterEffect = _.find(afterEffects.masks, function(mask) {
-                            return mask.$.id == properties.afterEffect.id;
-                        });
-
-                        afterEffect.$.offset.set({
-                            'x': properties.afterEffect.offset.x,
-                            'y': properties.afterEffect.offset.y
-                        });
-
-                        afterEffect.$.scale.set({
-                            'x': properties.afterEffect.scale.x,
-                            'y': properties.afterEffect.scale.y
-                        });
-
-                        afterEffect.set('initialized', true);
-                        configuration.set('afterEffect', afterEffect);
-                    }
-                })
-                .seq('ctx', function(cb) {
-                    if (!design) {
-                        cb()
-                    } else {
-                        var afterEffect = configuration.$.afterEffect;
-                        var id = design.$.wtfMbsId;
-
-                        if (self.$stage.PARAMETER().mode == 'admin' && afterEffect && id) {
-                            design.set('localImage', '/bims/v1/designs/' + id + '.orig');
-                            AfterEffectHelper.applyAfterEffect(configuration.$.design, configuration.$.afterEffect, null, cb);
-                        } else {
-                            cb();
-                        }
-                    }
-                })
-                .seq(function() {
-                    if (self.$stage.PARAMETER().mode == 'admin' && this.vars.ctx) {
-                        configuration.setProcessedImage(this.vars.ctx);
                     }
                 })
                 .exec(callback);
