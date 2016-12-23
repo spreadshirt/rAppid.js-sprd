@@ -3,7 +3,7 @@ define(['sprd/entity/Size', 'flow'], function(Size, flow) {
         var processing = false;
 
         return {
-            computeProcessedImageDebounced: function(design, afterEffect, window, options) {
+            computeProcessedImageDebounced: function(design, afterEffect, window, options, callback) {
                 var self = this;
 
                 window.requestAnimFrame = window.$requestAnimFrame || (function() {
@@ -16,7 +16,7 @@ define(['sprd/entity/Size', 'flow'], function(Size, flow) {
                     })();
 
                 var computeHandler = function() {
-                    self.computeProcessedImage(design, afterEffect, options);
+                    self.computeProcessedImage(design, afterEffect, options, callback);
                 };
 
                 if (!processing) {
@@ -26,7 +26,7 @@ define(['sprd/entity/Size', 'flow'], function(Size, flow) {
 
             },
 
-            computeProcessedImage: function(design, afterEffect, options) {
+            computeProcessedImage: function(design, afterEffect, options, callback) {
                 var self = this;
 
                 options = options || {};
@@ -34,13 +34,7 @@ define(['sprd/entity/Size', 'flow'], function(Size, flow) {
                 if (afterEffect) {
                     this.applyAfterEffect(design, afterEffect, options, function(err, ctx) {
                         processing = false;
-                        if (!err) {
-                            if (options.keep) {
-                                //self.setProcessedImage(ctx)
-                            }
-                        } else {
-                            console.error(err);
-                        }
+                        callback(err, ctx);
                     })
                 }
             },
