@@ -55,7 +55,12 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
                         callback && callback(new Error("Request was not successful for Vectormask with id " + self.$.id + " and name " + self.$.name), xhr);
                     }
                 });
-            }
+            },
+
+        previewUrl: function() {
+            var url = this.callBase();
+            return url || this.$.vector;
+        }.onChange('image', 'preview')
         }
     );
 });

@@ -9,7 +9,8 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             maxOffset: Offset,
             maxScale: Scale,
             destinationWidth: null,
-            destinationHeight: null
+            destinationHeight: null,
+            preview: null
         },
 
         ctor: function() {
@@ -34,6 +35,10 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
         offsetChanged: function() {
             this.calculateMaxScale();
             this.trigger("processingParametersChanged");
+        },
+
+        previewUrl: function() {
+            return this.$.preview;
         },
 
         clamp: function(value, min, max) {
@@ -72,14 +77,14 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             return null;
         },
 
-        initMask: function() {
+        initMask: function(options) {
             var width = this.$.destinationWidth;
             var height = this.$.destinationHeight;
 
             var originalWidth = this.width(1);
             var originalHeight = this.height(1);
             if (width && height && originalWidth && originalHeight) {
-                if (!this.$.initialized) {
+                if (!this.$.initialized || options.force) {
                     var factor = Math.min(width / originalWidth, height / originalHeight);
                     this.$.scale.set('y', factor);
                     this.$.scale.set('x', factor);

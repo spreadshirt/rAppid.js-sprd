@@ -29,6 +29,11 @@ define(["sprd/model/Mask"], function(Mask) {
             };
 
             img.src = this.get('image');
-        }
+        },
+
+        previewUrl: function() {
+            var url = this.callBase();
+            return url || this.$.image;
+        }.onChange('image', 'preview')
     });
 });

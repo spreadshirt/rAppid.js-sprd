@@ -28,6 +28,10 @@ define(["js/data/Model"], function(Model) {
             return this.$.id;
         },
 
+        previewUrl: function() {
+            throw new Error("Not implemented.");
+        },
+
         _commitScale: function(scale) {
             if (this.$.fixedAspectRatio && this.$.scale.$.x !== this.$.scale.$.y) {
                 return false;
