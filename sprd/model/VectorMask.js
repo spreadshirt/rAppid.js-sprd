@@ -9,8 +9,8 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
             },
 
         _commitFixedAspectRatio: function(fixedAspectRatio) {
-            this.set('scale.fixedAspectRatio', fixedAspectRatio);
-            this.set('maxScale.fixedAspectRatio', fixedAspectRatio);
+            this.get('scale').set('fixedAspectRatio', fixedAspectRatio);
+            this.get('maxScale').set('fixedAspectRatio', fixedAspectRatio);
         },
 
             initImage: function(callback) {
