@@ -1,27 +1,29 @@
-define(['js/data/Entity', 'js/lib/extension'], function(Entity, extension) {
+define(['sprd/entity/Vector2D', 'js/lib/extension'], function(Vector2D, extension) {
 
     // do not remove, as extension is required to have Math.round(number, accuracy)
     var x = extension;
 
-    return Entity.inherit('sprd.entity.Scale', {
+    return Vector2D.inherit('sprd.entity.Scale', {
         defaults: {
             x: 1,
-            y: 1
+            y: 1,
+            fixedAspectRatio: false
         },
 
         schema: {
-            x: Number,
-            y: Number
+            fixedAspectRatio: Boolean
         },
 
-        compose: function() {
-            var ret = this.callBase();
+        _commitX: function(x) {
+            if (this.$.fixedAspectRatio) {
+                this.set('y', x);
+            }
+        },
 
-            return {
-                x: Math.round(ret.x, 3),
-                y: Math.round(ret.y, 3)
-            };
-
+        _commitY: function(y) {
+            if (this.$.fixedAspectRatio) {
+                this.set('x', y);
+            }
         },
 
         isDeepEqual: function(a) {
@@ -29,8 +31,7 @@ define(['js/data/Entity', 'js/lib/extension'], function(Entity, extension) {
                 return false;
             }
 
-            return Math.round(this.$.x, 0) === Math.round(a.$.x, 0) &&
-                Math.round(this.$.y, 0) === Math.round(a.$.y, 0);
+            return this.callBase() && a.$.fixedAspectRatio === this.$.fixedAspectRatio;
         }
     });
 });

@@ -1,6 +1,6 @@
-define(['sprd/entity/Scale'], function(Scale) {
+define(['sprd/entity/Vector2D'], function(Vector2D) {
 
-    return Scale.inherit('sprd.entity.Offset', {
+    return Vector2D.inherit('sprd.entity.Offset', {
         defaults: {
             x: 0,
             y: 0,

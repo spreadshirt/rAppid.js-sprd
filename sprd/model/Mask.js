@@ -41,6 +41,10 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             return this.$.preview;
         },
 
+        fixedAspectRatio: function() {
+            return false;
+        },
+
         clamp: function(value, min, max) {
             return Math.max(min, Math.min(max, value));
         },

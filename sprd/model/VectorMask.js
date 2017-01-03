@@ -3,8 +3,15 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
     return Mask.inherit("sketchomat.model.VectorMask", {
 
             defaults: {
-                vector: null
+                vector: null,
+                svg: null,
+                fixedAspectRatio: '{fixedAspectRatio()}'
             },
+
+        _commitFixedAspectRatio: function(fixedAspectRatio) {
+            this.set('scale.fixedAspectRatio', fixedAspectRatio);
+            this.set('maxScale.fixedAspectRatio', fixedAspectRatio);
+        },
 
             initImage: function(callback) {
                 if (!this.get('vector')) {
@@ -42,13 +49,14 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
 
             getSvgDataUri: function(url, callback) {
                 var self = this;
-                rappid.ajax(url, null, function(err, xhr) {
+                rappid.ajax(url, {'Content-Type': "image/svg+xml"}, function(err, xhr) {
                     if (err) {
                         callback && callback(err, xhr);
                         return;
                     }
 
                     if (xhr.status == 200) {
+                        self.set('svg', xhr.responses.xml);
                         var data_uri = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(xhr.responses.text)));
                         callback && callback(null, data_uri);
                     } else {
@@ -60,7 +68,16 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
         previewUrl: function() {
             var url = this.callBase();
             return url || this.$.vector;
-        }.onChange('image', 'preview')
+        }.onChange('image', 'preview'),
+
+        fixedAspectRatio: function() {
+            var svg = this.$.svg;
+            if (svg) {
+                return svg.documentElement.getAttribute('preserveAspectRatio') != 'none';
+            }
+
+            return false;
+        }.onChange('svg')
         }
     );
 });

@@ -32,12 +32,6 @@ define(["js/data/Model"], function(Model) {
             throw new Error("Not implemented.");
         },
 
-        _commitScale: function(scale) {
-            if (this.$.fixedAspectRatio && this.$.scale.$.x !== this.$.scale.$.y) {
-                return false;
-            }
-        },
-
         canvasScalingFactor: function(img) {
             return AfterEffect.canvasScalingFactor(img);
         }
