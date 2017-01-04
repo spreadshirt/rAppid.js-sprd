@@ -1112,6 +1112,41 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     y: defaultBox.y
                 }, PREVENT_VALIDATION_OPTIONS);
 
+                // scale to fit into default box
+                var scaleToFixDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
+                var minimumScale;
+
+                if (configuration instanceof DesignConfiguration && printType.isEnlargeable()) {
+                    minimumScale = (configuration.get("design.restrictions.minimumScale") || 100) / 100;
+                    if (scaleToFixDefaultBox < minimumScale) {
+                        newScale = minimumScale;
+                    }
+                }
+
+                var maxPrintTypeScale = maxWidth / boundingBox.width;
+
+
+                newScale = scaleToFixDefaultBox;
+
+                if (minimumScale) {
+                    newScale = Math.max(scaleToFixDefaultBox, minimumScale);
+                }
+
+                newScale = Math.min(maxPrintTypeScale, newScale);
+
+                configuration.set("scale", {
+                    x: newScale,
+                    y: newScale
+                });
+
+                boundingBox = configuration._getBoundingBox();
+
+                // position centered within defaultBox
+                offset.set({
+                    x: defaultBoxCenterX - boundingBox.width / 2,
+                    y: defaultBox.y
+                }, PREVENT_VALIDATION_OPTIONS);
+
                 if (offset.$.x < 0 || offset.$.x + boundingBox.width > maxWidth) {
 
                     // hard boundary error
@@ -1120,34 +1155,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     // scale to avoid hard boundary error
                     var scaleToAvoidCollision = maxPossibleWidthToHardBoundary / boundingBox.width;
 
-                    // scale to fit into default box
-                    var scaleToFixDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
 
-                    newScale = scaleToFixDefaultBox; // scaleToFixDefaultBox;
-
-                    if (configuration instanceof DesignConfiguration && printType.isEnlargeable()) {
-                        var minimumScale = (configuration.get("design.restrictions.minimumScale") || 100) / 100;
-                        if (scaleToFixDefaultBox < minimumScale) {
-                            newScale = minimumScale;
-                        }
-                    }
-
-                    // TODO: first use scaleToFixDefaultBox and use scaleToAvoidCollission only if
-                    // scaleToFitDefaultBox is not possible for print type
-
-
-                    configuration.set("scale", {
-                        x: newScale,
-                        y: newScale
-                    });
-
-                    boundingBox = configuration._getBoundingBox();
-
-                    // position centered within defaultBox
-                    offset.set({
-                        x: defaultBoxCenterX - boundingBox.width / 2,
-                        y: defaultBox.y
-                    }, PREVENT_VALIDATION_OPTIONS);
                 }
 
                 if (boundingBox.height > maxHeight) {
