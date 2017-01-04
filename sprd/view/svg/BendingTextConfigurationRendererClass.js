@@ -21,7 +21,6 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
 
             this.bind("configuration", "recalculateSize", this.recalculateSize, this);
             this.bind("configuration", "change:font", this.loadFont, this);
-            this.bind("configuration", "change:_size", this.balanceConfiguration, this);
             this.bind("productViewer.product", ["configurations", "reset"], function() {
                 var configuration = this.$.configuration;
                 if (configuration) {
@@ -50,7 +49,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
         _initializationComplete: function() {
             this.callBase();
             this.loadFont();
-            this.recalculateSize();
+            this.bind("configuration", "recalculateSize", this.balanceConfiguration, this);
         },
 
         render: function() {
@@ -85,6 +84,11 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                 if (configuration && configuration.mainConfigurationRenderer && configuration.mainConfigurationRenderer != this) {
                     return;
                 }
+
+                //path fix for IE
+                path.set("d", configuration.$.textPath || "");
+                var text = this.$.text;
+                text.set("dy", configuration.$.dy);
 
                 configuration.mainConfigurationRenderer = this;
 

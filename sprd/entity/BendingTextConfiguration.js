@@ -1,4 +1,4 @@
-define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "designer/lib/Text2Path", "sprd/entity/BlobImage", "sprd/data/IImageUploadService"], function(DesignConfigurationBase, Size, Font, ProductUtil, Text2Path, BlobImage, IImageUploadService) {
+define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/lib/Text2Path", "sprd/entity/BlobImage", "sprd/data/IImageUploadService"], function(DesignConfigurationBase, Size, Font, ProductUtil, Text2Path, BlobImage, IImageUploadService) {
     var PATH_TYPE = {
         OUTER_CIRCLE: "outer_circle",
         INNER_CIRCLE: "inner_circle",
@@ -152,12 +152,12 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             if (a < 0) {
                 a = -a;
 
-                return "M 0 0 m oneTime,twoTime a oneTime,oneTime 0 1,0 0,twoTime a oneTime,oneTime 0 1,0 0,-twoTime"
+                return "M 0, 0 m oneTime, twoTime a oneTime, oneTime 0 1, 0 0, twoTime a oneTime, oneTime 0 1, 0 0, -twoTime"
                     .replace(/oneTime/g, "" + a)
                     .replace(/twoTime/g, "" + (2 * a));
 
             } else {
-                return "M 0 0 m oneTime,0 a oneTime,oneTime 0 1,1 0,-twoTime a oneTime,oneTime 0 1,1 0,twoTime"
+                return "M 0, 0 m oneTime, 0 a oneTime, oneTime 0 1, 1 0, -twoTime a oneTime, oneTime 0 1, 1 0, twoTime"
                     .replace(/oneTime/g, "" + a)
                     .replace(/twoTime/g, "" + (2 * a));
             }
