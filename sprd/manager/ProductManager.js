@@ -1118,9 +1118,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (configuration instanceof DesignConfiguration && printType.isEnlargeable()) {
                     minimumScale = (configuration.get("design.restrictions.minimumScale") || 100) / 100;
-                    if (scaleToFixDefaultBox < minimumScale) {
-                        newScale = minimumScale;
-                    }
                 }
 
                 var maxPrintTypeScale = maxWidth / boundingBox.width;
