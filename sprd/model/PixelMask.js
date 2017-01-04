@@ -3,7 +3,8 @@ define(["sprd/model/Mask"], function(Mask) {
     return Mask.inherit("sketchomat.model.PixelMask", {
 
         defaults: {
-            image: null
+            image: null,
+            preview: null
         },
 
         initImage: function(callback) {
@@ -32,8 +33,7 @@ define(["sprd/model/Mask"], function(Mask) {
         },
 
         previewUrl: function() {
-            var url = this.callBase();
-            return url || this.$.image;
+            return this.$.preview || this.$.image;
         }.onChange('image', 'preview')
     });
 });

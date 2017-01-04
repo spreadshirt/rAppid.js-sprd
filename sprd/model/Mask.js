@@ -5,21 +5,28 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             htmlImage: null,
             offset: Offset,
             scale: Scale,
-            fixedAspectRatio: false,
+            fixedAspectRatio: null,
             maxOffset: Offset,
             maxScale: Scale,
             destinationWidth: null,
-            destinationHeight: null,
-            preview: null
+            destinationHeight: null
         },
 
         ctor: function() {
             this.callBase();
+            this.initDefaults();
+            this.initBindings();
             this.initImage();
+        },
 
+        initDefaults: function() {
             this.$.offset.set('unit', 'px');
             this.$.maxOffset.set('unit', 'px');
+            this.$.scale.set('fixedAspectRatio', this.$.fixedAspectRatio);
+            this.$.maxScale.set('fixedAspectRatio', this.$.fixedAspectRatio);
+        },
 
+        initBindings: function() {
             this.bind('change:destinationWidth', this.initMask, this);
             this.bind('change:destinationHeight', this.initMask, this);
             this.bind('offset', 'change', this.offsetChanged, this);
@@ -38,11 +45,7 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
         },
 
         previewUrl: function() {
-            return this.$.preview;
-        },
-
-        fixedAspectRatio: function() {
-            return false;
+            throw new Error("Not implemented");
         },
 
         clamp: function(value, min, max) {
@@ -123,7 +126,7 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             }
         },
 
-        calculateMaxScale: function(x, y) {
+        calculateMaxScale: function() {
             var maxScale = this.$.maxScale;
             var width = this.$.destinationWidth;
             var height = this.$.destinationHeight;
@@ -132,8 +135,15 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
                 return;
             }
 
-            this.$.maxScale.set('x', Math.max(this.get('scale.x'), (width) / this.width(1)));
-            this.$.maxScale.set('y', Math.max(this.get('scale.y'), (height) / this.height(1)));
+            var xFactor = width / this.width(1);
+            var yFactor = height / this.height(1);
+
+            if (maxScale.$.fixedAspectRatio) {
+                this.$.maxScale.set(xFactor <= yFactor ? 'x' : 'y', Math.min(xFactor, yFactor));
+            } else {
+                this.$.maxScale.set('x', xFactor);
+                this.$.maxScale.set('y', yFactor);
+            }
         },
 
         adjustOffsetHandler: function(e) {

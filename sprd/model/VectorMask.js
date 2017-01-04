@@ -4,14 +4,8 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
 
             defaults: {
                 vector: null,
-                svg: null,
-                fixedAspectRatio: '{fixedAspectRatio()}'
+                svg: null
             },
-
-        _commitFixedAspectRatio: function(fixedAspectRatio) {
-            this.get('scale').set('fixedAspectRatio', fixedAspectRatio);
-            this.get('maxScale').set('fixedAspectRatio', fixedAspectRatio);
-        },
 
             initImage: function(callback) {
                 if (!this.get('vector')) {
@@ -26,7 +20,7 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
 
                 flow()
                     .seq('data_uri', function(cb) {
-                        self.getSvgDataUri(self.get('vector'), cb);
+                        self.fetchSvg(self.get('vector'), cb);
                     })
                     .seq('img', function(cb) {
                         var img = new Image();
@@ -47,17 +41,21 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
                     });
             },
 
-            getSvgDataUri: function(url, callback) {
+        fetchSvg: function(url, callback) {
                 var self = this;
-                rappid.ajax(url, {'Content-Type': "image/svg+xml"}, function(err, xhr) {
+            rappid.ajax(url, null, function(err, xhr) {
                     if (err) {
                         callback && callback(err, xhr);
                         return;
                     }
 
                     if (xhr.status == 200) {
-                        self.set('svg', xhr.responses.xml);
-                        var data_uri = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(xhr.responses.text)));
+                        var svg = xhr.responses.xml;
+                        self.prepareSvg(svg);
+                        self.set('svg', svg);
+
+                        var s = new XMLSerializer();
+                        var data_uri = self.svgTextToDataUri(s.serializeToString(svg));
                         callback && callback(null, data_uri);
                     } else {
                         callback && callback(new Error("Request was not successful for Vectormask with id " + self.$.id + " and name " + self.$.name), xhr);
@@ -65,19 +63,22 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
                 });
             },
 
+        svgTextToDataUri: function(svgText) {
+            return "data:image/svg+xml;utf8," + encodeURIComponent(svgText);
+        },
+
+        prepareSvg: function(svg) {
+            //Safari Hacks
+            svg.documentElement.setAttribute('width', 100);
+            svg.documentElement.setAttribute('height', 100);
+
+            //Setting preserveAspectRatio explicitely. FF defaults to something other than none.
+            svg.documentElement.setAttribute('preserveAspectRatio', this.$.fixedAspectRatio ? 'xMinYMin' : 'none');
+        },
+
         previewUrl: function() {
-            var url = this.callBase();
-            return url || this.$.vector;
-        }.onChange('image', 'preview'),
-
-        fixedAspectRatio: function() {
-            var svg = this.$.svg;
-            if (svg) {
-                return svg.documentElement.getAttribute('preserveAspectRatio') != 'none';
-            }
-
-            return false;
-        }.onChange('svg')
+            return this.$.vector;
+        }.onChange('vector')
         }
     );
 });
