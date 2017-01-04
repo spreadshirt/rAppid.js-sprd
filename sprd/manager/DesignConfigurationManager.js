@@ -200,7 +200,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                             height: 100
                         });
 
-                        if (configuration.$.processedImage || design) {
+                        if (configuration.$.processedImage) {
                             size = configuration.size();
                         } else if (design) {
                             size = UnitUtil.convertSizeToMm(design.$.size, configuration.$.printType.$.dpi);
