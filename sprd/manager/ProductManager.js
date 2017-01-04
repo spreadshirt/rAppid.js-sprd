@@ -1122,6 +1122,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 var maxPrintTypeScale = maxWidth / boundingBox.width;
 
+                if (configuration instanceof DesignConfiguration && !configuration.$.design.isVectorDesign()) {
+                    maxPrintTypeScale = 1;
+                }
 
                 newScale = scaleToFixDefaultBox;
 
