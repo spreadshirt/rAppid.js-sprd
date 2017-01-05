@@ -56,7 +56,7 @@
                                         checkoutTokenRequired="true"
                                         sessionPreferred="true"/>
             <conf:ResourceConfiguration path="checkout" modelClassName="sprd.model.Checkout" apiKeyRequired="true"
-                                        checkoutTokenRequired="true"/>
+                                        checkoutTokenRequired="true" sessionPreferred="true"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration modelClassName="sprd.model.CombinedBasket" path="combinedBaskets"
                                     apiKeyRequired="true" checkoutTokenRequired="true"/>
