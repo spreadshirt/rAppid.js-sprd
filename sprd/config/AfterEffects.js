@@ -13,27 +13,15 @@ define(["sprd/model/VectorMask", "sprd/model/PixelMask", "underscore"], function
                 id: 8,
                 fixedAspectRatio: false
             }),
-            new VectorMask({
-                name: "Ellipse",
-                vector: baseUrl("sprd/img/masks/ellipse_black.svg"),
-                id: 9,
-                fixedAspectRatio: false
-            }),
+            // new VectorMask({
+            //     name: "Ellipse",
+            //     vector: baseUrl("sprd/img/masks/ellipse_black.svg"),
+            //     id: 9,
+            //     fixedAspectRatio: false
+            // }),
             new VectorMask({
                 name: "Triangle Rounded",
                 vector: baseUrl("sprd/img/masks/triangle_rounded_black.svg"),
-                id: 3,
-                fixedAspectRatio: false
-            }),
-            new VectorMask({
-                name: "Rectangle #1",
-                vector: baseUrl("sprd/img/masks/rectangle_1_black.svg"),
-                id: 2,
-                fixedAspectRatio: false
-            }),
-            new VectorMask({
-                name: "Rectangle #2",
-                vector: baseUrl("sprd/img/masks/rectangle_2_black.svg"),
                 id: 3,
                 fixedAspectRatio: false
             }),
@@ -43,12 +31,12 @@ define(["sprd/model/VectorMask", "sprd/model/PixelMask", "underscore"], function
                 id: 7,
                 fixedAspectRatio: false
             }),
-            new VectorMask({
-                name: "S",
-                vector: baseUrl("sprd/img/masks/SlikeSusi_black.svg"),
-                id: 9,
-                fixedAspectRatio: false
-            }),
+            // new VectorMask({
+            //     name: "S",
+            //     vector: baseUrl("sprd/img/masks/SlikeSusi_black.svg"),
+            //     id: 9,
+            //     fixedAspectRatio: false
+            // }),
             new VectorMask({
                 name: "A",
                 vector: baseUrl("sprd/img/masks/AlikeAnton_black.svg"),
@@ -93,13 +81,74 @@ define(["sprd/model/VectorMask", "sprd/model/PixelMask", "underscore"], function
             }),
             new PixelMask({
                 name: "Große Kreuz",
-                image: baseUrl("sprd/img/masks/03-grosses-kreuz.png"),
+                image: baseUrl("sprd/img/masks/grosses-kreuz.png"),
+                preview: baseUrl("sprd/img/masks/previews/cross.png"),
                 id: 15
             }),
             new PixelMask({
                 name: "Rand",
-                image: baseUrl("sprd/img/masks/04-Rand.png"),
+                image: baseUrl("sprd/img/masks/Rand.png"),
+                preview: baseUrl("sprd/img/masks/previews/marker01.png"),
                 id: 17
+            }),
+            new PixelMask({
+                name: "Gekratzt",
+                image: baseUrl("sprd/img/masks/gekratzt.png"),
+                preview: baseUrl("sprd/img/masks/previews/sponge_02.png"),
+                id: 24
+            }),
+            new PixelMask({
+                name: "Harter Pinsel",
+                image: baseUrl("sprd/img/masks/harter-Pinsel.png"),
+                preview: baseUrl("sprd/img/masks/previews/brush_02.png"),
+                id: 18
+            }),
+            new PixelMask({
+                name: "Rand Getupft",
+                image: baseUrl("sprd/img/masks/Rand-getupft.png"),
+                preview: baseUrl("sprd/img/masks/previews/sponge_01.png"),
+                id: 28
+            }),
+            new PixelMask({
+                name: "Schmetterlinge",
+                image: baseUrl("sprd/img/masks/schmetterlinge.png"),
+                preview: baseUrl("sprd/img/masks/previews/butterfly_01.png"),
+                id: 25
+            }),
+            new PixelMask({
+                name: "Schmetterlinge #2",
+                image: baseUrl("sprd/img/masks/schmetterlinge-gor.png"),
+                preview: baseUrl("sprd/img/masks/previews/butterfly_02.png"),
+                id: 27
+            }),
+            new PixelMask({
+                name: "Schwamm",
+                image: baseUrl("sprd/img/masks/schwamm.png"),
+                id: 23
+            }),
+            new PixelMask({
+                name: "Stifte",
+                image: baseUrl("sprd/img/masks/stifte.png"),
+                preview: baseUrl("sprd/img/masks/previews/pencil_02.png"),
+                id: 22
+            }),
+            new PixelMask({
+                name: "Wachsmalkreide",
+                image: baseUrl("sprd/img/masks/wachsmalkreide-_Kreide-36_.png"),
+                preview: baseUrl("sprd/img/masks/previews/pencil_01.png"),
+                id: 23
+            }),
+            new PixelMask({
+                name: "Wasser farbe",
+                image: baseUrl("sprd/img/masks/wasser-farbe.png"),
+                preview: baseUrl("sprd/img/masks/previews/brush_01.png"),
+                id: 19
+            }),
+            new PixelMask({
+                name: "Winter is coming",
+                image: baseUrl("sprd/img/masks/winteriscoming.png"),
+                preview: baseUrl("sprd/img/masks/previews/winter.png"),
+                id: 27
             })
         ];
 
