@@ -125,7 +125,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             if (dndObject) {
                 var configViewer = dndObject.configurationViewer;
 
-                if (configViewer && configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
+                if (configViewer && configViewer.$._mode == "move") {
                     if (dndObject && dndObject.dndImage) {
                         var hovered = DROP_HOVERED.NO;
 
@@ -179,7 +179,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                             x = pointerEvent.clientX,
                             y = pointerEvent.clientY;
 
-                        if (configViewer && configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
+                        if (configViewer && configViewer.$._mode == "move") {
 
                             if (clientRect.left > x || clientRect.right < x || clientRect.top > y || clientRect.bottom < y) {
                                 if (configViewer) {
