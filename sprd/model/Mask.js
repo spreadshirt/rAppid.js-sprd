@@ -119,10 +119,10 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             var yScale = y || this.$.scale.$.y;
 
             if (xScale) {
-                this.$.maxOffset.set('x', Math.max(width - this.width(xScale), 1));
+                this.$.maxOffset.set('x', Math.floor(Math.max(width - this.width(xScale), 1)));
             }
             if (yScale) {
-                this.$.maxOffset.set('y', Math.max(height - this.height(yScale), 1));
+                this.$.maxOffset.set('y', Math.floor(Math.max(height - this.height(yScale), 1)));
             }
         },
 
