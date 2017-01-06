@@ -3,12 +3,13 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
     return Mask.inherit("sketchomat.model.VectorMask", {
 
             defaults: {
-                vector: null,
+                src: null,
+                data_uri: '{dataURI()}',
                 svg: null
             },
 
             initImage: function(callback) {
-                if (!this.get('vector')) {
+                if (!this.url()) {
                     return callback && callback(null, null);
                 }
 
@@ -20,7 +21,7 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
 
                 flow()
                     .seq('data_uri', function(cb) {
-                        self.fetchSvg(self.get('vector'), cb);
+                        self.fetchSvg(self.url(), cb);
                     })
                     .seq('img', function(cb) {
                         var img = new Image();
@@ -53,10 +54,7 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
                         var svg = xhr.responses.xml;
                         self.prepareSvg(svg);
                         self.set('svg', svg);
-
-                        var s = new XMLSerializer();
-                        var data_uri = self.svgTextToDataUri(s.serializeToString(svg));
-                        callback && callback(null, data_uri);
+                        callback && callback(null, self.get('data_uri'));
                     } else {
                         callback && callback(new Error("Request was not successful for Vectormask with id " + self.$.id + " and name " + self.$.name), xhr);
                     }
@@ -74,11 +72,41 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
 
             //Setting preserveAspectRatio explicitely. FF defaults to something other than none.
             svg.documentElement.setAttribute('preserveAspectRatio', this.$.fixedAspectRatio ? 'xMinYMin' : 'none');
+
+            this.changeColor(svg, '#00B2A5');
         },
 
         previewUrl: function() {
-            return this.$.vector;
-        }.onChange('vector')
+            return this.url();
+        }.onChange('url()'),
+
+        url: function() {
+            return this.$.data_uri || this.$.src;
+        }.onChange('src', 'data_uri'),
+
+        changeColor: function(svg, color) {
+            var styleAttribute = svg.documentElement.getAttribute('style');
+            svg.documentElement.setAttribute('style', styleAttribute + 'fill: ' + color + ';');
+            var styles = svg.getElementsByTagName('style');
+            for (var i = 0; i < styles.length; i++) {
+                var style = styles[i];
+                var styleContent = style.textContent;
+                var fillRegex = /(fill:\s*#[\dABCDEF]+|});/;
+                //var regex = /\{([^}])}/;
+                styleContent = styleContent.replace(fillRegex, '');
+                styleContent = styleContent.replace(0, -1) + "fill:" + color + ";}";
+                style.textContent = styleContent;
+            }
+        },
+
+        dataURI: function() {
+            if (this.$.svg) {
+                var s = new XMLSerializer();
+                return this.svgTextToDataUri(s.serializeToString(this.$.svg));
+            }
+
+            return null;
+        }.onChange('svg')
         }
     );
 });
