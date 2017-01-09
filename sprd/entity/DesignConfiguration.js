@@ -58,7 +58,14 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             _commitAfterEffect: function(afterEffect) {
-                this.set('processedImage', null);
+                var self = this;
+                if (!afterEffect) {
+                    this.set('processedImage', null);
+                } else {
+                    AfterEffectHelper.applyAfterEffect(self.$.design, afterEffect, null, function(err, ctx) {
+                        self.applyAfterEffect(ctx);
+                    });
+                }
             },
 
             _setProcessedSize: function() {
