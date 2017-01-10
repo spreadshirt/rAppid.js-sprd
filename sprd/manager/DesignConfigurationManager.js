@@ -153,7 +153,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 .seq(function() {
                     var id = design ? design.$.wtfMbsId : null;
 
-                    if (!design.get('localImage') && self.$stage.PARAMETER().mode == 'admin' && id) {
+                    if (!design.get('localImage') && self.$stage.PARAMETER().mode == 'admin' && id && properties && properties.afterEffect) {
                         design.set('localImage', '/bims/v1/designs/' + id + '.orig');
                     }
                 })
