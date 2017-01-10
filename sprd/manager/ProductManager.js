@@ -1045,6 +1045,20 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
+            moveConfigurationsToView: function(product, configurations, view, callback) {
+                var self = this;
+                flow()
+                    .parEach(configurations.toArray(), function(config, cb) {
+                        self.moveConfigurationToView(product, config, view, function(err, result) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            cb();
+                        });
+                    })
+                    .exec(callback)
+            },
+
             setTextForConfiguration: function(text, configuration, options) {
                 if (!(configuration instanceof TextConfiguration)) {
                     throw new Error("Configuration is not a TextConfiguration");
@@ -1343,6 +1357,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     }
                 });
             },
+
 
             checkConfigurationOffset: function(product, configuration) {
 
