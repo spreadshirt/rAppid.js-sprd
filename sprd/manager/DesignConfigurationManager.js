@@ -157,7 +157,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         design.set('localImage', '/bims/v1/designs/' + id + '.orig');
                     }
                 })
-                .seq(function(cb) {
+                .seq(function() {
                     if (self.$stage.PARAMETER().mode == "admin" && properties && properties.afterEffect && !configuration.$.afterEffect) {
                         var baseUrl = function(url) {
                             return self.$stage.baseUrl ? self.$stage.baseUrl.call(self, url) : url;
@@ -181,9 +181,6 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
                         afterEffect.set('initialized', true);
                         configuration.set('afterEffect', afterEffect);
-                        AfterEffectHelper.computeProcessedImageDebounced(design, afterEffect, null, cb);
-                    } else {
-                        cb();
                     }
                 })
                 .seq(function() {
@@ -193,7 +190,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                             height: 100
                         });
 
-                        if (configuration.$.processedImage) {
+                        if (configuration.$.processedSize) {
                             size = configuration.size();
                         } else if (design) {
                             size = UnitUtil.convertSizeToMm(design.$.size, configuration.$.printType.$.dpi);
