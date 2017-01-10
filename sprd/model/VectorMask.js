@@ -62,7 +62,12 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
             },
 
         svgTextToDataUri: function(svgText) {
-            return "data:image/svg+xml;utf8," + encodeURIComponent(svgText);
+            var utf8 = "data:image/svg+xml;utf8," + encodeURIComponent(svgText);
+            var base64 = "data:image/svg+xml;base64," + btoa(svgText);
+            return {
+                utf8: utf8,
+                base64: base64
+            }
         },
 
         prepareSvg: function(svg) {
@@ -102,7 +107,7 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
         dataURI: function() {
             if (this.$.svg) {
                 var s = new XMLSerializer();
-                return this.svgTextToDataUri(s.serializeToString(this.$.svg));
+                return this.svgTextToDataUri(s.serializeToString(this.$.svg)).utf8;
             }
 
             return null;

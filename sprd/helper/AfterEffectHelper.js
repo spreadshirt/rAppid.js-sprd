@@ -1,19 +1,10 @@
-define(['sprd/entity/Size', 'flow'], function(Size, flow) {
+define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/animFrame'], function(Size, Base, flow, animFrame) {
 
         var processing = false;
 
         return {
-            computeProcessedImageDebounced: function(design, afterEffect, window, options, callback) {
+            computeProcessedImageDebounced: function(design, afterEffect, options, callback) {
                 var self = this;
-
-                window.requestAnimFrame = window.$requestAnimFrame || (function() {
-                        return window.requestAnimationFrame ||
-                            window.webkitRequestAnimationFrame ||
-                            window.mozRequestAnimationFrame ||
-                            function(callback) {
-                                window.setTimeout(callback, 1000 / 60);
-                            };
-                    })();
 
                 var computeHandler = function() {
                     self.computeProcessedImage(design, afterEffect, options, callback);
@@ -22,6 +13,8 @@ define(['sprd/entity/Size', 'flow'], function(Size, flow) {
                 if (!processing) {
                     window.requestAnimFrame(computeHandler);
                     processing = true;
+                } else {
+                    callback();
                 }
 
             },

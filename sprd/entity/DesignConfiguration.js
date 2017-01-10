@@ -62,7 +62,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 if (!afterEffect) {
                     this.set('processedImage', null);
                 } else {
-                    AfterEffectHelper.applyAfterEffect(self.$.design, afterEffect, null, function(err, ctx) {
+                    AfterEffectHelper.computeProcessedImageDebounced(self.$.design, afterEffect, null, function(err, ctx) {
                         self.applyAfterEffect(ctx);
                     });
                 }
@@ -88,7 +88,25 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             setProcessedImage: function(ctx) {
-                this.set('processedImage', AfterEffectHelper.trimAndExport(ctx, this.$.afterEffect));
+                var self = this;
+
+                if (!self.$.design || !self.$.afterEffect) {
+                    return;
+                }
+
+                var cacheId = [self.$.design.$.id, self.$.afterEffect.id()].join('#');
+                self.synchronizeFunctionCall.call(self, function(cb) {
+                    flow()
+                        .seq('img', function() {
+                            return AfterEffectHelper.trimAndExport(ctx, self.$.afterEffect);
+                        })
+                        .exec(function(err, result) {
+                            cb(err, result.img);
+                        });
+
+                }, cacheId, function(err, result) {
+                    self.set('processedImage', result);
+                }, self);
             },
 
             getPrintColorsAsRGB: function() {

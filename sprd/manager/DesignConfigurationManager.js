@@ -151,6 +151,13 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     configuration.set('printType', printType, {force: true});
                 })
                 .seq(function() {
+                    var id = design ? design.$.wtfMbsId : null;
+
+                    if (self.$stage.PARAMETER().mode == 'admin' && id) {
+                        design.set('localImage', '/bims/v1/designs/' + id + '.orig');
+                    }
+                })
+                .seq(function(cb) {
                     if (self.$stage.PARAMETER().mode == "admin" && properties && properties.afterEffect && !configuration.$.afterEffect) {
                         var baseUrl = function(url) {
                             return self.$stage.baseUrl ? self.$stage.baseUrl.call(self, url) : url;
@@ -174,26 +181,12 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
                         afterEffect.set('initialized', true);
                         configuration.set('afterEffect', afterEffect);
-                    }
-                })
-                .seq('ctx', function(cb) {
-                    var afterEffect = configuration.$.afterEffect;
-                    var id = design ? design.$.wtfMbsId : null;
-
-                    if (!configuration.$.processedImage && self.$stage.PARAMETER().mode == 'admin' && afterEffect && id) {
-                        design.set('localImage', '/bims/v1/designs/' + id + '.orig');
-                        AfterEffectHelper.applyAfterEffect(configuration.$.design, configuration.$.afterEffect, null, cb);
+                        AfterEffectHelper.computeProcessedImageDebounced(design, afterEffect, null, cb);
                     } else {
                         cb();
                     }
                 })
                 .seq(function() {
-                    if (self.$stage.PARAMETER().mode == 'admin' && this.vars.ctx) {
-                        configuration.applyAfterEffect(this.vars.ctx);
-                    }
-                })
-                .seq(function() {
-
                     if (svg) {
                         var size = new Size({
                             width: 100,
