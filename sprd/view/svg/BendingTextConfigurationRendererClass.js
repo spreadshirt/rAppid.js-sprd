@@ -20,13 +20,18 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             this.bind("dom:add", this.recalculateSize, this);
 
             this.bind("configuration", "recalculateSize", this.recalculateSize, this);
+
             this.bind("configuration", "change:font", this.loadFont, this);
-            this.bind("productViewer.product", ["configurations", "reset"], function() {
+
+            var resetMainConfigurationViewer = function() {
                 var configuration = this.$.configuration;
                 if (configuration) {
                     configuration.mainConfigurationRenderer = null;
                 }
-            }, this);
+            };
+
+            this.bind("productViewer.product", ["configurations", "reset"], resetMainConfigurationViewer, this);
+            this.bind("configuration", "change:printArea", resetMainConfigurationViewer, this);
 
             var timer = null;
             this.bind("configuration", "change:angle", function() {
