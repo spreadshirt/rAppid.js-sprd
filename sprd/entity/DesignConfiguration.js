@@ -273,41 +273,29 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     this.$.tracking.trackMaskSaved(afterEffect);
                     flow()
                         .seq('ctx', function(cb) {
-                            if (afterEffect) {
-                                AfterEffectHelper.applyAfterEffect(design, afterEffect, {fullSize: true}, cb);
-                            } else {
-                                cb();
-                            }
+                            AfterEffectHelper.applyAfterEffect(design, afterEffect, {fullSize: true}, cb);
                         })
                         .seq('blob', function(cb) {
-                            if (afterEffect) {
-                                this.vars.ctx.canvas.toBlob(function(blob) {
-                                    cb(null, blob);
-                                }, "image/png");
-                            } else {
-                                cb();
-                            }
+                            this.vars.ctx.canvas.toBlob(function(blob) {
+                                cb(null, blob);
+                            }, "image/png");
                         })
                         .seq('uploadDesign', function(cb) {
-                            if (afterEffect) {
-                                var img = new BlobImage({
-                                    blob: this.vars.blob
-                                });
+                            var img = new BlobImage({
+                                blob: this.vars.blob
+                            });
 
-                                self.$.imageUploadService.upload(img, cb);
-                            } else {
-                                cb();
-                            }
+                            self.$.imageUploadService.upload(img, cb);
                         })
                         .seq(function() {
-                            if (afterEffect) {
-                                if (!self.$.originalDesign) {
-                                    self.set('originalDesign', design);
-                                }
 
-                                self.set('design', this.vars.uploadDesign.$.design);
-                                self.trigger('configurationChanged');
+                            if (!self.$.originalDesign) {
+                                self.set('originalDesign', design);
                             }
+
+                            self.set('design', this.vars.uploadDesign.$.design);
+                            self.trigger('configurationChanged');
+
                         })
                         .exec(callback);
                 }
