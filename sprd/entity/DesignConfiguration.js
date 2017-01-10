@@ -1,6 +1,6 @@
 define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
-        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sprd/helper/AfterEffectHelper"],
-    function(DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, AfterEffectHelper) {
+        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "designer/manager/TrackingManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sprd/helper/AfterEffectHelper"],
+    function(DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, TrackingManager, IImageUploadService, BlobImage, AfterEffectHelper) {
 
         return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
@@ -26,7 +26,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             inject: {
-                imageUploadService: IImageUploadService
+                imageUploadService: IImageUploadService,
+                tracking: TrackingManager
             },
 
             type: "design",
@@ -269,10 +270,11 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 if (!afterEffect) {
                     callback && callback();
                 } else {
+                    this.$.tracking.trackMaskSaved(afterEffect);
                     flow()
                         .seq('ctx', function(cb) {
                             if (afterEffect) {
-                                AfterEffectHelper.applyAfterEffect(afterEffect, {fullSize: true}, cb);
+                                AfterEffectHelper.applyAfterEffect(design, afterEffect, {fullSize: true}, cb);
                             } else {
                                 cb();
                             }
