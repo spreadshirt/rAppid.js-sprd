@@ -63,11 +63,18 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 if (!afterEffect) {
                     this.set('processedImage', null);
                 } else {
-                    AfterEffectHelper.computeProcessedImageDebounced(self.$.design, afterEffect, null, function(err, ctx) {
-                        self.applyAfterEffect(ctx);
+                    AfterEffectHelper.applyAfterEffect(self.$.design, afterEffect, null, function(err, ctx) {
+                        if (!err) {
+                            self.applyAfterEffect(ctx);
+                        } else {
+                            console.error(err);
+                        }
+
+                        afterEffect.callback && afterEffect.callback(err, ctx);
                     });
                 }
             },
+
 
             _setProcessedSize: function() {
                 var afterEffect = this.$.afterEffect;

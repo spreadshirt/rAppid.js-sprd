@@ -153,11 +153,11 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 .seq(function() {
                     var id = design ? design.$.wtfMbsId : null;
 
-                    if (self.$stage.PARAMETER().mode == 'admin' && id) {
+                    if (!design.get('localImage') && self.$stage.PARAMETER().mode == 'admin' && id) {
                         design.set('localImage', '/bims/v1/designs/' + id + '.orig');
                     }
                 })
-                .seq(function() {
+                .seq(function(cb) {
                     if (self.$stage.PARAMETER().mode == "admin" && properties && properties.afterEffect && !configuration.$.afterEffect) {
                         var baseUrl = function(url) {
                             return self.$stage.baseUrl ? self.$stage.baseUrl.call(self, url) : url;
@@ -180,7 +180,10 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         });
 
                         afterEffect.set('initialized', true);
+                        afterEffect.callback = cb;
                         configuration.set('afterEffect', afterEffect);
+                    } else {
+                        cb();
                     }
                 })
                 .seq(function() {
