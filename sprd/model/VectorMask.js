@@ -76,7 +76,7 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
             svg.documentElement.setAttribute('height', 100);
 
             //Setting preserveAspectRatio explicitely. FF defaults to something other than none.
-            svg.documentElement.setAttribute('preserveAspectRatio', this.$.fixedAspectRatio ? 'xMinYMin' : 'none');
+            svg.documentElement.setAttribute('preserveAspectRatio', 'none');
 
             this.changeColor(svg, '#00B2A5');
         },
