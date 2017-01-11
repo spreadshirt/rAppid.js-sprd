@@ -20,7 +20,7 @@ define(["sprd/model/VectorMask", "sprd/model/PixelMask", "underscore"], function
             //     fixedAspectRatio: false
             // }),
             new VectorMask({
-                name: "Triangle Rounded",
+                name: "Triangle",
                 src: baseUrl("sprd/img/masks/triangle_rounded_black.svg"),
                 id: 3,
                 fixedAspectRatio: false
@@ -56,7 +56,7 @@ define(["sprd/model/VectorMask", "sprd/model/PixelMask", "underscore"], function
                 fixedAspectRatio: false
             }),
             new VectorMask({
-                name: "It's complicated",
+                name: "Complicated",
                 src: baseUrl("sprd/img/masks/its_complicated_black.svg"),
                 id: 14,
                 fixedAspectRatio: false
@@ -68,7 +68,7 @@ define(["sprd/model/VectorMask", "sprd/model/PixelMask", "underscore"], function
                 fixedAspectRatio: false
             }),
             new VectorMask({
-                name: "Rounded Square",
+                name: "Square",
                 src: baseUrl("sprd/img/masks/roundedsquare_black.svg"),
                 id: 1,
                 fixedAspectRatio: false
@@ -80,7 +80,7 @@ define(["sprd/model/VectorMask", "sprd/model/PixelMask", "underscore"], function
                 fixedAspectRatio: false
             }),
             new PixelMask({
-                name: "Große Kreuz",
+                name: "Kreuz",
                 image: baseUrl("sprd/img/masks/grosses-kreuz.png"),
                 preview: baseUrl("sprd/img/masks/previews/cross.png"),
                 id: 15
@@ -98,13 +98,13 @@ define(["sprd/model/VectorMask", "sprd/model/PixelMask", "underscore"], function
                 id: 24
             }),
             new PixelMask({
-                name: "Harter Pinsel",
+                name: "Pinsel",
                 image: baseUrl("sprd/img/masks/harter-Pinsel.png"),
                 preview: baseUrl("sprd/img/masks/previews/brush_02.png"),
                 id: 18
             }),
             new PixelMask({
-                name: "Rand Getupft",
+                name: "Getupft",
                 image: baseUrl("sprd/img/masks/Rand-getupft.png"),
                 preview: baseUrl("sprd/img/masks/previews/sponge_01.png"),
                 id: 28
@@ -115,12 +115,12 @@ define(["sprd/model/VectorMask", "sprd/model/PixelMask", "underscore"], function
                 preview: baseUrl("sprd/img/masks/previews/butterfly_01.png"),
                 id: 25
             }),
-            new PixelMask({
-                name: "Schmetterlinge #2",
-                image: baseUrl("sprd/img/masks/schmetterlinge-gor.png"),
-                preview: baseUrl("sprd/img/masks/previews/butterfly_02.png"),
-                id: 26
-            }),
+            // new PixelMask({
+            //     name: "Schmetterlinge #2",
+            //     image: baseUrl("sprd/img/masks/schmetterlinge-gor.png"),
+            //     preview: baseUrl("sprd/img/masks/previews/butterfly_02.png"),
+            //     id: 26
+            // }),
             // new PixelMask({
             //     name: "Schwamm",
             //     image: baseUrl("sprd/img/masks/schwamm.png"),
@@ -139,23 +139,26 @@ define(["sprd/model/VectorMask", "sprd/model/PixelMask", "underscore"], function
                 id: 23
             }),
             new PixelMask({
-                name: "Wasser farbe",
+                name: "Wasser",
                 image: baseUrl("sprd/img/masks/wasserfarbe.png"),
                 preview: baseUrl("sprd/img/masks/previews/brush_01.png"),
                 id: 19
             }),
             new PixelMask({
-                name: "Winter is coming",
+                name: "Winter",
                 image: baseUrl("sprd/img/masks/winteriscoming.png"),
                 preview: baseUrl("sprd/img/masks/previews/winter.png"),
                 id: 27
             })
         ];
 
+        masks.nullMaskSrc = baseUrl("sprd/img/masks/X.svg");
+
         return {
             masks: _.sortBy(masks, function(mask) {
                 return mask.$.id;
-            })
+            }),
+            nullMask: baseUrl("sprd/img/masks/X.svg")
         }
     }
 });
