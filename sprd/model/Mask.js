@@ -56,9 +56,25 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             callback && callback(new Error("Not implemented"));
         },
 
-        centerAt: function(x, y) {
-            var newX = this.clamp(x - this.width() / 2, 0, this.$.maxOffset.$.x);
-            var newY = this.clamp(y - this.height() / 2, 0, this.$.maxOffset.$.y);
+        centerAt: function(x, y, options) {
+            var newX, newY;
+
+            options = options || {};
+
+            if (!this.$.destinationWidth || !this.$.destinationHeight) {
+                throw Error('Cannot center mask. No destination parameters set');
+            }
+
+            newX = x;
+            newY = y;
+
+            if (options.relative) {
+                newX = x * this.$.destinationWidth;
+                newY = y * this.$.destinationHeight;
+            }
+
+            newX = this.clamp(newX - this.width() / 2, 0, this.$.maxOffset.$.x);
+            newY = this.clamp(newY - this.height() / 2, 0, this.$.maxOffset.$.y);
 
             this.$.offset.set({
                 'x': Math.round(newX),
