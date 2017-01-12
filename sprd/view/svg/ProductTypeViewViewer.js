@@ -243,10 +243,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 var configView = dndObject.configurationViewer;
                 var product = dndObject.viewer.$.product;
 
-                if (hoverState == DROP_HOVERED.INVALID) {
-                    dndObject.config.set("printArea", null);
-                    productManager.moveConfigurationToView(product, dndObject.config, product.$.view);
-                } else if (viewer && dndObject.viewer !== viewer) {
+                if (viewer && dndObject.viewer !== viewer) {
                     e.stopPropagation && e.stopPropagation();
                     configView.$moving = false;
                     dndObject.dndImage.set('hoverState', DROP_HOVERED.NO);
@@ -264,8 +261,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     configView.enableMoveSnipping();
                 }
                 dndObject.dndImage.set({
-                    'visible': false,
-                    'hoverState': DROP_HOVERED.NO
+                    'visible': false
                 });
                 dndObject = null;
             }
