@@ -1050,9 +1050,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 flow()
                     .parEach(configurations.toArray(), function(config, cb) {
                         self.moveConfigurationToView(product, config, view, function(err, result) {
-                            if (err) {
-                                console.log(err);
-                            }
                             cb();
                         });
                     })
