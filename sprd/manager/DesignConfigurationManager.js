@@ -151,10 +151,11 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     configuration.set('printType', printType, {force: true});
                 })
                 .seq(function() {
-                    var id = design ? design.$.wtfMbsId : null;
-
-                    if (!design.get('localImage') && self.$stage.PARAMETER().mode == 'admin' && id && properties && properties.afterEffect) {
-                        design.set('localImage', '/bims/v1/designs/' + id + '.orig');
+                    if (self.$stage.PARAMETER().mode == 'admin' && design && !design.get('localImage') && properties && properties.afterEffect) {
+                        var id = design.$.wtfMbsId;
+                        if (id) {
+                            design.set('localImage', '/bims/v1/designs/' + id + '.orig');
+                        }
                     }
                 })
                 .seq(function(cb) {
