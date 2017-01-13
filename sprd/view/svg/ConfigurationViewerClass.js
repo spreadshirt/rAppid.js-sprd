@@ -19,8 +19,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             defaults: {
                 tagName: 'g',
-                componentClass: 'configuration-viewer printType-{configuration.printType.id}',
+                componentClass: 'configuration-viewer printType-{configuration.printType.id} type-{configuration.type}',
                 configuration: null,
+                "data-configuration-type": "{configuration.type}",
 
                 translateX: "{_offset.x}",
                 translateY: "{_offset.y}",
