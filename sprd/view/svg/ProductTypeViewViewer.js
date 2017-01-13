@@ -123,7 +123,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
         _handleOver: function(e) {
             var self = this;
             if (dndObject) {
-                var configViewer = dndObject.configurationViewer;
+                var configViewer = dndObject.configurationViewer,
+                    productManager = dndObject.viewer.get('product.manager');
 
                 if (configViewer && configViewer.$._mode == "move") {
                     if (dndObject && dndObject.dndImage) {
@@ -142,12 +143,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                         }
                         if (possiblePrintTypes.length) {
                             hovered = DROP_HOVERED.YES;
-                            var xScale = printArea.get("boundary.size.width") / configuration.get('_size.width'),
-                                yScale = printArea.get("boundary.size.height") / configuration.get('_size.height');
-                            var scale = {
-                                x: Math.min(xScale, yScale),
-                                y: Math.min(xScale, yScale)
-                            };
+
+                            var scale = productManager.getConfigurationPosition(configuration, printArea, possiblePrintTypes[0]).scale;
                             var validation = configuration._validatePrintTypeSize(possiblePrintTypes[0], configuration.get('size.width'), configuration.get('size.height'), scale);
                             if (validation.minBound || validation.dpiBound) {
                                 hovered = DROP_HOVERED.INVALID;

@@ -949,41 +949,30 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 return printType;
             },
 
-            _moveConfigurationToView: function(product, configuration, printType, printArea, callback) {
+            _moveConfigurationToView: function(product, configuration, printType, printArea) {
                 var self = this,
                     bus = this.$.bus;
 
-                flow()
-                    .seq(function() {
-                        product.$.configurations.remove(configuration);
-                        configuration.set({
-                            rotation: 0,
-                            scale: {x: 1, y: 1},
-                            printType: printType,
-                            printArea: printArea
-                        }, {silent: true});
-                        configuration.mainConfigurationRenderer = null;
-                    })
-                    .seq(function() {
-                        configuration.clearErrors();
-                        self._positionConfiguration(configuration);
-                    })
-                    .exec(function(err) {
-                        callback && callback(err);
+                if (!printType && !printArea) {
+                    printType = configuration.$.printType;
+                    printArea = configuration.$.printArea;
+                }
 
-                        if (!err) {
-                            product._addConfiguration(configuration);
-                            bus.trigger('Application.productChanged', null);
-                        } else {
-                            configuration.set({
-                                offset: configuration.$.offset.clone(),
-                                scale: configuration.$.scale
-                            });
-                            configuration.clearErrors();
-                        }
-                    })
+                product.$.configurations.remove(configuration);
+                configuration.set({
+                    rotation: 0,
+                    scale: {x: 1, y: 1},
+                    printType: printType,
+                    printArea: printArea
+                }, {silent: true});
+                configuration.mainConfigurationRenderer = null;
+
+                configuration.clearErrors();
+                self._positionConfiguration(configuration);
+
+                product._addConfiguration(configuration);
+                bus.trigger('Application.productChanged', null);
             },
-
 
             moveConfigurationToView: function(product, configuration, view, callback) {
 
@@ -1008,14 +997,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq(function() {
                         validations = self.validateConfigurationMove(printType, printArea, configuration);
                     })
-                    .exec(function(err, results) {
+                    .exec(function(err) {
                         if (!err) {
                             if (_.some(validations)) {
-                                self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea, function(err, result) {
-                                    callback && callback(err || new Error('Validation errors found. Configuration moved to old view'), result);
-                                });
+                                self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea);
+                                callback && callback(new Error('Validation errors found. Configuration moved to old view'));
                             } else {
-                                self._moveConfigurationToView(product, configuration, printType, printArea, callback);
+                                self._moveConfigurationToView(product, configuration, printType, printArea);
+                                callback && callback();
                             }
                         } else {
                             callback && callback(new Error('Something went wrong preparing the move of the configuration.'));
@@ -1024,13 +1013,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             },
 
             validateConfigurationMove: function(printType, printArea, configuration) {
-                var xScale = printArea.get("boundary.size.width") / configuration.get('_size.width'),
-                    yScale = printArea.get("boundary.size.height") / configuration.get('_size.height');
-                var scale = {
-                    x: Math.min(xScale, yScale),
-                    y: Math.min(xScale, yScale)
-                };
-
+                var scale = this.getConfigurationPosition(configuration, printArea, printType);
                 return configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), scale);
             },
 
@@ -1095,11 +1078,27 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 this.$.bus.trigger('Application.productChanged', null);
             },
 
-            _positionConfiguration: function(configuration) {
+            clamp: function(value, min, max) {
+                return Math.min(Math.max(value, min), max);
+            },
 
-                var printArea = configuration.$.printArea,
-                    printType = configuration.$.printType,
-                    printAreaWidth = printArea.get("boundary.size.width"),
+            centerAt: function(x, y, rect) {
+                return {
+                    x: x - rect.width / 2,
+                    y: y - rect.height / 2
+                }
+            },
+
+            _positionConfiguration: function(configuration) {
+                configuration.set(this.getConfigurationPosition(configuration));
+            },
+
+            getConfigurationPosition: function(configuration, printArea, printType) {
+
+                printArea = printArea || configuration.$.printArea;
+                printType = printType || configuration.$.printType;
+
+                var printAreaWidth = printArea.get("boundary.size.width"),
                     printAreaHeight = printArea.get("boundary.size.height"),
                     printTypeWidth = printType.get('size.width'),
                     printTypeHeight = printType.get('size.height'),
@@ -1117,20 +1116,20 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     offset = configuration.$.offset.clone(),
                     newScale;
 
-                boundingBox = configuration._getBoundingBox(null, null, null, null, null, false);
-
-                // position centered within defaultBox
+                boundingBox = configuration._getBoundingBox();
+                var centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
                 offset.set({
-                    x: defaultBoxCenterX - boundingBox.width / 2,
+                    x: centeredOffset.x,
                     y: defaultBox.y
-                }, PREVENT_VALIDATION_OPTIONS);
+                });
+
 
                 // scale to fit into default box
                 var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
-                var minimumScale;
+                var minimumDesignScale;
 
                 if (configuration instanceof DesignConfiguration && printType.isEnlargeable()) {
-                    minimumScale = (configuration.get("design.restrictions.minimumScale") || 100) / 100;
+                    minimumDesignScale = (configuration.get("design.restrictions.minimumScale") || 100) / 100;
                 }
 
                 var maxPrintTypeScale = maxWidth / boundingBox.width;
@@ -1139,76 +1138,62 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     maxPrintTypeScale = 1;
                 }
 
-                newScale = scaleToFitDefaultBox;
+                newScale = this.clamp(scaleToFitDefaultBox, minimumDesignScale || 0, maxPrintTypeScale);
 
-                if (minimumScale) {
-                    newScale = Math.max(scaleToFitDefaultBox, minimumScale);
-                }
-
-                newScale = Math.min(maxPrintTypeScale, newScale);
-
-                configuration.set("scale", {
-                    x: newScale,
-                    y: newScale
-                });
-
-                boundingBox = configuration._getBoundingBox();
+                boundingBox = configuration._getBoundingBox(offset, null, null, null, newScale);
+                centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
 
                 // position centered within defaultBox
-                offset.set({
-                    x: defaultBoxCenterX - boundingBox.width / 2,
-                    y: defaultBox.y
-                }, PREVENT_VALIDATION_OPTIONS);
+                offset.set('x', centeredOffset.x);
+
+                var maxScaleToAvoidCollision,
+                    maxScaleToFitPrintArea,
+                    maxScaleToFitDefaultBox;
 
                 if (offset.$.x < 0 || offset.$.x + boundingBox.width > maxWidth) {
-
                     // hard boundary error
                     var maxPossibleWidthToHardBoundary = Math.min(defaultBoxCenterX, maxWidth - defaultBoxCenterX) * 2;
 
                     // scale to avoid hard boundary error
-                    var scaleToAvoidCollision = maxPossibleWidthToHardBoundary / boundingBox.width;
-
-
+                    maxScaleToAvoidCollision = maxPossibleWidthToHardBoundary / boundingBox.width;
                 }
 
                 if (boundingBox.height > maxHeight) {
                     // y-scale needed to fit print area
 
                     // calculate maxScale to fix height
-                    var maxScaleToFitPrintArea = configuration.$.scale.y * maxHeight / boundingBox.height;
-                    var maxScaleToFitDefaultBox = configuration.$.scale.y * defaultBox.height / boundingBox.height;
+                    maxScaleToFitPrintArea = configuration.$.scale.y * maxHeight / boundingBox.height;
+                    maxScaleToFitDefaultBox = configuration.$.scale.y * defaultBox.height / boundingBox.height;
 
                     // TODO: try the two different scales, prefer defaultBox and fallback to printArea if size to small
                     newScale = maxScaleToFitPrintArea;
 
-                    configuration.set("scale", {
-                        x: newScale,
-                        y: newScale
-                    });
-
-                    boundingBox = configuration._getBoundingBox();
-
+                    boundingBox = configuration._getBoundingBox(offset, null, null, null, newScale);
+                    centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
                     // position centered within defaultBox
-                    offset.set({
-                        x: defaultBoxCenterX - boundingBox.width / 2,
-                        y: defaultBoxCenterY - boundingBox.height / 2
-                    }, PREVENT_VALIDATION_OPTIONS);
-
+                    offset.set(centeredOffset);
                 }
 
                 if (offset.$.y < 0 || offset.$.y + boundingBox.height > maxHeight) {
                     // hard boundary error
 
                     // center in print area
+
                     offset.set({
                         y: maxHeight / 2 - boundingBox.height / 2
                     });
                 }
 
-                configuration.set({
-                    offset: offset
-                }, PREVENT_VALIDATION_OPTIONS);
-
+                // configuration.set({
+                //     offset: offset
+                // }, PREVENT_VALIDATION_OPTIONS);
+                return {
+                    offset: offset,
+                    scale: {
+                        x: newScale,
+                        y: newScale
+                    }
+                }
             },
 
             convertTextToSpecialText: function(product, textConfiguration, params, callback) {
@@ -1365,11 +1350,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     return;
                 }
 
-                this._checkConfigurationOutsidePrintArea(product, configuration);
+                this._checkConfigurationOutsideSoftBoundedPrintArea(product, configuration);
 
             },
 
-            _checkConfigurationOutsidePrintArea: function(product, configuration) {
+            _checkConfigurationOutsideSoftBoundedPrintArea: function(product, configuration) {
 
                 if (!(product && configuration)) {
                     return;
@@ -1451,7 +1436,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (middlePoint.x < 0 || middlePoint.y < 0 || middlePoint.x > right || middlePoint.y > bottom) {
                     // outside the view
-                    product.$.configurations.remove(configuration);
+                    //product.$.configurations.remove(configuration);
+                    this._moveConfigurationToView(product, configuration);
                     return true;
                 }
 

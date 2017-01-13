@@ -270,8 +270,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         _getBoundingBox: function(offset, width, height, rotation, scale, onlyContent, xOffset) {
 
             offset = offset || this.$.offset;
-            width = width || this.width();
-            height = height || this.height();
+            width = width || this.width(scale);
+            height = height || this.height(scale);
             rotation = rotation || this.$.rotation;
 
             var x = offset.$.x,
