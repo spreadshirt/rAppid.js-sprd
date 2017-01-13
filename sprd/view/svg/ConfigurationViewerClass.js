@@ -68,7 +68,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _rotationRadius: null,
 
                 imageService: null,
-                preventValidation: false
+                preventValidation: true
             },
 
             inject: {
@@ -110,6 +110,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 transformations.unshift(transformations.removeAt(1));
 
                 this.callBase();
+
+                this.set("preventValidation", false);
+
             },
 
             id: function () {
@@ -317,14 +320,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (configuration) {
 
                     var self = this;
-                    this._debounceFunctionCall(function () {
-                        if (!self.$.preventValidation) {
-                            configuration._setError(configuration._validateTransform({
-                                offset: this.$._offset,
-                                scale: this.$._scale,
-                                rotation: this.$._rotation
-                            }));
-                        }
+
+                    !self.$.preventValidation && this._debounceFunctionCall(function() {
+                        configuration._setError(configuration._validateTransform({
+                            offset: this.$._offset,
+                            scale: this.$._scale,
+                            rotation: this.$._rotation
+                        }));
                     }, "transformationChanged");
                 }
             },

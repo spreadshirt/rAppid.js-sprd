@@ -1090,7 +1090,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             },
 
             _positionConfiguration: function(configuration) {
-                configuration.set(this.getConfigurationPosition(configuration));
+                configuration.set(this.getConfigurationPosition(configuration), PREVENT_VALIDATION_OPTIONS);
             },
 
             getConfigurationPosition: function(configuration, printArea, printType) {
