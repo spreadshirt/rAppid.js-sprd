@@ -5,9 +5,9 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Render
         defaults: {
             tagName: "g",
             maskId: null,
+            "data-mask-id": "{configuration.afterEffect.id}",
             isSpecialFlex: "{isSpecialFlex()}",
             largeSize: "{largeSize()}",
-
             filter: "{filter()}"
         },
 
