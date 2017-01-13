@@ -19,9 +19,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             defaults: {
                 tagName: 'g',
-                componentClass: 'configuration-viewer printType-{configuration.printType.id} type-{configuration.type}',
+                componentClass: 'configuration-viewer printType-{configuration.printType.id} type-{configurationType()}',
                 configuration: null,
-                "data-configuration-type": "{configuration.type}",
+                "data-configuration-type": "{configurationType()}",
 
                 translateX: "{_offset.x}",
                 translateY: "{_offset.y}",
@@ -101,6 +101,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
                 }, this);
             },
+
+            configurationType: function() {
+                var configuration = this.$.configuration;
+                return configuration ? configuration.type : "";
+            }.onChange("configuration"),
 
             _initializationComplete: function () {
 
