@@ -984,12 +984,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     })
             },
 
+
             moveConfigurationToView: function(product, configuration, view, callback) {
 
                 var self = this,
                     printArea,
                     printType,
-                    validation,
+                    validations,
                     printTypeId;
 
                 view = view || product.$.view || product.getDefaultView();
@@ -1005,11 +1006,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         printType.fetch(null, cb);
                     })
                     .seq(function() {
-                        validation = self.validateConfigurationMove(printType, printArea, configuration);
+                        validations = self.validateConfigurationMove(printType, printArea, configuration);
                     })
                     .exec(function(err, results) {
                         if (!err) {
-                            if (validation.dpiBound || validation.minBound) {
+                            if (_.some(validations)) {
                                 self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea, function(err, result) {
                                     callback && callback(err || new Error('Validation errors found. Configuration moved to old view'), result);
                                 });
