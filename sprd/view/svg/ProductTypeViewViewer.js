@@ -144,9 +144,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                         if (possiblePrintTypes.length) {
                             hovered = DROP_HOVERED.YES;
 
-                            var scale = productManager.getConfigurationPosition(configuration, printArea, possiblePrintTypes[0]).scale;
-                            var validation = configuration._validatePrintTypeSize(possiblePrintTypes[0], configuration.get('size.width'), configuration.get('size.height'), scale);
-                            if (validation.minBound || validation.dpiBound) {
+                            var validations = productManager.validateConfigurationMove(possiblePrintTypes[0], printArea, configuration);
+                            if (validations.minBound || validations.dpiBound) {
                                 hovered = DROP_HOVERED.INVALID;
                             }
                         } else {
