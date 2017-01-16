@@ -152,13 +152,14 @@ define(["sprd/model/VectorMask", "sprd/model/PixelMask", "underscore"], function
             })
         ];
 
-        masks.nullMaskSrc = baseUrl("sprd/img/masks/X.svg");
+        masks.nullMaskSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAChUlEQVR4Xu3ayU3DYBRF4WcqCw0wrIME6QQqIYhhDxQAJUAnbBmNLAhEGSDEb3EeOlmTX9f340Z2lCZ8oRpoUGkME4LA/gkEEQTWACyOCxEE1gAsjgsRBNYALI4LEQTWACyOCxEE1gAsjgsRBNYALI4LEQTWACyOCxEE1gAsjgsRBNYALI4LEQTWACyOCxEE1gAsjgsRBNYALI4LEQTWACyOCxEE1gAsjgsRBNYALI4LEQTWACyOCxEE1gAsDnsh1xc78fJ4G7ujh7Ters4PYms4Tjsv+SAuSFdcxHG0cRdvT5spKJdn42ia/YgYx9ZwlNxlynFMkOvTQbQbN19XmIHyjTE5dkRcChOkq2y2wD4ocxjtfbw+D1JWl7KL70O4IFkohTC6S2aD9EUphlEDZF2Ughh1QP6KUhSjFsiqKIUx6oH8hlIcoybIMpQm7iKie5j8fHFvbX+6U+bfZS1LP/+gN/WXNTHqLmRS/UKUuhj/E6TPE33yU/c6x/3Pj6zCKDVBFt1NdQgf3+R+vIqi1AP56dY28wvJdT5vEt5TC2SV54ziKHVAVsFYdvdV6OOrBshfMIqj8EHWwSiMwgbpg1EUhQuSgVEQhQky+yOHSPg6ZP7u6yi2h4cJd6qpRzBBukuc/AwoA2N2KW17Ett7U98Mp3ba6zAuSHdZ/lCuF65vTmiAvZCEC6x2hCAwMUEEgTUAi+NCBIE1AIvjQgSBNQCL40IEgTUAi+NCBIE1AIvjQgSBNQCL40IEgTUAi+NCBIE1AIvjQgSBNQCL40IEgTUAi+NCBIE1AIvjQgSBNQCL40IEgTUAi+NCBIE1AIvjQgSBNQCL40IEgTUAi+NCBIE1AIvzDg++XnTKuv6KAAAAAElFTkSuQmCC";
+
 
         return {
             masks: _.sortBy(masks, function(mask) {
                 return mask.$.id;
             }),
-            nullMask: baseUrl("sprd/img/masks/X.svg")
+            nullMask: masks.nullMaskSrc
         }
     }
 });
