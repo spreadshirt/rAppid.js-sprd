@@ -1,35 +1,14 @@
 define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/animFrame'], function(Size, Base, flow, animFrame) {
 
-        var processing = false;
-
         return {
             computeProcessedImageDebounced: function(design, afterEffect, options, callback) {
                 var self = this;
 
                 var computeHandler = function() {
-                    self.computeProcessedImage(design, afterEffect, options, callback);
+                    self.applyAfterEffect(design, afterEffect, options, callback);
                 };
 
-                if (!processing) {
-                    window.requestAnimFrame(computeHandler);
-                    processing = true;
-                } else {
-                    callback();
-                }
-
-            },
-
-            computeProcessedImage: function(design, afterEffect, options, callback) {
-                var self = this;
-
-                options = options || {};
-
-                if (afterEffect) {
-                    this.applyAfterEffect(design, afterEffect, options, function(err, ctx) {
-                        processing = false;
-                        callback(err, ctx);
-                    })
-                }
+                window.requestAnimFrame(computeHandler);
             },
 
             getProcessedSize: function(afterEffect, design) {
@@ -56,6 +35,10 @@ define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/animFrame']
 
             prepareForAfterEffect: function(design, afterEffect, options, callback) {
                 options = options || {};
+
+                if (!design || !afterEffect) {
+                    return callback && callback(new Error('No design or afterEffect supplied.'));
+                }
 
                 flow()
                     .seq('designImage', function(cb) {
