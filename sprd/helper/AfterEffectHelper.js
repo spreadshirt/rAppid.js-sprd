@@ -89,6 +89,9 @@ define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/animFrame']
                         ctx.canvas.height = img.naturalHeight * factor;
 
                     })
+                    .seq(function(cb) {
+                        afterEffect.initImage(null, cb);
+                    })
                     .seq(function() {
                         var ctx = this.vars.ctx;
                         afterEffect.set('destinationWidth', ctx.canvas.width);

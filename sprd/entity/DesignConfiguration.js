@@ -8,7 +8,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
                 _designCommission: "{design.price}",
                 _allowScale: "{design.restrictions.allowScale}",
-                _afterEffectApplied: false,
 
                 afterEffect: null,
 
@@ -91,7 +90,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             applyAfterEffect: function(ctx) {
                 this.setProcessedImage(ctx);
-                this.set('_afterEffectApplied', true);
                 this.trigger('configurationChanged');
             },
 

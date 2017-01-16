@@ -7,17 +7,18 @@ define(["sprd/model/Mask"], function(Mask) {
             preview: null
         },
 
-        initImage: function(callback) {
+        initImage: function(options, callback) {
+            options = options || {};
+
             if (!this.get('image')) {
                 callback && callback(null, null);
             }
 
-            if (this.get('htmlImage')) {
+            if (!options.force && this.get('htmlImage') && this.get('htmlImage').complete) {
                 callback && callback(null, this.get('htmlImage'));
             }
 
             var self = this;
-
             var img = new Image();
 
             img.onload = function() {

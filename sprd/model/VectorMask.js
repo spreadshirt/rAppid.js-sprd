@@ -2,49 +2,59 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
 
     return Mask.inherit("sketchomat.model.VectorMask", {
 
-            defaults: {
-                src: null,
-                data_uri: '{dataURI()}',
-                svg: null
-            },
+        defaults: {
+            src: null,
+            data_uri: '{dataURL()}',
+            svg: null,
+            fetched: false
+        },
 
-            initImage: function(callback) {
-                if (!this.url()) {
-                    return callback && callback(null, null);
-                }
+        ctor: function() {
+            var self = this;
+            self.callBase();
+            self.fetchSvg(self.url());
+        },
 
-                if (this.get('htmlImage')) {
-                    return callback && callback(null, this.get('htmlImage'));
-                }
+        initImage: function(options, callback) {
+            options = options || {};
 
-                var self = this;
+            if (!this.url()) {
+                return callback && callback(new Error('No src set for mask.'));
+            }
 
-                flow()
-                    .seq('data_uri', function(cb) {
-                        self.fetchSvg(self.url(), cb);
-                    })
-                    .seq('img', function(cb) {
-                        var img = new Image();
+            if (!options.force && this.get('htmlImage') && this.get('htmlImage').complete) {
+                return callback && callback(null, this.get('htmlImage'));
+            }
 
-                        img.onload = function() {
-                            self.set('htmlImage', img);
-                            cb && cb(null, img);
-                        };
+            var self = this;
 
-                        img.onerror = function(e) {
-                            cb && cb(e);
-                        };
+            flow()
+                .seq('data_uri', function(cb) {
+                    self.fetchSvg(self.url(), cb);
+                })
+                .seq('img', function(cb) {
+                    var img = new Image();
 
-                        img.src = this.vars.data_uri;
-                    })
-                    .exec(function(err, results) {
-                        callback && callback(err, results.img);
-                    });
-            },
+                    img.onload = function() {
+                        self.set('htmlImage', img);
+                        cb && cb(null, img);
+                    };
+
+                    img.onerror = function(e) {
+                        cb && cb(e);
+                    };
+
+                    img.src = this.vars.data_uri;
+                })
+                .exec(function(err, results) {
+                    callback && callback(err, results.img);
+                });
+        },
 
         fetchSvg: function(url, callback) {
-                var self = this;
-            rappid.ajax(url, null, function(err, xhr) {
+            var self = this;
+            if (!this.$.svg || !this.$.svg.rootElement) {
+                rappid.ajax(url, null, function(err, xhr) {
                     if (err) {
                         callback && callback(err, xhr);
                         return;
@@ -59,7 +69,10 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
                         callback && callback(new Error("Request was not successful for Vectormask with id " + self.$.id + " and name " + self.$.name), xhr);
                     }
                 });
-            },
+            } else {
+                callback && callback(null, self.get('data_uri'));
+            }
+        },
 
         svgTextToDataUri: function(svgText) {
             var utf8 = "data:image/svg+xml;utf8," + encodeURIComponent(svgText);
@@ -104,14 +117,13 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
             }
         },
 
-        dataURI: function() {
-            if (this.$.svg) {
+        dataURL: function() {
+            if (this.$.svg && this.$.svg.rootElement) {
                 var s = new XMLSerializer();
                 return this.svgTextToDataUri(s.serializeToString(this.$.svg)).utf8;
             }
 
             return null;
         }.onChange('svg')
-        }
-    );
+    });
 });

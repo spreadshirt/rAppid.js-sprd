@@ -16,7 +16,6 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             this.callBase();
             this.initDefaults();
             this.initBindings();
-            this.initImage();
         },
 
         initDefaults: function() {
@@ -52,7 +51,7 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             return Math.max(min, Math.min(max, value));
         },
 
-        initImage: function(callback) {
+        initImage: function(options, callback) {
             callback && callback(new Error("Not implemented"));
         },
 
@@ -84,7 +83,7 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
 
         height: function(scale) {
             var img = this.$.htmlImage;
-            if (img) {
+            if (img && img.naturalHeight) {
                 return (scale || this.get('scale.y')) * img.naturalHeight;
             }
 
@@ -93,7 +92,7 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
 
         width: function(scale) {
             var img = this.$.htmlImage;
-            if (img) {
+            if (img && img.complete) {
                 return (scale || this.get('scale.x')) * img.naturalWidth;
             }
 
@@ -216,7 +215,7 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
 
             flow()
                 .seq('maskimg', function(cb) {
-                    self.initImage(cb);
+                    self.initImage(null, cb);
                 })
                 .seq(function() {
                     self.combine(ctx, this.vars.maskimg, img, ctx.canvas.width, ctx.canvas.height, options);
