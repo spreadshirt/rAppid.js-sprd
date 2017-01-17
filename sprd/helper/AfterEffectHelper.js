@@ -23,14 +23,22 @@ define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/animFrame']
                 return null;
             },
 
-            trimAndExport: function(ctx, afterEffect) {
+            trimAndExport: function(ctx, afterEffect, options, callback) {
+                options = options || {};
                 var tempCanvas = document.createElement('canvas');
-                tempCanvas.width = afterEffect.width();
-                tempCanvas.height = afterEffect.height();
+                var factor = options.fullSize ? 1 / afterEffect.$.factor : 1;
+                tempCanvas.width = afterEffect.width() * factor;
+                tempCanvas.height = afterEffect.height() * factor;
 
                 var tempCtx = tempCanvas.getContext('2d');
-                tempCtx.drawImage(ctx.canvas, afterEffect.$.offset.$.x, afterEffect.$.offset.$.y, tempCanvas.width, tempCanvas.height, 0, 0, tempCanvas.width, tempCanvas.height);
-                return tempCtx.canvas.toDataURL();
+                tempCtx.drawImage(ctx.canvas, afterEffect.$.offset.$.x * factor, afterEffect.$.offset.$.y * factor, tempCanvas.width, tempCanvas.height, 0, 0, tempCanvas.width, tempCanvas.height);
+                if (options.blob) {
+                    tempCtx.canvas.toBlob(function(blob) {
+                        callback && callback(null, blob)
+                    }, "image/png")
+                } else {
+                    callback && callback(null, tempCtx.canvas.toDataURL());
+                }
             },
 
             prepareForAfterEffect: function(design, afterEffect, options, callback) {
@@ -67,7 +75,7 @@ define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/animFrame']
                         var ctx = this.vars.ctx;
 
                         var factor = options.fullSize ? 1 : afterEffect.canvasScalingFactor(img);
-
+                        afterEffect.set('factor', afterEffect.canvasScalingFactor(img));
                         ctx.canvas.width = img.naturalWidth * factor;
                         ctx.canvas.height = img.naturalHeight * factor;
 

@@ -229,7 +229,8 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             var oldCompositionOperation = ctx.globalCompositeOperation;
 
-            ctx.drawImage(mask, this.$.offset.$.x, this.$.offset.$.y, this.width(), this.height());
+            var factor = options.fullSize ? 1 / this.canvasScalingFactor(img) : 1;
+            ctx.drawImage(mask, this.$.offset.$.x * factor, this.$.offset.$.y * factor, this.width() * factor, this.height() * factor);
             ctx.globalCompositeOperation = 'source-in';
             ctx.drawImage(img, 0, 0, width, height);
 

@@ -103,8 +103,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 var cacheId = [self.$.design.$.id, self.$.afterEffect.id()].join('#');
                 self.synchronizeFunctionCall.call(self, function(cb) {
                     flow()
-                        .seq('img', function() {
-                            return AfterEffectHelper.trimAndExport(ctx, self.$.afterEffect);
+                        .seq('img', function(cb) {
+                            AfterEffectHelper.trimAndExport(ctx, self.$.afterEffect, null, cb);
                         })
                         .exec(function(err, result) {
                             cb(err, result.img);
@@ -168,10 +168,13 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return this.getSizeForPrintType(this.$.printType);
             }.onChange("_dpi", "design").on("change:processedSize"),
 
-            getSizeForPrintType: function(printType) {
+            getSizeForPrintType: function(printType, options) {
+                options = options || {};
+
                 if (this.$.design && this.$.design.$.size && printType && printType.$.dpi) {
                     var dpi = printType.$.dpi;
-                    return UnitUtil.convertSizeToMm(this.$.processedSize || this.$.design.$.size, dpi);
+                    var size = options.original ? this.$.design.$.size : this.$.processedSize || this.$.design.$.size;
+                    return UnitUtil.convertSizeToMm(size, dpi);
                 }
 
                 return Size.empty;
@@ -241,7 +244,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 var properties = this.get('properties');
 
                 if (afterEffect) {
-                    properties.afterEffect = afterEffect.compose();
+                    properties.afterEffect = _.extend(properties.afterEffect || {}, afterEffect.compose());
                     properties.type = 'afterEffect';
                 }
             },
@@ -252,11 +255,16 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
                 if (originalDesign) {
                     //Mask is already applied and processedImage uploaded
-                    properties.originalDesign = {
+                    properties.afterEffect = properties.afterEffect || {};
+                    properties.afterEffect.originalDesign = {
                         id: originalDesign.get('wtfMbsId'),
                         href: "/" + originalDesign.get("id")
                     };
                 }
+            },
+
+            originalSize: function() {
+                return this.getSizeForPrintType(this.$.printType, {original: true});
             },
 
             compose: function() {
@@ -264,6 +272,11 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this._setAfterEffectProperties();
                 this._setOriginalDesignProperties();
                 ret.properties = this.$.properties;
+
+                if (this.$.processedSize && this.$stage.PARAMETER().mode != "admin") {
+                    ret.content.svg.image.width = this.originalSize().$.width;
+                    ret.content.svg.image.height = this.originalSize().$.height;
+                }
                 return ret;
             },
 
@@ -281,26 +294,27 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                             AfterEffectHelper.applyAfterEffect(design, afterEffect, {fullSize: true}, cb);
                         })
                         .seq('blob', function(cb) {
-                            this.vars.ctx.canvas.toBlob(function(blob) {
-                                cb(null, blob);
-                            }, "image/png");
+                            AfterEffectHelper.trimAndExport(this.vars.ctx, afterEffect, {
+                                blob: true,
+                                fullSize: true
+                            }, cb);
                         })
                         .seq('uploadDesign', function(cb) {
                             var img = new BlobImage({
-                                blob: this.vars.blob
+                                blob: this.vars.blob,
+                                height: self.size().$.height,
+                                width: self.size().$.width
                             });
 
                             self.$.imageUploadService.upload(img, cb);
                         })
                         .seq(function() {
-
-                            if (!self.$.originalDesign) {
-                                self.set('originalDesign', design);
-                            }
-
+                            self.set('originalDesign', design);
+                            self._setAfterEffectProperties();
+                            self._setOriginalDesignProperties();
                             self.set('design', this.vars.uploadDesign.$.design);
+                            self.set('afterEffect', null);
                             self.trigger('configurationChanged');
-
                         })
                         .exec(callback);
                 }

@@ -24,11 +24,12 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
             }
 
-            if (self.$stage.PARAMETER().mode == "admin" && properties.type == 'afterEffect' && properties.afterEffect && properties.originalDesign) {
-                designId = properties.originalDesign.href.split("/").pop();
+            if (self.$stage.PARAMETER().mode == "admin" && properties.type == 'afterEffect' && properties.afterEffect && properties.afterEffect.originalDesign) {
+                var originalDesign = properties.afterEffect.originalDesign;
+                designId = originalDesign.href.split("/").pop();
                 if (designId != design.$.id) {
                     design = configuration.$context.$contextModel.$context.createEntity(Design, designId);
-                    design.set('wtfMbsId', properties.originalDesign.id);
+                    design.set('wtfMbsId', originalDesign.id);
                 }
             }
 
