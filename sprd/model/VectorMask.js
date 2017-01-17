@@ -118,7 +118,7 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
         },
 
         dataURL: function() {
-            if (this.$.svg && this.$.svg.rootElement) {
+            if (this.$.svg && this.$.svg.documentElement) {
                 var s = new XMLSerializer();
                 return this.svgTextToDataUri(s.serializeToString(this.$.svg)).utf8;
             }
