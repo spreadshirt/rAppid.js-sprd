@@ -1013,7 +1013,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             },
 
             validateConfigurationMove: function(printType, printArea, configuration) {
-                var scale = this.getConfigurationPosition(configuration, printArea, printType);
+                var scale = this.getConfigurationPosition(configuration, printArea, printType).scale;
                 return configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), scale);
             },
 
