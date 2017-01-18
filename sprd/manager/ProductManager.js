@@ -1,5 +1,5 @@
-define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "js/core/List"],
-    function(IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, List) {
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List"],
+    function(IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
@@ -1095,6 +1095,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             getConfigurationPosition: function(configuration, printArea, printType) {
 
+                if (!configuration) {
+                    throw new Error('No configuration argument.');
+                }
+
                 printArea = printArea || configuration.$.printArea;
                 printType = printType || configuration.$.printType;
 
@@ -1114,7 +1118,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     defaultBoxCenterX = defaultBox.x + defaultBox.width / 2,
                     defaultBoxCenterY = defaultBox.y + defaultBox.height / 2,
                     offset = configuration.$.offset.clone(),
-                    newScale;
+                    scale = Math.min(configuration.$.scale.x, configuration.$.scale.y);
 
                 boundingBox = configuration._getBoundingBox();
                 var centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
@@ -1130,17 +1134,19 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (configuration instanceof DesignConfiguration && printType.isEnlargeable()) {
                     minimumDesignScale = (configuration.get("design.restrictions.minimumScale") || 100) / 100;
+                } else if (configuration instanceof TextConfiguration && printType.isEnlargeable()) {
+                    minimumDesignScale = configuration._getMinimalScale(printType);
                 }
 
                 var maxPrintTypeScale = maxWidth / boundingBox.width;
 
-                if (configuration instanceof DesignConfiguration && !configuration.$.design.isVectorDesign()) {
+                if (configuration instanceof SpecialTextConfiguration || (configuration instanceof DesignConfiguration && !configuration.$.design.isVectorDesign())) {
                     maxPrintTypeScale = 1;
                 }
 
                 newScale = this.clamp(scaleToFitDefaultBox, minimumDesignScale || 0, maxPrintTypeScale);
 
-                boundingBox = configuration._getBoundingBox(offset, null, null, null, newScale);
+                boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                 centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
 
                 // position centered within defaultBox
@@ -1166,9 +1172,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     maxScaleToFitDefaultBox = configuration.$.scale.y * defaultBox.height / boundingBox.height;
 
                     // TODO: try the two different scales, prefer defaultBox and fallback to printArea if size to small
-                    newScale = maxScaleToFitPrintArea;
+                    scale = maxScaleToFitPrintArea;
 
-                    boundingBox = configuration._getBoundingBox(offset, null, null, null, newScale);
+                    boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                     centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
                     // position centered within defaultBox
                     offset.set(centeredOffset);
@@ -1190,8 +1196,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 return {
                     offset: offset,
                     scale: {
-                        x: newScale,
-                        y: newScale
+                        x: scale,
+                        y: scale
                     }
                 }
             },
