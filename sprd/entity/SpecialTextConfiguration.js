@@ -402,8 +402,6 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
 
             if (design) {
                 return this.callBase();
-            } else {
-
             }
 
             ret.minBound = !printType.isShrinkable();
@@ -411,11 +409,6 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
 
             return ret;
 
-        },
-        clone: function () {
-            var ret = this.callBase();
-
-            return ret;
         }
     });
 })
