@@ -1,4 +1,4 @@
-define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/lib/Text2Path", "sprd/entity/BlobImage", "sprd/data/IImageUploadService"], function(DesignConfigurationBase, Size, Font, ProductUtil, Text2Path, BlobImage, IImageUploadService) {
+define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/lib/Text2Path", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", "underscore"], function(DesignConfigurationBase, Size, Font, ProductUtil, Text2Path, BlobImage, IImageUploadService, flow, _) {
     var PATH_TYPE = {
         OUTER_CIRCLE: "outer_circle",
         INNER_CIRCLE: "inner_circle",
@@ -228,7 +228,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                     .seq('svg', function(cb) {
                         Text2Path(text.$el, fontSVGUrl, {
                             fill: fill,
-                            width: Math.round((self.width() * self.$.printType.$.dpi / 25.4) + 50, 0) + "px"
+                            width: Math.round((self.width() * self.$.printType.$.dpi / 25.4) + 50, 0)
                         }, cb);
                     })
                     .seq("blob", function(cb) {
@@ -237,14 +237,18 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                         if (digitalPrint) {
                             var image = new Image();
                             image.onload = function() {
-                                var canvas = document.createElement("canvas");
-                                canvas.width = image.naturalWidth;
-                                canvas.height = image.naturalHeight;
-                                canvas.getContext('2d').drawImage(image, 0, 0);
+                                try {
+                                    var canvas = document.createElement("canvas");
+                                    canvas.width = image.naturalWidth;
+                                    canvas.height = image.naturalHeight;
+                                    canvas.getContext('2d').drawImage(image, 0, 0);
 
-                                canvas.toBlob(function(blob) {
-                                    cb(null, blob);
-                                }, "image/png");
+                                    canvas.toBlob(function(blob) {
+                                        cb(null, blob);
+                                    }, "image/png");
+                                } catch (e) {
+                                    cb(e);
+                                }
                             };
 
                             image.onerror = cb;

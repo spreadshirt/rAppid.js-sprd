@@ -15,171 +15,177 @@ define([], function() {
         loadFont(svgFont, function(err, font) {
 
             if (err) {
-                console.error(err);
-                return;
+                return callback && callback(err);
             }
 
-            var svg = document.createElementNS(svgNamespace, "svg");
-            svg.setAttribute("viewBox", "0 0 100 100");
 
-            if (options.fill) {
-                svg.setAttribute("fill", options.fill);
-            }
+            try {
+                var svg = document.createElementNS(svgNamespace, "svg");
+                svg.setAttribute("viewBox", "0 0 100 100");
 
-            svg.setAttribute("style", "opacity: 0; position: fixed; width: 1000px; height: 1000px; left: 0; top: 0; z-index: 999; pointer-events: none");
-
-            var body = document.body || document.getElementsByTagName("body")[0];
-            body.appendChild(svg);
-
-            var clone = textNode.cloneNode(true);
-            svg.appendChild(clone);
-
-
-            clone.setAttribute("fill", "blue");
-
-            var text = textNode.textContent,
-                x = 0,
-                i,
-                chars = (text || "").replace(/^\s+|\s+$/g, "");
-
-            var textPath;
-
-            for (i = 0; i < clone.childNodes.length; i++) {
-                if (clone.childNodes[i].localName == 'textPath') {
-                    textPath = clone.childNodes[i];
-                }
-            }
-
-            if (!textPath) {
-                callback && callback("textPath not found");
-                return;
-            }
-
-            textPath.textContent = "";
-
-            for (i = 0; i < chars.length; i++) {
-                if (chars[i] == " ") {
-                    textPath.appendChild(document.createTextNode(" "));
-                } else {
-                    var tSpan = document.createElementNS(svgNamespace, "tspan");
-                    tSpan.textContent = chars[i];
-                    textPath.appendChild(tSpan);
+                if (options.fill) {
+                    svg.setAttribute("fill", options.fill);
                 }
 
+                svg.setAttribute("style", "opacity: 0; position: fixed; width: 1000px; height: 1000px; left: 0; top: 0; z-index: 999; pointer-events: none");
 
-            }
+                var body = document.body || document.getElementsByTagName("body")[0];
+                body.appendChild(svg);
 
-            var number = 1;
-
-            var unitsPerEm = xpath("//svg:font-face/@units-per-em", number) || 1000,
-                defaultHorizontAdvX = xpath("//svg:font/@horiz-adv-x", number) || unitsPerEm,
-                ascent = xpath("//svg:font-face/@ascent", number) || 0,
-                descent = xpath("//svg:font-face/@descent", number) || 0,
-                missingGlyphHorizontAdvX = xpath("//svg:missing-glyph/@horiz-adv-x", number) || 0,
-                scale = parseInt(textNode.getAttribute("font-size") || 16) / unitsPerEm;
-
-            var group = document.createElementNS(svgNamespace, "g");
-            svg.appendChild(group);
-
-            for (i = 0; i < chars.length; i++) {
-
-                var char = chars[i],
-                    glyph = (char != "'" ? xpath("//svg:glyph[@unicode='" + char + "']")[0] : null ) ||
-                        xpath("//svg:glyph[@unicode='&#x" + chars.charCodeAt(i).toString(16) + "']")[0];
+                var clone = textNode.cloneNode(true);
+                svg.appendChild(clone);
 
 
-                if (!glyph) {
-                    x += missingGlyphHorizontAdvX;
-                    continue;
+                clone.setAttribute("fill", "blue");
+
+                var text = textNode.textContent,
+                    x = 0,
+                    i,
+                    chars = (text || "").replace(/^\s+|\s+$/g, "");
+
+                var textPath;
+
+                for (i = 0; i < clone.childNodes.length; i++) {
+                    if (clone.childNodes[i].localName == 'textPath') {
+                        textPath = clone.childNodes[i];
+                    }
                 }
 
-                var d = glyph.getAttribute("d");
+                if (!textPath) {
+                    callback && callback("textPath not found");
+                    return;
+                }
 
-                if (d) {
-                    var path = document.createElementNS(svgNamespace, "path");
-                    var g = document.createElementNS(svgNamespace, "g");
-                    var r = document.createElementNS(svgNamespace, "rect");
-                    path.setAttribute("d", d);
+                textPath.textContent = "";
 
-
-                    var span = document.createElementNS(svgNamespace, "tspan");
-                    var test = document.createElementNS(svgNamespace, "text");
-                    span.textContent = chars[i];
-                    svg.appendChild(test);
-                    test.setAttribute("font-family", textNode.getAttribute("font-family"));
-                    test.setAttribute("font-size", textNode.getAttribute("font-size"));
-                    test.appendChild(span);
-                    var spanTest = span.getExtentOfChar(0);
-
-                    var width = glyph.getAttribute("horiz-adv-x") || defaultHorizontAdvX;
-                    r.setAttribute("width", spanTest.width / scale);
-                    r.setAttribute("height", spanTest.height / scale);
-
-                    svg.removeChild(test);
-
-                    var tspan = textPath.childNodes[i];
-
-                    var rotationOfChar = tspan.getRotationOfChar(0);
+                for (i = 0; i < chars.length; i++) {
+                    if (chars[i] == " ") {
+                        textPath.appendChild(document.createTextNode(" "));
+                    } else {
+                        var tSpan = document.createElementNS(svgNamespace, "tspan");
+                        tSpan.textContent = chars[i];
+                        textPath.appendChild(tSpan);
+                    }
 
 
-                    var s = "scale(" + scale + ") rotate(" + rotationOfChar + ")";
+                }
 
-                    g.setAttribute("transform", s);
+                var number = 1;
 
-                    var transform = "translate(0," + (ascent - descent) + ") scale(1,-1) ";
-                    path.setAttribute("transform", transform);
-                    g.appendChild(path);
-                    g.appendChild(r);
+                var unitsPerEm = xpath("//svg:font-face/@units-per-em", number) || 1000,
+                    defaultHorizontAdvX = xpath("//svg:font/@horiz-adv-x", number) || unitsPerEm,
+                    ascent = xpath("//svg:font-face/@ascent", number) || 0,
+                    descent = xpath("//svg:font-face/@descent", number) || 0,
+                    missingGlyphHorizontAdvX = xpath("//svg:missing-glyph/@horiz-adv-x", number) || 0,
+                    scale = parseInt(textNode.getAttribute("font-size") || 16) / unitsPerEm;
 
-                    group.appendChild(g);
-                    r.setAttribute("style", "fill: red; opacity: 0.5");
-                    g.setAttribute("width", width);
+                var group = document.createElementNS(svgNamespace, "g");
+                svg.appendChild(group);
 
-                    if (tspan.getNumberOfChars() <= 0) {
+                for (i = 0; i < chars.length; i++) {
+
+                    var char = chars[i],
+                        glyph = (char != "'" ? xpath("//svg:glyph[@unicode='" + char + "']")[0] : null ) ||
+                            xpath("//svg:glyph[@unicode='&#x" + chars.charCodeAt(i).toString(16) + "']")[0];
+
+
+                    if (!glyph) {
+                        x += missingGlyphHorizontAdvX;
                         continue;
                     }
 
-                    var box = tspan.getExtentOfChar(0);
-                    var rect = r.getBoundingClientRect();
+                    var d = glyph.getAttribute("d");
 
-                    var xOffset = box.x - (rect.left / 10);
-                    var yOffset = box.y - (rect.top / 10);
+                    if (d) {
+                        var path = document.createElementNS(svgNamespace, "path");
+                        var g = document.createElementNS(svgNamespace, "g");
+                        var r = document.createElementNS(svgNamespace, "rect");
+                        path.setAttribute("d", d);
 
-                    transform = "translate(" + xOffset + "," + yOffset + ") " + s;
-                    g.setAttribute("transform", transform);
 
-                    if (!rotationOfChar && Math.abs(xOffset) < 1 && Math.abs(yOffset) < 1) {
-                        //char is not visible on path
-                        group.removeChild(g);
-                        continue;
-                    }
+                        var span = document.createElementNS(svgNamespace, "tspan");
+                        var test = document.createElementNS(svgNamespace, "text");
+                        span.textContent = chars[i];
+                        svg.appendChild(test);
+                        test.setAttribute("font-family", textNode.getAttribute("font-family"));
+                        test.setAttribute("font-size", textNode.getAttribute("font-size"));
+                        test.appendChild(span);
+                        var spanTest = span.getExtentOfChar(0);
 
-                    if (descent) {
-                        transform = "translate(0," + ascent + ") scale(1,-1) ";
+                        var width = glyph.getAttribute("horiz-adv-x") || defaultHorizontAdvX;
+                        r.setAttribute("width", spanTest.width / scale);
+                        r.setAttribute("height", spanTest.height / scale);
+
+                        svg.removeChild(test);
+
+                        var tspan = textPath.childNodes[i];
+
+                        var rotationOfChar = tspan.getRotationOfChar(0);
+
+
+                        var s = "scale(" + scale + ") rotate(" + rotationOfChar + ")";
+
+                        g.setAttribute("transform", s);
+
+                        var transform = "translate(0," + (ascent - descent) + ") scale(1,-1) ";
                         path.setAttribute("transform", transform);
+                        g.appendChild(path);
+                        g.appendChild(r);
+
+                        group.appendChild(g);
+                        r.setAttribute("style", "fill: red; opacity: 0.5");
+                        g.setAttribute("width", width);
+
+                        if (tspan.getNumberOfChars() <= 0) {
+                            continue;
+                        }
+
+                        var box = tspan.getExtentOfChar(0);
+                        var rect = r.getBoundingClientRect();
+
+                        var xOffset = box.x - (rect.left / 10);
+                        var yOffset = box.y - (rect.top / 10);
+
+                        transform = "translate(" + xOffset + "," + yOffset + ") " + s;
+                        g.setAttribute("transform", transform);
+
+                        if (!rotationOfChar && Math.abs(xOffset) < 1 && Math.abs(yOffset) < 1) {
+                            //char is not visible on path
+                            group.removeChild(g);
+                            continue;
+                        }
+
+                        if (descent) {
+                            transform = "translate(0," + ascent + ") scale(1,-1) ";
+                            path.setAttribute("transform", transform);
+                        }
+
+                        g.removeChild(r);
                     }
 
-                    g.removeChild(r);
+                    x += parseInt(glyph.getAttribute("horiz-adv-x") || defaultHorizontAdvX);
+
                 }
 
-                x += parseInt(glyph.getAttribute("horiz-adv-x") || defaultHorizontAdvX);
+                svg.removeChild(clone);
+                var bBox = group.getBBox();
 
+                var w = (bBox.width + bBox.x);
+                var h = (bBox.height + bBox.y);
+                svg.setAttribute("viewBox", [0, 0, w, h].join(" "));
+                if (options.width) {
+                    svg.setAttribute("width", options.width + "px");
+                    svg.setAttribute("height", (parseInt(options.width * h / w) + 1) + "px");
+                }
+                svg.removeAttribute("style");
+
+                body.removeChild(svg);
+
+                svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+                callback && callback(null, svg.outerHTML);
+            } catch (e) {
+                callback && callback(e);
             }
-
-            svg.removeChild(clone);
-            var bBox = group.getBBox();
-
-            svg.setAttribute("viewBox", [0, 0, bBox.width + bBox.x, bBox.height + bBox.y].join(" "));
-            if (options.width) {
-                svg.setAttribute("width", options.width);
-            }
-            svg.removeAttribute("style");
-
-            body.removeChild(svg);
-
-            svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-            callback && callback(false, svg.outerHTML);
-
 
             function xpath (expression, type) {
                 var xpathMap = {
@@ -218,7 +224,6 @@ define([], function() {
 
 
             }
-
 
         });
 
