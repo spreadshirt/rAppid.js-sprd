@@ -1,6 +1,6 @@
 define(["sprd/data/SprdModel", "underscore"], function (Model, _) {
 
-    var dotCurrencyCodes = ['USD', 'GBP', 'AUD'];
+    var dotCurrencyCodes = ['USD', 'GBP', 'AUD', 'CAD'];
 
     return Model.inherit('sprd.model.Currency', {
 
