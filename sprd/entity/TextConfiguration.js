@@ -199,9 +199,21 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     return ret;
                 }
 
-                var fontToSmall = false;
+                ret.minBound = this._isScaleTooSmall(printType, scale);
 
-                var textFlow = this.$.textFlow;
+                return ret;
+
+            },
+
+            _isScaleTooSmall: function(printType, scale) {
+                return this._getMinimalScales(printType, function(minScale) {
+                        return scale.x < minScale;
+                    }).length > 0;
+            },
+
+            _getMinimalScales: function(printType, predicate) {
+                var textFlow = this.$.textFlow,
+                    minimalScales = [];
 
                 if (textFlow && !printType.isShrinkable()) {
 
@@ -210,21 +222,25 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         var style = leaf.get("style");
 
                         if (style && style.$.fontSize && style.$.font) {
-                            var fontSize = (style.$.fontSize || 0) * scale.x;
-                            if (fontSize < style.$.font.$.minimalSize) {
-                                fontToSmall = true;
-                                break;
+                            var minimalScale = style.$.font.$.minimalSize / style.$.fontSize;
+                            if (predicate) {
+                                if (predicate(minimalScale)) {
+                                    minimalScales.push(minimalScale);
+                                    break;
+                                }
+                            } else {
+                                minimalScales.push(minimalScale);
                             }
                         }
 
                     } while ((leaf = leaf.getNextLeaf(textFlow)));
-
                 }
 
-                ret.minBound = fontToSmall;
+                return minimalScales;
+            },
 
-                return ret;
-
+            _getMinimalScale: function(printType) {
+                return Math.max.apply(null, this._getMinimalScales(printType));
             },
 
             _getBoundingBox: function (offset, width, height, rotation, scale, onlyContent) {
