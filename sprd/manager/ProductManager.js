@@ -1015,7 +1015,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             validateMove: function(printTypes, printArea, configuration) {
                 var validationsForTypes = this.validateConfigurationMoveList(printTypes, printArea, configuration);
                 return _.some(validationsForTypes, function(validations) {
-                    return !_.every(validations, function(validation) {
+                    return _.every(validations, function(validation) {
                         return !validation;
                     });
                 });
