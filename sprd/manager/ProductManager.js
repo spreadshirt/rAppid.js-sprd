@@ -1012,6 +1012,24 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     });
             },
 
+            validateMove: function(printTypes, printArea, configuration) {
+                var validationsForTypes = this.validateConfigurationMoveList(printTypes, printArea, configuration);
+                return _.some(validationsForTypes, function(validations) {
+                    return !_.every(validations, function(validation) {
+                        return !validation;
+                    });
+                });
+            },
+
+            validateConfigurationMoveList: function(printTypes, printArea, configuration) {
+                var ret = [];
+                for (var i = 0; i < printTypes.length; i++) {
+                    ret.push(this.validateConfigurationMove(printTypes[i], printArea, configuration));
+                }
+
+                return ret;
+            },
+
             validateConfigurationMove: function(printType, printArea, configuration) {
                 var scale = this.getConfigurationPosition(configuration, printArea, printType).scale;
                 return configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), scale);
@@ -1079,6 +1097,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             },
 
             clamp: function(value, min, max) {
+
+                if (min > max) {
+                    throw new Error('Min is bigger than max.');
+                }
+
                 return Math.min(Math.max(value, min), max);
             },
 
@@ -1144,7 +1167,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     maxPrintTypeScale = 1;
                 }
 
-                newScale = this.clamp(scaleToFitDefaultBox, minimumDesignScale || 0, maxPrintTypeScale);
+                scale = this.clamp(scaleToFitDefaultBox, minimumDesignScale || 0, maxPrintTypeScale);
 
                 boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                 centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
