@@ -9,7 +9,8 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 printArea,
                 properties = configuration.$.properties,
                 self = this,
-                design = configuration.$.design;
+                design = configuration.$.design,
+                parameter = self.$stage.PARAMETER();
 
             if (svg) {
                 var designId;
@@ -24,7 +25,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
             }
 
-            if (self.$stage.PARAMETER().mode == "admin" && properties.type == 'afterEffect' && properties.afterEffect && properties.afterEffect.originalDesign) {
+            if (parameter.mode == "admin" && properties.type == 'afterEffect' && properties.afterEffect && properties.afterEffect.originalDesign) {
                 var originalDesign = properties.afterEffect.originalDesign;
                 designId = originalDesign.href.split("/").pop();
                 if (designId != design.$.id) {
@@ -152,15 +153,15 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     configuration.set('printType', printType, {force: true});
                 })
                 .seq(function() {
-                    if (self.$stage.PARAMETER().mode == 'admin' && design && !design.get('localImage') && properties && properties.afterEffect) {
+                    if (parameter.mode == 'admin' && design && !design.get('localImage') && properties && properties.afterEffect) {
                         var id = design.$.wtfMbsId;
                         if (id) {
-                            design.set('localImage', '/bims/v1/designs/' + id + '.orig');
+                            design.set('localImage', self.getBimsUrl(parameter) + '/designs/' + id + '.orig');
                         }
                     }
                 })
                 .seq(function(cb) {
-                    if (self.$stage.PARAMETER().mode == "admin" && properties && properties.afterEffect && !configuration.$.afterEffect) {
+                    if (parameter.mode == "admin" && properties && properties.afterEffect && !configuration.$.afterEffect) {
                         var baseUrl = function(url) {
                             return self.$stage.baseUrl ? self.$stage.baseUrl.call(self, url) : url;
                         };
@@ -237,6 +238,11 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     }
                 })
                 .exec(callback);
+        },
+
+        getBimsUrl: function(parameter) {
+            return parameter.imageServiceEndPoint.replace('image.', 'backend.').replace('media', '').replace('image-server', 'bims')
         }
+
     });
 });

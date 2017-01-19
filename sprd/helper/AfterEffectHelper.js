@@ -52,6 +52,7 @@ define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/animFrame']
                     .seq('designImage', function(cb) {
                         if (!design.$.localHtmlImage) {
                             var originalImage = new Image();
+                            originalImage.crossOrigin = "Anonymous";
                             originalImage.src = design.$.localImage;
                             originalImage.onerror = cb;
                             originalImage.onload = function() {
@@ -78,7 +79,6 @@ define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/animFrame']
                         afterEffect.set('factor', afterEffect.canvasScalingFactor(img));
                         ctx.canvas.width = img.naturalWidth * factor;
                         ctx.canvas.height = img.naturalHeight * factor;
-
                     })
                     .seq(function(cb) {
                         afterEffect.initImage(null, cb);
