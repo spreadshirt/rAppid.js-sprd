@@ -156,7 +156,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     if (parameter.mode == 'admin' && design && !design.get('localImage') && properties && properties.afterEffect) {
                         var id = design.$.wtfMbsId;
                         if (id) {
-                            design.set('localImage', self.getBimsUrl(parameter) + '/designs/' + id + '.orig');
+                            design.set('localImage', parameter.imageServiceEndPoint + '/designs/' + id + '.orig');
                         }
                     }
                 })
