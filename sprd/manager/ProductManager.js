@@ -1,5 +1,5 @@
-define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer'],
-    function (IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer) {
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List"],
+    function(IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
@@ -26,7 +26,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @param {sprd.entity.Appearance} appearance
              * @param callback
              */
-            setProductType: function (product, productType, appearance, callback) {
+            setProductType: function(product, productType, appearance, callback) {
                 if (appearance instanceof Function) {
                     callback = appearance;
                     appearance = null;
@@ -35,10 +35,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     view;
 
                 flow()
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         productType.fetch(null, cb);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         if (!appearance) {
                             if (product.$.appearance) {
                                 appearance = productType.getClosestAppearance(product.$.appearance.getMainColor());
@@ -47,7 +47,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             }
                         }
                     })
-                    .seq(function () {
+                    .seq(function() {
                         // determinate closest view for new product type
                         var currentView = product.$.view;
 
@@ -60,7 +60,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
 
                     })
-                    .seq(function () {
+                    .seq(function() {
 
                         // remove example configuration
                         if (product && product.get("restrictions.example") === true && product.$.configurations.size() > 0) {
@@ -71,7 +71,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         self.convertConfigurations(product, productType, appearance);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         // first set product type
                         // and then the appearance, because appearance depends on product type
                         product.set({
@@ -86,7 +86,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            setAppearance: function (product, appearance) {
+            setAppearance: function(product, appearance) {
 
                 if (product.$.appearance.$.id === appearance.$.id) {
                     // same appearance, nothing to do
@@ -106,7 +106,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @param {sprd.model.ProductType} productType
              * @param {sprd.entity.Appearance} appearance
              */
-            convertConfigurations: function (product, productType, appearance) {
+            convertConfigurations: function(product, productType, appearance) {
                 var configurations = product.$.configurations.$items,
                     removeConfigurations = [],
                     setOptions = {silent: true};
@@ -210,9 +210,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         if (product.$.productType !== productType) {
                             optimalScale = Math.min(
-                                targetPrintAreaWidth / currentPrintAreaWidth,
-                                targetPrintAreaHeight / currentPrintAreaHeight
-                            ) * Math.abs(scale.x);
+                                    targetPrintAreaWidth / currentPrintAreaWidth,
+                                    targetPrintAreaHeight / currentPrintAreaHeight
+                                ) * Math.abs(scale.x);
                         }
 
                         var allowScale = configuration.allowScale(),
@@ -329,7 +329,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @param {Object} params
              * @param {Function} callback
              */
-            addDesign: function (product, params, callback) {
+            addDesign: function(product, params, callback) {
                 params = _.defaults({}, params, {
                     design: null,
                     perspective: null, // front, back, etc...
@@ -366,12 +366,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
 
                 flow()
-                    .par(function (cb) {
+                    .par(function(cb) {
                         design.fetch(null, cb);
-                    }, function (cb) {
+                    }, function(cb) {
                         productType.fetch(null, cb);
                     })
-                    .seq("printArea", function () {
+                    .seq("printArea", function() {
 
                         if (!printArea && params.perspective && !view) {
                             view = productType.getViewByPerspective(params.perspective);
@@ -402,7 +402,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printArea;
                     })
-                    .seq("printType", function () {
+                    .seq("printType", function() {
                         possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
 
                         if (printType && !_.contains(possiblePrintTypes, printType)) {
@@ -417,10 +417,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printType;
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         printType.fetch(null, cb);
                     })
-                    .seq("designConfiguration", function () {
+                    .seq("designConfiguration", function() {
                         var entity = product.createEntity(DesignConfiguration);
                         entity.set({
                             printType: printType,
@@ -431,16 +431,16 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }, PREVENT_VALIDATION_OPTIONS);
                         return entity;
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         var designConfiguration = this.vars["designConfiguration"];
                         bus.setUp(designConfiguration);
-                        designConfiguration.init(cb);
+                        designConfiguration.init({}, cb);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         // determinate position
                         self._positionConfiguration(this.vars["designConfiguration"]);
                     })
-                    .exec(function (err, results) {
+                    .exec(function(err, results) {
                         if (!err) {
                             product.removeExampleConfiguration();
                             product._addConfiguration(results.designConfiguration);
@@ -451,7 +451,104 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            addText: function (product, params, callback) {
+            addText: function(product, params, callback) {
+
+                var self = this;
+
+                var finalizeFnc = function(configuration) {
+
+                    configuration.$.selection.set({
+                        activeIndex: configuration.$.textFlow.textLength() - 1,
+                        anchorIndex: 0
+                    });
+
+                    configuration.set('isNew', params.isNew);
+
+                    configuration.set("maxHeight", 1);
+
+                    // determinate position
+                    self._positionConfiguration(configuration);
+
+                    configuration.set("maxHeight", null);
+
+                };
+
+                var configurationFnc = function(params, text, printType, printArea, font, printTypeColor) {
+
+                    var textFlow = TextFlow.initializeFromText(text);
+
+                    var fontSize = params.fontSize;
+
+                    if (!printType.isPrintColorColorSpace()) {
+                        fontSize = INITIAL_FONT_SIZE_SCALE_FACTOR * printArea.get('_size.height');
+                    }
+
+                    (new ApplyStyleToElementOperation(TextRange.createTextRange(0, textFlow.textLength()), textFlow, new Style({
+                        font: font,
+                        fontSize: fontSize,
+                        lineHeight: 1.2,
+                        printTypeColor: printTypeColor
+                    }), new
+                        Style({
+                        textAnchor: "middle"
+                    }))).doOperation();
+
+                    var entity = product.createEntity(TextConfiguration);
+
+                    entity.set({
+                        printType: printType,
+                        printArea: printArea,
+                        textFlow: textFlow,
+                        selection: TextRange.createTextRange(0, textFlow.textLength())
+                    });
+                    return entity;
+
+                };
+
+                this._addText(product, params, configurationFnc, finalizeFnc, callback);
+
+
+            },
+
+            addBendingText: function(product, params, callback) {
+
+                var self = this;
+
+                var createConfigurationFnc = function(params, text, printType, printArea, font, printTypeColor) {
+                    var fontSize = params.fontSize,
+                        printColors = new List;
+
+                    printColors.add(printTypeColor);
+
+                    var entity = product.createEntity(BendingTextConfiguration);
+
+                    entity.set({
+                        printType: printType,
+                        printArea: printArea,
+                        text: text,
+                        fontSize: fontSize,
+                        font: font,
+                        printColors: printColors
+                    });
+                    return entity;
+                };
+
+                var finalizeFnc = function(configuration) {
+                    configuration.set('isNew', params.isNew);
+
+                    configuration.set("maxHeight", 1);
+
+                    // determinate position
+                    self._positionConfiguration(configuration);
+
+                    configuration.set("maxHeight", null);
+                };
+
+
+                this._addText(product, params, createConfigurationFnc, finalizeFnc, callback)
+            },
+
+            _addText: function(product, params, createConfigurationFnc, finalizeFnc, callback) {
 
                 params = _.defaults({}, params, {
                     text: null,
@@ -468,7 +565,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     fontFamilyName: "Arial",
                     addToProduct: true,
                     isNew: true,
-                    fontSize: 25
+                    fontSize: 25,
+                    printColor: null
                 });
 
                 var self = this,
@@ -481,7 +579,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     font = null,
                     appearance = product.$.appearance,
                     printType = params.printType,
-                    printTypeId = params.printTypeId;
+                    printTypeId = params.printTypeId,
+                    printColor = params.printColor;
 
                 if (!text) {
                     callback(new Error("No text"));
@@ -500,7 +599,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 flow()
                     .par({
-                        fontFamilies: function (cb) {
+                        fontFamilies: function(cb) {
                             if (params.fontFamily) {
                                 cb();
                             } else {
@@ -509,11 +608,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 }, cb);
                             }
                         },
-                        productType: function (cb) {
+                        productType: function(cb) {
                             productType.fetch(null, cb);
                         }
                     })
-                    .seq("fontFamily", function () {
+                    .seq("fontFamily", function() {
                         var fontFamily,
                             fontFamilies = this.vars['fontFamilies'];
 
@@ -534,15 +633,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 }
                             }
                         } else if (params.fontFamilyName) {
-                            fontFamily = fontFamilies.find(function (fontFamily) {
+                            fontFamily = fontFamilies.find(function(fontFamily) {
                                 return fontFamily.$.name === params.fontFamilyName;
                             });
                         }
 
                         // use first font that is not deprecated
-                        fontFamily = fontFamily || fontFamilies.find(function (fontFamily) {
-                            return !fontFamily.$.deprecated
-                        });
+                        fontFamily = fontFamily || fontFamilies.find(function(fontFamily) {
+                                return !fontFamily.$.deprecated
+                            });
 
                         if (!fontFamily) {
                             throw new Error("No found");
@@ -562,7 +661,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return fontFamily;
                     })
-                    .seq("printArea", function () {
+                    .seq("printArea", function() {
 
                         if (!printArea && params.perspective && !view) {
                             view = productType.getViewByPerspective(params.perspective);
@@ -593,7 +692,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printArea;
                     })
-                    .seq("printType", function () {
+                    .seq("printType", function() {
                         var fontFamily = this.vars.fontFamily;
                         var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance.$.id);
 
@@ -618,12 +717,18 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printType;
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         printType.fetch(null, cb);
                     })
-                    .seq("printTypeColor", function () {
+                    .seq("printTypeColor", function() {
                         var color = product.appearanceBrightness() !== "dark" ? "#000000" : "#FFFFFF";
-                        color = printType.getClosestPrintColor(color);
+
+                        if (printColor) {
+                            color = printType.getClosestPrintColor(printColor.toHexString());
+                        } else {
+                            color = printType.getClosestPrintColor(color);
+                        }
+
 
                         if (!color) {
                             throw "No print type color";
@@ -631,58 +736,18 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return color;
                     })
-                    .seq("configuration", function () {
-
-                        var textFlow = TextFlow.initializeFromText(text);
-
-                        var fontSize = params.fontSize;
-
-                        if (!printType.isPrintColorColorSpace()) {
-                            fontSize = INITIAL_FONT_SIZE_SCALE_FACTOR * printArea.get('_size.height');
-                        }
-
-                        (new ApplyStyleToElementOperation(TextRange.createTextRange(0, textFlow.textLength()), textFlow, new Style({
-                            font: font,
-                            fontSize: fontSize,
-                            lineHeight: 1.2,
-                            printTypeColor: this.vars["printTypeColor"]
-                        }), new
-                            Style({
-                            textAnchor: "middle"
-                        }))).doOperation();
-
-                        var entity = product.createEntity(TextConfiguration);
-
-                        entity.set({
-                            printType: printType,
-                            printArea: printArea,
-                            textFlow: textFlow,
-                            selection: TextRange.createTextRange(0, textFlow.textLength())
-                        });
-                        return entity;
+                    .seq("configuration", function() {
+                        return createConfigurationFnc(params, text, printType, printArea, font, this.vars.printTypeColor);
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         var configuration = this.vars["configuration"];
                         bus.setUp(configuration);
-                        configuration.init(cb);
+                        configuration.init({}, cb);
                     })
-                    .seq(function () {
-                        var configuration = this.vars["configuration"];
-                        configuration.$.selection.set({
-                            activeIndex: configuration.$.textFlow.textLength() - 1,
-                            anchorIndex: 0
-                        });
-
-                        configuration.set('isNew', params.isNew);
-
-                        configuration.set("maxHeight", 1);
-
-                        // determinate position
-                        self._positionConfiguration(configuration);
-
-                        configuration.set("maxHeight", null);
+                    .seq(function() {
+                        finalizeFnc(this.vars.configuration);
                     })
-                    .exec(function (err, results) {
+                    .exec(function(err, results) {
                         if (!err && params.addToProduct) {
                             product.removeExampleConfiguration();
                             product._addConfiguration(results.configuration);
@@ -693,7 +758,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            addSpecialText: function (product, params, callback) {
+            addSpecialText: function(product, params, callback) {
 
                 params = _.defaults({}, params, {
                     text: null,
@@ -739,10 +804,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
 
                 flow()
-                    .seq("productType", function (cb) {
+                    .seq("productType", function(cb) {
                         productType.fetch(null, cb);
                     })
-                    .seq("printArea", function () {
+                    .seq("printArea", function() {
 
                         if (!printArea && params.perspective && !view) {
                             view = productType.getViewByPerspective(params.perspective);
@@ -774,7 +839,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printArea;
                     })
-                    .seq("printType", function () {
+                    .seq("printType", function() {
 
                         var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance.$.id);
 
@@ -799,10 +864,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printType;
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         printType.fetch(null, cb);
                     })
-                    .seq("configuration", function () {
+                    .seq("configuration", function() {
 
                         var entity = product.createEntity(SpecialTextConfiguration);
 
@@ -815,14 +880,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return entity;
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         var configuration = this.vars["configuration"];
                         bus.setUp(configuration);
-                        configuration.init(cb);
+                        configuration.init({}, cb);
 
                         configuration.set('isNew', params.isNew);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         var configuration = this.vars["configuration"];
                         // determinate position
                         self._positionConfiguration(configuration);
@@ -834,7 +899,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             configuration.set('scale', params.scale, PREVENT_VALIDATION_OPTIONS);
                         }
                     })
-                    .exec(function (err, results) {
+                    .exec(function(err, results) {
                         if (!err && params.addToProduct) {
                             product.removeExampleConfiguration();
                             product._addConfiguration(results.configuration);
@@ -845,134 +910,156 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            moveConfigurationToView: function (product, configuration, view, callback) {
+            getPrintType: function(printArea, configuration, printType, printTypeId, product) {
+                var possiblePrintTypes,
+                    fontFamily = null,
+                    appearanceId = product.get('appearance.id');
 
-                var self = this,
-                    bus = this.$.bus,
-                    params = {},
-                    productType = product.$.productType,
-                    appearance = product.$.appearance,
-                    printArea,
-                    printType,
-                    printTypeId,
-                    currentScale = configuration.$.scale,
-                    currentOffset = configuration.$.offset.clone();
+                if (configuration instanceof SpecialTextConfiguration) {
+                    possiblePrintTypes = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearanceId);
+                } else if (configuration instanceof TextConfiguration) {
+                    fontFamily = configuration.$.textFlow.findLeaf(0).$.style.$.font.$parent;
+                    possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearanceId);
+                } else if (configuration instanceof DesignConfiguration) {
+                    possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, printArea, appearanceId);
+                } else if (configuration instanceof BendingTextConfiguration) {
+                    fontFamily = configuration.$.font.getFontFamily();
+                    possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearanceId);
+                }
 
+                if (printType && !_.contains(possiblePrintTypes, printType)) {
+                    throw new Error("PrintType not possible for text and printArea");
+                }
 
-                flow()
-                    .seq("printArea", function () {
-
-                        if (!printArea && params.perspective && !view) {
-                            view = productType.getViewByPerspective(params.perspective);
+                if (printTypeId) {
+                    for (var i = possiblePrintTypes.length; i--;) {
+                        if (possiblePrintTypes[i].$.id == printTypeId) {
+                            printType = possiblePrintTypes[i];
+                            break;
                         }
+                    }
+                }
 
-                        if (!printArea && view) {
-                            // get print area by view
-                            if (!productType.containsView(view)) {
-                                throw new Error("View not on ProductType");
-                            }
+                printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
 
-                            // TODO: look for print area that supports print types, etc...
-                            printArea = view.getDefaultPrintArea();
-                            return printArea;
-                        }
+                if (!printType) {
+                    throw new Error("No printType available");
+                }
 
-                        view = product.$.view || product.getDefaultView();
-                        if (!printArea && view) {
-                            printArea = view.getDefaultPrintArea();
-                        }
-
-                        if (!printArea) {
-                            throw new Error("target PrintArea couldn't be found.");
-                        }
-
-                        if (printArea.get("restrictions.textAllowed") === false) {
-                            throw new Error("text cannot be added to this print area");
-                        }
-
-                        return printArea;
-                    })
-                    .seq("printType", function () {
-                        var possiblePrintTypes;
-                        if (configuration instanceof SpecialTextConfiguration) {
-                            possiblePrintTypes = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance.$.id);
-                        } else if (configuration instanceof TextConfiguration) {
-                            var fontFamily = configuration.$.textFlow.findLeaf(0).$.style.$.font.$parent;
-                            possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance.$.id);
-                        } else if (configuration instanceof DesignConfiguration) {
-                            possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, printArea, appearance.$.id);
-                        }
-
-                        if (printType && !_.contains(possiblePrintTypes, printType)) {
-                            throw new Error("PrintType not possible for text and printArea");
-                        }
-
-                        if (printTypeId) {
-                            for (var i = possiblePrintTypes.length; i--;) {
-                                if (possiblePrintTypes[i].$.id == printTypeId) {
-                                    printType = possiblePrintTypes[i];
-                                    break;
-                                }
-                            }
-                        }
-
-                        printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
-
-                        if (!printType) {
-                            throw new Error("No printType available");
-                        }
-
-                        return printType;
-                    })
-                    .seq(function (cb) {
-                        printType.fetch(null, cb);
-                    })
-                    .seq(function () {
-                        product.$.configurations.remove(configuration);
-                        configuration.set({
-                            rotation: 0,
-                            scale: {x: 1, y: 1},
-                            printType: printType,
-                            printArea: printArea
-                        }, {silent: true});
-
-
-                    })
-                    .seq(function () {
-                        configuration.clearErrors();
-                        self._positionConfiguration(configuration);
-                    })
-                    .seq(function() {
-                        var xScale = printArea.get("boundary.size.width") / configuration.get('_size.width'),
-                            yScale = printArea.get("boundary.size.height") / configuration.get('_size.height');
-                        var scale = {
-                            x: Math.min(xScale, yScale),
-                            y: Math.min(xScale, yScale)
-                        };
-                        var validation = configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), scale);
-                        if (validation.minBound || validation.dpiBound) {
-                            throw new Error("configuration does not fit in this print area")
-                        }
-                    })
-                    .exec(function (err) {
-                        callback && callback(err);
-
-                        if (!err) {
-                            product._addConfiguration(configuration);
-                            bus.trigger('Application.productChanged', null);
-                        } else {
-                            configuration.set({
-                                offset: currentOffset,
-                                scale: currentScale
-                            });
-                            configuration.clearErrors();
-                        }
-                    })
-
-
+                return printType;
             },
 
-            setTextForConfiguration: function (text, configuration, options) {
+            _moveConfigurationToView: function(product, configuration, printType, printArea) {
+                var self = this,
+                    bus = this.$.bus;
+
+                if (!printType && !printArea) {
+                    printType = configuration.$.printType;
+                    printArea = configuration.$.printArea;
+                }
+
+                product.$.configurations.remove(configuration);
+                configuration.set({
+                    rotation: 0,
+                    scale: {x: 1, y: 1},
+                    printType: printType,
+                    printArea: printArea
+                }, {silent: true});
+                configuration.mainConfigurationRenderer = null;
+
+                configuration.clearErrors();
+                self._positionConfiguration(configuration);
+
+                product._addConfiguration(configuration);
+                bus.trigger('Application.productChanged', null);
+            },
+
+            moveConfigurationToView: function(product, configuration, view, callback) {
+
+                var self = this,
+                    printArea,
+                    printType,
+                    validations,
+                    printTypeId;
+
+                view = view || product.$.view || product.getDefaultView();
+
+                flow()
+                    .seq(function() {
+                        printArea = self.getPrintArea(view, product.$.productType);
+                    })
+                    .seq(function() {
+                        printType = self.getPrintType(printArea, configuration, printType, printTypeId, product);
+                    })
+                    .seq(function(cb) {
+                        printType.fetch(null, cb);
+                    })
+                    .seq(function() {
+                        validations = self.validateConfigurationMove(printType, printArea, configuration);
+                    })
+                    .exec(function(err) {
+                        if (!err) {
+                            if (_.some(validations)) {
+                                self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea);
+                                callback && callback(new Error('Validation errors found. Configuration moved to old view'));
+                            } else {
+                                self._moveConfigurationToView(product, configuration, printType, printArea);
+                                callback && callback();
+                            }
+                        } else {
+                            callback && callback(new Error('Something went wrong preparing the move of the configuration.'));
+                        }
+                    });
+            },
+
+            validateMove: function(printTypes, printArea, configuration) {
+                var validationsForTypes = this.validateConfigurationMoveList(printTypes, printArea, configuration);
+                return _.some(validationsForTypes, function(validations) {
+                    return _.every(validations, function(validation) {
+                        return !validation;
+                    });
+                });
+            },
+
+            validateConfigurationMoveList: function(printTypes, printArea, configuration) {
+                var ret = [];
+                for (var i = 0; i < printTypes.length; i++) {
+                    ret.push(this.validateConfigurationMove(printTypes[i], printArea, configuration));
+                }
+
+                return ret;
+            },
+
+            validateConfigurationMove: function(printType, printArea, configuration) {
+                var scale = this.getConfigurationPosition(configuration, printArea, printType).scale;
+                return configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), scale);
+            },
+
+            getPrintArea: function(view, productType) {
+                if (!view) {
+                    throw new Error("No view supplied");
+                }
+
+                if (!productType.containsView(view)) {
+                    throw new Error("View not on ProductType");
+                }
+
+                // TODO: look for print area that supports print types, etc...
+                return view.getDefaultPrintArea();
+            },
+
+            moveConfigurationsToView: function(product, configurations, view, callback) {
+                var self = this;
+                flow()
+                    .parEach(configurations.toArray(), function(config, cb) {
+                        self.moveConfigurationToView(product, config, view, function(err, result) {
+                            cb();
+                        });
+                    })
+                    .exec(callback)
+            },
+
+            setTextForConfiguration: function(text, configuration, options) {
                 if (!(configuration instanceof TextConfiguration)) {
                     throw new Error("Configuration is not a TextConfiguration");
                 }
@@ -1009,11 +1096,36 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 this.$.bus.trigger('Application.productChanged', null);
             },
 
-            _positionConfiguration: function (configuration) {
+            clamp: function(value, min, max) {
 
-                var printArea = configuration.$.printArea,
-                    printType = configuration.$.printType,
-                    printAreaWidth = printArea.get("boundary.size.width"),
+                if (min > max) {
+                    throw new Error('Min is bigger than max.');
+                }
+
+                return Math.min(Math.max(value, min), max);
+            },
+
+            centerAt: function(x, y, rect) {
+                return {
+                    x: x - rect.width / 2,
+                    y: y - rect.height / 2
+                }
+            },
+
+            _positionConfiguration: function(configuration) {
+                configuration.set(this.getConfigurationPosition(configuration), PREVENT_VALIDATION_OPTIONS);
+            },
+
+            getConfigurationPosition: function(configuration, printArea, printType) {
+
+                if (!configuration) {
+                    throw new Error('No configuration argument.');
+                }
+
+                printArea = printArea || configuration.$.printArea;
+                printType = printType || configuration.$.printType;
+
+                var printAreaWidth = printArea.get("boundary.size.width"),
                     printAreaHeight = printArea.get("boundary.size.height"),
                     printTypeWidth = printType.get('size.width'),
                     printTypeHeight = printType.get('size.height'),
@@ -1029,95 +1141,91 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     defaultBoxCenterX = defaultBox.x + defaultBox.width / 2,
                     defaultBoxCenterY = defaultBox.y + defaultBox.height / 2,
                     offset = configuration.$.offset.clone(),
-                    newScale;
+                    scale = Math.min(configuration.$.scale.x, configuration.$.scale.y);
 
-                boundingBox = configuration._getBoundingBox(null, null, null, null, null, false);
+                boundingBox = configuration._getBoundingBox();
+                var centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
+                offset.set({
+                    x: centeredOffset.x,
+                    y: defaultBox.y
+                });
+
+
+                // scale to fit into default box
+                var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
+                var minimumDesignScale;
+
+                if (configuration instanceof DesignConfiguration && printType.isEnlargeable()) {
+                    minimumDesignScale = (configuration.get("design.restrictions.minimumScale") || 100) / 100;
+                } else if (configuration instanceof TextConfiguration && printType.isEnlargeable()) {
+                    minimumDesignScale = configuration._getMinimalScale(printType);
+                }
+
+                var maxPrintTypeScale = maxWidth / boundingBox.width;
+
+                if (configuration instanceof SpecialTextConfiguration || (configuration instanceof DesignConfiguration && !configuration.$.design.isVectorDesign())) {
+                    maxPrintTypeScale = 1;
+                }
+
+                scale = this.clamp(scaleToFitDefaultBox, minimumDesignScale || 0, maxPrintTypeScale);
+
+                boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
+                centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
 
                 // position centered within defaultBox
-                offset.set({
-                    x: defaultBoxCenterX - boundingBox.width / 2,
-                    y: defaultBox.y
-                }, PREVENT_VALIDATION_OPTIONS);
+                offset.set('x', centeredOffset.x);
+
+                var maxScaleToAvoidCollision,
+                    maxScaleToFitPrintArea,
+                    maxScaleToFitDefaultBox;
 
                 if (offset.$.x < 0 || offset.$.x + boundingBox.width > maxWidth) {
-
                     // hard boundary error
                     var maxPossibleWidthToHardBoundary = Math.min(defaultBoxCenterX, maxWidth - defaultBoxCenterX) * 2;
 
                     // scale to avoid hard boundary error
-                    var scaleToAvoidCollision = maxPossibleWidthToHardBoundary / boundingBox.width;
-
-                    // scale to fit into default box
-                    var scaleToFixDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
-
-                    newScale = scaleToFixDefaultBox; // scaleToFixDefaultBox;
-
-                    if (configuration instanceof DesignConfiguration && printType.isEnlargeable()) {
-                        var minimumScale = (configuration.get("design.restrictions.minimumScale") || 100) / 100;
-                        if (scaleToFixDefaultBox < minimumScale) {
-                            newScale = minimumScale;
-                        }
-                    }
-
-                    // TODO: first use scaleToFixDefaultBox and use scaleToAvoidCollission only if
-                    // scaleToFitDefaultBox is not possible for print type
-
-
-                    configuration.set("scale", {
-                        x: newScale,
-                        y: newScale
-                    });
-
-                    boundingBox = configuration._getBoundingBox();
-
-                    // position centered within defaultBox
-                    offset.set({
-                        x: defaultBoxCenterX - boundingBox.width / 2,
-                        y: defaultBox.y
-                    }, PREVENT_VALIDATION_OPTIONS);
+                    maxScaleToAvoidCollision = maxPossibleWidthToHardBoundary / boundingBox.width;
                 }
 
                 if (boundingBox.height > maxHeight) {
                     // y-scale needed to fit print area
 
                     // calculate maxScale to fix height
-                    var maxScaleToFitPrintArea = configuration.$.scale.y * maxHeight / boundingBox.height;
-                    var maxScaleToFitDefaultBox = configuration.$.scale.y * defaultBox.height / boundingBox.height;
+                    maxScaleToFitPrintArea = configuration.$.scale.y * maxHeight / boundingBox.height;
+                    maxScaleToFitDefaultBox = configuration.$.scale.y * defaultBox.height / boundingBox.height;
 
                     // TODO: try the two different scales, prefer defaultBox and fallback to printArea if size to small
-                    newScale = maxScaleToFitPrintArea;
+                    scale = maxScaleToFitPrintArea;
 
-                    configuration.set("scale", {
-                        x: newScale,
-                        y: newScale
-                    });
-
-                    boundingBox = configuration._getBoundingBox();
-
+                    boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
+                    centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
                     // position centered within defaultBox
-                    offset.set({
-                        x: defaultBoxCenterX - boundingBox.width / 2,
-                        y: defaultBoxCenterY - boundingBox.height / 2
-                    }, PREVENT_VALIDATION_OPTIONS);
-
+                    offset.set(centeredOffset);
                 }
 
                 if (offset.$.y < 0 || offset.$.y + boundingBox.height > maxHeight) {
                     // hard boundary error
 
                     // center in print area
+
                     offset.set({
                         y: maxHeight / 2 - boundingBox.height / 2
                     });
                 }
 
-                configuration.set({
-                    offset: offset
-                }, PREVENT_VALIDATION_OPTIONS);
-
+                // configuration.set({
+                //     offset: offset
+                // }, PREVENT_VALIDATION_OPTIONS);
+                return {
+                    offset: offset,
+                    scale: {
+                        x: scale,
+                        y: scale
+                    }
+                }
             },
 
-            convertTextToSpecialText: function (product, textConfiguration, params, callback) {
+            convertTextToSpecialText: function(product, textConfiguration, params, callback) {
                 params = params || {};
                 var offset = textConfiguration.$.offset.clone();
                 var width = textConfiguration.width();
@@ -1127,7 +1235,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     text: textConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "")
                 });
                 var self = this;
-                this.addSpecialText(product, params, function (err, config) {
+                this.addSpecialText(product, params, function(err, config) {
 
                     if (err) {
                         callback && callback(err);
@@ -1155,7 +1263,43 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 });
             },
 
-            convertSpecialTextToText: function (product, specialTextConfiguration, params, callback) {
+            convertTextToBendingText: function(product, textConfiguration, params, callback) {
+                params = params || {};
+                var offset = textConfiguration.$.offset.clone();
+                var width = textConfiguration.width();
+                _.defaults(params, {
+                    addToProduct: true,
+                    removeConfiguration: true,
+                    text: textConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "")
+                });
+                var self = this;
+                this.addBendingText(product, params, function(err, config) {
+                    if (err) {
+                        callback && callback(err);
+                    } else {
+                        params.removeConfiguration && product.$.configurations.remove(textConfiguration);
+                        var s = width / config.width(1);
+                        config.set({
+                            'scale': {
+                                x: s,
+                                y: s
+                            }, 'offset': offset,
+                            rotation: textConfiguration.$.rotation,
+                            originalConfiguration: textConfiguration
+                        });
+
+                        config.set("_size", config.$._size, {force: true});
+                        config.set("isNew", textConfiguration.$.isNew);
+
+                        callback && callback(err, config);
+
+                        self.$.bus.trigger('Application.productChanged', product);
+                    }
+
+                });
+            },
+
+            convertSpecialTextToText: function(product, specialTextConfiguration, params, callback) {
                 params = params || {};
                 var offset = specialTextConfiguration.$.offset.clone();
                 var width = specialTextConfiguration.width();
@@ -1166,7 +1310,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     text: (specialTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, "")
                 });
                 var self = this;
-                this.addText(product, params, function (err, config) {
+                this.addText(product, params, function(err, config) {
 
                     if (err) {
                         callback && callback(err);
@@ -1191,18 +1335,55 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 });
             },
 
-            checkConfigurationOffset: function (product, configuration) {
+            convertBendingTextToText: function(product, bendingTextConfiguration, params, callback) {
+                params = params || {};
+                var offset = bendingTextConfiguration.$.offset.clone();
+                var width = bendingTextConfiguration.width();
+                _.defaults(params, {
+                    isNew: false,
+                    addToProduct: true,
+                    removeConfiguration: true,
+                    text: (bendingTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, "")
+                });
+                var self = this;
+                this.addText(product, params, function(err, config) {
+
+                    if (err) {
+                        callback && callback(err);
+                    } else {
+
+                        params.removeConfiguration && product.$.configurations.remove(bendingTextConfiguration);
+                        var s = width / config.width();
+                        config.set({
+                            'scale': {
+                                x: s,
+                                y: s
+                            }, 'offset': offset,
+                            rotation: bendingTextConfiguration.$.rotation,
+                            isNew: bendingTextConfiguration.$.isNew,
+                            originalConfiguration: bendingTextConfiguration
+                        });
+
+                        callback && callback(err, config);
+
+                        self.$.bus.trigger('Application.productChanged', product);
+                    }
+                });
+            },
+
+
+            checkConfigurationOffset: function(product, configuration) {
 
                 if (this._checkConfigurationOutsideViewPort(product, configuration)) {
                     // configuration has been removed
                     return;
                 }
 
-                this._checkConfigurationOutsidePrintArea(product, configuration);
+                this._checkConfigurationOutsideSoftBoundedPrintArea(product, configuration);
 
             },
 
-            _checkConfigurationOutsidePrintArea: function (product, configuration) {
+            _checkConfigurationOutsideSoftBoundedPrintArea: function(product, configuration) {
 
                 if (!(product && configuration)) {
                     return;
@@ -1214,10 +1395,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (boundingBox && printArea && printArea.hasSoftBoundary() &&
                     (
-                    boundingBox.x > printArea.width() ||
-                    boundingBox.x + boundingBox.width < 0 ||
-                    boundingBox.y > printArea.height() ||
-                    boundingBox.y + boundingBox.height < 0
+                        boundingBox.x > printArea.width() ||
+                        boundingBox.x + boundingBox.width < 0 ||
+                        boundingBox.y > printArea.height() ||
+                        boundingBox.y + boundingBox.height < 0
                     )) {
 
                     product.$.configurations.remove(configuration);
@@ -1228,7 +1409,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            _checkConfigurationOutsideViewPort: function (product, configuration) {
+            _checkConfigurationOutsideViewPort: function(product, configuration) {
 
                 if (!this.$.removeConfigurationOutsideViewPort) {
                     return;
@@ -1284,14 +1465,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (middlePoint.x < 0 || middlePoint.y < 0 || middlePoint.x > right || middlePoint.y > bottom) {
                     // outside the view
-                    product.$.configurations.remove(configuration);
+                    //product.$.configurations.remove(configuration);
+                    this._moveConfigurationToView(product, configuration);
                     return true;
                 }
 
                 return false;
 
             }
-
 
 
         });

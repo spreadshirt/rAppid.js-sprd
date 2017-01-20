@@ -1,5 +1,5 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer", "xaml!sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus", "sprd/util/UnitUtil"],
-    function (SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus, UnitUtil) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer", "xaml!sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus", "sprd/util/UnitUtil", "sprd/entity/BendingTextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationRenderer"],
+    function (SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus, UnitUtil, BendingTextConfiguration, BendingTextConfigurationRenderer) {
 
         var MOVE = "move",
             SCALE = "scale",
@@ -19,8 +19,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             defaults: {
                 tagName: 'g',
-                componentClass: 'configuration-viewer printType-{configuration.printType.id}',
+                componentClass: 'configuration-viewer printType-{configuration.printType.id} type-{configurationType()}',
                 configuration: null,
+                "data-configuration-type": "{configurationType()}",
 
                 translateX: "{_offset.x}",
                 translateY: "{_offset.y}",
@@ -67,7 +68,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _rotationRadius: null,
 
                 imageService: null,
-                preventValidation: false
+                preventValidation: true
             },
 
             inject: {
@@ -101,6 +102,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }, this);
             },
 
+            configurationType: function() {
+                var configuration = this.$.configuration;
+                return configuration ? configuration.type : "";
+            }.onChange("configuration"),
+
             _initializationComplete: function () {
 
                 var clipPath = this.$.clipPath;
@@ -109,6 +115,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 transformations.unshift(transformations.removeAt(1));
 
                 this.callBase();
+
+                this.set("preventValidation", false);
+
             },
 
             id: function () {
@@ -170,6 +179,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 if (configuration instanceof SpecialTextConfiguration) {
                     rendererFactory = SpecialTextConfigurationRenderer;
+                } else if (configuration instanceof BendingTextConfiguration) {
+                    rendererFactory = BendingTextConfigurationRenderer;
                 } else if (configuration instanceof DesignConfiguration) {
                     rendererFactory = DesignConfigurationRenderer;
                 } else if (configuration instanceof TextConfiguration) {
@@ -314,14 +325,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (configuration) {
 
                     var self = this;
-                    this._debounceFunctionCall(function () {
-                        if (!self.$.preventValidation) {
-                            configuration._setError(configuration._validateTransform({
-                                offset: this.$._offset,
-                                scale: this.$._scale,
-                                rotation: this.$._rotation
-                            }));
-                        }
+
+                    !self.$.preventValidation && this._debounceFunctionCall(function() {
+                        configuration._setError(configuration._validateTransform({
+                            offset: this.$._offset,
+                            scale: this.$._scale,
+                            rotation: this.$._rotation
+                        }));
                     }, "transformationChanged");
                 }
             },
@@ -582,7 +592,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var distance = self.getDistance(configuration.$.offset, self.$._offset);
                     var onlyPointed = !(distance) && mode === MOVE && !self.$moveInitiator;
 
-                    if(onlyPointed && configuration == previousSelectedConfiguration && (configuration instanceof TextConfiguration || configuration instanceof SpecialTextConfiguration)) {
+                    if(onlyPointed && configuration == previousSelectedConfiguration && (configuration instanceof TextConfiguration || configuration instanceof SpecialTextConfiguration || configuration instanceof  BendingTextConfiguration)) {
                         self.$.bus.trigger('ConfigurationViewer.configurationReselected', {
                             configuration: configuration,
                             previousConfiguration: previousSelectedConfiguration

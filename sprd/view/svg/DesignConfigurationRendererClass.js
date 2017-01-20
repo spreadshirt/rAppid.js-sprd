@@ -5,9 +5,9 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Render
         defaults: {
             tagName: "g",
             maskId: null,
+            "data-mask-id": "{configuration.afterEffect.id}",
             isSpecialFlex: "{isSpecialFlex()}",
             largeSize: "{largeSize()}",
-
             filter: "{filter()}"
         },
 
@@ -29,16 +29,15 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Render
                 options.version = design.$.version;
 
                 if (!design.isVectorDesign()) {
-                    return design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
+                    return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
+
                 } else {
                     return this.$.imageService.designImage(design.$.wtfMbsId, options)
                 }
 
             }
-
-
             return null;
-        }.onChange("design", "_width", "_height").on(["configuration.printColors", "reset"]),
+        }.onChange("design", "_width", "_height", "configuration.processedImage").on(["configuration.printColors", "reset"]),
 
         maskUrl: function() {
 
@@ -64,7 +63,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Render
                 options.version = design.$.version;
 
                 if (!design.isVectorDesign()) {
-                    return design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
+                    return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
                 } else {
                     return this.$.imageService.designImage(design.$.wtfMbsId, options)
                 }
@@ -73,7 +72,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Render
 
 
             return null;
-        }.onChange("design", "_width", "_height").on(["configuration.printColors", "reset"]),
+        }.onChange("design", "_width", "_height").on(["configuration.printColors", "reset"])
 
 
     })

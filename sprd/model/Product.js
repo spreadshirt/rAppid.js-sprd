@@ -1,5 +1,5 @@
-define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType', 'sprd/entity/Appearance'],
-    function (ProductBase, List, ConfigurationTypeResolver, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType, Appearance) {
+define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType', 'sprd/entity/Appearance', 'sprd/entity/BendingTextConfiguration'],
+    function (ProductBase, List, ConfigurationTypeResolver, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType, Appearance, BendingTextConfiguration) {
 
         var undefined;
 
@@ -11,7 +11,8 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                     mapping: {
                         "design": DesignConfiguration,
                         "text": TextConfiguration,
-                        "specialText": SpecialTextConfiguration
+                        "specialText": SpecialTextConfiguration,
+                        "bendingText": BendingTextConfiguration
                     }
                 })],
                 appearance: {
@@ -24,7 +25,11 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                     type: Price,
                     generated: true
                 },
-                creator: String
+                creator: String,
+                templateId: {
+                    type: String,
+                    required: false
+                }
             },
 
             defaults: {
@@ -357,7 +362,18 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
 
             },
 
-            init: function (callback) {
+            /***
+             *
+             * @param [options]
+             * @param callback
+             */
+            init: function (options, callback) {
+
+                if (options instanceof Function) {
+                    callback = options;
+                    options = {};
+                }
+
                 if (this.initialized) {
                     callback && callback(null, this);
                     return;
@@ -396,7 +412,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                         flow()
                             .parEach(self.$.configurations.$items, function (configuration, cb) {
                                 self._setUpConfiguration(configuration);
-                                configuration.init(cb);
+                                configuration.init(options, cb);
                             })
                             .exec(function(err) {
                                 cb(err);

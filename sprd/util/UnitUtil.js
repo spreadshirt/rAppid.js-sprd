@@ -11,7 +11,9 @@ define(["sprd/entity/Size"], function(Size){
             us_US: ConvertToInch,
             en_GB: ConvertToInch,
             fr_CA: ConvertToInch
-        };
+        },
+
+        sizeCache = {};
 
     return {
 
@@ -44,6 +46,12 @@ define(["sprd/entity/Size"], function(Size){
         },
 
         convertSizeToMm: function (size, dpi) {
+            var cacheId = [size.$.width, size.$.height, dpi].join();
+
+            if (sizeCache[cacheId]) {
+                return sizeCache[cacheId];
+            }
+
             if (size.$.unit === "px") {
                 return new Size({
                     unit: "mm",

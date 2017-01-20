@@ -123,9 +123,10 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
         _handleOver: function(e) {
             var self = this;
             if (dndObject) {
-                var configViewer = dndObject.configurationViewer;
+                var configViewer = dndObject.configurationViewer,
+                    productManager = dndObject.viewer.get('product.manager');
 
-                if (configViewer && configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
+                if (configViewer && configViewer.$._mode == "move") {
                     if (dndObject && dndObject.dndImage) {
                         var hovered = DROP_HOVERED.NO;
 
@@ -142,14 +143,10 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                         }
                         if (possiblePrintTypes.length) {
                             hovered = DROP_HOVERED.YES;
-                            var xScale = printArea.get("boundary.size.width") / configuration.get('_size.width'),
-                                yScale = printArea.get("boundary.size.height") / configuration.get('_size.height');
-                            var scale = {
-                                x: Math.min(xScale, yScale),
-                                y: Math.min(xScale, yScale)
-                            };
-                            var validation = configuration._validatePrintTypeSize(possiblePrintTypes[0], configuration.get('size.width'), configuration.get('size.height'), scale);
-                            if (validation.minBound || validation.dpiBound) {
+
+                            var validMove = productManager.validateMove(possiblePrintTypes, printArea, configuration);
+
+                            if (!validMove) {
                                 hovered = DROP_HOVERED.INVALID;
                             }
                         } else {
@@ -179,7 +176,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                             x = pointerEvent.clientX,
                             y = pointerEvent.clientY;
 
-                        if (configViewer && configViewer.$._mode == "move" && !configViewer.$moveInitiator) {
+                        if (configViewer && configViewer.$._mode == "move") {
 
                             if (clientRect.left > x || clientRect.right < x || clientRect.top > y || clientRect.bottom < y) {
                                 if (configViewer) {
@@ -243,9 +240,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 var configView = dndObject.configurationViewer;
                 var product = dndObject.viewer.$.product;
 
-                if (hoverState == DROP_HOVERED.INVALID) {
-                    productManager.moveConfigurationToView(product, dndObject.config, product.$.view);
-                } else if (viewer && dndObject.viewer !== viewer) {
+                if (viewer && dndObject.viewer !== viewer) {
                     e.stopPropagation && e.stopPropagation();
                     configView.$moving = false;
                     dndObject.dndImage.set('hoverState', DROP_HOVERED.NO);
@@ -263,8 +258,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     configView.enableMoveSnipping();
                 }
                 dndObject.dndImage.set({
-                    'visible': false,
-                    'hoverState': DROP_HOVERED.NO
+                    'visible': false
                 });
                 dndObject = null;
             }

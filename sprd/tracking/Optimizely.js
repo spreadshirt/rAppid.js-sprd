@@ -171,24 +171,25 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
         trackEvent: function (eventName, data) {
             this._queueOrExecute(function () {
 
-                if (typeof qaContext !== "undefined" && qaContext.getTrackings()) {
-                    try {
-                        qaContext.getTrackings().push({
-                            service: "optimizely",
-                            type: "event",
-                            data: {
-                                eventName: eventName,
-                                data: data
-                            }
-                        });
-                    } catch (e) {
-                    }
-                }
-
                 this.trackEvent(eventName, data);
             });
 
             this._debug('trackEvent: ' + [eventName, JSON.stringify(data || {})].join(', '));
+
+            if (typeof qaContext !== "undefined" && qaContext.getTrackings()) {
+                try {
+                    qaContext.getTrackings().push({
+                        service: "optimizely",
+                        type: "event",
+                        data: {
+                            eventName: eventName,
+                            data: data
+                        }
+                    });
+                } catch (e) {
+                }
+            }
+
         },
 
         setDimensionValue: function(dimensionId, value) {

@@ -1,8 +1,8 @@
-define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bindable", 'sprd/pimp/data/PimpImageService', "sprd/entity/Size", "flow", 'sprd/util/UnitUtil', 'sprd/pimp/data/PimpDataSourceClass', 'js/data/Collection', 'sprd/pimp/model/Commission', 'sprd/pimp/model/Font', 'sprd/entity/Price', 'underscore'], function (DesignConfiguration, ProductUtil, Bindable, PimpImageService, Size, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price, _) {
+define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core/Bindable", 'sprd/pimp/data/PimpImageService', "sprd/entity/Size", "flow", 'sprd/util/UnitUtil', 'sprd/pimp/data/PimpDataSourceClass', 'js/data/Collection', 'sprd/pimp/model/Commission', 'sprd/pimp/model/Font', 'sprd/entity/Price', 'underscore'], function (DesignConfigurationBase, ProductUtil, Bindable, PimpImageService, Size, flow, UnitUtil, PimpDataSourceClass, Collection, Commission, Font, Price, _) {
 
     var previewSizeRatio = 3;
 
-    return DesignConfiguration.inherit('sprd.model.SpecialTextConfiguration', {
+    return DesignConfigurationBase.inherit('sprd.model.SpecialTextConfiguration', {
 
         defaults: {
             text: null,
@@ -51,6 +51,13 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
         compose: function() {
             var ret = this.callBase();
             delete ret.designs;
+
+            ret.properties = ret.properties || {};
+            ret.properties.fontId = this.get("font.id");
+            ret.properties.text = this.$.text;
+            ret.properties.specialText = true;
+            ret.properties.alignment = this.$.align;
+
             return ret;
         },
 
@@ -88,6 +95,9 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
                 .exec(callback);
         },
 
+        saveTakesTime: function() {
+            return true;
+        },
 
         _commitChangedAttributes: function ($, options) {
             this.callBase($, options);
@@ -227,7 +237,7 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
             }
         },
 
-        init: function (callback) {
+        init: function (options, callback) {
 
             this.synchronizeFunctionCall(function (callback) {
 
@@ -235,13 +245,24 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
                 flow()
                     .seq(function (cb) {
-                        DesignConfiguration.prototype.init.call(self, cb);
+                        DesignConfigurationBase.prototype.init.call(self, options, cb);
                     })
                     .seq(function () {
                         var printType = self.$.printType,
-                            design = self.$.design;
+                            design = self.$.design,
+                            properties = self.$.properties;
 
-                        if (design) {
+                        if (properties && properties.specialText) {
+
+                            self.set({
+                                font: self.$.pimpDataSource.createEntity(Font, properties.fontId),
+                                align: properties.alignment,
+                                text: properties.text
+                            }, {
+                                silent: true
+                            })
+
+                        } else if (design) {
 
                             var split = design.$.name.split(";");
                             self.set({
@@ -381,8 +402,6 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
             if (design) {
                 return this.callBase();
-            } else {
-
             }
 
             ret.minBound = !printType.isShrinkable();
@@ -390,11 +409,6 @@ define(['sprd/entity/DesignConfiguration', "sprd/util/ProductUtil", "js/core/Bin
 
             return ret;
 
-        },
-        clone: function () {
-            var ret = this.callBase();
-
-            return ret;
         }
     });
 })

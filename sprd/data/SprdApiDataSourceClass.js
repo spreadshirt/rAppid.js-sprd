@@ -22,7 +22,12 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                     }
 
                     var ret = new FormData();
-                    ret.append('filedata', data.image.file);
+                    if (data.image.file) {
+                        ret.append('filedata', data.image.file);
+                    } else if (data.image.blob) {
+                        ret.append('filedata', data.image.blob, data.image.filename);
+                    }
+
                     return ret;
                 },
 
@@ -91,6 +96,12 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                     mediaType: "json"
                 }, this.callBase());
 
+                if (/\bProduct\b/.test(resource.constructor.name)) {
+                    _.defaults(ret, {
+                        mode: "designer"
+                    });
+                }
+
                 if (resource.constructor.name.indexOf("Label") > -1) {
                     ret.fullData = true
                 }
@@ -102,7 +113,7 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
 
                 if (model && model.factory.prototype.constructor.name == "sprd.model.DesignUpload") {
                     var type = model.$.image.$.type,
-                        format = model.$.image.$.file ? "file" : REMOTE,
+                        format = model.$.image.$.file || model.$.image.$.blob ? "file" : REMOTE,
                         cacheId = type + "_" + format;
 
                     if (!_formatProcessorCache[cacheId]) {

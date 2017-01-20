@@ -23,7 +23,7 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function(Image, Image
                 return null;
             }
 
-            return this.$.imageService.productImage(template.$.id, 0, null, "composition", {
+            return this.$.imageService.productImage(template.$.id, 0, 2, "composition", {
                 width: this.$.width,
                 height: this.$.height,
                 hideProductType: true

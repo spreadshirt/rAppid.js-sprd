@@ -1,6 +1,6 @@
 define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "text/entity/TextFlow", "text/entity/ParagraphElement", "text/entity/SpanElement", "sprd/type/Style", "text/entity/TextRange", "underscore"], function (Base, flow, Size, TextFlow, ParagraphElement, SpanElement, Style, TextRange, _) {
     return Base.inherit("sprd.manager.TextConfigurationManager", {
-        initializeConfiguration: function (configuration, callback) {
+        initializeConfiguration: function (configuration, options, callback) {
 
             var content = configuration.$$ || {},
                 svg = content.svg,
