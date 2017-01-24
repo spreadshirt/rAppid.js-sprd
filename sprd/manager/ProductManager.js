@@ -922,25 +922,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearanceId);
                 } else if (configuration instanceof DesignConfiguration) {
                     possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, printArea, appearanceId);
+                    possiblePrintTypes = _.filter(possiblePrintTypes, function(printType) {
+                        return PrintValidator.canBePrintedSinglePrintType(configuration.$.design, printType, printArea)
+                    });
                 } else if (configuration instanceof BendingTextConfiguration) {
                     fontFamily = configuration.$.font.getFontFamily();
                     possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearanceId);
                 }
 
-                if (printType && !_.contains(possiblePrintTypes, printType)) {
-                    throw new Error("PrintType not possible for text and printArea");
-                }
-
-                if (printTypeId) {
-                    for (var i = possiblePrintTypes.length; i--;) {
-                        if (possiblePrintTypes[i].$.id == printTypeId) {
-                            printType = possiblePrintTypes[i];
-                            break;
-                        }
-                    }
-                }
-
-                printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
+                var printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || possiblePrintTypes[0];
 
                 if (!printType) {
                     throw new Error("No printType available");
@@ -979,8 +969,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var self = this,
                     printArea,
                     printType,
-                    validations,
-                    printTypeId;
+                    validations;
 
                 view = view || product.$.view || product.getDefaultView();
 
@@ -989,6 +978,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         printArea = self.getPrintArea(view, product.$.productType);
                     })
                     .seq(function() {
+                        var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, product.get('appearance.id'));
                         printType = self.getPrintType(printArea, configuration, printType, printTypeId, product);
                     })
                     .seq(function(cb) {
@@ -1011,6 +1001,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 callback && callback(new Error('Validation errors found. Configuration moved to old view'));
                             }
                         } else {
+                            self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea);
                             callback && callback(new Error('Something went wrong preparing the move of the configuration.'));
                         }
                     });
@@ -1044,8 +1035,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             },
 
             validateConfigurationMove: function(printType, printArea, configuration, product) {
-                var scale = this.getConfigurationPosition(configuration, printArea, printType).scale;
-                return configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), scale);
+                try {
+                    var scale = this.getConfigurationPosition(configuration, printArea, printType).scale;
+                    return configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), scale);
+                } catch (e) {
+                    return null;
+                }
             },
 
             getPrintArea: function(view, productType) {
@@ -1184,31 +1179,32 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                 centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
-
                 // position centered within defaultBox
                 offset.set('x', centeredOffset.x);
 
-                var maxScaleToAvoidCollision,
-                    maxScaleToFitPrintArea,
-                    maxScaleToFitDefaultBox;
+                var scaleToFitWidth,
+                    scaleToFitHeight;
 
                 if (offset.$.x < 0 || offset.$.x + boundingBox.width > maxWidth) {
                     // hard boundary error
                     var maxPossibleWidthToHardBoundary = Math.min(defaultBoxCenterX, maxWidth - defaultBoxCenterX) * 2;
 
                     // scale to avoid hard boundary error
-                    maxScaleToAvoidCollision = maxPossibleWidthToHardBoundary / boundingBox.width;
+                    scaleToFitWidth = maxPossibleWidthToHardBoundary / boundingBox.width;
+                    scale = scale * scaleToFitWidth;
+                    boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
+                    centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
+                    // position centered within defaultBox
+                    offset.set('x', centeredOffset.x);
                 }
 
                 if (boundingBox.height > maxHeight) {
                     // y-scale needed to fit print area
-
                     // calculate maxScale to fix height
-                    maxScaleToFitPrintArea = configuration.$.scale.y * maxHeight / boundingBox.height;
-                    maxScaleToFitDefaultBox = configuration.$.scale.y * defaultBox.height / boundingBox.height;
+                    scaleToFitHeight = maxHeight / boundingBox.height;
 
                     // TODO: try the two different scales, prefer defaultBox and fallback to printArea if size to small
-                    scale = maxScaleToFitPrintArea;
+                    scale = scale * scaleToFitHeight;
 
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                     centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
