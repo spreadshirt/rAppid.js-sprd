@@ -1,5 +1,5 @@
-define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List"],
-    function(IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List) {
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sketchomat/util/PrintValidator"],
+    function(IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List, PrintValidator) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
@@ -995,16 +995,20 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         printType.fetch(null, cb);
                     })
                     .seq(function() {
-                        validations = self.validateConfigurationMove(printType, printArea, configuration);
+                        validations = self.validateMove(printType, printArea, configuration, product);
                     })
                     .exec(function(err) {
                         if (!err) {
-                            if (_.some(validations)) {
-                                self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea);
-                                callback && callback(new Error('Validation errors found. Configuration moved to old view'));
-                            } else {
+                            var valid = validations && _.every(validations, function(val) {
+                                    return !val;
+                                });
+
+                            if (valid) {
                                 self._moveConfigurationToView(product, configuration, printType, printArea);
                                 callback && callback();
+                            } else {
+                                self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea);
+                                callback && callback(new Error('Validation errors found. Configuration moved to old view'));
                             }
                         } else {
                             callback && callback(new Error('Something went wrong preparing the move of the configuration.'));
@@ -1012,25 +1016,34 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     });
             },
 
-            validateMove: function(printTypes, printArea, configuration) {
-                var validationsForTypes = this.validateConfigurationMoveList(printTypes, printArea, configuration);
+            validateMove: function(printTypes, printArea, configuration, product) {
+                if (!(printTypes instanceof Array)) {
+                    printTypes = [printTypes];
+                }
+
+                if (configuration instanceof DesignConfiguration && configuration.$.design
+                    && !PrintValidator.canBePrinted(configuration.$.design, product, printTypes, printArea)) {
+                    return null;
+                }
+
+                var validationsForTypes = this.validateConfigurationMoveList(printTypes, printArea, configuration, product);
                 return _.some(validationsForTypes, function(validations) {
-                    return _.every(validations, function(validation) {
-                        return !validation;
-                    });
+                    return validations && _.every(validations, function(validation) {
+                            return !validation;
+                        });
                 });
             },
 
-            validateConfigurationMoveList: function(printTypes, printArea, configuration) {
+            validateConfigurationMoveList: function(printTypes, printArea, configuration, product) {
                 var ret = [];
                 for (var i = 0; i < printTypes.length; i++) {
-                    ret.push(this.validateConfigurationMove(printTypes[i], printArea, configuration));
+                    ret.push(this.validateConfigurationMove(printTypes[i], printArea, configuration, product));
                 }
 
                 return ret;
             },
 
-            validateConfigurationMove: function(printType, printArea, configuration) {
+            validateConfigurationMove: function(printType, printArea, configuration, product) {
                 var scale = this.getConfigurationPosition(configuration, printArea, printType).scale;
                 return configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), scale);
             },

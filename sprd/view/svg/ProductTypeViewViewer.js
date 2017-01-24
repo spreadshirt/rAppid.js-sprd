@@ -120,7 +120,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             this.$printAreas = [];
         },
 
-        _handleOver: function(e) {
+        _handleIn: function(e) {
             var self = this;
             if (dndObject) {
                 var configViewer = dndObject.configurationViewer,
@@ -142,12 +142,13 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                             possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, this.get('_appearance.id'));
                         }
                         if (possiblePrintTypes.length) {
-                            hovered = DROP_HOVERED.YES;
-
-                            var validMove = productManager.validateMove(possiblePrintTypes, printArea, configuration);
+                            var product = dndObject.viewer.$.product;
+                            var validMove = productManager.validateMove(possiblePrintTypes, printArea, configuration, product);
 
                             if (!validMove) {
                                 hovered = DROP_HOVERED.INVALID;
+                            } else {
+                                hovered = DROP_HOVERED.YES;
                             }
                         } else {
                             hovered = DROP_HOVERED.INVALID;
@@ -158,11 +159,18 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             }
         },
 
+        _handleOut: function(e) {
+            if (dndObject) {
+                dndObject.dndImage.set('hoverState', DROP_HOVERED.NO);
+            }
+        },
+
         _bindDomEvents: function() {
             this.callBase();
             this.bind('on:pointerup', this._handleUp, this);
             this.bind('on:pointerdown', this._handleDown, this);
-            this.bind('on:mouseover', this._handleOver, this)
+            this.bind('on:mouseover', this._handleIn, this);
+            this.bind('on:mouseout', this._handleOut, this);
         },
 
         bindMoveEvent: function() {
@@ -271,6 +279,14 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             if (selectedConfiguration && this.$printAreas.length && !dndObject) {
                 var target = this.$printAreas[0],
                     configViewer = this.getViewerForConfiguration(selectedConfiguration);
+
+                if (selectedConfiguration.$.design) {
+                    flow()
+                        .seq(function(cb) {
+                            selectedConfiguration.$.design.fetch(null, cb);
+                        })
+                        .exec();
+                }
 
                 this.$dndImage.set('configurationViewer', configViewer, {force: true});
 
