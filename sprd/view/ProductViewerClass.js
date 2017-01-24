@@ -313,14 +313,14 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                                 newX += shift;
                                 newY += shift;
                             } else {
-                                newOffset.set({
-                                    x: newX,
-                                    y: newY
-                                });
                                 break;
                             }
-
                         }
+
+                        newOffset.set({
+                            x: newX,
+                            y: newY
+                        });
 
 
                         newConfiguration.$stage = null;
