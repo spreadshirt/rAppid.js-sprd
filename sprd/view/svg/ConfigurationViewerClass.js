@@ -32,7 +32,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 _assetContainer: null,
                 _scaleHandle: null,
-                _deleteHandle: null,
                 _rotateHandle: null,
                 _resizeHandle: null,
 
@@ -238,8 +237,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var assetContainer = this.$._assetContainer,
                         scaleHandle = this.$._scaleHandle,
                         resizeHandle = this.$._resizeHandle,
-                        rotateHandle = this.$._rotateHandle,
-                        moveHandle = this.$._moveHandle;
+                        rotateHandle = this.$._rotateHandle;
 
 
                     assetContainer.bindDomEvent("click", function () {
@@ -260,10 +258,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     rotateHandle && rotateHandle.bindDomEvent("pointerdown", function (e) {
                         self._down(e, self._isGesture(e) ? GESTURE : ROTATE, rotateHandle);
-                    });
-
-                    moveHandle && moveHandle.bindDomEvent("pointerdown", function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : MOVE, moveHandle);
                     });
 
 
@@ -287,7 +281,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     scaleHandle && scaleHandle.bindDomEvent("click", preventDefault);
                     rotateHandle && rotateHandle.bindDomEvent("click", preventDefault);
-                    moveHandle && moveHandle.bindDomEvent("click", preventDefault);
 
                 }
 
@@ -492,26 +485,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
 
                     this.set('_offset', configuration.$.offset.clone());
-                } else if (mode === RESIZE) {
-
-                    this.$textArea = configuration.$.textArea.clone();
-
-                    svgPoint.x = 0;
-                    svgPoint.y = 0;
-                    svgPoint = svgPoint.matrixTransform(matrix);
-
-                    this.$topLeftPoint = new Vector([svgPoint.x, svgPoint.y]);
-
-                    var rot = -this.$._rotation * Math.PI / 180,
-                        sin = Math.sin(rot),
-                        cos = Math.cos(rot);
-
-                    var distanceX = downPoint.x - svgPoint.x,
-                        distanceY = downPoint.y - svgPoint.y;
-                    // diagonal in real px
-                    this.$resizeDistanceX = distanceX * cos - sin * distanceY;
-                    this.$resizeDistanceY = distanceX * sin + cos * distanceY;
-
                 } else if (mode === SCALE) {
 
                     this.set({
@@ -1074,28 +1047,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return 0.1 * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
-            deleteConfiguration: function (e) {
-
-                if (!this.$hasTouch && e.domEvent.which !== 1) {
-                    // not a first mouse button click
-                    return;
-                }
-
-                if (this.$.product) {
-                    var configuration = this.$.configuration,
-                        productViewer = this.$.productViewer;
-
-                    this.$.product.$.configurations.remove(configuration);
-                    e.preventDefault();
-
-                    this.$.bus.trigger('Application.productChanged', this.$.product);
-                    if (productViewer && productViewer.$.selectedConfiguration === configuration) {
-                        productViewer.set('selectedConfiguration', null);
-                    }
-
-                }
-            },
-
 
             substract: function (value, minuend) {
                 return value - minuend;
@@ -1147,10 +1098,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             isScalable: function () {
                 return this.isSelectedConfiguration() && this.get("configuration.isScalable()");
-            }.onChange("selected"),
-
-            isResizeable: function () {
-                return this.isSelectedConfiguration() && this.get("configuration.type") === "text";
             }.onChange("selected"),
 
             isRotatable: function () {

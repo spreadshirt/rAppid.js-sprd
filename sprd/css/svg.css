@@ -35,6 +35,10 @@ image {
     height: 80px;
 }
 
+.configuration-viewer .asset-container {
+    cursor: pointer;
+}
+
 .configuration-viewer.hide-configuration {
     opacity: 0;
 }

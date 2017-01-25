@@ -37,10 +37,6 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', 'js/core/Bus'], f
             return this.callBase();
         },
 
-        isNotMobile: function () {
-            return !this.$stage.$browser.isMobile;
-        },
-
         _loadFonts: function () {
 
             var configuration = this.$.configuration;
@@ -57,36 +53,6 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', 'js/core/Bus'], f
                 var font = fonts[i];
                 svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font, extension));
             }
-        },
-
-        _handleClick: function () {
-            if (this.$.configuration && this.get('productViewer.product.restrictions.example') && !this.$exampleFirstClick) {
-                this.$exampleFirstClick = true;
-                this.$.configuration.$.selection.set({
-                    anchorIndex: 0,
-                    activeIndex: this.$.configuration.$.textFlow.textLength() - 1
-                });
-            }
-        },
-
-        handleKeyPress: function (e) {
-            this.$.textArea.handleKeyPress(e);
-        },
-
-        addChar: function (c) {
-            this.$.textArea.addChar(c);
-        },
-
-        handleKeyDown: function (e) {
-            this.$.textArea.handleKeyDown(e);
-        },
-
-        _focus: function () {
-            var textArea = this.$.textArea;
-            if (textArea) {
-                textArea.focus();
-            }
-
         },
 
         bus_StageRendered: function() {
