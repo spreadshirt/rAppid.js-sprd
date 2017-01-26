@@ -4,7 +4,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
         var MOVE = "move",
             SCALE = "scale",
             RESIZE = "resize",
-            ROTATE = "rotate",
             GESTURE = "gesture";
 
         var validateConfigurationOnTransform = true,
@@ -32,7 +31,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 _assetContainer: null,
                 _scaleHandle: null,
-                _rotateHandle: null,
                 _resizeHandle: null,
 
                 productViewer: null,
@@ -236,8 +234,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (productViewer && productViewer.$.editable === true) {
                     var assetContainer = this.$._assetContainer,
                         scaleHandle = this.$._scaleHandle,
-                        resizeHandle = this.$._resizeHandle,
-                        rotateHandle = this.$._rotateHandle;
+                        resizeHandle = this.$._resizeHandle;
 
 
                     assetContainer.bindDomEvent("click", function () {
@@ -255,11 +252,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     resizeHandle && resizeHandle.bindDomEvent("pointerdown", function (e) {
                         self._down(e, RESIZE);
                     });
-
-                    rotateHandle && rotateHandle.bindDomEvent("pointerdown", function (e) {
-                        self._down(e, self._isGesture(e) ? GESTURE : ROTATE, rotateHandle);
-                    });
-
 
                     if (productViewer && this.$hasTouch) {
                         productViewer.bindDomEvent("pointerdown", function (e) {
@@ -280,8 +272,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     });
 
                     scaleHandle && scaleHandle.bindDomEvent("click", preventDefault);
-                    rotateHandle && rotateHandle.bindDomEvent("click", preventDefault);
-
                 }
 
             },
@@ -496,11 +486,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     // diagonal in real px
                     this.$scaleDiagonalDistance = scaleVector.distance();
-                } else if (mode === ROTATE) {
-
                     this.$startRotateVector = downVector.subtract(this.$centerPoint);
                     this.set("_rotationRadius", Vector.distance([halfHeight, halfWidth]) / factor.x);
-
                 } else if (mode === GESTURE) {
                     // gesture -> start from beginning
 
@@ -628,6 +615,44 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (this.$moving && this.$window) {
                     this.$window.bindDomEvent("pointermove", this.$moveHandler);
                 }
+            },
+
+            moveRotate: function(x, y, configuration, userInteractionOptions) {
+                var startVector = this.$startRotateVector;
+
+                var currentVector = Vector.subtract([x, y], this.$centerPoint);
+
+                var scalarProduct = Vector.scalarProduct(startVector, currentVector);
+                var rotateAngle = Math.acos(scalarProduct / (startVector.distance() * currentVector.distance())) * 180 / Math.PI;
+
+                var crossVector = Vector.vectorProduct(startVector, currentVector);
+
+                if (crossVector.components[2] < 0) {
+                    rotateAngle *= -1;
+                }
+
+                rotateAngle = Math.round(configuration.$.rotation + rotateAngle, 2);
+
+                if (rotateSnippingEnabled && !this.$.shiftKey) {
+                    if (rotateAngle < 0) {
+                        rotateAngle += 360;
+                    }
+
+                    rotateAngle %= 360;
+
+                    if (rotateAngle % rotationSnippingAngle < rotationSnippingThreshold) {
+                        rotateAngle = Math.floor(rotateAngle / rotationSnippingAngle) * rotationSnippingAngle;
+                    } else if (rotationSnippingAngle - rotateAngle % rotationSnippingAngle < rotationSnippingThreshold) {
+                        rotateAngle = (Math.floor(rotateAngle / rotationSnippingAngle) + 1) * rotationSnippingAngle
+                    }
+
+                }
+                var factor = this.localToGlobalFactor();
+                var halfWidth = (this.$._configurationWidth / 2) * factor.x,
+                    halfHeight = (this.$._configurationHeight / 2) * factor.y;
+
+                this.set("_rotationRadius", Vector.distance([halfHeight, halfWidth]) / factor.x);
+                this.set("_rotation", rotateAngle, userInteractionOptions);
             },
 
             _move: function (e, mode) {
@@ -799,38 +824,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         _configurationHeight: newConfigurationHeight
                     }, userInteractionOptions);
 
-                } else if (mode === ROTATE) {
-                    var startVector = this.$startRotateVector;
-
-                    currentVector = Vector.subtract([x, y], this.$centerPoint);
-
-                    var scalarProduct = Vector.scalarProduct(startVector, currentVector);
-                    var rotateAngle = Math.acos(scalarProduct / (startVector.distance() * currentVector.distance())) * 180 / Math.PI;
-
-                    var crossVector = Vector.vectorProduct(startVector, currentVector);
-
-                    if (crossVector.components[2] < 0) {
-                        rotateAngle *= -1;
-                    }
-
-                    rotateAngle = Math.round(configuration.$.rotation + rotateAngle, 2);
-
-                    if (rotateSnippingEnabled && !this.$.shiftKey) {
-                        if (rotateAngle < 0) {
-                            rotateAngle += 360;
-                        }
-
-                        rotateAngle %= 360;
-
-                        if (rotateAngle % rotationSnippingAngle < rotationSnippingThreshold) {
-                            rotateAngle = Math.floor(rotateAngle / rotationSnippingAngle) * rotationSnippingAngle;
-                        } else if (rotationSnippingAngle - rotateAngle % rotationSnippingAngle < rotationSnippingThreshold) {
-                            rotateAngle = (Math.floor(rotateAngle / rotationSnippingAngle) + 1) * rotationSnippingAngle
-                        }
-
-                    }
-
-                    this.set("_rotation", rotateAngle, userInteractionOptions);
+                    this.moveRotate(x, y, configuration, userInteractionOptions);
 
                 } else if (mode === GESTURE) {
 
@@ -898,15 +892,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         snapLinesList && snapLinesList.clear();
 
                     } else if (mode === SCALE) {
-                        changed = configuration.$.offset !== this.$._offset && configuration.$.scale !== this.$._scale;
+                        changed = configuration.$.offset !== this.$._offset && configuration.$.scale !== this.$._scale || configuration.$.rotation !== this.$._rotation;
                         configuration.set({
                             scale: this.$._scale,
-                            offset: this.$._offset
+                            offset: this.$._offset,
+                            'rotation': this.$._rotation
                         });
-                    } else if (mode === ROTATE) {
-                        changed = configuration.$.rotation !== this.$._rotation;
-                        configuration.set('rotation', this.$._rotation);
-
                     } else if (mode === GESTURE) {
                         changed = configuration.$.rotation !== this.$._rotation && configuration.$.scale !== this.$._scale;
                         configuration.set({
@@ -1113,7 +1104,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             }.onChange("selected"),
 
             isRotating: function () {
-                return this.$._mode === ROTATE;
+                return this.$._mode === SCALE;
             }.onChange("_mode"),
 
             isMoving: function() {
@@ -1123,6 +1114,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             isScaling: function() {
                 return this.$._mode === SCALE;
             }.onChange("_mode"),
+
+            getLeftUpperCorner: function() {
+
+            },
+
+            getRightBottomCorner: function() {
+
+            },
 
             hasError: function () {
                 return !this.$.configuration.isValid() && this.get('productViewer.editable') === true;
@@ -1171,8 +1170,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     y += arguments[i] * arguments[i];
                 }
                 return Math.sqrt(y);
+            },
+
+            enlarge: function(val) {
+                return 100 * val;
+            },
+
+            minus: function(val) {
+                return -val;
             }
-
-
         });
     });

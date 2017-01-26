@@ -36,7 +36,7 @@ image {
 }
 
 .configuration-viewer .asset-container {
-    cursor: pointer;
+    cursor: move;
 }
 
 .configuration-viewer.hide-configuration {
@@ -116,7 +116,7 @@ image {
     stroke: none;
 }
 
-.configuration-viewer .rotation-circle {
+.configuration-viewer .rotation-circle, .rotation-line {
     fill: none;
     stroke-width: 1;
     stroke: #ffa53b;

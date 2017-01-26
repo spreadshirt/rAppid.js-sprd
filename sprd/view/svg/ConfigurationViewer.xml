@@ -5,6 +5,9 @@
     <svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{_rotationRadius}"
                 visible="{isRotating()}"/>
 
+    <svg:line class="rotation-line" x1="{minus(enlarge(_configurationWidth))}" x2="{enlarge(_configurationWidth)}" y1="{minus(enlarge(_configurationHeight))}" y2="{enlarge(_configurationHeight)}"
+              visible="{isScaling()}"/>
+
     <svg:clipPath cid="clipPath" id="{id()}" clip-rule="evenodd"
                   translateX="{invert(cv.translateX)}" translateY="{invert(cv.translateY)}"
                   rotation="{invert(cv.rotation)}" rotationX="{cv.rotationX}" rotationY="{cv.rotationY}">
@@ -29,7 +32,7 @@
                 {getLocalizedSize(_configurationWidth,0)} x
                 {getLocalizedSize(_configurationHeight,0)}
             </svg:text>
-            <svg:text visible="{isRotating()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
+            <svg:text visible="{isRotating()}" font-size="{_fontSize}" dy="1.4em" x="{half(_configurationWidth)}" text-anchor="middle">
                 {formatSize(_rotation)} °
             </svg:text>
             <svg:text visible="{isMoving()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
@@ -54,23 +57,6 @@
                 <svg:path
                         _transform="matrix(0.8,0,0,-0.8,0,217)"
                         d="M 34.90625 151.15625 L 34.90625 186.53125 L 47.1875 174.25 L 106.8125 233.84375 L 94.4375 246.21875 L 129.78125 246.21875 L 129.78125 210.875 L 117.40625 223.25 L 57.8125 163.625 L 70.28125 151.15625 L 34.90625 151.15625 z"
-                        style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"/>
-            </svg:g>
-        </svg:g>
-
-        <svg:rect cid="_rotateHandle" class="configuration-handle rotate"
-                  selected="{isRotatable()}"
-                  x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
-                  y="{pixelToViewBox(_handle-Offset)}"
-                  width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
-
-        <svg:g selected="{isRotatable()}" class="configuration-handle-icon rotate"
-               scaleX="{pixelToViewBox(_handleIconScale)}" scaleY="{scaleX}"
-               translateX="{_rotateHandle.x}" translateY="{_rotateHandle.y}"
-               style="pointer-events: none">
-            <svg:g _transform="scale(0.15,-0.15) translate(10,-215)">
-                <svg:path
-                        d="m 40.168705,203.17868 c -9.940214,0 -18.978182,-3.82724 -25.75,-10.075 l -11.225,8.475 3.95,-28.025 28,3.95 -10.9,8.2 c 4.401685,3.41947 9.919574,5.475 15.925,5.475 14.3594,0 26,-11.6406 26,-26 0,-14.3594 -11.6406,-26 -26,-26 -8.18798,0 -15.48418,3.7843 -20.25,9.7 l -8.525,-8.525 c 6.96843,-8.0726 17.27421,-13.175 28.775,-13.175 20.986816,0 38,17.0132 38,38 0,20.9868 -17.013184,38 -38,38 z"
                         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"/>
             </svg:g>
         </svg:g>
