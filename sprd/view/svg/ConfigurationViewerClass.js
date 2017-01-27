@@ -94,6 +94,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this.bind("change:_rotation", this._transformationChanged, this);
                 }
 
+                this.bind('configuration', "change:highlight", this.highlightConfiguration, this);
                 this.bind('productViewer', 'change:width', this._productViewerSizeChanged, this);
                 this.bind(["productViewer", "change:selectedConfiguration"], function() {
                     if (this.isSelectedConfiguration()) {
@@ -137,6 +138,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             and: function(a, b) {
                 return a && b
+            },
+
+            highlightConfiguration: function() {
+                this.get("configuration.highlight") ? this.addClass("highlighted") : this.removeClass("highlighted");
             },
 
             formatSize: function(size) {
@@ -326,7 +331,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$wasSelected = false;
             },
 
-            addSnapLines: function(x, y, width, height, rot) {
+            addSnapLines: function(owner, x, y, width, height, rot) {
                 for (var dimension = 0; dimension < 2; dimension++) {
                     for (var offsetCounter = 0; offsetCounter < 3; offsetCounter++) {
                         var midX = x + width / 2;
@@ -336,14 +341,17 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                         var newLine = new Line(newPoint.x, newPoint.y, rot + dimension * Math.PI / 2);
                         var alreadyAdded = false;
-                        // for (var i = 0; i < this.$snapLines.length; i++) {
-                        //     if (this.$snapLines[i].equals(newLine)) {
-                        //         alreadyAdded = true;
-                        //     }
-                        // }
+                        for (var i = 0; i < this.$snapLines.length; i++) {
+                            var owners = this.$snapLines[i].owners;
+                            var line = this.$snapLines[i].line;
+                            if (line.equals(newLine)) {
+                                owners.push(owner);
+                                alreadyAdded = true;
+                            }
+                        }
 
                         if (!alreadyAdded) {
-                            this.$snapLines.push(newLine);
+                            this.$snapLines.push({owners: [owner], line: newLine});
                         }
                     }
                 }
@@ -467,6 +475,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 if (mode === MOVE) {
 
+                    this._removeSnapLines();
                     this.$snapLines = [];
 
                     if (moveSnippingEnabled) {
@@ -497,11 +506,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                                     width = otherConfiguration.width();
                                     var rot = self.degreeToRadian(otherConfiguration.$.rotation);
 
-                                    this.addSnapLines(x, y, width, height, rot);
+                                    this.addSnapLines(otherConfiguration, x, y, width, height, rot);
                                 }
                             }
 
-                            this.addSnapLines(0, 0, printArea.width(), printArea.height(), 0);
+                            this.addSnapLines(printArea, 0, 0, printArea.width(), printArea.height(), 0);
                         }
 
                     }
@@ -623,11 +632,27 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
+            removeHighlighting: function() {
+                var configuration = this.$.configuration;
+                var printArea = configuration.$.printArea;
+
+                printArea.set('highlight', false);
+                var configurationsOnPrintArea = this.$.productViewer.$.product.getConfigurationsOnPrintAreas([printArea]) || [];
+                _.each(configurationsOnPrintArea, function(config) {
+                    config.set('highlight', false);
+                })
+            },
+
+            _removeSnapLines: function() {
+                var snapLines = this.$.printAreaViewer.$.snapLines;
+                snapLines && snapLines.clear();
+                this.removeHighlighting();
+            },
+
             _beforeDestroy: function() {
                 this.callBase();
 
-                var snapLines = this.$.printAreaViewer.$.snapLines;
-                snapLines && snapLines.clear();
+                this._removeSnapLines();
 
                 var $w = this.$stage.$window;
                 this.$window = this.$window || this.dom($w);
@@ -697,8 +722,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var newX = configuration.$.offset.$.x - deltaX * factor.x,
                     newY = configuration.$.offset.$.y - deltaY * factor.y,
                     snapX = Math.max(), snapY = Math.max(), snapRotDelta = Math.max(),
-                    posX, posY, snapPosX, snapPosY, potentialPosition, snapRot, translatedX, translatedY, snapDistance = Math.max(), snappedLine, snapPosDeltaX, snapPosDeltaY,
+                    posX, posY, snapPosX, snapPosY, potentialPosition, snapRot, translatedX, translatedY, snapDistance = Math.max(), snappedLine, snapPosDeltaX, snapPosDeltaY, snappedOwners,
                     rot = self.degreeToRadian(this.$._rotation);
+
+                this.removeHighlighting();
 
                 if (!this.$.shiftKey) { // check if there is something to snap in the near
                     for (var positionFactor = 0; positionFactor <= 2; positionFactor++) {
@@ -709,12 +736,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         var rotatedVector = new Vector([rotatedPoint.x, rotatedPoint.y]);
 
                         for (var p = 0; p < this.$snapLines.length; p++) {
-                            var snapLine = this.$snapLines[p];
+                            var owners = this.$snapLines[p].owners;
+                            var snapLine = this.$snapLines[p].line;
 
                             potentialPosition = snapLine.project(rotatedPoint.x, rotatedPoint.y);
                             var distance = rotatedVector.subtract(potentialPosition).distance();
 
                             if (Math.abs(distance) <= threshold && Math.abs(distance) < Math.abs(snapDistance)) {
+                                snappedOwners = owners;
                                 snapDistance = distance;
                                 snappedLine = snapLine;
                                 snapPosDeltaX = rotatedPoint.x - potentialPosition.components[0];
@@ -728,6 +757,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         newX -= snapPosDeltaX;
                         newY -= snapPosDeltaY;
                         snapLines.push(snappedLine.getSvgLine(4000));
+
+                        _.each(snappedOwners, function(owner) {
+                            owner.set('highlight', true);
+                        });
                     }
                 }
                 var snapLinesList = this.$.printAreaViewer.$.snapLines;
@@ -919,10 +952,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             changed = true;
 
                         }
-
-                        var snapLinesList = this.$.printAreaViewer.$.snapLines;
-                        snapLinesList && snapLinesList.clear();
-
+                        this._removeSnapLines();
                     } else if (mode === SCALE) {
                         changed = configuration.$.offset !== this.$._offset && configuration.$.scale !== this.$._scale || configuration.$.rotation !== this.$._rotation;
                         configuration.set({
@@ -966,8 +996,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             disableMoveSnipping: function() {
                 moveSnippingEnabled = false;
-                var snapLines = this.get('printAreaViewer.snapLines');
-                snapLines && snapLines.clear();
+                this._removeSnapLines();
             },
 
             enableMoveSnipping: function() {
