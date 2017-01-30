@@ -61,6 +61,10 @@ define(["js/ui/View", "js/core/Bus"], function(View, Bus) {
                     bus.trigger("DndImage.DropHoverStatus", DROP_HOVERED.INVALID);
                     break;
                 case DROP_HOVERED.NO:
+                    this.removeClass('invalid');
+                    this.removeClass('ok');
+                    stage && stage.removeClass("dnd-invalid");
+                    stage && stage.removeClass("dnd-ok");
                     bus.trigger("DndImage.DropHoverStatus", DROP_HOVERED.NO);
                     break;
             }

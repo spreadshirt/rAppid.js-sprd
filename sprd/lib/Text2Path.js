@@ -86,6 +86,7 @@ define([], function() {
 
                     var char = chars[i],
                         glyph = (char != "'" ? xpath("//svg:glyph[@unicode='" + char + "']")[0] : null ) ||
+                            (char == "'" ? xpath('//svg:glyph[@unicode="\'"]')[0] : null ) ||
                             xpath("//svg:glyph[@unicode='&#x" + chars.charCodeAt(i).toString(16) + "']")[0];
 
 

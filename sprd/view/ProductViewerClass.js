@@ -282,25 +282,46 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                         newConfiguration = null;
                     } else {
                         var configurations = self.$.product.$.configurations,
-                            configurationsOnView = self.getConfigurationsOnActiveView(configurations);
+                            configurationsOnView = self.getConfigurationsOnActiveView(configurations).filter(function(c) {
+                                return c !== newConfiguration
+                            });
 
                         var newOffset = newConfiguration.$.offset,
                             newX = Math.round(newOffset.$.x),
                             newY = Math.round(newOffset.$.y);
 
-                        configurationsOnView = configurationsOnView.filter(function(configuration) {
-                            var offset = configuration.$.offset,
+                        var shift = Math.round((newConfiguration.get("printArea.boundary.size.width") || 500) / 10);
+
+                        for (var i = 0; i < configurationsOnView.length; i++) {
+
+                            var foundConfigurationOnSamePosition = false;
+
+                            for (var j = 0; j < configurationsOnView.length; j++) {
+                                var configuration = configurationsOnView[j];
+
+                                var offset = configuration.$.offset,
                                 x = Math.round(offset.$.x),
                                 y = Math.round(offset.$.y);
 
-                            return (newX == x) && (newY == y);
-                        });
-                        if(configurationsOnView.length > 0) {
-                            newOffset.set({
-                                x: newOffset.$.x + 20,
-                                y: newOffset.$.y + 20
-                            });
+                                if ((newX == x) && (newY == y)) {
+                                    foundConfigurationOnSamePosition = true;
+                                    break;
+                                }
+                            }
+
+                            if (foundConfigurationOnSamePosition) {
+                                newX += shift;
+                                newY += shift;
+                            } else {
+                                break;
+                            }
                         }
+
+                        newOffset.set({
+                            x: newX,
+                            y: newY
+                        });
+
 
                         newConfiguration.$stage = null;
                         bus.setUp(newConfiguration);

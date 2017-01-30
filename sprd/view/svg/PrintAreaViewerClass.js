@@ -25,6 +25,8 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
 
             this.$configurationViewerCache = {};
             this.callBase();
+
+            this.bind("_viewMap.printArea", "change:highlight", this.highlightConfiguration, this);
         },
 
         _commitProductViewer: function(productViewer) {
@@ -131,6 +133,10 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
 
         _onConfigurationRemoved: function (e) {
             this._removeConfiguration(e.$.item);
+        },
+
+        highlightConfiguration: function() {
+            this.getPrintArea().get("highlight") ? this.addClass("highlighted") : this.removeClass("highlighted");
         },
 
         _addConfiguration: function (configuration) {

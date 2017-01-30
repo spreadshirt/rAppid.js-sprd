@@ -1,4 +1,5 @@
 define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "sprd/config/AfterEffects", "underscore", "rAppid", "sprd/helper/AfterEffectHelper"], function(Base, UnitUtil, Design, flow, Size, AfterEffects, _, rappid, AfterEffectHelper) {
+
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
         initializeConfiguration: function(configuration, options, callback) {
 
@@ -150,7 +151,10 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     }
 
                     configuration.$.printColors.reset(printColors);
-                    configuration.set('printType', printType, {force: true});
+                    configuration.set('printType', printType, {
+                        force: true,
+                        preventValidation: true
+                    });
                 })
                 .seq(function() {
                     if (parameter.mode == 'admin' && design && !design.get('localImage') && properties && properties.afterEffect) {
