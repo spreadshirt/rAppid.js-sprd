@@ -910,7 +910,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            getPrintType: function(printArea, configuration, printType, printTypeId, product) {
+            getPrintType: function(printArea, configuration, product) {
                 var possiblePrintTypes,
                     fontFamily = null,
                     appearanceId = product.get('appearance.id');
@@ -979,7 +979,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     })
                     .seq(function() {
                         var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, product.get('appearance.id'));
-                        printType = self.getPrintType(printArea, configuration, printType, printTypeId, product);
+                        printType = self.getPrintType(printArea, configuration, product);
                     })
                     .seq(function(cb) {
                         printType.fetch(null, cb);
