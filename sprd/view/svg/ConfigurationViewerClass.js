@@ -331,33 +331,52 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$wasSelected = false;
             },
 
-            addSnapLines: function(owner, x, y, width, height, rot) {
-                for (var dimension = 0; dimension < 2; dimension++) {
-                    for (var offsetCounter = 0; offsetCounter < 3; offsetCounter++) {
-                        var midX = x + width / 2;
-                        var midY = y + height / 2;
-
-                        var newPoint = this.rotatePoint(x + dimension * offsetCounter * width / 2, y + (1 - dimension) * offsetCounter * height / 2, rot, midX, midY);
-
-                        var newLine = new Line(newPoint.x, newPoint.y, rot + dimension * Math.PI / 2);
-                        var alreadyAdded = false;
-                        for (var i = 0; i < this.$snapLines.length; i++) {
-                            var owners = this.$snapLines[i].owners;
-                            var line = this.$snapLines[i].line;
-                            if (line.equals(newLine)) {
-                                owners.push(owner);
-                                alreadyAdded = true;
-                            }
+            addSnapLine: function(x, y, rot, owner) {
+                var newLine = new Line(x, y, rot);
+                var alreadyAdded = false;
+                for (var i = 0; i < this.$snapLines.length; i++) {
+                    var owners = this.$snapLines[i].owners;
+                    var line = this.$snapLines[i].line;
+                    if (line.equals(newLine)) {
+                        if (owners.indexOf(owner) === -1) {
+                            owners.push(owner);
                         }
 
-                        if (!alreadyAdded) {
-                            this.$snapLines.push({owners: [owner], line: newLine});
-                        }
+                        alreadyAdded = true;
                     }
+                }
+
+                if (!alreadyAdded) {
+                    this.$snapLines.push({owners: [owner], line: newLine});
                 }
             },
 
+            addSnapLinesAtPoint: function(x, y, rot, owner) {
+                this.addSnapLine(x, y, rot, owner);
+                this.addSnapLine(x, y, rot + Math.PI / 2, owner);
+            },
+
+
+            addSnapLines: function(point, dimension, length, pointAmounts, midPoint, rot, owner) {
+                var stepSize = length / (pointAmounts - 1),
+                    currentPoint = JSON.parse(JSON.stringify(point)),
+                    rotatedPoint;
+
+                for (var i = 0; i < pointAmounts; i++) {
+                    currentPoint[dimension] += stepSize;
+                    rotatedPoint = this.rotatePoint(currentPoint.x, currentPoint.y, rot, midPoint);
+                    this.addSnapLinesAtPoint(rotatedPoint.x, rotatedPoint.y, rot, owner);
+                }
+            },
+
+
             rotatePoint: function(x, y, rot, midX, midY) {
+
+                if (midX instanceof Object) {
+                    midY = midX.y;
+                    midX = midX.x;
+                }
+
                 var sin = Math.sin(rot);
                 var cos = Math.cos(rot);
                 var difX = x - midX;
@@ -382,6 +401,26 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             distanceFromMidPoint: function(x, y, midX, midY) {
                 return Math.sqrt(Math.pow(x - midX, 2) + Math.pow(y - midY, 2));
+            },
+
+            addSnapLinesOfConfiguration: function(otherConfiguration) {
+                var x = otherConfiguration.$.offset.$.x,
+                    y = otherConfiguration.$.offset.$.y,
+                    height = otherConfiguration.height(),
+                    width = otherConfiguration.width(),
+                    rot = this.degreeToRadian(otherConfiguration.$.rotation),
+                    leftUpperCorner = {x: x, y: y},
+                    midPoint = {x: x + width / 2, y: y + height / 2};
+
+                this.addSnapLines(otherConfiguration.$.offset.$, 'x', width, 3, midPoint, rot, otherConfiguration);
+                this.addSnapLines(otherConfiguration.$.offset.$, 'y', height, 3, midPoint, rot, otherConfiguration);
+            },
+
+            addSnapLinesOfPrintArea: function(printArea) {
+                var leftUpperCorner = {x: 0, y: 0};
+                var midPoint = {x: printArea.width() / 2, y: printArea.height() / 2};
+                this.addSnapLines(leftUpperCorner, 'x', printArea.width(), 3, midPoint, 0, printArea);
+                this.addSnapLines(leftUpperCorner, 'y', printArea.height(), 3, midPoint, 0, printArea);
             },
 
             _down: function(e, mode, initiator) {
@@ -483,12 +522,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         var printArea = configuration.$.printArea;
 
                         if (printArea) {
-
-                            var x,
-                                y,
-                                height,
-                                width;
-
                             if (productViewer && productViewer.$.product) {
                                 var configurationsOnPrintArea = productViewer.$.product.getConfigurationsOnPrintAreas([printArea]) || [],
                                     myIndex = _.indexOf(configurationsOnPrintArea, configuration);
@@ -499,18 +532,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                                 for (var i = 0; i < configurationsOnPrintArea.length; i++) {
                                     var otherConfiguration = configurationsOnPrintArea[i];
-
-                                    x = otherConfiguration.$.offset.$.x;
-                                    y = otherConfiguration.$.offset.$.y;
-                                    height = otherConfiguration.height();
-                                    width = otherConfiguration.width();
-                                    var rot = self.degreeToRadian(otherConfiguration.$.rotation);
-
-                                    this.addSnapLines(otherConfiguration, x, y, width, height, rot);
+                                    this.addSnapLinesOfConfiguration(otherConfiguration);
                                 }
                             }
 
-                            this.addSnapLines(printArea, 0, 0, printArea.width(), printArea.height(), 0);
+                            self.addSnapLinesOfPrintArea(printArea);
                         }
 
                     }
