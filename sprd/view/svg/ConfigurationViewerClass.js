@@ -1,5 +1,5 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer", "xaml!sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus", "sprd/util/UnitUtil", "sprd/entity/BendingTextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationRenderer", "sprd/type/Line"],
-    function(SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus, UnitUtil, BendingTextConfiguration, BendingTextConfigurationRenderer, Line) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer", "xaml!sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus", "sprd/util/UnitUtil", "sprd/entity/BendingTextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationRenderer", "sprd/type/Line", "sprd/extensions/number"],
+    function(SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus, UnitUtil, BendingTextConfiguration, BendingTextConfigurationRenderer, Line, extension) {
 
         var MOVE = "move",
             SCALE = "scale",
@@ -363,7 +363,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     rotatedPoint;
 
                 for (var i = 0; i < pointAmounts; i++) {
-                    currentPoint[dimension] += stepSize;
+                    currentPoint[dimension] = point[dimension] + i * stepSize;
                     rotatedPoint = this.rotatePoint(currentPoint.x, currentPoint.y, rot, midPoint);
                     this.addSnapLinesAtPoint(rotatedPoint.x, rotatedPoint.y, rot, owner);
                 }
@@ -391,7 +391,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var oldDistance = this.distanceFromMidPoint(x, y, midX, midY);
                 var newDistance = this.distanceFromMidPoint(newPoint.x, newPoint.y, midX, midY);
 
-                var sameDistanceFromMidPoint = this.floatEqual(oldDistance, newDistance);
+                var sameDistanceFromMidPoint = oldDistance.equals(oldDistance);
                 if (!sameDistanceFromMidPoint) {
                     throw new Error("Rotated point does not have same distance to midpoint.")
                 }
@@ -522,19 +522,19 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         var printArea = configuration.$.printArea;
 
                         if (printArea) {
-                            if (productViewer && productViewer.$.product) {
-                                var configurationsOnPrintArea = productViewer.$.product.getConfigurationsOnPrintAreas([printArea]) || [],
-                                    myIndex = _.indexOf(configurationsOnPrintArea, configuration);
-
-                                if (myIndex !== -1) {
-                                    configurationsOnPrintArea.splice(myIndex, 1);
-                                }
-
-                                for (var i = 0; i < configurationsOnPrintArea.length; i++) {
-                                    var otherConfiguration = configurationsOnPrintArea[i];
-                                    this.addSnapLinesOfConfiguration(otherConfiguration);
-                                }
-                            }
+                            // if (productViewer && productViewer.$.product) {
+                            //     var configurationsOnPrintArea = productViewer.$.product.getConfigurationsOnPrintAreas([printArea]) || [],
+                            //         myIndex = _.indexOf(configurationsOnPrintArea, configuration);
+                            //
+                            //     if (myIndex !== -1) {
+                            //         configurationsOnPrintArea.splice(myIndex, 1);
+                            //     }
+                            //
+                            //     for (var i = 0; i < configurationsOnPrintArea.length; i++) {
+                            //         var otherConfiguration = configurationsOnPrintArea[i];
+                            //         this.addSnapLinesOfConfiguration(otherConfiguration);
+                            //     }
+                            // }
 
                             self.addSnapLinesOfPrintArea(printArea);
                         }
@@ -738,42 +738,99 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.set("_rotation", rotateAngle, userInteractionOptions);
             },
 
+            getSnapPoints: function(configuration, newX, newY, rot) {
+                var topLeftCorner = {x: newX, y: newY};
+
+                var midPoint = {
+                    x: newX + configuration.width() / 2,
+                    y: newY + configuration.height() / 2
+                };
+
+                var rotatedTopLeftCorner = this.rotatePoint(topLeftCorner.x, topLeftCorner.y, rot, midPoint.x, midPoint.y);
+                var rotatedBottomRightCorner = this.rotatePoint(topLeftCorner.x + configuration.width(), topLeftCorner.y + configuration.height(), rot, midPoint.x, midPoint.y);
+                var rotatedBottomLeftCorner = this.rotatePoint(topLeftCorner.x, topLeftCorner.y + configuration.height(), rot, midPoint.x, midPoint.y);
+                var rotatedTopRightCorner = this.rotatePoint(topLeftCorner.x + configuration.width(), topLeftCorner.y, rot, midPoint.x, midPoint.y);
+
+                return [rotatedTopLeftCorner, rotatedTopRightCorner, midPoint, rotatedBottomLeftCorner, rotatedBottomRightCorner];
+            },
+
+            getSides: function(configuration, newX, newY, rot) {
+                var topLeftCorner = {x: newX, y: newY};
+                var midPoint = {
+                    x: newX + configuration.width() / 2,
+                    y: newY + configuration.height() / 2
+                };
+                var rotatedTopLeftCorner = this.rotatePoint(topLeftCorner.x, topLeftCorner.y, rot, midPoint.x, midPoint.y);
+                var rotatedBottomLeftCorner = this.rotatePoint(topLeftCorner.x, topLeftCorner.y + configuration.height(), rot, midPoint.x, midPoint.y);
+                var rotatedTopRightCorner = this.rotatePoint(topLeftCorner.x + configuration.width(), topLeftCorner.y, rot, midPoint.x, midPoint.y);
+
+                var upperHorizontal = new Line(rotatedTopLeftCorner.x, rotatedTopLeftCorner.y, rot);
+                var lowerHorizontal = new Line(rotatedBottomLeftCorner.x, rotatedBottomLeftCorner.y, rot);
+                var leftVertical = new Line(rotatedTopLeftCorner.x, rotatedTopLeftCorner.y, rot + Math.PI / 2);
+                var rightVertical = new Line(rotatedTopRightCorner.x, rotatedTopRightCorner.y, rot + Math.PI / 2);
+                return [upperHorizontal, lowerHorizontal, leftVertical, rightVertical];
+            },
+
             snap: function(configuration, deltaX, deltaY) {
-                var self = this, distanceRotation, distanceX, distanceY,
+                var self = this,
                     snapLines = [],
                     factor = this.globalToLocalFactor(),
-                    threshold = moveSnippingThreshold * factor.x,
-                    rotThreshold = 0;
+                    threshold = moveSnippingThreshold * factor.x;
 
                 var newX = configuration.$.offset.$.x - deltaX * factor.x,
                     newY = configuration.$.offset.$.y - deltaY * factor.y,
-                    snapX = Math.max(), snapY = Math.max(), snapRotDelta = Math.max(),
-                    posX, posY, snapPosX, snapPosY, potentialPosition, snapRot, translatedX, translatedY, snapDistance = Math.max(), snappedLine, snapPosDeltaX, snapPosDeltaY, snappedOwners,
-                    rot = self.degreeToRadian(this.$._rotation);
+                    potentialPosition, snapDistance = Math.max(), snappedLine, snapPosDeltaX, snapPosDeltaY, snappedOwners,
+                    rot = self.degreeToRadian(this.$._rotation), owners, snapLine;
 
                 this.removeHighlighting();
 
+                var differenceVector;
                 if (!this.$.shiftKey) { // check if there is something to snap in the near
-                    for (var positionFactor = 0; positionFactor <= 2; positionFactor++) {
-                        posX = newX + positionFactor / 2 * configuration.width();
-                        posY = newY + positionFactor / 2 * configuration.height();
+                    var sides = this.getSides(configuration, newX, newY, rot);
+                    var distance, side;
 
-                        var rotatedPoint = this.rotatePoint(posX, posY, rot, newX + configuration.width() / 2, newY + configuration.height() / 2);
-                        var rotatedVector = new Vector([rotatedPoint.x, rotatedPoint.y]);
+                    for (var i = 0; i < sides.length; i++) {
+                        side = sides[i];
+                        for (var l = 0; l < this.$snapLines.length; l++) {
+                            snapLine = this.$snapLines[l].line;
+                            if (!snapLine.isParallelTo(side)) {
+                                continue;
+                            }
+                            owners = this.$snapLines[l].owners;
 
-                        for (var p = 0; p < this.$snapLines.length; p++) {
-                            var owners = this.$snapLines[p].owners;
-                            var snapLine = this.$snapLines[p].line;
-
-                            potentialPosition = snapLine.project(rotatedPoint.x, rotatedPoint.y);
-                            var distance = rotatedVector.subtract(potentialPosition).distance();
+                            differenceVector = side.difference(snapLine);
+                            distance = differenceVector.distance();
 
                             if (Math.abs(distance) <= threshold && Math.abs(distance) < Math.abs(snapDistance)) {
                                 snappedOwners = owners;
                                 snapDistance = distance;
                                 snappedLine = snapLine;
-                                snapPosDeltaX = rotatedPoint.x - potentialPosition.components[0];
-                                snapPosDeltaY = rotatedPoint.y - potentialPosition.components[1];
+                                snapPosDeltaX = differenceVector.getX();
+                                snapPosDeltaY = differenceVector.getY();
+                            }
+                        }
+
+                    }
+
+                    var snapPoints = this.getSnapPoints(configuration, newX, newY, rot);
+
+                    for (var p = 0; p < snapPoints.length; p++) {
+                        var snapPoint = snapPoints[p];
+                        var rotatedVector = new Vector([snapPoint.x, snapPoint.y]);
+
+                        for (l = 0; l < this.$snapLines.length; l++) {
+                            owners = this.$snapLines[l].owners;
+                            snapLine = this.$snapLines[l].line;
+
+                            potentialPosition = snapLine.project(snapPoint.x, snapPoint.y);
+                            distance = rotatedVector.subtract(potentialPosition).distance();
+
+                            if (Math.abs(distance) <= threshold && Math.abs(distance) < Math.abs(snapDistance)) {
+                                snappedOwners = owners;
+                                snapDistance = distance;
+                                snappedLine = snapLine;
+                                snapPosDeltaX = snapPoint.x - potentialPosition.getX();
+                                snapPosDeltaY = snapPoint.y - potentialPosition.getY();
                             }
 
                         }
@@ -1286,11 +1343,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             radianDifference: function(a, b) {
                 var delta = (a - b);
                 return delta <= Math.PI ? delta : delta - 2 * Math.PI;
-            },
-
-            floatEqual: function(a, b) {
-                var epsilon = Math.pow(10, -10);
-                return Math.abs(a - b) < epsilon;
             }
         });
     });
