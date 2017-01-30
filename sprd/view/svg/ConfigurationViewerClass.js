@@ -771,9 +771,18 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return [upperHorizontal, lowerHorizontal, leftVertical, rightVertical];
             },
 
+            broadcastSnappedLines: function(snappedLines) {
+                if (snappedLines && snappedLines.length > 0) {
+                    this.$.bus.trigger('ConfigurationViewer.snappedToLine', {
+                        configurationViewer: this,
+                        lines: snappedLines
+                    });
+                }
+            },
+
             snap: function(configuration, deltaX, deltaY) {
                 var self = this,
-                    snapLines = [],
+                    snappedLines = [],
                     factor = this.globalToLocalFactor(),
                     threshold = moveSnippingThreshold * factor.x;
 
@@ -839,16 +848,17 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     if (Math.abs(snapDistance) <= threshold) {
                         newX -= snapPosDeltaX;
                         newY -= snapPosDeltaY;
-                        snapLines.push(snappedLine.getSvgLine(4000));
-
+                        snappedLines.push(snappedLine.getSvgLine(4000));
                         _.each(snappedOwners, function(owner) {
                             owner.set('highlight', true);
                         });
                     }
                 }
+
+                self.broadcastSnappedLines(snappedLines);
                 var snapLinesList = this.$.printAreaViewer.$.snapLines;
                 if (snapLinesList) {
-                    snapLinesList.reset(snapLines);
+                    snapLinesList.reset(snappedLines);
                 }
 
                 return {x: newX, y: newY};
