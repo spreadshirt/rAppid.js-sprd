@@ -11,7 +11,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 selection: null,
                 bound: null,
                 copyrightWordList: null,
-                isNew: false
+                isNew: false,
+                isTemplate: false
             },
 
             inject: {
@@ -104,6 +105,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 if (e && e.$ && e.$.operation && e.$.operation.$text) {
                     // if there was a text change, handle it as configuration is not new anymore
                     this.set('isNew', false);
+                    this.set('isTemplate', false);
                 }
 
 
