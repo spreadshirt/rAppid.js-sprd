@@ -22,18 +22,6 @@
     <svg:circle class="rotation-center" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{pixelToViewBox(2)}"
                 visible="{isRotating()}"/>
 
-    <ui:ItemsView cid="snapPoints" items="{snapPoints}" itemKey="point" tagName="g" namespace="http://www.w3.org/2000/svg" class="snap-lines">
-        <js:Template name="item">
-            <svg:circle class="rotation-center" cx="{point.x}" cy="{point.y}" r="2"/>
-        </js:Template>
-    </ui:ItemsView>
-
-    <ui:ItemsView cid="snapSides" items="{snapSides}" itemKey="side" tagName="g" namespace="http://www.w3.org/2000/svg" class="snap-lines">
-        <js:Template name="item">
-            <svg:line class="snap-line" x1="{side.x1}" x2="{side.x2}" y1="{side.y1}" y2="{side.y2}"/>
-        </js:Template>
-    </ui:ItemsView>
-
     <svg:g translateX="{flipOffsetX()}" translateY="{flipOffsetY()}">
         <svg:rect class="configuration-boundary"
                   selected="{isSelectedConfigurationOrConfigurationHasError()}"
