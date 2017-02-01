@@ -455,7 +455,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 var self = this;
 
-                var finalizeFnc = function(configuration) {
+                var finalizeFnc = function(configuration, params) {
 
                     configuration.$.selection.set({
                         activeIndex: configuration.$.textFlow.textLength() - 1,
@@ -745,7 +745,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         configuration.init({}, cb);
                     })
                     .seq(function() {
-                        finalizeFnc(this.vars.configuration);
+                        finalizeFnc(this.vars.configuration, params);
                     })
                     .exec(function(err, results) {
                         if (!err && params.addToProduct) {
@@ -1258,6 +1258,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             }, 'offset': offset,
                             rotation: textConfiguration.$.rotation,
                             originalConfiguration: textConfiguration
+                        }, {
+                            force: true
                         });
 
                         config.set("_size", config.$._size, {force: true});
