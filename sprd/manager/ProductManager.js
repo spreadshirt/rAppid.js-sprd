@@ -1258,6 +1258,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             }, 'offset': offset,
                             rotation: textConfiguration.$.rotation,
                             originalConfiguration: textConfiguration
+                        }, {
+                            force: true
                         });
 
                         config.set("_size", config.$._size, {force: true});
