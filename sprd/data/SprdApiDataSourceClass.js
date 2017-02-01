@@ -47,7 +47,8 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                 parsePayloadOnCreate: false,
                 parsePayloadOnUpdate: false,
                 keepRawData: false,
-                noCache: false
+                noCache: false,
+                mode: null
             },
 
             $defaultProcessorFactory: DefaultProcessor,
@@ -99,6 +100,13 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                 if (/\bProduct\b/.test(resource.constructor.name)) {
                     _.defaults(ret, {
                         mode: "designer"
+                    });
+                }
+
+                var mode = this.$.mode;
+                if (mode) {
+                    ret = _.defaults(ret, {
+                        mode: mode
                     });
                 }
 
