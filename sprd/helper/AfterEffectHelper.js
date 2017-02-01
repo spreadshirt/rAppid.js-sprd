@@ -1,4 +1,4 @@
-define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/animFrame'], function(Size, Base, flow, animFrame) {
+define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/AnimFrame'], function(Size, Base, flow, AnimFrame) {
 
         return {
             computeProcessedImageDebounced: function(design, afterEffect, options, callback) {
