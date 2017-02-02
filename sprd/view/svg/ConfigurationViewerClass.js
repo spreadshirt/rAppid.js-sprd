@@ -572,7 +572,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                                 }
                             }
 
-                            //self.addSnapLinesOfPrintArea(printArea);
+                            self.addSnapLinesOfPrintArea(printArea);
                         }
 
                     }
