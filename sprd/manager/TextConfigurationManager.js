@@ -10,8 +10,8 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 fontFamilies = product.$context.$contextModel.getCollection("fontFamilies"),
                 properties = configuration.$.properties;
 
-            if (properties && properties.autoFlow) {
-                configuration.set('autoFlow', properties.autoFlow)
+            if (properties && properties.autoGrow) {
+                configuration.set('autoGrow', properties.autoGrow)
             }
 
             flow()

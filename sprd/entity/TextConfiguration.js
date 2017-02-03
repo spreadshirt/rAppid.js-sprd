@@ -13,7 +13,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 copyrightWordList: null,
                 isNew: false,
                 isTemplate: false,
-                autoFlow: false
+                autoGrow: false
             },
 
             inject: {
@@ -152,13 +152,13 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 var composer = this.$.composer,
                     self = this;
 
-                textArea.$.autoFlow = this.$.autoFlow;
+                textArea.$.autoGrow = this.$.autoGrow;
                 var oldWidth = this.get('composedTextFlow.measure.width');
 
                 composer.compose(textFlow, textArea.$, function (err, composedTextFlow) {
 
                     if (composedTextFlow && !skipHeight) {
-                        if (!textArea.$.autoFlow) {
+                        if (!textArea.$.autoGrow) {
                             self.$.textArea.set('height', composedTextFlow.composed.getHeight());
                         } else {
                             var alignment = composedTextFlow.getAlignmentOfWidestSpan();
@@ -509,7 +509,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 };
 
                 var properties = ret.properties || {};
-                properties.autoFlow = this.$.autoFlow;
+                properties.autoGrow = this.$.autoGrow;
                 ret.properties = properties;
 
                 return ret;

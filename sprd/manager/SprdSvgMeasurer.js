@@ -29,7 +29,7 @@ define(["text/composer/SvgMeasurer", "xaml!text/ui/SvgTextArea"], function (SvgM
 
             var layout = compositionResult.layout;
 
-            if (layout.autoFlow) {
+            if (layout.autoGrow) {
                 layout.width = compositionResult.composed.getWidth();
                 layout.height = compositionResult.composed.getHeight();
             }

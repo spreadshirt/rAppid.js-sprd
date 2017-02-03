@@ -567,7 +567,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     isNew: true,
                     fontSize: 25,
                     printColor: null,
-                    autoFlow: true
+                    autoGrow: true
                 });
 
                 var self = this,
