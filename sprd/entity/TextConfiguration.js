@@ -615,7 +615,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
             size: function () {
-                return this.textArea || Size.empty;
+                return this.$.textArea || Size.empty;
             }.onChange("textArea").on("sizeChanged"),
 
             clone: function (options) {
