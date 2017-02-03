@@ -1,7 +1,6 @@
 <sprdSvg:ConfigurationViewerClass xmlns="http://www.w3.org/1999/xhtml"
                                   xmlns:svg="js.svg"
                                   xmlns:sprdSvg="sprd.view.svg" class="{errorClass()}"
-                                  xmlns:js="js.core" xmlns:ui="js.ui"
                                   cid="cv">
 
     <svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{_rotationRadius}"
@@ -55,11 +54,8 @@
                translateX="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
                translateY="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
                style="pointer-events: none">
-            <svg:g _transform="scale(-0.15,0.15) translate(-115,-5)">
-                <svg:path
-                        _transform="matrix(0.8,0,0,-0.8,0,217)"
-                        d="M 34.90625 151.15625 L 34.90625 186.53125 L 47.1875 174.25 L 106.8125 233.84375 L 94.4375 246.21875 L 129.78125 246.21875 L 129.78125 210.875 L 117.40625 223.25 L 57.8125 163.625 L 70.28125 151.15625 L 34.90625 151.15625 z"
-                        style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"/>
+            <svg:g _transform="scale(0.02) translate(-50,10)">
+                <svg:use href="${baseUrl('sketchomat/img/icons.svg')}#rotate-scale" />
             </svg:g>
         </svg:g>
 
