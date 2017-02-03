@@ -12,7 +12,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 bound: null,
                 copyrightWordList: null,
                 isNew: false,
-                isTemplate: false
+                isTemplate: false,
+                autoFlow: false
             },
 
             inject: {
@@ -151,10 +152,26 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 var composer = this.$.composer,
                     self = this;
 
+                textArea.$.autoFlow = this.$.autoFlow;
+                var oldWidth = this.get('composedTextFlow.measure.width');
+
                 composer.compose(textFlow, textArea.$, function (err, composedTextFlow) {
 
                     if (composedTextFlow && !skipHeight) {
-                        self.$.textArea.set('height', composedTextFlow.composed.getHeight());
+                        if (!textArea.$.autoFlow) {
+                            self.$.textArea.set('height', composedTextFlow.composed.getHeight());
+                        } else {
+                            var alignment = composedTextFlow.getAlignmentOfWidestSpan();
+                            var alignmentFactor = composedTextFlow.alignmentToFactor(alignment);
+
+                            if (oldWidth) {
+                                var widthDelta = composedTextFlow.measure.width - oldWidth;
+                                self.$.offset.set('x', Number(self.$.offset.get('x')) - (widthDelta * alignmentFactor));
+                            }
+
+                            self.$.textArea.set(composedTextFlow.measure);
+                        }
+
                         self.trigger("sizeChanged");
                     }
 
@@ -491,6 +508,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     }
                 };
 
+                var properties = ret.properties || {};
+                properties.autoFlow = this.$.autoFlow;
+                ret.properties = properties;
+
                 return ret;
             },
 
@@ -594,8 +615,9 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
             size: function () {
-                return this.$.textArea || Size.empty;
-            }.onChange("textArea").on("sizeChanged"),
+                var bound = this.$.bound;
+                return (bound && new Size(bound)) || Size.empty;
+            }.onChange("bound").on("sizeChanged"),
 
             clone: function (options) {
                 options = options || {};
