@@ -6,6 +6,9 @@
     <svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{_rotationRadius}"
                 visible="{isRotating()}"/>
 
+    <svg:circle class="reference-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{outerCircleRadius(cv.configuration)}"
+                visible="{isRotating()}"/>
+
     <svg:line class="rotation-line" x1="{minus(enlarge(_configurationWidth))}" x2="{enlarge(_configurationWidth)}" y1="{minus(enlarge(_configurationHeight))}" y2="{enlarge(_configurationHeight)}"
               visible="{isScaling()}"/>
 

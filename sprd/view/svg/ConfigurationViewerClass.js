@@ -7,12 +7,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             GESTURE = "gesture";
 
         var validateConfigurationOnTransform = true,
-            rotationSnippingAngle = 45,
-            rotationSnippingThreshold = 5,
+            rotationSnippingThreshold = 1,
             rotateSnippingEnabled = true,
-            scaleSnippingThreshold = .05,
+            rotateSnapping = true,
+            rotateSnapAngle = 5,
+            scaleSnippingThreshold = 0.01,
             scaleSnippingEnabled = true,
-            scaleSnippingDistance = .2,
+            scaleSnap = true,
+            scaleSnapFactor = 0.02,
             moveSnippingEnabled = true,
             moveSnippingThreshold = 7,
             enableGestures = false;
@@ -751,27 +753,23 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 rotateAngle = Math.round(configuration.$.rotation + rotateAngle, 2);
+                rotateAngle %= 360;
+                if (rotateAngle < 0) {
+                    rotateAngle += 360;
+                }
 
                 if (rotateSnippingEnabled && !this.$.shiftKey) {
-                    if (rotateAngle < 0) {
-                        rotateAngle += 360;
+                    if (rotateSnapping) {
+                        rotateAngle -= rotateAngle % rotateSnapAngle;
                     }
 
-                    rotateAngle %= 360;
+                    var factor = this.localToGlobalFactor();
+                    var halfWidth = (this.$._configurationWidth / 2) * factor.x,
+                        halfHeight = (this.$._configurationHeight / 2) * factor.y;
 
-                    if (rotateAngle % rotationSnippingAngle < rotationSnippingThreshold) {
-                        rotateAngle = Math.floor(rotateAngle / rotationSnippingAngle) * rotationSnippingAngle;
-                    } else if (rotationSnippingAngle - rotateAngle % rotationSnippingAngle < rotationSnippingThreshold) {
-                        rotateAngle = (Math.floor(rotateAngle / rotationSnippingAngle) + 1) * rotationSnippingAngle
-                    }
-
+                    this.set("_rotationRadius", Vector.distance([halfHeight, halfWidth]) / factor.x);
+                    this.set("_rotation", rotateAngle, userInteractionOptions);
                 }
-                var factor = this.localToGlobalFactor();
-                var halfWidth = (this.$._configurationWidth / 2) * factor.x,
-                    halfHeight = (this.$._configurationHeight / 2) * factor.y;
-
-                this.set("_rotationRadius", Vector.distance([halfHeight, halfWidth]) / factor.x);
-                this.set("_rotation", rotateAngle, userInteractionOptions);
             },
 
             rotateRect: function(configuration, newX, newY, rot) {
@@ -1000,7 +998,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     scaleFactor = currentDistance / this.$scaleDiagonalDistance;
 
-                    if (scaleSnippingEnabled && Math.abs(scaleFactor - 1) % scaleSnippingDistance > scaleSnippingThreshold) {
+                    if (scaleSnippingEnabled) {
+
+                        if (scaleSnap) {
+                            scaleFactor -= scaleFactor % scaleSnapFactor;
+                        }
                         var scale = {
                             x: scaleFactor * configuration.$.scale.x,
                             y: scaleFactor * configuration.$.scale.y
@@ -1399,6 +1401,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             radianDifference: function(a, b) {
                 var delta = (a - b);
                 return delta <= Math.PI ? delta : delta - 2 * Math.PI;
-            }
+            },
+
+            outerCircleRadius: function(configuration) {
+                return Vector.distance([configuration.width() / 2, configuration.height() / 2]);
+            }.onChange("configuration.scale")
         });
     });

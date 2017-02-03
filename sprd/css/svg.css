@@ -116,7 +116,7 @@ image {
     stroke: none;
 }
 
-.configuration-viewer .rotation-circle, .rotation-line {
+.configuration-viewer .rotation-circle, .reference-circle, .rotation-line {
     fill: none;
     stroke-width: 1;
     stroke: #ffa53b;
