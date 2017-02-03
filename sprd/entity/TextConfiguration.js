@@ -615,9 +615,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
             size: function () {
-                var bound = this.$.bound;
-                return (bound && new Size(bound)) || Size.empty;
-            }.onChange("bound").on("sizeChanged"),
+                return this.textArea || Size.empty;
+            }.onChange("textArea").on("sizeChanged"),
 
             clone: function (options) {
                 options = options || {};
