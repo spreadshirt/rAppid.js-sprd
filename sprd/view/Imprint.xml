@@ -1,4 +1,4 @@
-<view:ImprintClass xmlns:view="sprd.view" xmlns="http://www.w3.org/1999/xhtml">
+<view:ImprintClass xmlns:view="sprd.view" xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="js.ui">
     <div>
         <strong>{i18n.t('legalInfo.address')}</strong>
         <div>
@@ -20,7 +20,7 @@
     </div>
 
 
-    <div>
+    <div visible="{isEU()}">
         <strong>{i18n.t('legalInfo.phone')}</strong>
         <div>{phone}</div>
     </div>
@@ -41,13 +41,17 @@
 
     <div visible="{isEU()}">
         <strong>{i18n.t('legalInfo.board')}</strong>
-        <div>{board}</div>
+        <div>{i18n.t('legalInfo.boardMembers')}</div>
     </div>
-
 
     <div visible="{isEU()}">
         <strong>{i18n.t('legalInfo.boardDirector')}</strong>
         <div>{boardDirector}</div>
+    </div>
+
+    <div visible="{isEU()}">
+        <strong>{i18n.t('legalInfo.rstv')}</strong>
+        <div style="white-space: pre">{rstv}</div>
     </div>
 
 
@@ -61,10 +65,15 @@
         <div>{vatId}</div>
     </div>
 
-    <div visible="{not(isEU())}">
-        <strong>President</strong>
-        <div>Mark Venezia</div>
+    <div visible="{isEU()}">
+        <strong>{i18n.t('legalInfo.dispute')}</strong>
+        <div>
+            <ui:TextWrapper string="{i18n.t('legalInfo.disputeText')}">
+                <a href="{i18n.t('legalInfo.disputeLink')}" target="_blank">
+                    {$text}
+                </a>
+            </ui:TextWrapper>
+        </div>
     </div>
-
 
 </view:ImprintClass>
