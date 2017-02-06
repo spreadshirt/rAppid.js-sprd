@@ -868,72 +868,76 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     rot = self.degreeToRadian(this.$._rotation), owners, snapLine;
 
                 this.removeHighlighting();
-                self.set('snapPoints', null);
-                self.set('snapSides', null);
 
                 var differenceVector;
-                if (!this.$.shiftKey) { // check if there is something to snap in the near
-                    var sides = this.getSides(configuration, newX, newY, rot);
+                if (!this.$.shiftKey) {
+
                     var distance, side;
-                    self.set('snapSides', _.map(sides, function(line) {
-                        return line.getSvgLine(400);
-                    }));
+                    var lines = this.$snapLines.slice();
+                    do {
+                        snapDistance = Math.max();
+                        var sides = this.getSides(configuration, newX, newY, rot);
+                        var snapPoints = this.getSnapPoints(configuration, newX, newY, rot);
+                        for (var i = 0; i < sides.length; i++) {
+                            side = sides[i];
+                            for (var l = 0; l < lines.length; l++) {
+                                snapLine = lines[l].line;
+                                owners = lines[l].owners;
 
-                    for (var i = 0; i < sides.length; i++) {
-                        side = sides[i];
-                        for (var l = 0; l < this.$snapLines.length; l++) {
-                            snapLine = this.$snapLines[l].line;
-                            if (!snapLine.isParallelTo(side)) {
-                                continue;
-                            }
-                            owners = this.$snapLines[l].owners;
+                                if (!snapLine.isParallelTo(side)) {
+                                    continue;
+                                }
 
-                            differenceVector = side.difference(snapLine);
-                            distance = differenceVector.distance();
 
-                            if (Math.abs(distance) <= threshold && Math.abs(distance) < Math.abs(snapDistance)) {
-                                snappedOwners = owners;
-                                snapDistance = distance;
-                                snappedLine = snapLine;
-                                snapPosDeltaX = differenceVector.getX();
-                                snapPosDeltaY = differenceVector.getY();
-                            }
-                        }
+                                differenceVector = side.difference(snapLine);
+                                distance = differenceVector.distance();
 
-                    }
-
-                    var snapPoints = this.getSnapPoints(configuration, newX, newY, rot);
-                    self.set('snapPoints', snapPoints);
-                    for (var p = 0; p < snapPoints.length; p++) {
-                        var snapPoint = snapPoints[p];
-                        var rotatedVector = new Vector([snapPoint.x, snapPoint.y]);
-
-                        for (l = 0; l < this.$snapLines.length; l++) {
-                            owners = this.$snapLines[l].owners;
-                            snapLine = this.$snapLines[l].line;
-
-                            potentialPosition = snapLine.project(snapPoint.x, snapPoint.y);
-                            distance = rotatedVector.subtract(potentialPosition).distance();
-
-                            if (Math.abs(distance) <= threshold && Math.abs(distance) < Math.abs(snapDistance)) {
-                                snappedOwners = owners;
-                                snapDistance = distance;
-                                snappedLine = snapLine;
-                                snapPosDeltaX = snapPoint.x - potentialPosition.getX();
-                                snapPosDeltaY = snapPoint.y - potentialPosition.getY();
+                                if (Math.abs(distance) <= threshold && Math.abs(distance) < Math.abs(snapDistance)) {
+                                    snappedOwners = owners;
+                                    snapDistance = distance;
+                                    snappedLine = snapLine;
+                                    snapPosDeltaX = differenceVector.getX();
+                                    snapPosDeltaY = differenceVector.getY();
+                                }
                             }
 
                         }
-                    }
 
-                    if (Math.abs(snapDistance) <= threshold) {
-                        newX -= snapPosDeltaX;
-                        newY -= snapPosDeltaY;
-                        snappedLines.push(snappedLine.getSvgLine(4000));
-                        _.each(snappedOwners, function(owner) {
-                            owner.set('highlight', true);
-                        });
-                    }
+                        for (var p = 0; p < snapPoints.length; p++) {
+                            var snapPoint = snapPoints[p];
+                            var rotatedVector = new Vector([snapPoint.x, snapPoint.y]);
+
+                            for (l = 0; l < lines.length; l++) {
+                                owners = lines[l].owners;
+                                snapLine = lines[l].line;
+
+                                potentialPosition = snapLine.project(snapPoint.x, snapPoint.y);
+                                distance = rotatedVector.subtract(potentialPosition).distance();
+
+                                if (Math.abs(distance) <= threshold && Math.abs(distance) < Math.abs(snapDistance)) {
+                                    snappedOwners = owners;
+                                    snapDistance = distance;
+                                    snappedLine = snapLine;
+                                    snapPosDeltaX = snapPoint.x - potentialPosition.getX();
+                                    snapPosDeltaY = snapPoint.y - potentialPosition.getY();
+                                }
+
+                            }
+                        }
+
+                        if (Math.abs(snapDistance) <= threshold) {
+                            newX -= snapPosDeltaX;
+                            newY -= snapPosDeltaY;
+                            snappedLines.push(snappedLine.getSvgLine(4000));
+                            lines = _.filter(lines, function(snapLine) {
+                                return snappedLine.isPerpendicular(snapLine.line);
+                            });
+                            _.each(snappedOwners, function(owner) {
+                                owner.set('highlight', true);
+                            });
+
+                        }
+                    } while (lines.length > 0 && Math.abs(snapDistance) <= threshold);
                 }
 
                 self.broadcastSnappedLines(snappedLines);

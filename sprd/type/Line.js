@@ -65,6 +65,10 @@ define(['js/core/Base', 'sprd/type/Vector', "sprd/extensions/number"], function(
             return this.angle.equals(line.angle);
         },
 
+        isPerpendicular: function(line) {
+            return this.angle.equals(line.angle + Math.PI / 2);
+        },
+
         equals: function(line) {
             if (!(line instanceof Line)) return false;
             if (!this.angle.equals(line.angle)) return false;
