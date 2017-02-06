@@ -39,6 +39,8 @@ define(["js/data/Query"], function (Query) {
 
                 if (name === "in") {
                     return ["+", operator.field, ":(", operator.value.join(" "), ")"].join("");
+                } else if (name === "range") {
+                    return ["+", operator.field, ":[" , (operator.value.from == null ?  "*" : operator.value.from), " TO ", (operator.value.to == null ? "*" : operator.value.to), "]"].join("")
                 } else if (name === "eql") {
                     return operator.value;
                 }
