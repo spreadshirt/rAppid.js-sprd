@@ -116,6 +116,10 @@ define(['js/core/Base'], function (Base) {
             }
 
             return vector;
+        },
+
+        createFromPoint: function(point) {
+            return new Vector([point.x, point.y]);
         }
     });
 

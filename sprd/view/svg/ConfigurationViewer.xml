@@ -3,13 +3,14 @@
                                   xmlns:sprdSvg="sprd.view.svg" class="{errorClass()}"
                                   cid="cv">
 
-    <svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{_rotationRadius}"
+    <svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{cv.moveVector.distance()}"
                 visible="{isRotating()}"/>
 
-    <svg:circle class="reference-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{outerCircleRadius(cv.configuration)}"
+    <svg:circle class="reference-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{cv.downVector.distance()}"
                 visible="{isRotating()}"/>
 
-    <svg:line class="rotation-line" x1="{minus(enlarge(_configurationWidth))}" x2="{enlarge(_configurationWidth)}" y1="{minus(enlarge(_configurationHeight))}" y2="{enlarge(_configurationHeight)}"
+    <svg:line class="rotation-line" x1="{minus(enlarge(add(cv.downVector.getX(), cv.centerVector.getX())))}" x2="{enlarge(add(cv.downVector.getX(), cv.centerVector.getX()))}"
+              y1="{minus(enlarge(add(cv.downVector.getY(), cv.centerVector.getY())))}" y2="{enlarge(add(cv.downVector.getY(), cv.centerVector.getY()))}"
               visible="{isScaling()}"/>
 
     <svg:clipPath cid="clipPath" id="{id()}" clip-rule="evenodd"
@@ -18,7 +19,7 @@
     </svg:clipPath>
 
     <svg:g cid="_assetContainerWrapper">
-        <svg:g class="asset-container" cid="_assetContainer" scaleX="{_scale.x}" scaleY="{_scale.y}" />
+        <svg:g class="asset-container" cid="_assetContainer" scaleX="{_scale.x}" scaleY="{_scale.y}"/>
     </svg:g>
 
     <svg:circle class="rotation-center" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{pixelToViewBox(2)}"
@@ -31,7 +32,7 @@
                   width="{_configurationWidth}" height="{_configurationHeight}"/>
 
         <svg:g class="configuration-info" visible="{and(_configurationInfo, productViewer.$parent.showConfigurationInformation)}"
-        _fontSize="{pixelToViewBox(15)}" translateY="-{pixelToViewBox(20)}">
+               _fontSize="{pixelToViewBox(15)}" translateY="-{pixelToViewBox(20)}">
             <svg:text visible="{isScaling()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
                 {getLocalizedSize(_configurationWidth,0)} x
                 {getLocalizedSize(_configurationHeight,0)}
@@ -58,7 +59,7 @@
                translateY="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
                style="pointer-events: none">
             <svg:g _transform="scale(0.02) translate(-50,10)">
-                <svg:use href="${baseUrl('sketchomat/img/icons.svg')}#rotate-scale" />
+                <svg:use href="${baseUrl('sketchomat/img/icons.svg')}#rotate-scale"/>
             </svg:g>
         </svg:g>
 

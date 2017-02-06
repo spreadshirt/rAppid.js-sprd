@@ -70,7 +70,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _rotationRadius: null,
 
                 imageService: null,
-                preventValidation: true
+                preventValidation: true,
+                downVector: null,
+                moveVector: null,
+                centerVector: null
             },
 
             inject: {
@@ -461,6 +464,25 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.addSnapLines(leftUpperCorner, 'y', printArea.height(), 3, midPoint, 0, printArea);
             },
 
+            toScreenCoords: function(vector, svg, CTMmatrix) {
+                CTMmatrix = CTMmatrix || svg.getScreenCTM();
+                var svgPoint = this.toSvgPoint(vector, svg);
+                return Vector.createFromPoint(svgPoint.matrixTransform(CTMmatrix));
+            },
+
+            toSvgCoords: function(vector, svg, CTMmatrix) {
+                CTMmatrix = CTMmatrix || svg.getScreenCTM();
+                var svgPoint = this.toSvgPoint(vector, svg);
+                return Vector.createFromPoint(svgPoint.matrixTransform(CTMmatrix.inverse()));
+            },
+
+            toSvgPoint: function(vector, svg) {
+                var svgPoint = svg.createSVGPoint();
+                svgPoint.x = vector.getX();
+                svgPoint.y = vector.getY();
+                return svgPoint;
+            },
+
             _down: function(e, mode, initiator) {
 
                 var self = this,
@@ -522,12 +544,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 e.preventDefault && e.preventDefault();
 
-                this.$moving = true;
-                this.set({
-                    "_mode": mode,
-                    shiftKey: false
-                });
-
                 downPoint = this.$downPoint = {
                     x: e.changedTouches ? e.changedTouches[0].pageX : e.pageX,
                     y: e.changedTouches ? e.changedTouches[0].pageY : e.pageY
@@ -539,17 +555,21 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var halfWidth = (configuration.width() / 2) * factor.x,
                     halfHeight = (configuration.height() / 2) * factor.y,
                     svgRoot = this.getSvgRoot(),
-                    svgPoint = svgRoot.$el.createSVGPoint(),
+                    middlePoint = new Vector([configuration.width() / 2, configuration.height() / 2]),
                     matrix = this.$el.getScreenCTM();
 
-                // center point in svg coordinates
-                svgPoint.x = configuration.width() / 2;
-                svgPoint.y = configuration.height() / 2;
+                this.set('centerVector', middlePoint);
+                this.$centerVector = this.toScreenCoords(middlePoint, svgRoot.$el, matrix);
+                var currentVector = downVector.subtract(this.$centerVector);
+//                self.set('downVector', this.toSvgCoords(currentVector, svgRoot.$el, matrix));
+                self.set('downVector', this.toSvgCoords(downVector, svgRoot.$el, matrix).subtract(this.toSvgCoords(this.$centerVector, svgRoot.$el, matrix)));
 
-                svgPoint = svgPoint.matrixTransform(matrix);
 
-                this.$centerPoint = new Vector([svgPoint.x, svgPoint.y]);
-
+                this.$moving = true;
+                this.set({
+                    "_mode": mode,
+                    shiftKey: false
+                });
                 if (mode === MOVE) {
 
                     this._removeSnapLines();
@@ -587,11 +607,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         _offset: configuration.$.offset.clone()
                     });
 
-                    var scaleVector = downVector.subtract(this.$centerPoint);
+                    var scaleVector = downVector.subtract(this.$centerVector);
 
                     // diagonal in real px
                     this.$scaleDiagonalDistance = scaleVector.distance();
-                    this.$startRotateVector = downVector.subtract(this.$centerPoint);
+                    this.$startRotateVector = downVector.subtract(this.$centerVector);
                     this.set("_rotationRadius", Vector.distance([halfHeight, halfWidth]) / factor.x);
                 } else if (mode === GESTURE) {
                     // gesture -> start from beginning
@@ -741,7 +761,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             moveRotate: function(x, y, configuration, userInteractionOptions) {
                 var startVector = this.$startRotateVector;
 
-                var currentVector = Vector.subtract([x, y], this.$centerPoint);
+                var currentVector = Vector.subtract([x, y], this.$centerVector);
 
                 var scalarProduct = Vector.scalarProduct(startVector, currentVector);
                 var rotateAngle = Math.acos(scalarProduct / (startVector.distance() * currentVector.distance())) * 180 / Math.PI;
@@ -935,7 +955,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     currentDistance,
                     currentVector,
                     newConfigurationWidth,
-                    newConfigurationHeight;
+                    newConfigurationHeight,
+                    svgRoot = this.getSvgRoot(),
+                    matrix = this.$el.getScreenCTM();
+
+                downVector = new Vector([x, y]);
+                currentVector = downVector.subtract(this.$centerVector);
+                self.set('moveVector', this.toSvgCoords(downVector, svgRoot.$el, matrix).subtract(this.toSvgCoords(this.$centerVector, svgRoot.$el, matrix)));
+                currentDistance = currentVector.distance();
 
                 this.set('_configurationInfo', true);
 
@@ -991,11 +1018,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     configuration.trigger("sizeChanged");
 
                 } else if (mode === SCALE) {
-
-                    downVector = new Vector([x, y]);
-                    currentVector = downVector.subtract(this.$centerPoint);
-                    currentDistance = currentVector.distance();
-
                     scaleFactor = currentDistance / this.$scaleDiagonalDistance;
 
                     if (scaleSnippingEnabled) {
@@ -1182,7 +1204,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             _stopTransformation: function() {
 
                 this._unbindTransformationHandler();
-
                 this.set('_mode', null);
                 this.$moving = false;
             },
@@ -1317,14 +1338,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return this.$._mode === SCALE;
             }.onChange("_mode"),
 
-            getLeftUpperCorner: function() {
-
-            },
-
-            getRightBottomCorner: function() {
-
-            },
-
             hasError: function() {
                 return !this.$.configuration.isValid() && this.get('productViewer.editable') === true;
             }.on(["configuration", "isValidChanged"]),
@@ -1403,8 +1416,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return delta <= Math.PI ? delta : delta - 2 * Math.PI;
             },
 
-            outerCircleRadius: function(configuration) {
-                return Vector.distance([configuration.width() / 2, configuration.height() / 2]);
-            }.onChange("configuration.scale")
+            add: function(a, b) {
+                return a + b;
+            }
         });
     });
