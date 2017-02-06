@@ -20,7 +20,7 @@
     </div>
 
 
-    <div>
+    <div visible="{isEU()}">
         <strong>{i18n.t('legalInfo.phone')}</strong>
         <div>{phone}</div>
     </div>
@@ -74,14 +74,6 @@
                 </a>
             </ui:TextWrapper>
         </div>
-
     </div>
-
-
-    <div visible="{not(isEU())}">
-        <strong>President</strong>
-        <div>Mark Venezia</div>
-    </div>
-
 
 </view:ImprintClass>
