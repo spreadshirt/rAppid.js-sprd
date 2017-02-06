@@ -6,7 +6,6 @@ define(["js/ui/View", "js/core/I18n", "underscore"], function(View, I18n, _) {
             street: "Gießerstraße 27",
             city: "04229 Leipzig",
             country: "Deutschland",
-            board: "Philip Rooke (CEO), Tobias Schaugg (CFO)",
             boardDirector: "Łukasz Gadowski",
             vatId: "DE 813871494",
             tradeRegister: "Amtsgericht Leipzig, HRB 22478",
@@ -14,18 +13,19 @@ define(["js/ui/View", "js/core/I18n", "underscore"], function(View, I18n, _) {
             website: "http://www.spreadshirt.de",
             phone: "+49 (0)341 594 00 5900",
             fax: "+49 (0) 341 594 00 5499",
-            dmca: ''
+            dmca: '',
+            rstv: 'Philipp Rooke\nGießerstraße 27\n04229 Leipzig\nDeutschland'
         },
         NA: {
             name: "Spreadshirt, Inc.",
-            street: "1572 Roseytown Road",
-            city: "Greensburg, PA 15601-4140",
+            street: "186 South Street",
+            city: "Boston, MA 02111",
             country: "USA",
             board: "",
             boardDirector: "",
             vatId: "",
             tradeRegister: "",
-            email: "info@spreadshirt.com",
+            email: "verify@spreadshirt.com",
             website: "http://www.spreadshirt.com",
             phone: "1-800-381-0815",
             fax: "1-877-202-0251",
@@ -67,7 +67,9 @@ define(["js/ui/View", "js/core/I18n", "underscore"], function(View, I18n, _) {
             email: null,
             website: null,
             phone: null,
-            fax: null
+            fax: null,
+
+            rstv: null
         },
 
         inject: {
