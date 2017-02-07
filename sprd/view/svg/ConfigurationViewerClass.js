@@ -985,6 +985,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 this.set('_configurationInfo', true);
                 this.set('rotationSnap', false);
+                this._removeSnapLines();
                 if (mode === MOVE) {
                     var newX = configuration.$.offset.$.x - deltaX * factor.x,
                         newY = configuration.$.offset.$.y - deltaY * factor.y;
@@ -1042,7 +1043,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         scaleFactor = currentDistance / this.$scaleDiagonalDistance;
 
                         if (scaleSnippingEnabled && !this.$.shiftKey) {
-                            var snapPoints = _.range(0, 10, 0.5);
+                            //var snapPoints = _.range(0, 10, 0.5);
                             //scaleFactor = this.snapOneDimension(scaleFactor, snapPoints, scaleSnippingThreshold);
                         }
 
