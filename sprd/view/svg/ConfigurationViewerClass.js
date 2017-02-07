@@ -77,7 +77,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 bus: Bus
             },
 
-            $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer", "clipPath", "imageService"],
+            $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer", "clipPath", "imageService", "downVector", "moveVector", "centerVector", "rotationSnap"],
 
             ctor: function() {
 
@@ -1037,40 +1037,40 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     configuration.trigger("sizeChanged");
 
                 } else if (mode === SCALE) {
-                    scaleFactor = currentDistance / this.$scaleDiagonalDistance;
-
-                    if (scaleSnippingEnabled && !this.$.shiftKey) {
-                        var snapPoints = _.range(0, 10, 0.5);
-                        scaleFactor = this.snapOneDimension(scaleFactor, snapPoints, scaleSnippingThreshold);
-                    }
-
-                    var scale = {
-                        x: scaleFactor * configuration.$.scale.x,
-                        y: scaleFactor * configuration.$.scale.y
-                    };
-
-                    var offsetX = configuration.$.offset.$.x;
-                    var offsetY = configuration.$.offset.$.y;
-
-                    newConfigurationWidth = configuration.width(scale.x);
-                    newConfigurationHeight = configuration.height(scale.y);
-                    var configurationWidth = configuration.width();
-                    var configurationHeight = configuration.height();
-
-                    this.set('_scale', scale, userInteractionOptions);
-
-                    this.$._offset.set({
-                        x: offsetX + (configurationWidth - newConfigurationWidth) / 2,
-                        y: offsetY + (configurationHeight - newConfigurationHeight) / 2
-                    }, userInteractionOptions);
-
-                    self.set({
-                        _configurationWidth: newConfigurationWidth,
-                        _configurationHeight: newConfigurationHeight
-                    }, userInteractionOptions);
-
                     this.moveRotate(x, y, configuration, userInteractionOptions);
+                    if (this.rotates()) {
+                        scaleFactor = currentDistance / this.$scaleDiagonalDistance;
 
+                        if (scaleSnippingEnabled && !this.$.shiftKey) {
+                            var snapPoints = _.range(0, 10, 0.5);
+                            //scaleFactor = this.snapOneDimension(scaleFactor, snapPoints, scaleSnippingThreshold);
+                        }
+
+                        var scale = {
+                            x: scaleFactor * configuration.$.scale.x,
+                            y: scaleFactor * configuration.$.scale.y
+                        };
+
+                        var offsetX = configuration.$.offset.$.x;
+                        var offsetY = configuration.$.offset.$.y;
+
+                        newConfigurationWidth = configuration.width(scale.x);
+                        newConfigurationHeight = configuration.height(scale.y);
+                        var configurationWidth = configuration.width();
+                        var configurationHeight = configuration.height();
+
+                        this.set('_scale', scale, userInteractionOptions);
+
+                        this.$._offset.set({
+                            x: offsetX + (configurationWidth - newConfigurationWidth) / 2,
+                            y: offsetY + (configurationHeight - newConfigurationHeight) / 2
+                        }, userInteractionOptions);
+
+                        self.set({
+                            _configurationWidth: newConfigurationWidth,
+                            _configurationHeight: newConfigurationHeight
+                        }, userInteractionOptions);
+                    }
                 } else if (mode === GESTURE) {
 
                     var firstFinger = e.touches[0],
@@ -1346,6 +1346,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             isRotating: function() {
                 return this.$._mode === SCALE;
             }.onChange("_mode"),
+
+            rotates: function() {
+                return this.$._rotation.equals(this.get('configuration.rotation'));
+            },
 
             isMoving: function() {
                 return this.$._mode === MOVE;
