@@ -53,7 +53,7 @@ image {
     fill: none;
 }
 
-.configuration-handle {
+.configuration-handle, .big-configuration-handle {
     fill: white;
     stroke-width: 1;
     stroke: black;
@@ -61,8 +61,13 @@ image {
     visibility: hidden;
 }
 
-.configuration-handle.active {
+.configuration-handle.active, .big-configuration-handle.active {
     visibility: visible;
+}
+
+.big-configuration-handle {
+    fill: none;
+    stroke: none;
 }
 
 .configuration-handle-icon {
@@ -78,6 +83,10 @@ image {
     stroke-width: 1;
     stroke: white;
     vector-effect: non-scaling-stroke;
+}
+
+.big-configuration-boundary {
+
 }
 
 .configuration-boundary {

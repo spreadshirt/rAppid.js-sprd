@@ -31,8 +31,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 rotationY: "{half(configuration.height(_scale.y))}",
 
                 _assetContainer: null,
-                _scaleHandle: null,
-                _resizeHandle: null,
+                _bigScaleHandle: null,
 
                 productViewer: null,
                 printAreaViewer: null,
@@ -242,8 +241,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 if (productViewer && productViewer.$.editable === true) {
                     var assetContainer = this.$._assetContainer,
-                        scaleHandle = this.$._scaleHandle,
-                        resizeHandle = this.$._resizeHandle;
+                        scaleHandle = this.$._bigScaleHandle;
 
 
                     assetContainer.bindDomEvent("click", function() {
@@ -256,10 +254,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     scaleHandle && scaleHandle.bindDomEvent("pointerdown", function(e) {
                         self._down(e, self._isGesture(e) ? GESTURE : SCALE, scaleHandle);
-                    });
-
-                    resizeHandle && resizeHandle.bindDomEvent("pointerdown", function(e) {
-                        self._down(e, RESIZE);
                     });
 
                     if (productViewer && this.$hasTouch) {
@@ -1281,8 +1275,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             }.onChange("_globalToLocalFactor"),
 
 
-            substract: function(value, minuend) {
-                return value - minuend;
+            substract: function(a, b, c) {
+                return (a - (b || 0)) - (c || 0);
             },
 
             mul: function(value, multiplicator) {
