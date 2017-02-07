@@ -3,15 +3,15 @@
                                   xmlns:sprdSvg="sprd.view.svg" class="{errorClass()}"
                                   cid="cv">
 
-    <svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{_rotationRadius}"
-                visible="{isRotating()}"/>
+    <!--<svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{_rotationRadius}"-->
+    <!--visible="{isRotating()}"/>-->
 
-    <svg:circle class="reference-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{outerCircleRadius(cv.configuration)}"
-                visible="{isRotating()}"/>
+    <!--<svg:circle class="reference-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{outerCircleRadius(cv.configuration)}"-->
+    <!--visible="{isRotating()}"/>-->
 
     <svg:line class="rotation-line" x1="{minus(enlarge(add(cv.downVector.getX(), cv.centerVector.getX())))}" x2="{enlarge(add(cv.downVector.getX(), cv.centerVector.getX()))}"
               y1="{minus(enlarge(add(cv.downVector.getY(), cv.centerVector.getY())))}" y2="{enlarge(add(cv.downVector.getY(), cv.centerVector.getY()))}"
-              visible="{isScaling()}"/>
+              visible="{and(rotationSnap, isScaling())}"/>
 
     <svg:clipPath cid="clipPath" id="{id()}" clip-rule="evenodd"
                   translateX="{invert(cv.translateX)}" translateY="{invert(cv.translateY)}"

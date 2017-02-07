@@ -68,7 +68,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 preventValidation: true,
                 downVector: null,
                 moveVector: null,
-                centerVector: null
+                centerVector: null,
+                rotationSnap: null
             },
 
             inject: {
@@ -790,9 +791,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 if (rotateSnippingEnabled && !this.$.shiftKey) {
-                    var snapStepSize = 15;
+                    var snapStepSize = 45;
                     var snapPoints = _.range(0, 360 + snapStepSize, snapStepSize);
                     rotateAngle = this.snapOneDimension(rotateAngle, snapPoints, rotationSnippingThreshold);
+                    if (this.$.centerVector && snapPoints.indexOf(rotateAngle) !== -1) {
+                        this.set('rotationSnap', true);
+                    }
                 }
 
                 var factor = this.localToGlobalFactor();
@@ -847,6 +851,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         configurationViewer: this,
                         lines: snappedLines
                     });
+                    var snapLinesList = this.$.printAreaViewer.$.snapLines;
+                    if (snapLinesList) {
+                        snapLinesList.reset(snappedLines);
+                    }
                 }
             },
 
@@ -935,10 +943,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 self.broadcastSnappedLines(snappedLines);
-                var snapLinesList = this.$.printAreaViewer.$.snapLines;
-                if (snapLinesList) {
-                    snapLinesList.reset(snappedLines);
-                }
 
                 return {x: newX, y: newY};
             },
@@ -980,7 +984,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 currentDistance = currentVector.distance();
 
                 this.set('_configurationInfo', true);
-
+                this.set('rotationSnap', false);
                 if (mode === MOVE) {
                     var newX = configuration.$.offset.$.x - deltaX * factor.x,
                         newY = configuration.$.offset.$.y - deltaY * factor.y;
