@@ -770,14 +770,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return value;
             },
 
-            moveRotate: function(x, y, configuration, userInteractionOptions) {
+            _rotate: function(x, y, configuration, userInteractionOptions) {
                 var startVector = this.$startRotateVector;
 
                 var currentVector = Vector.subtract([x, y], this.$centerVector);
 
                 var scalarProduct = Vector.scalarProduct(startVector, currentVector);
                 var rotateAngle = Math.acos(scalarProduct / (startVector.distance() * currentVector.distance())) * 180 / Math.PI;
-
                 var crossVector = Vector.vectorProduct(startVector, currentVector);
 
                 if (crossVector.components[2] < 0) {
@@ -793,6 +792,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (rotateSnippingEnabled && !this.$.shiftKey) {
                     var snapStepSize = 45;
                     var snapPoints = _.range(0, 360 + snapStepSize, snapStepSize);
+                    snapPoints.push(configuration.$.rotation);
                     rotateAngle = this.snapOneDimension(rotateAngle, snapPoints, rotationSnippingThreshold);
                     if (this.$.centerVector && snapPoints.indexOf(rotateAngle) !== -1) {
                         this.set('rotationSnap', true);
@@ -1002,7 +1002,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }, userInteractionOptions);
 
                 } else if (mode === RESIZE) {
-                    var rot = -this.$._rotation * Math.PI / 180,
+                    var rot = this.degreeToRadian(this.$._rotation),
                         sin = Math.sin(rot),
                         cos = Math.cos(rot);
 
@@ -1022,7 +1022,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var heightDiff = height - configuration.$.textArea.$.height;
                     configuration.$.textArea.set('height', height);
 
-                    rot = this.$._rotation * Math.PI / 180;
+                    rot = this.degreeToRadian(this.$._rotation);
                     sin = Math.sin(rot);
                     cos = Math.cos(rot);
 
@@ -1038,7 +1038,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     configuration.trigger("sizeChanged");
 
                 } else if (mode === SCALE) {
-                    this.moveRotate(x, y, configuration, userInteractionOptions);
+                    this._rotate(x, y, configuration, userInteractionOptions);
+
                     if (this.rotates()) {
                         scaleFactor = currentDistance / this.$scaleDiagonalDistance;
 
@@ -1115,8 +1116,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         _configurationHeight: configuration.height(scale.y)
                     });
                 }
-
-
             },
 
             _up: function(e, mode) {
@@ -1131,15 +1130,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         if (configuration.$.offset && configuration.$.offset !== this.$._offset) {
                             configuration.set('offset', this.$._offset);
                             changed = true;
-
                         }
-                        this._removeSnapLines();
                     } else if (mode === SCALE) {
                         changed = configuration.$.offset !== this.$._offset && configuration.$.scale !== this.$._scale || configuration.$.rotation !== this.$._rotation;
                         configuration.set({
                             scale: this.$._scale,
                             offset: this.$._offset,
-                            'rotation': this.$._rotation
+                            rotation: this.$._rotation
                         });
                     } else if (mode === GESTURE) {
                         changed = configuration.$.rotation !== this.$._rotation && configuration.$.scale !== this.$._scale;
