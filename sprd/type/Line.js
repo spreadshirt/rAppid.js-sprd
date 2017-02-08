@@ -1,4 +1,4 @@
-define(['js/core/Base', 'sprd/type/Vector', "sprd/extensions/number"], function(Base, Vector, extension) {
+define(['js/core/Base', 'sprd/type/Vector', "sprd/extensions/Number"], function(Base, Vector, extension) {
 
     var Line = Base.inherit('sprd.type.Line', {
         ctor: function(x, y, angle) {
