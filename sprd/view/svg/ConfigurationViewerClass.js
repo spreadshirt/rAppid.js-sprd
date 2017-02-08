@@ -1123,6 +1123,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return;
                 }
 
+                this._removeSnapLines();
+
                 var configuration = this.$.configuration;
                 if (configuration) {
                     var changed = false;
