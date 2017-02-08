@@ -48,10 +48,12 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             var properties = this.$.properties,
                 context = this.$.context,
                 self = this;
+            options = options || {};
 
             if (!_.isEmpty(properties)) {
                 flow()
                     .seq(function(cb) {
+                        options.noDesignFetch = true;
                         DesignConfigurationBase.prototype.init.call(self, options, cb);
                     })
                     .seq(function(cb) {
