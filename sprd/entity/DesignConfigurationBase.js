@@ -110,6 +110,21 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return data;
+            },
+
+            _validatePrintTypeSize: function(printType, width, height, scale) {
+                var ret = this.callBase();
+
+                var design = this.$.design;
+
+                if (!printType || !scale || !design) {
+                    return ret;
+                }
+
+                ret.minBound = !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale"));
+                ret.dpiBound = printType.isShrinkable() && !design.isVectorDesign() && Math.max(Math.abs(scale.x), Math.abs(scale.y)) > 1;
+
+                return ret;
             }
         });
 
