@@ -165,7 +165,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                             var alignmentFactor = composedTextFlow.alignmentToFactor(alignment);
 
                             if (oldWidth) {
-                                var widthDelta = composedTextFlow.measure.width - oldWidth;
+                                var widthDelta = (composedTextFlow.measure.width - oldWidth) * self.$.scale.x;
                                 self.$.offset.set('x', Number(self.$.offset.get('x')) - (widthDelta * alignmentFactor));
                             }
 
