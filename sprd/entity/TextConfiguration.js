@@ -643,7 +643,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return !!this.$.composedTextFlow;
             },
             isDeepEqual: function (b) {
-                var comparableProperties = ['offset', 'rotation', 'printType', 'printColors', 'scale', 'printArea'],
+                var comparableProperties = ['offset', 'rotation', 'printType', 'scale', 'printArea'],
                     i,
                     property,
                     originalProperty,
