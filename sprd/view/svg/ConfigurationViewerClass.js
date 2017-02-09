@@ -270,7 +270,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         return false;
                     };
 
-                    assetContainer.bindDomEvent("click", function(e) {
+                    this.bindDomEvent("click", function(e) {
                         e.stopPropagation && e.stopPropagation();
                         return false;
                     });
