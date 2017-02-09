@@ -4,7 +4,7 @@ define(["js/data/Model"], function(Model) {
 
         defaults: {
             id: null,
-            name: null,
+            namekey: null,
             initialized: false
         },
 
@@ -18,6 +18,10 @@ define(["js/data/Model"], function(Model) {
 
         apply: function(source, ctx, options, callback) {
             callback && callback(new Error("Not implemented."));
+        },
+
+        getNamePath: function(path) {
+            return path + '.' + this.$.namekey;
         },
 
         compose: function() {
