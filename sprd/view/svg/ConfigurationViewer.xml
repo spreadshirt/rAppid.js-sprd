@@ -63,11 +63,7 @@
                scaleX="{pixelToViewBox(_handleIconScale)}" scaleY="{scaleX}"
                translateX="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
                translateY="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
-               style="pointer-events: none">
-            <svg:g _transform="scale(0.02) translate(-50,10)">
-                <svg:use href="${baseUrl('sketchomat/img/icons.svg')}#rotate-scale"/>
-            </svg:g>
-        </svg:g>
+               style="pointer-events: none"/>
 
 
     </svg:g>
