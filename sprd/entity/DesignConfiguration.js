@@ -31,10 +31,10 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             type: "design",
 
-            _commitPrintType: function(printType) {
+            _commitPrintType: function(newPrintType, oldPrintType) {
                 // print type changed -> convert colors
 
-                if (!printType) {
+                if (!newPrintType) {
                     return;
                 }
 
@@ -42,14 +42,19 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     printColors = this.$.printColors;
 
                 printColors.each(function(printColor) {
-                    colors.push(printType.getClosestPrintColor(printColor.color()));
+                    colors.push(newPrintType.getClosestPrintColor(printColor.color()));
                 });
 
-                if (printType.$.id === PrintType.Mapping.SpecialFlex) {
+                if (newPrintType.$.id === PrintType.Mapping.SpecialFlex) {
                     // convert all colors to the first one
                     for (var i = 1; i < colors.length; i++) {
                         colors[i] = colors[0];
                     }
+                }
+
+                var original = this.get('originalPrintType');
+                if (original && original == oldPrintType) {
+                    this.set('originalPrintType', null);
                 }
 
                 printColors.reset(colors);
