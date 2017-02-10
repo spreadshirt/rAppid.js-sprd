@@ -1042,12 +1042,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 } else if (mode === SCALE) {
                     this._rotate(x, y, configuration, userInteractionOptions);
 
-                    if (this.rotates()) {
+                    if (!this.rotates()) {
                         scaleFactor = currentDistance / this.$scaleDiagonalDistance;
 
                         if (scaleSnippingEnabled && !this.$.shiftKey) {
-                            //var snapPoints = _.range(0, 10, 0.5);
-                            //scaleFactor = this.snapOneDimension(scaleFactor, snapPoints, scaleSnippingThreshold);
+                            scaleFactor = this.snapOneDimension(scaleFactor, [1], scaleSnippingThreshold);
                         }
 
                         var scale = {

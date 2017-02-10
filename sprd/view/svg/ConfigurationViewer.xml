@@ -32,12 +32,12 @@
                   width="{_configurationWidth}" height="{_configurationHeight}"/>
 
         <svg:g class="configuration-info" visible="{and(_configurationInfo, productViewer.$parent.showConfigurationInformation)}"
-               _fontSize="{pixelToViewBox(15)}" translateY="-{pixelToViewBox(20)}">
+               _fontSize="{pixelToViewBox(15)}" translateY="-{pixelToViewBox(10)}">
             <svg:text visible="{scales()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
                 {getLocalizedSize(_configurationWidth,0)} x
                 {getLocalizedSize(_configurationHeight,0)}
             </svg:text>
-            <svg:text visible="{rotates()}" font-size="{_fontSize}" y="{add(handleY(), 20, mul(pixelToViewBox(_handleWidth), 2))}" x="{handleX()}" text-anchor="middle">
+            <svg:text visible="{rotates()}" font-size="{_fontSize}" dy="{mul(1.4, scales())}em" x="{half(_configurationWidth)}" text-anchor="middle">
                 {formatSize(_rotation)} °
             </svg:text>
             <svg:text visible="{isMoving()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">

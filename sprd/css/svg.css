@@ -53,8 +53,15 @@ image {
     fill: none;
 }
 
-.configuration-handle, .big-configuration-handle {
+.product-viewer.active.bright .configuration-handle, .big-configuration-handle {
+    fill: black;
+}
+
+.product-viewer.active.dark .configuration-handle, .big-configuration-handle {
     fill: white;
+}
+
+.configuration-handle, .big-configuration-handle {
     stroke-width: 1;
     stroke: black;
     vector-effect: non-scaling-stroke;
@@ -79,7 +86,6 @@ image {
 }
 
 .configuration-boundary {
-    stroke-dasharray: 9, 5;
     stroke-width: 1;
     stroke: white;
     vector-effect: non-scaling-stroke;
