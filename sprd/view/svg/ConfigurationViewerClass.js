@@ -95,7 +95,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this.bind("change:_rotation", this._transformationChanged, this);
                 }
 
-                this.bind('configuration', "change:highlight", this.highlightConfiguration, this);
+                this.bind('configuration', "change:docked", this.dockedConfiguration, this);
                 this.bind('productViewer', 'change:width', this._productViewerSizeChanged, this);
                 this.bind(["productViewer", "change:selectedConfiguration"], function() {
                     if (this.isSelectedConfiguration()) {
@@ -141,8 +141,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return a && b
             },
 
-            highlightConfiguration: function() {
-                this.get("configuration.highlight") ? this.addClass("highlighted") : this.removeClass("highlighted");
+            dockedConfiguration: function() {
+                this.get("configuration.docked") ? this.addClass("docked") : this.removeClass("docked");
             },
 
             formatSize: function(size) {
@@ -527,6 +527,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     configuration: configuration
                 });
 
+                this.$.printAreaViewer.set('selected', true);
+                this.addClass('transforming');
 //                this.$stage.focus();
 
                 if (e.defaultPrevented) {
@@ -707,21 +709,21 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            removeHighlighting: function() {
+            removeDocking: function() {
                 var configuration = this.$.configuration;
                 var printArea = configuration.$.printArea;
 
-                printArea.set('highlight', false);
+                printArea.set('docked', false);
                 var configurationsOnPrintArea = this.$.productViewer.$.product.getConfigurationsOnPrintAreas([printArea]) || [];
                 _.each(configurationsOnPrintArea, function(config) {
-                    config.set('highlight', false);
+                    config.set('docked', false);
                 })
             },
 
             _removeSnapLines: function() {
                 var snapLines = this.$.printAreaViewer.$.snapLines;
                 snapLines && snapLines.clear();
-                this.removeHighlighting();
+                this.removeDocking();
             },
 
             _beforeDestroy: function() {
@@ -869,7 +871,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     potentialPosition, snapDistance = Math.max(), snappedLine, snapPosDeltaX, snapPosDeltaY, snappedOwners,
                     rot = self.degreeToRadian(this.$._rotation), owners, snapLine;
 
-                this.removeHighlighting();
+                this.removeDocking();
 
                 var differenceVector;
                 if (!this.$.shiftKey) {
@@ -935,7 +937,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                                 return snappedLine.isPerpendicular(snapLine.line);
                             });
                             _.each(snappedOwners, function(owner) {
-                                owner.set('highlight', true);
+                                owner.set('docked', true);
                             });
 
                         }
@@ -1034,7 +1036,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     configuration.$.offset.set('y', configuration.$.offset.$.y + (vY - heightDiff * 0.5) * configuration.$.scale.y);
 
                     configuration._debouncedComposeText();
-
+                    f
                     configuration.trigger("sizeChanged");
 
                 } else if (mode === SCALE) {
@@ -1124,7 +1126,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 this._removeSnapLines();
-
                 var configuration = this.$.configuration;
                 if (configuration) {
                     var changed = false;
@@ -1219,8 +1220,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             _stopTransformation: function() {
-
                 this._unbindTransformationHandler();
+                this.removeClass('transforming');
+                this.$.printAreaViewer.set('selected', false);
                 this.set('_mode', null);
                 this.$moving = false;
             },

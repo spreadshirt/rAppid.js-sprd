@@ -26,7 +26,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
             this.$configurationViewerCache = {};
             this.callBase();
 
-            this.bind("_viewMap.printArea", "change:highlight", this.highlightConfiguration, this);
+            this.bind("_viewMap.printArea", "change:docked", this.dockedToConfiguration, this);
         },
 
         _commitProductViewer: function(productViewer) {
@@ -42,6 +42,7 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
         getPrintArea: function () {
             return this.get('_viewMap.printArea');
         },
+
 
         _initializeRenderer: function () {
 
@@ -135,8 +136,8 @@ define(['js/svg/SvgElement', 'xaml!sprd/view/svg/ConfigurationViewer', 'js/core/
             this._removeConfiguration(e.$.item);
         },
 
-        highlightConfiguration: function() {
-            this.getPrintArea().get("highlight") ? this.addClass("highlighted") : this.removeClass("highlighted");
+        dockedToConfiguration: function() {
+            this.getPrintArea().get("docked") ? this.addClass("docked") : this.removeClass("docked");
         },
 
         _addConfiguration: function (configuration) {
