@@ -1355,6 +1355,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return this.isRotating() && (!this.$._scale.x.equals(this.get('configuration.scale.x')) || !this.$._scale.y.equals(this.get('configuration.scale.y')));
             }.onChange('_scale', 'isRotating()'),
 
+            scalesAndRotates: function() {
+                return this.scales() && this.rotates();
+            }.onChange('scales()', 'rotates()'),
+
             isMoving: function() {
                 return this.$._mode === MOVE;
             }.onChange("_mode"),
