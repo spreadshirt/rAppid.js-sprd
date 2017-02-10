@@ -33,11 +33,11 @@
 
         <svg:g class="configuration-info" visible="{and(_configurationInfo, productViewer.$parent.showConfigurationInformation)}"
                _fontSize="{pixelToViewBox(15)}" translateY="-{pixelToViewBox(20)}">
-            <svg:text visible="{isScaling()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
+            <svg:text visible="{scales()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
                 {getLocalizedSize(_configurationWidth,0)} x
                 {getLocalizedSize(_configurationHeight,0)}
             </svg:text>
-            <svg:text visible="{isRotating()}" font-size="{_fontSize}" dy="1.4em" x="{half(_configurationWidth)}" text-anchor="middle">
+            <svg:text visible="{rotates()}" font-size="{_fontSize}" y="{add(handleY(), 20, mul(pixelToViewBox(_handleWidth), 2))}" x="{handleX()}" text-anchor="middle">
                 {formatSize(_rotation)} °
             </svg:text>
             <svg:text visible="{isMoving()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
@@ -48,14 +48,14 @@
 
         <svg:circle class="configuration-handle scale"
                     selected="{isScalable()}"
-                    cx="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
-                    cy="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
+                    cx="{handleX()}"
+                    cy="{handleY()}"
                     r="{half(pixelToViewBox(_handleWidth))}"/>
 
         <svg:circle cid="_bigScaleHandle" class="big-configuration-handle scale"
                     selected="{isScalable()}" pointer-events="visible"
-                    cx="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
-                    cy="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
+                    cx="{handleX()}"
+                    cy="{handleY()}"
                     r="{pixelToViewBox(_handleWidth)}"/>
 
 

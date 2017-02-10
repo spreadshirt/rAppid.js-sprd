@@ -796,6 +796,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var snapPoints = _.range(0, 360 + snapStepSize, snapStepSize);
                     snapPoints.push(configuration.$.rotation);
                     rotateAngle = this.snapOneDimension(rotateAngle, snapPoints, rotationSnippingThreshold);
+                    rotateAngle %= 360;
                     if (this.$.centerVector && snapPoints.indexOf(rotateAngle) !== -1) {
                         this.set('rotationSnap', true);
                     }
@@ -1036,7 +1037,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     configuration.$.offset.set('y', configuration.$.offset.$.y + (vY - heightDiff * 0.5) * configuration.$.scale.y);
 
                     configuration._debouncedComposeText();
-                    f
                     configuration.trigger("sizeChanged");
 
                 } else if (mode === SCALE) {
@@ -1280,7 +1280,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return 0.1 * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
-
             substract: function(a, b, c) {
                 return (a - (b || 0)) - (c || 0);
             },
@@ -1350,8 +1349,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             }.onChange("_mode"),
 
             rotates: function() {
-                return this.$._rotation.equals(this.get('configuration.rotation'));
-            },
+                return this.isRotating() && !this.$._rotation.equals(this.get('configuration.rotation'));
+            }.onChange('_rotation', 'isRotating()'),
+
+            scales: function() {
+                return this.isRotating() && (!this.$._scale.x.equals(this.get('configuration.scale.x')) || !this.$._scale.y.equals(this.get('configuration.scale.y')));
+            }.onChange('_scale', 'isRotating()'),
 
             isMoving: function() {
                 return this.$._mode === MOVE;
@@ -1440,7 +1443,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             add: function(a, b) {
-                return a + b;
+                var accumelator = 0;
+                for (var i = 0; i < arguments.length; i++) {
+                    accumelator += arguments[i];
+                }
+
+                return accumelator;
             },
 
             outerCircleRadius: function(configuration) {
@@ -1449,6 +1457,24 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             downVectorDistance: function() {
                 return this.$.downVector && this.$.downVector.distance() * (1 + this.$._scale.x - this.$.configuration.$.scale.x );
-            }.onChange('_scale', 'downVector')
+            }.onChange('_scale', 'downVector'),
+
+            handleOffset: function() {
+
+                var x = this.get('_configurationWidth') - this.pixelToViewBox(this.get('_handleOffset'));
+                var y = this.get('_configurationHeight') - this.pixelToViewBox(this.get('_handleOffset'));
+                return {
+                    x: x,
+                    y: y
+                }
+            }.onChange('_configurationWidth', '_configurationHeight', '_handleOffset'),
+
+            handleX: function() {
+                return this.handleOffset().x;
+            }.onChange('handleOffset()'),
+
+            handleY: function() {
+                return this.handleOffset().y;
+            }.onChange('handleOffset()')
         });
     });
