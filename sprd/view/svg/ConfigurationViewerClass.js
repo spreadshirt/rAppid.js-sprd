@@ -9,7 +9,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
         var validateConfigurationOnTransform = true,
             rotationSnippingThreshold = 5,
             rotateSnippingEnabled = true,
-            scaleSnippingThreshold = 0.05,
+            scaleSnippingThreshold = 0.02,
             scaleSnippingEnabled = true,
             moveSnippingEnabled = true,
             moveSnippingThreshold = 7,
@@ -778,7 +778,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var currentVector = Vector.subtract([x, y], this.$centerVector);
 
                 var scalarProduct = Vector.scalarProduct(startVector, currentVector);
-                var rotateAngle = Math.acos(scalarProduct / (startVector.distance() * currentVector.distance())) * 180 / Math.PI;
+                var normalizedProduct = scalarProduct / (startVector.distance() * currentVector.distance());
+                normalizedProduct = normalizedProduct.equals(1) ? 1 : normalizedProduct;
+                normalizedProduct = normalizedProduct.equals(-1) ? -1 : normalizedProduct;
+                var rotateAngle = Math.acos(normalizedProduct) * 180 / Math.PI;
                 var crossVector = Vector.vectorProduct(startVector, currentVector);
 
                 if (crossVector.components[2] < 0) {
