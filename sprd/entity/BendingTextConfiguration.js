@@ -53,7 +53,9 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             if (!_.isEmpty(properties)) {
                 flow()
                     .seq(function(cb) {
+                        options = _.clone(options);
                         options.noDesignFetch = true;
+
                         DesignConfigurationBase.prototype.init.call(self, options, cb);
                     })
                     .seq(function(cb) {
