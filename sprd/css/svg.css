@@ -53,16 +53,28 @@ image {
     fill: none;
 }
 
-.configuration-handle {
+.product-viewer.active.bright .configuration-handle, .big-configuration-handle {
+    fill: black;
+}
+
+.product-viewer.active.dark .configuration-handle, .big-configuration-handle {
     fill: white;
+}
+
+.configuration-handle, .big-configuration-handle {
     stroke-width: 1;
     stroke: black;
     vector-effect: non-scaling-stroke;
     visibility: hidden;
 }
 
-.configuration-handle.active {
+.configuration-handle.active, .big-configuration-handle.active {
     visibility: visible;
+}
+
+.big-configuration-handle {
+    fill: none;
+    stroke: none;
 }
 
 .configuration-handle-icon {
@@ -74,10 +86,13 @@ image {
 }
 
 .configuration-boundary {
-    stroke-dasharray: 9, 5;
     stroke-width: 1;
     stroke: white;
     vector-effect: non-scaling-stroke;
+}
+
+.big-configuration-boundary {
+
 }
 
 .configuration-boundary {
@@ -116,7 +131,7 @@ image {
     stroke: none;
 }
 
-.configuration-viewer .rotation-circle, .rotation-line {
+.configuration-viewer .rotation-circle, .reference-circle, .rotation-line {
     fill: none;
     stroke-width: 1;
     stroke: #ffa53b;

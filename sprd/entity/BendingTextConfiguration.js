@@ -10,7 +10,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
     return DesignConfigurationBase.inherit('sprd.model.BendingTextConfiguration', {
 
         defaults: {
-            fontSize: 25,
+            fontSize: 16,
 
             _size: Size,
             aspectRatio: 1,
@@ -48,10 +48,12 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             var properties = this.$.properties,
                 context = this.$.context,
                 self = this;
+            options = options || {};
 
             if (!_.isEmpty(properties)) {
                 flow()
                     .seq(function(cb) {
+                        options.noDesignFetch = true;
                         DesignConfigurationBase.prototype.init.call(self, options, cb);
                     })
                     .seq(function(cb) {
@@ -92,6 +94,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                                 angle: properties.angle || 50,
                                 path: properties.path || PATH_TYPE.OUTER_CIRCLE,
                                 font: fontFamily.getFont(fontWeight, fontStyle),
+                                fontSize: properties.fontSize || 16,
                                 scale: scale
                             })
                         }
@@ -119,6 +122,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             ret.properties.fontFamilyId = font.getFontFamily().$.id;
             ret.properties.fontWeight = font.$.weight;
             ret.properties.fontStyle = font.$.style;
+            ret.properties.fontSize = this.$.fontSize;
             ret.properties.path = this.$.path;
             ret.properties.scale = this.$.scale.x;
 
@@ -140,6 +144,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             this.bind("change:text", recalculateSize, this);
             this.bind("change:angle", recalculateSize, this);
             this.bind("change:font", recalculateSize, this);
+            this.bind("change:fontSize", recalculateSize, this);
+
             this.bind("change:printColors", function() {
                 this.trigger('configurationChanged');
             }, this)
@@ -212,7 +218,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 fontSVGUrl = this.mainConfigurationRenderer.$.imageService.fontUrl(font, "svg#font"),
                 digitalPrint = !this.$.printType.isPrintColorColorSpace();
 
-            var cacheId = [self.$.angle, self.$.text, self.$.font.$.id];
+            var cacheId = [self.$.angle, self.$.text, self.$.font.$.id, self.$.fontSize];
             var fill = self.$.printColors.at(0).toHexString();
 
             if (digitalPrint) {
@@ -291,7 +297,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
         },
 
         _additionalValidation: function($, options) {
-            if (this._hasSome($, ["angle", "text"])) {
+            if (this._hasSome($, ["angle", "text", "fontSize"])) {
                 return {
                     angle: $.angle,
                     text: $.text,

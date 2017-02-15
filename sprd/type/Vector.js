@@ -27,6 +27,18 @@ define(['js/core/Base'], function (Base) {
 
         add: function(vector) {
             return Vector.add(this, vector);
+        },
+
+        getX: function() {
+            return this.components[0];
+        },
+
+        getY: function() {
+            return this.components[1];
+        },
+
+        getZ: function() {
+            return this.components[2];
         }
     }, {
         distance: function(vector) {
@@ -104,6 +116,10 @@ define(['js/core/Base'], function (Base) {
             }
 
             return vector;
+        },
+
+        createFromPoint: function(point) {
+            return new Vector([point.x, point.y]);
         }
     });
 

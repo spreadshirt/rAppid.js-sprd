@@ -11,7 +11,9 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 selection: null,
                 bound: null,
                 copyrightWordList: null,
-                isNew: false
+                isNew: false,
+                isTemplate: false,
+                autoGrow: false
             },
 
             inject: {
@@ -104,6 +106,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 if (e && e.$ && e.$.operation && e.$.operation.$text) {
                     // if there was a text change, handle it as configuration is not new anymore
                     this.set('isNew', false);
+                    this.set('isTemplate', false);
                 }
 
 
@@ -149,10 +152,26 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 var composer = this.$.composer,
                     self = this;
 
+                textArea.$.autoGrow = this.$.autoGrow;
+                var oldWidth = this.get('composedTextFlow.measure.width');
+
                 composer.compose(textFlow, textArea.$, function (err, composedTextFlow) {
 
                     if (composedTextFlow && !skipHeight) {
-                        self.$.textArea.set('height', composedTextFlow.composed.getHeight());
+                        if (!textArea.$.autoGrow) {
+                            self.$.textArea.set('height', composedTextFlow.composed.getHeight());
+                        } else {
+                            var alignment = composedTextFlow.getAlignmentOfWidestSpan();
+                            var alignmentFactor = composedTextFlow.alignmentToFactor(alignment);
+
+                            if (oldWidth) {
+                                var widthDelta = (composedTextFlow.measure.width - oldWidth) * self.$.scale.x;
+                                self.$.offset.set('x', Number(self.$.offset.get('x')) - (widthDelta * alignmentFactor));
+                            }
+
+                            self.$.textArea.set(composedTextFlow.measure);
+                        }
+
                         self.trigger("sizeChanged");
                     }
 
@@ -489,6 +508,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     }
                 };
 
+                var properties = ret.properties || {};
+                properties.autoGrow = this.$.autoGrow;
+                ret.properties = properties;
+
                 return ret;
             },
 
@@ -620,7 +643,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return !!this.$.composedTextFlow;
             },
             isDeepEqual: function (b) {
-                var comparableProperties = ['offset', 'rotation', 'printType', 'printColors', 'scale', 'printArea'],
+                var comparableProperties = ['offset', 'rotation', 'printType', 'scale', 'printArea'],
                     i,
                     property,
                     originalProperty,

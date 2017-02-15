@@ -1,4 +1,4 @@
-define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', 'js/core/Bus'], function (SpecialFlexConfigurationRenderer, Bus) {
+define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', 'js/core/Bus'], function(SpecialFlexConfigurationRenderer, Bus) {
 
     return SpecialFlexConfigurationRenderer.inherit("sprd.view.svg.TextConfigurationRendererClass", {
 
@@ -19,7 +19,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', 'js/core/Bus'], f
             bus: Bus
         },
 
-        ctor: function () {
+        ctor: function() {
             this.$firstSelection = true;
             this.callBase();
         },
@@ -28,16 +28,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', 'js/core/Bus'], f
             return a && b
         },
 
-        render: function () {
-
-            if (this.$stage && this.$stage.$el && this.$stage.$el.parentNode) {
-                this._loadFonts();
-            }
-
-            return this.callBase();
-        },
-
-        _loadFonts: function () {
+        _loadFonts: function() {
 
             var configuration = this.$.configuration;
 

@@ -7,7 +7,12 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 printType = configuration.$.printType,
                 product = configuration.$context.$contextModel,
                 printArea,
-                fontFamilies = product.$context.$contextModel.getCollection("fontFamilies");
+                fontFamilies = product.$context.$contextModel.getCollection("fontFamilies"),
+                properties = configuration.$.properties;
+
+            if (properties && properties.autoGrow) {
+                configuration.set('autoGrow', properties.autoGrow)
+            }
 
             flow()
                 .par(function (cb) {

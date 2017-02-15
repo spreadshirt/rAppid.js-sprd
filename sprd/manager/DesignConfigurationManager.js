@@ -37,7 +37,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
             flow()
                 .par(function(cb) {
-                    if (design) {
+                    if (design && !options.noDesignFetch) {
                         design.fetch({
                             fetchInShop: options.fetchInShop
                         }, cb);
@@ -202,7 +202,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
                         if (configuration.$.processedSize) {
                             size = configuration.size();
-                        } else if (design) {
+                        } else if (!options.noDesignFetch && design) {
                             size = UnitUtil.convertSizeToMm(design.$.size, configuration.$.printType.$.dpi);
                         } else if (configuration.$.generatedWidth) {
                             // here we have a special text configuration

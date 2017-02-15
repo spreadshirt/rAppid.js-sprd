@@ -1,4 +1,4 @@
-define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size"], function(SpecialFlexConfigurationRenderer, Size) {
+define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size", 'js/core/Bus'], function(SpecialFlexConfigurationRenderer, Size, Bus) {
 
     return SpecialFlexConfigurationRenderer.inherit("sprd.view.svg.BendingTextConfigurationRendererClass", {
 
@@ -13,6 +13,10 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             path: null,
 
             oldSize: null
+        },
+
+        inject: {
+            bus: Bus
         },
 
         ctor: function() {
@@ -53,17 +57,9 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
 
         _initializationComplete: function() {
             this.callBase();
-            this.loadFont();
             this.bind("configuration", "recalculateSize", this.balanceConfiguration, this);
         },
 
-        render: function() {
-            if (this.$stage && this.$stage.$el && this.$stage.$el.parentNode) {
-                this.loadFont();
-            }
-
-            return this.callBase();
-        },
 
         loadFont: function() {
             var svgRoot = this.getSvgRoot(),
@@ -150,7 +146,10 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             }
 
             return printColor;
-        }.on(["configuration.printColors", "reset"]).onChange("configuration.printType")
+        }.on(["configuration.printColors", "reset"]).onChange("configuration.printType"),
 
+        bus_StageRendered: function() {
+            this.loadFont();
+        }.bus("Stage.Rendered")
     });
 });

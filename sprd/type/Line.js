@@ -1,11 +1,11 @@
-define(['js/core/Base', 'sprd/type/Vector'], function(Base, Vector) {
+define(['js/core/Base', 'sprd/type/Vector', "sprd/extensions/Number"], function(Base, Vector, extension) {
 
     var Line = Base.inherit('sprd.type.Line', {
-        ctor: function(x, y, rot) {
+        ctor: function(x, y, angle) {
             this.x = x;
             this.y = y;
             this.vector = new Vector([x, y]);
-            this.rot = rot % Math.PI;
+            this.angle = angle % Math.PI;
         },
 
         project: function(x, y) {
@@ -18,7 +18,7 @@ define(['js/core/Base', 'sprd/type/Vector'], function(Base, Vector) {
         },
 
         getSlope: function() {
-            return this.floatEqual(this.rot, Math.PI / 2) ? Number.POSITIVE_INFINITY : Math.tan(this.rot);
+            return this.angle.equals(Math.PI / 2) ? Number.POSITIVE_INFINITY : Math.tan(this.angle);
         },
 
         isInfinite: function(val) {
@@ -37,10 +37,10 @@ define(['js/core/Base', 'sprd/type/Vector'], function(Base, Vector) {
             var firstPoint = this.getPointOnLine(-length / 2);
             var secondPoint = this.getPointOnLine(length / 2);
             return {
-                x1: firstPoint.components[0],
-                x2: secondPoint.components[0],
-                y1: firstPoint.components[1],
-                y2: secondPoint.components[1]
+                x1: firstPoint.getX(),
+                x2: secondPoint.getX(),
+                y1: firstPoint.getY(),
+                y2: secondPoint.getY()
             }
         },
 
@@ -50,19 +50,30 @@ define(['js/core/Base', 'sprd/type/Vector'], function(Base, Vector) {
             }
 
             var projectedVector = this.project(x, y);
-            return this.floatEqual(projectedVector.components[0], x) && this.floatEqual(projectedVector.components[1], y);
+            return x.equals(projectedVector.getX()) && y.equals(projectedVector.getY());
+        },
+
+        difference: function(line) {
+            if (!this.isParallelTo(line)) {
+                throw new Error("Lines are not parallel");
+            }
+
+            return this.project(line.x, line.y).subtract(line.vector);
+        },
+
+        isParallelTo: function(line) {
+            return this.angle.equals(line.angle);
+        },
+
+        isPerpendicular: function(line) {
+            return this.angle.equals(line.angle + Math.PI / 2);
         },
 
         equals: function(line) {
             if (!(line instanceof Line)) return false;
-            if (this.rot != line.rot) return false;
+            if (!this.angle.equals(line.angle)) return false;
 
             return this.containsPoint(line.x, line.y);
-        },
-
-        floatEqual: function(a, b) {
-            var epsilon = Math.pow(10, -10);
-            return Math.abs(a - b) < epsilon;
         }
     });
 

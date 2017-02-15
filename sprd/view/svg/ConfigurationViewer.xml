@@ -1,12 +1,17 @@
 <sprdSvg:ConfigurationViewerClass xmlns="http://www.w3.org/1999/xhtml"
                                   xmlns:svg="js.svg"
-                                  xmlns:sprdSvg="sprd.view.svg" class="{errorClass()}" cid="cv">
+                                  xmlns:sprdSvg="sprd.view.svg" class="{errorClass()}"
+                                  cid="cv">
 
-    <svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{_rotationRadius}"
-                visible="{isRotating()}"/>
+    <!--<svg:circle class="rotation-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{_rotationRadius}"-->
+    <!--visible="{isRotating()}"/>-->
 
-    <svg:line class="rotation-line" x1="{minus(enlarge(_configurationWidth))}" x2="{enlarge(_configurationWidth)}" y1="{minus(enlarge(_configurationHeight))}" y2="{enlarge(_configurationHeight)}"
-              visible="{isScaling()}"/>
+    <!--<svg:circle class="reference-circle" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{outerCircleRadius(cv.configuration)}"-->
+    <!--visible="{isRotating()}"/>-->
+
+    <svg:line class="rotation-line" x1="{minus(enlarge(add(cv.downVector.getX(), cv.centerVector.getX())))}" x2="{enlarge(add(cv.downVector.getX(), cv.centerVector.getX()))}"
+              y1="{minus(enlarge(add(cv.downVector.getY(), cv.centerVector.getY())))}" y2="{enlarge(add(cv.downVector.getY(), cv.centerVector.getY()))}"
+              visible="{and(rotationSnap, isScaling())}"/>
 
     <svg:clipPath cid="clipPath" id="{id()}" clip-rule="evenodd"
                   translateX="{invert(cv.translateX)}" translateY="{invert(cv.translateY)}"
@@ -14,7 +19,7 @@
     </svg:clipPath>
 
     <svg:g cid="_assetContainerWrapper">
-        <svg:g class="asset-container" cid="_assetContainer" scaleX="{_scale.x}" scaleY="{_scale.y}" />
+        <svg:g class="asset-container" cid="_assetContainer" scaleX="{_scale.x}" scaleY="{_scale.y}"/>
     </svg:g>
 
     <svg:circle class="rotation-center" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{pixelToViewBox(2)}"
@@ -27,12 +32,12 @@
                   width="{_configurationWidth}" height="{_configurationHeight}"/>
 
         <svg:g class="configuration-info" visible="{and(_configurationInfo, productViewer.$parent.showConfigurationInformation)}"
-        _fontSize="{pixelToViewBox(15)}" translateY="-{pixelToViewBox(20)}">
-            <svg:text visible="{isScaling()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
+               _fontSize="{pixelToViewBox(15)}" translateY="-{pixelToViewBox(add(10, mul(10, scalesAndRotates())))}">
+            <svg:text visible="{scales()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
                 {getLocalizedSize(_configurationWidth,0)} x
                 {getLocalizedSize(_configurationHeight,0)}
             </svg:text>
-            <svg:text visible="{isRotating()}" font-size="{_fontSize}" dy="1.4em" x="{half(_configurationWidth)}" text-anchor="middle">
+            <svg:text visible="{rotates()}" font-size="{_fontSize}" dy="{mul(1.4, scales())}em" x="{half(_configurationWidth)}" text-anchor="middle">
                 {formatSize(_rotation)} °
             </svg:text>
             <svg:text visible="{isMoving()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
@@ -41,25 +46,24 @@
             </svg:text>
         </svg:g>
 
-        <svg:rect cid="_scaleHandle" class="configuration-handle scale"
-                  selected="{isScalable()}"
-                  x="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
-                  y="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
-                  width="{pixelToViewBox(_handleWidth)}" height="{pixelToViewBox(_handleWidth)}"/>
+        <svg:circle class="configuration-handle scale"
+                    selected="{isScalable()}"
+                    cx="{handleX()}"
+                    cy="{handleY()}"
+                    r="{half(pixelToViewBox(_handleWidth))}"/>
+
+        <svg:circle cid="_bigScaleHandle" class="big-configuration-handle scale"
+                    selected="{isScalable()}" pointer-events="visible"
+                    cx="{handleX()}"
+                    cy="{handleY()}"
+                    r="{pixelToViewBox(_handleWidth)}"/>
 
 
         <svg:g selected="{isScalable()}" class="configuration-handle-icon scale"
                scaleX="{pixelToViewBox(_handleIconScale)}" scaleY="{scaleX}"
                translateX="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
                translateY="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
-               style="pointer-events: none">
-            <svg:g _transform="scale(-0.15,0.15) translate(-115,-5)">
-                <svg:path
-                        _transform="matrix(0.8,0,0,-0.8,0,217)"
-                        d="M 34.90625 151.15625 L 34.90625 186.53125 L 47.1875 174.25 L 106.8125 233.84375 L 94.4375 246.21875 L 129.78125 246.21875 L 129.78125 210.875 L 117.40625 223.25 L 57.8125 163.625 L 70.28125 151.15625 L 34.90625 151.15625 z"
-                        style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"/>
-            </svg:g>
-        </svg:g>
+               style="pointer-events: none"/>
 
 
     </svg:g>

@@ -566,7 +566,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     addToProduct: true,
                     isNew: true,
                     fontSize: 25,
-                    printColor: null
+                    printColor: null,
+                    autoGrow: true
                 });
 
                 var self = this,
@@ -1301,6 +1302,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         config.set("_size", config.$._size, {force: true});
                         config.set("isNew", textConfiguration.$.isNew);
+                        config.set("isTemplate", textConfiguration.$.isTemplate);
 
                         callback && callback(err, config);
 

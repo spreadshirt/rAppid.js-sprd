@@ -36,8 +36,6 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             },
 
             revertEqualization: function (product, printArea) {
-                var targetPrintType;
-
                 if (!product) {
                     return;
                 }
@@ -46,29 +44,13 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
 
                 for (var i = 0; i < configurations.length; i++) {
                     var config = configurations[i];
-                    if (config.$.originalPrintType) {
-                        targetPrintType = config.$.originalPrintType;
-                        break;
+                    var originalPrintType = config.$.originalPrintType;
+                    if (originalPrintType) {
+                        config.set('printType', originalPrintType)
                     }
                 }
 
-                if (!targetPrintType && configurations.length > 0) {
-                    var firstConfiguration = configurations[0];
-                    var printTypes = firstConfiguration.getPossiblePrintTypesForPrintArea(printArea, product.get('appearance.id'));
-                    printTypes.sort(function (p1, p2) {
-                        return p1.$.weight > p2.$.weight ? 1 : -1;
-                    });
-                    for (var j = 0; j < printTypes.length; j++) {
-                        var printType = printTypes[j];
-                        if (printType.isPrintColorColorSpace()) {
-                            firstConfiguration.set('printType', printType);
-                            targetPrintType = printType;
-                            break;
-                        }
-                    }
-                }
-
-                this.equalizeConfigurations(product, printArea, targetPrintType);
+                this.equalizeConfigurations(product, printArea);
             },
 
             equalizeConfigurations: function (product, printArea, targetPrintType, excludedConfiguration) {

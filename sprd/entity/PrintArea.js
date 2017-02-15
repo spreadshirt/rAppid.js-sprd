@@ -5,7 +5,8 @@ define(['js/data/Entity', 'sprd/model/PrintType', 'sprd/entity/Size'], function 
         defaults: {
             textAllowed: true,
             designAllowed: true,
-            excludedPrintTypes: []
+            excludedPrintTypes: [],
+            docked: false
         },
 
         schema: {
