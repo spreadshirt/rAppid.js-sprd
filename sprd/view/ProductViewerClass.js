@@ -14,8 +14,6 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             showConfigurationInformation: false,
 
             productViewerSvg: null,
-            textArea: null,
-            textAreaPosition: null,
 
             removeEmptyTextConfiguration: true,
             bringSelectedConfigurationToFront: true,
@@ -46,8 +44,6 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     this.set('selectedConfiguration', null);
                 }
             }, this);
-            this.bind('selectedConfiguration', 'change:scale', this._positionTextArea, this);
-            this.bind('selectedConfiguration', 'change:offset', this._positionTextArea, this);
         },
 
         _onDomAdded: function () {
@@ -80,91 +76,18 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 this.$stage.focus();
             }
 
-            if (selectedConfiguration && this.$.textArea && this.$.textArea.isRendered()) {
-                this.$.textArea.$el.blur();
-                this._positionTextArea();
-            }
         },
 
         keyUp: function (e) {
-            if (!this.$stage.$browser.isIOS) {
-                return;
-            }
-            if (this.$keyPressHandled) {
-                return;
-            }
 
-            // this is a work-a-round because keypress event isn't available on android
-            var value = this.$.textArea.$el.value;
-            if (this.$lastValue !== value && value && value.length !== 0) {
-                // input
-                var c = value.substr(-1),
-                    viewer = this.$.selectedConfigurationViewer;
-
-                if (c && viewer) {
-                    viewer.addChar(c);
-                }
-
-            }
-
-            this.$lastValue = value;
-            this.$.textArea.$el.value = "";
         },
 
         keyPress: function (e) {
-            if (!this.$stage.$browser.isIOS) {
-                return;
-            }
-            this.$keyPressHandled = true;
-            this.$.textArea.$el.value = "";
             this._keyPressHandler(e.domEvent);
         },
 
         keyDown: function (e) {
-            if (!this.$stage.$browser.isIOS) {
-                return;
-            }
-            this.$keyPressHandled = false;
             this._keyDownHandler(e.domEvent);
-        },
-
-        _positionTextArea: function () {
-            try {
-                var position = null,
-                    selectedConfiguration = this.$.selectedConfiguration;
-
-
-                if (!this.$textAreaFocused && this.$.editable && selectedConfiguration && selectedConfiguration.type === "text" && this.$.productViewerSvg && this.$.productViewerSvg.$currentProductTypeViewViewer) {
-                    var factor = this.$.productViewerSvg.localToGlobalFactor(),
-                        view = this.$.productViewerSvg.$currentProductTypeViewViewer.$._view,
-                        viewMap;
-
-                    for (var i = 0; i < view.$.viewMaps.$items.length; i++) {
-                        if (view.$.viewMaps.$items[i].$.printArea === selectedConfiguration.$.printArea) {
-                            viewMap = view.$.viewMaps.$items[i];
-                            break;
-                        }
-                    }
-
-                    if (viewMap) {
-                        position = {
-                            x: (viewMap.get("offset.x") + selectedConfiguration.get("offset.x")) * factor.x + 14,
-                            y: (viewMap.get("offset.y") + selectedConfiguration.get("offset.y")) * factor.y - 2,
-                            width: selectedConfiguration.width() * factor.x - 25,
-                            height: selectedConfiguration.height() * factor.y - 10
-                        };
-                    }
-
-                }
-
-                this.set("textAreaPosition", position);
-            } catch (e) {
-                if (this.$.bus) {
-                    this.$.bus.trigger("Application.Error", e);
-                } else {
-                    throw e;
-                }
-            }
         },
 
         _onConfigurationsReset: function () {
@@ -187,7 +110,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
         },
 
         _clickHandler: function (e) {
-            if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented) && e.domEvent && e.domEvent.target !== this.$.textArea.$el) {
+            if (this.$.editable && !(e.isDefaultPrevented || e.defaultPrevented)) {
 
                 var previousSelectedConfiguration = this.$.selectedConfiguration;
 
@@ -426,89 +349,6 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 });
                 this.callBase();
             }
-        },
-
-        textAreaFocused: function () {
-            this.set('focused', true);
-
-            if (this.$stage.$browser.isIOS) {
-                this.$.textArea.set('visibility', 'hidden');
-            } else {
-                // android hack
-                this.$stage.set('height', this.$stage.$el.offsetHeight);
-                var self = this;
-                setTimeout(function () {
-                    self._positionTextArea();
-                    self.$.textArea.set({
-                        opacity: 1.0,
-                        value: self.$.selectedConfiguration ? self.$.selectedConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "") : "",
-                        _configuration: self.$.selectedConfiguration
-                    });
-                    self.$.textArea.set('opacity', 1.0);
-                }, 1000);
-            }
-
-            this.addClass("text-area-active");
-
-        },
-
-        _delegateEvent: function (e) {
-
-            if (this.$stage.$browser.isIOS || this.$.textArea.get('opacity') == 0) {
-                this.$.productViewerSvg.$currentProductTypeViewViewer._handleDown(e);
-                var viewer = this.$.selectedConfigurationViewer;
-                if (viewer) {
-                    viewer._down(e.domEvent, viewer._isGesture(e.domEvent) ? "gesture" : "move");
-                }
-
-                this.$pointerMoveEventTriggerd = false;
-            }
-
-        },
-        _textAreaMove: function () {
-            this.$pointerMoveEventTriggerd = true;
-        },
-
-        _handlePointerUp: function (e) {
-            if (!this.$pointerMoveEventTriggerd) {
-                e.target.focus();
-            }
-            if (this.$stage.$browser.isIOS || this.$.textArea.get('opacity') == 0) {
-                this.$.productViewerSvg.$currentProductTypeViewViewer._handleUp(e);
-            }
-        },
-
-
-        textAreaBlured: function () {
-            this.set('focused', false);
-            if (this.$stage.$browser.isIOS) {
-                this.$.textArea.set('visibility', 'visible');
-                var viewer = this.$.selectedConfigurationViewer;
-                if (viewer) {
-                    viewer.set('focused', false);
-                }
-            } else {
-                // android hack
-                var self = this;
-
-                setTimeout(function () {
-                    self.$stage.set('height', '100%');
-                }, 200);
-
-                if (this.$.textArea.$._configuration) {
-                    this.$.productManager.setTextForConfiguration(this.$.textArea.$.value, this.$.textArea.$._configuration);
-                }
-
-                self.$.textArea.set('opacity', 0);
-            }
-
-            this.removeClass("text-area-active");
-        },
-
-        showTextAreaOverlay: function () {
-            return this.$.editable &&
-                this.$.selectedConfiguration && this.$.selectedConfiguration.type === "text" &&
-                this.runsInBrowser() && ('ontouchstart' in window) && this.$stage.$browser.isMobile;
-        }.onChange("selectedConfiguration", "editable")
+        }
     });
 });
