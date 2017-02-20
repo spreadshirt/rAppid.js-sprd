@@ -6,7 +6,8 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
             secret: null,
             session: null,
             checkoutToken: null,
-            authToken: null
+            authToken: null,
+            apiKeyRequired: false
         },
 
         _getConfigurationForResource: function (resource) {
@@ -88,7 +89,7 @@ define(["js/data/RestDataSource", "js/data/Model", "js/data/Collection", "unders
                 params.authToken = this.$.authToken;
             }
 
-            if (apiKeyRequired || signatureRequired || sessionRequired) {
+            if (apiKeyRequired || signatureRequired || sessionRequired || this.$.apiKeyRequired) {
                 params = _.defaults(params, {
                     apiKey: apiKey
                 });
