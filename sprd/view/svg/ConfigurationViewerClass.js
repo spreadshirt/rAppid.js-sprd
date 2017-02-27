@@ -151,19 +151,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             _initializeCapabilities: function(window) {
-                var runsInBrowser = this.runsInBrowser(),
-                    hasTouch = runsInBrowser && ('ontouchstart' in window);
-
-                this.$hasTouch = hasTouch;
-
-                if (hasTouch) {
-                    this.set({
-                        _handleWidth: 28,
-                        _handleOffset: 0,
-                        "_handle-Offset": -28,
-                        _handleIconScale: 1.6
-                    });
-                }
+                var runsInBrowser = this.runsInBrowser();
+                this.$hasTouch = runsInBrowser && ('ontouchstart' in window);
             },
 
             _renderFocused: function(focused) {
