@@ -1384,6 +1384,26 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 });
             },
 
+            convertText: function(product, configuration) {
+                if (configuration) {
+                    var font = configuration.$.font ? configuration.$.font : configuration.getUsedFonts()[0],
+                        fontFamily = font.getFontFamily();
+
+                    if (configuration instanceof TextConfiguration) {
+                        this.convertTextToBendingText(product, configuration, {
+                            printColor: configuration.$.printColors.at(0),
+                            font: font,
+                            fontFamily: fontFamily
+                        });
+                    } else if (configuration instanceof BendingTextConfiguration) {
+                        this.convertBendingTextToText(product, configuration, {
+                            printColor: configuration.$.printColors.at(0),
+                            font: font,
+                            fontFamily: fontFamily
+                        });
+                    }
+                }
+            },
 
             checkConfigurationOffset: function(product, configuration) {
 
