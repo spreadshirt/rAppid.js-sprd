@@ -314,13 +314,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.addSnapLine(x, y, rot + Math.PI / 2, owner);
             },
 
-            _commitChangedAttributes: function(attributes) {
-                var scale = attributes._scale;
-                if (scale == Number.POSITIVE_INFINITY) {
-                    debugger;
-                }
-            },
-
             addSnapLines: function(point, dimension, length, pointAmounts, midPoint, rot, owner) {
                 var stepSize = length / (pointAmounts - 1),
                     currentPoint = JSON.parse(JSON.stringify(point)),
