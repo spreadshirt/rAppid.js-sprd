@@ -959,9 +959,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 configuration.mainConfigurationRenderer = null;
 
                 configuration.clearErrors();
-                self._positionConfiguration(configuration);
-
                 product._addConfiguration(configuration);
+                self._positionConfiguration(configuration);
                 bus.trigger('Application.productChanged', null);
             },
 
