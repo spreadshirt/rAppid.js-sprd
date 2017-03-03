@@ -53,7 +53,7 @@ define([], function () {
         if (idOrElement instanceof Number) {
             to = idOrElement;
         } else if (typeof(idOrElement) === "string") {
-            element = document.getElementById(idOrElement);
+            element = document.querySelector(idOrElement);
         } else if (idOrElement instanceof (window.HTMLElement || window.Element)) {
             element = idOrElement;
         }
