@@ -89,8 +89,6 @@ define([], function () {
             callback && callback();
         }
 
-        debugger;
-
         // check if the element is in the view
         var parentRect = parent.getBoundingClientRect(),
             rect = element.getBoundingClientRect(),
