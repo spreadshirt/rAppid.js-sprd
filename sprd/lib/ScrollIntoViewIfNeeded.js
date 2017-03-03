@@ -104,17 +104,19 @@ define([], function () {
         if ((computedStyle.overflowY == "auto" || computedStyle.overflowY == "scroll") &&
             rect.top < parentRect.top || rect.top >= parentRect.top + parentRect.height
         ) {
-
+            scrollToY = parent.scrollTop + (rect.top - parentRect.top - parentRect.height / 2 + rect.height / 2);
         }
 
 
         scrollTo(scrollToX, scrollToY);
 
-        function scrollTo(toX) {
+        function scrollTo(toX, toY) {
 
             // figure out if this is moz || IE because they use documentElement
             var startX = parent.scrollLeft,
-                change = toX - startX,
+                startY = parent.scrollTop,
+                changeX = toX - startX,
+                changeY = toY - startY,
                 currentTime = 0,
                 increment = 20;
 
@@ -124,7 +126,11 @@ define([], function () {
                 // find the value with the quadratic in-out easing function
 
                 if (toX != null) {
-                    parent.scrollLeft = Math.easeInOutQuad(currentTime, startX, change, duration);
+                    parent.scrollLeft = Math.easeInOutQuad(currentTime, startX, changeX, duration);
+                }
+
+                if (toY != null) {
+                    parent.scrollTop = Math.easeInOutQuad(currentTime, startY, changeY, duration);
                 }
 
                 // do the animation unless its over
