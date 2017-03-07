@@ -1264,6 +1264,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         config.set("_size", config.$._size, {force: true});
                         config.set("isNew", textConfiguration.$.isNew);
+                        config.set("isTemplate", textConfiguration.$.isTemplate);
 
                         callback && callback(err, config);
 
