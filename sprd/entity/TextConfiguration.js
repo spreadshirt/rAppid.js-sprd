@@ -114,12 +114,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.trigger("configurationChanged");
 
                 var rawText = this.$.textFlow.text();
-                if (this.$.rawText && this.$.rawText != rawText) {
-                    this.trigger("rawTextChanged");
-                }
-
                 this.set("rawText", rawText);
-
             },
 
             _debouncedComposeText: function () {
