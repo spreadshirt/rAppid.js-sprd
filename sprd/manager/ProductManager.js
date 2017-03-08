@@ -1,5 +1,5 @@
-define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sketchomat/util/PrintValidator"],
-    function(IProductManager, _, flow, ProductUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List, PrintValidator) {
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", "sprd/util/ArrayUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sketchomat/util/PrintValidator"],
+    function(IProductManager, _, flow, ProductUtil, ArrayUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List, PrintValidator) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
@@ -121,9 +121,37 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             getFirstDigital: function(possiblePrintTypes) {
                 // try to find another digital print type which is before the current print type
                 // this is needed to switch back from DD to DT
-                return _.first(possiblePrintTypes, function(printType) {
+                return _.find(possiblePrintTypes, function(printType) {
                     return !printType.isPrintColorColorSpace();
                 });
+            },
+
+            getInitialPrintType: function(configuration, possiblePrintTypes) {
+                var initialPrintType = configuration.$.printType;
+                if (initialPrintType && !_.contains(possiblePrintTypes, initialPrintType)) {
+                    // print type not possible any more
+                    initialPrintType = null;
+                }
+
+                // if digital print type
+                // try to find another digital print type which is before the current print type
+                // this is needed to switch back from DD to DT
+                var firstDigital = this.getFirstDigital(possiblePrintTypes);
+                if (initialPrintType && !initialPrintType.isPrintColorColorSpace() && firstDigital) {
+                    initialPrintType = firstDigital;
+                }
+                return initialPrintType;
+            },
+
+            move: function(list, item, newIndex) {
+                var oldIndex = _.indexOf(list, item);
+                if (oldIndex >= 0) {
+                    list.splice(oldIndex, 1);
+                    list.splice(newIndex, 0, item);
+                    return list;
+                } else {
+                    throw new Error("Item " + item + " not found in array " + list);
+                }
             },
 
             /***
@@ -135,7 +163,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @returns {Boolean} If the conversion was successful
              */
             convertConfiguration: function(product, configuration, productType, appearance) {
-                var setOptions = {silent: true};
+                var self = this;
                 var closestView = productType.getViewByConfiguration(configuration);
                 var closestPrintArea = closestView ? closestView.getDefaultPrintArea() : productType.getDefaultPrintArea();
                 var printAreas = [closestPrintArea].concat(productType.$.printAreas.$items);
@@ -144,160 +172,23 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(targetPrintArea, appearance);
 
                 if (targetPrintArea) {
-                    configuration.set('printArea', targetPrintArea, setOptions);
-
-                    // location information
-                    var currentPrintAreaWidth = configuration.get("printArea.boundary.size.width");
-                    var currentPrintAreaHeight = configuration.get("printArea.boundary.size.height");
-                    var targetPrintAreaWidth = targetPrintArea.get("boundary.size.width");
-                    var targetPrintAreaHeight = targetPrintArea.get("boundary.size.height");
-                    var currentConfigurationWidth = configuration.width();
-                    var currentConfigurationHeight = configuration.height();
-                    var center = {
-                        x: configuration.$.offset.$.x + currentConfigurationWidth / 2,
-                        y: configuration.$.offset.$.y + currentConfigurationHeight / 2
-                    };
-
-                    var preferredPrintType = null;
-                    var preferredScale = null;
-                    var preferredOffset = null;
-
-                    // find new print type
-
-                    var printType = configuration.$.printType;
-                    if (printType && !_.contains(possiblePrintTypes, printType)) {
-                        // print type not possible any more
-                        printType = null;
+                    var initialPrintType = this.getInitialPrintType(configuration, possiblePrintTypes);
+                    if (initialPrintType) {
+                        ArrayUtil.move(possiblePrintTypes, initialPrintType, 0);
                     }
 
-                    // if digital print type
-                    // try to find another digital print type which is before the current print type
-                    // this is needed to switch back from DD to DT
-                    var firstDigital = this.getFirstDigital(possiblePrintTypes);
-                    if (!printType.isPrintColorColorSpace() && firstDigital) {
-                        printType = firstDigital;
-                    }
+                    var printType = _.find(possiblePrintTypes, function(item) {
+                        return self.validateMove(item, targetPrintArea, configuration, product);
+                    });
+
 
                     if (printType) {
-                        var index = _.indexOf(possiblePrintTypes, printType);
-                        if (index >= 0) {
-                            // remove print type from original position
-                            possiblePrintTypes.splice(index, 1);
-                        }
-
-                        // and add it to first position
-                        possiblePrintTypes.unshift(printType);
+                        self._moveConfigurationToView(product, configuration, printType, targetPrintArea);
+                        return true;
                     }
-
-                    var scale = configuration.get('scale') || {x: 1, y: 1};
-                    var optimalScale = Math.abs(scale.x);
-
-                    if (product.$.productType !== productType) {
-                        optimalScale = Math.min(
-                                targetPrintAreaWidth / currentPrintAreaWidth,
-                                targetPrintAreaHeight / currentPrintAreaHeight
-                            ) * Math.abs(scale.x);
-                    }
-
-                    var allowScale = configuration.allowScale(),
-                        printTypeFallback = null;
-
-                    for (var j = 0; j < possiblePrintTypes.length; j++) {
-                        printType = possiblePrintTypes[j];
-                        var factor = optimalScale;
-
-                        if (!printType.isPrintColorColorSpace() && !configuration.$.printType.isPrintColorColorSpace()) {
-                            // digital to digital conversion
-                            factor = optimalScale * printType.$.dpi / configuration.get("printType.dpi");
-                        }
-
-                        var minimumScale = null;
-
-                        if (printType.isEnlargeable()) {
-                            minimumScale = configuration.minimumScale();
-                        }
-
-                        var configurationPrintTypeSize = configuration.getSizeForPrintType(printType);
-
-                        var maximumScale = Math.min(
-                            printType.get("size.width") / configurationPrintTypeSize.$.width,
-                            printType.get("size.height") / configurationPrintTypeSize.$.height,
-                            targetPrintAreaWidth / configurationPrintTypeSize.$.width,
-                            targetPrintAreaHeight / configurationPrintTypeSize.$.height
-                        );
-
-                        if (printType.isShrinkable()) {
-                            maximumScale = Math.min(1, maximumScale);
-                        }
-
-
-                        if (!allowScale && (maximumScale < 1 || (minimumScale && minimumScale > 1))) {
-                            continue;
-                        }
-
-                        if (minimumScale && minimumScale > maximumScale) {
-                            continue;
-                        }
-
-                        if (minimumScale) {
-                            factor = Math.max(factor, minimumScale);
-                        }
-                        factor = Math.min(factor, maximumScale);
-
-                        preferredScale = {
-                            x: factor,
-                            y: factor
-                        };
-
-                        if (!printTypeFallback) {
-                            printTypeFallback = printType
-                        }
-
-                        preferredScale = {
-                            x: factor,
-                            y: factor
-                        };
-
-                        var result = configuration._validatePrintTypeSize(printType, currentConfigurationWidth, currentConfigurationHeight, preferredScale);
-                        if (result.minBound || result.maxBound || result.dpiBound) {
-                            continue;
-                        }
-
-                        preferredPrintType = printType;
-                        break;
-                    }
-
-                    preferredPrintType = preferredPrintType || printTypeFallback;
-
-                    if (preferredPrintType) {
-
-                        configuration.set({
-                            printType: preferredPrintType,
-                            scale: preferredScale
-                        });
-
-                        preferredOffset = {
-                            x: targetPrintAreaWidth * center.x / currentPrintAreaWidth - configuration.width() / 2,
-                            y: targetPrintAreaHeight * center.y / currentPrintAreaHeight - configuration.height() / 2
-                        };
-
-                        configuration.$.offset.set(preferredOffset);
-
-                        // set again with force to trigger events
-                        configuration.set({
-                            printType: preferredPrintType,
-                            scale: preferredScale,
-                            printArea: targetPrintArea
-                        }, {force: true});
-                    } else {
-                        return false;
-                    }
-
-                } else {
-                    return false;
                 }
 
-                return true;
+                return false;
             },
 
             /**
@@ -426,8 +317,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         callback && callback(err, results.designConfiguration);
                     });
 
-            }
-            ,
+            },
 
             addText: function(product, params, callback) {
 
@@ -486,8 +376,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 this._addText(product, params, configurationFnc, finalizeFnc, callback);
 
 
-            }
-            ,
+            },
 
             addBendingText: function(product, params, callback) {
 
@@ -1001,7 +890,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     return null;
                 }
 
-                var validationsForTypes = this.validateConfigurationMoveList(printTypes, printArea, configuration, product);
+                var validationsForTypes = this.validateConfigurationMoveList(printTypes, printArea, configuration);
                 return _.some(validationsForTypes, function(validations) {
                     return validations && _.every(validations, function(validation) {
                             return !validation;
@@ -1010,17 +899,17 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             }
             ,
 
-            validateConfigurationMoveList: function(printTypes, printArea, configuration, product) {
+            validateConfigurationMoveList: function(printTypes, printArea, configuration) {
                 var ret = [];
                 for (var i = 0; i < printTypes.length; i++) {
-                    ret.push(this.validateConfigurationMove(printTypes[i], printArea, configuration, product));
+                    ret.push(this.validateConfigurationMove(printTypes[i], printArea, configuration));
                 }
 
                 return ret;
             }
             ,
 
-            validateConfigurationMove: function(printType, printArea, configuration, product) {
+            validateConfigurationMove: function(printType, printArea, configuration) {
                 try {
                     var scale = this.getConfigurationPosition(configuration, printArea, printType).scale;
                     return configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), scale);
@@ -1109,13 +998,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     x: x - rect.width / 2,
                     y: y - rect.height / 2
                 }
-            }
-            ,
+            },
 
             _positionConfiguration: function(configuration) {
                 configuration.set(this.getConfigurationPosition(configuration), PREVENT_VALIDATION_OPTIONS);
-            }
-            ,
+            },
 
             getConfigurationPosition: function(configuration, printArea, printType) {
 
@@ -1167,7 +1054,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     maxPrintTypeScale = 1;
                 }
 
-                scale = this.clamp(scaleToFitDefaultBox, minimumDesignScale || 0, maxPrintTypeScale);
+                var scale = this.clamp(scaleToFitDefaultBox, minimumDesignScale || 0, maxPrintTypeScale);
 
                 boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                 centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
