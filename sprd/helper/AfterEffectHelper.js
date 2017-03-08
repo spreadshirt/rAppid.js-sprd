@@ -52,7 +52,9 @@ define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/AnimFrame']
                     .seq('designImage', function(cb) {
                         if (!design.$.localHtmlImage) {
                             var originalImage = new Image();
-                            originalImage.crossOrigin = "Anonymous";
+                            if (options.crossOrigin) {
+                                originalImage.crossOrigin = "Anonymous";
+                            }
                             originalImage.src = design.$.localImage;
                             originalImage.onerror = cb;
                             originalImage.onload = function() {

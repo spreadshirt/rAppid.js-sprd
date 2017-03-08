@@ -64,10 +64,11 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             _commitAfterEffect: function(afterEffect) {
                 var self = this;
+
                 if (!afterEffect) {
                     this.set('processedImage', null);
                 } else {
-                    AfterEffectHelper.applyAfterEffect(self.$.design, afterEffect, null, function(err, ctx) {
+                    AfterEffectHelper.applyAfterEffect(self.$.design, afterEffect, {crossOrigin: self.$stage.PARAMETER().admin}, function(err, ctx) {
                         if (!err) {
                             self.applyAfterEffect(ctx);
                         } else {
