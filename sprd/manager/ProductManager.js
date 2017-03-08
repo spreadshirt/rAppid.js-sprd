@@ -48,7 +48,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
                     })
                     .seq(function() {
-                        // determinate closest view for new product type
                         var currentView = product.$.view;
 
                         if (currentView) {
@@ -61,14 +60,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     })
                     .seq(function() {
-
-                        // remove example configuration
-                        if (product && product.get("restrictions.example") === true && product.$.configurations.size() > 0) {
-                            product.$.restrictions.example = false;
-                            var configuration = product.$.configurations.at(0);
-                            product.$.configurations.remove(configuration);
-                        }
-
+                        product.removeExampleConfiguration();
                         self.convertConfigurations(product, productType, appearance);
                     })
                     .seq(function() {
@@ -119,8 +111,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             },
 
             getFirstDigital: function(possiblePrintTypes) {
-                // try to find another digital print type which is before the current print type
-                // this is needed to switch back from DD to DT
                 return _.find(possiblePrintTypes, function(printType) {
                     return !printType.isPrintColorColorSpace();
                 });
@@ -166,8 +156,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         ArrayUtil.move(possiblePrintTypes, initialPrintType, 0);
                     }
 
-                    var printType = _.find(possiblePrintTypes, function(item) {
-                        return self.validateMove(item, targetPrintArea, configuration, product);
+                    var printType = _.find(possiblePrintTypes, function(print) {
+                        return self.validateMove(print, targetPrintArea, configuration, product);
                     });
 
 
@@ -294,7 +284,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         designConfiguration.init({}, cb);
                     })
                     .seq(function() {
-                        // determinate position
                         self._positionConfiguration(this.vars["designConfiguration"]);
                     })
                     .exec(function(err, results) {
