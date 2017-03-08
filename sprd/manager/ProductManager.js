@@ -143,17 +143,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 return initialPrintType;
             },
 
-            move: function(list, item, newIndex) {
-                var oldIndex = _.indexOf(list, item);
-                if (oldIndex >= 0) {
-                    list.splice(oldIndex, 1);
-                    list.splice(newIndex, 0, item);
-                    return list;
-                } else {
-                    throw new Error("Item " + item + " not found in array " + list);
-                }
-            },
-
             /***
              * Converts a configuration of a product with the given productType and appearance
              * @param {sprd.model.Product} product
