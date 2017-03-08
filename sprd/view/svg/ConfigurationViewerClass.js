@@ -309,6 +309,25 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
+            addSnapAngle: function(newRot, owner) {
+                var alreadyAdded = false;
+                for (var i = 0; i < this.$snapAngles.length; i++) {
+                    var owners = this.$snapAngles[i].owners;
+                    var rot = this.$snapAngles[i].rot;
+                    if (newRot == rot) {
+                        if (owners.indexOf(owner) === -1) {
+                            owners.push(owner);
+                        }
+
+                        alreadyAdded = true;
+                    }
+                }
+
+                if (!alreadyAdded) {
+                    this.$snapAngles.push({owners: [owner], rot: newRot});
+                }
+            },
+
             addSnapLinesAtPoint: function(x, y, rot, owner) {
                 this.addSnapLine(x, y, rot, owner);
                 this.addSnapLine(x, y, rot + Math.PI / 2, owner);
@@ -316,7 +335,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             addSnapLines: function(point, dimension, length, pointAmounts, midPoint, rot, owner) {
                 var stepSize = length / (pointAmounts - 1),
-                    currentPoint = JSON.parse(JSON.stringify(point)),
+                    currentPoint = _.clone(point),
                     rotatedPoint;
 
                 for (var i = 0; i < pointAmounts; i++) {
@@ -325,7 +344,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this.addSnapLinesAtPoint(rotatedPoint.x, rotatedPoint.y, rot, owner);
                 }
             },
-
 
             rotatePoint: function(x, y, rot, midX, midY) {
 
@@ -409,8 +427,58 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.addSnapLinesOfRect(rect.topLeft, rect.width, rect.height, rot, otherConfiguration);
             },
 
-            addSnapLinesOfPrintArea: function(printArea) {
-                var leftUpperCorner = {x: 0, y: 0};
+            addSnapAnglesOfConfiguration: function(otherConfiguration) {
+                var rot = this.degreeToRadian(otherConfiguration.$.rotation);
+                this.addSnapAngle(otherConfiguration.$.rotation, otherConfiguration);
+                this.addSnapAngle(otherConfiguration.$.rotation + 180, otherConfiguration);
+            },
+
+            addSnapAngleOfConfiguration: function(otherConfiguration) {
+                var rect = this.getRectFromConfiguration(otherConfiguration);
+                var rot = this.degreeToRadian(otherConfiguration.$.rotation);
+                this.addSnapLinesOfRect(rect.topLeft, rect.width, rect.height, rot, otherConfiguration);
+            },
+
+            addSnapLinesOfOtherConfigurations: function(productViewer, configuration) {
+                if (productViewer && productViewer.$.product) {
+                    var configurationsOnPrintArea = productViewer.$.product.getConfigurationsOnPrintAreas([configuration.$.printArea]) || [],
+                        myIndex = _.indexOf(configurationsOnPrintArea, configuration);
+
+                    if (myIndex !== -1) {
+                        configurationsOnPrintArea.splice(myIndex, 1);
+                    }
+
+                    for (var i = 0; i < configurationsOnPrintArea.length; i++) {
+                        var otherConfiguration = configurationsOnPrintArea[i];
+                        this.addSnapLinesOfConfiguration(otherConfiguration);
+                    }
+                }
+            },
+
+            addSnapAnglesOfOtherConfigurations: function(productViewer, configuration) {
+                if (productViewer && productViewer.$.product) {
+                    var configurationsOnPrintArea = productViewer.$.product.getConfigurationsOnPrintAreas([configuration.$.printArea]) || [],
+                        myIndex = _.indexOf(configurationsOnPrintArea, configuration);
+
+                    if (myIndex !== -1) {
+                        configurationsOnPrintArea.splice(myIndex, 1);
+                    }
+
+                    for (var i = 0; i < configurationsOnPrintArea.length; i++) {
+                        var otherConfiguration = configurationsOnPrintArea[i];
+                        this.addSnapAnglesOfConfiguration(otherConfiguration);
+                    }
+                }
+            },
+
+            addSnapLinesOfPrintArea: function(configuration) {
+                var leftUpperCorner = {x: 0, y: 0},
+                    printArea = configuration.$.printArea;
+
+                if (!printArea) {
+                    return;
+                }
+
                 var midPoint = {x: printArea.width() / 2, y: printArea.height() / 2};
                 this.addSnapLines(leftUpperCorner, 'x', printArea.width(), 3, midPoint, 0, printArea);
                 this.addSnapLines(leftUpperCorner, 'y', printArea.height(), 3, midPoint, 0, printArea);
@@ -506,38 +574,20 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     "_mode": mode,
                     shiftKey: false
                 });
+
+                this._removeSnapLines();
+                this.$snapLines = [];
+                this.$snapAngles = [];
+
+                if (moveSnippingEnabled) {
+                    this.addSnapLinesOfOtherConfigurations(productViewer, configuration);
+                    this.addSnapLinesOfPrintArea(configuration);
+                    this.addSnapAnglesOfOtherConfigurations(productViewer, configuration)
+                }
+
                 if (mode === MOVE) {
-
-                    this._removeSnapLines();
-                    this.$snapLines = [];
-
-                    if (moveSnippingEnabled) {
-
-                        var printArea = configuration.$.printArea;
-
-                        if (printArea) {
-                            if (productViewer && productViewer.$.product) {
-                                var configurationsOnPrintArea = productViewer.$.product.getConfigurationsOnPrintAreas([printArea]) || [],
-                                    myIndex = _.indexOf(configurationsOnPrintArea, configuration);
-
-                                if (myIndex !== -1) {
-                                    configurationsOnPrintArea.splice(myIndex, 1);
-                                }
-
-                                for (var i = 0; i < configurationsOnPrintArea.length; i++) {
-                                    var otherConfiguration = configurationsOnPrintArea[i];
-                                    this.addSnapLinesOfConfiguration(otherConfiguration);
-                                }
-                            }
-
-                            self.addSnapLinesOfPrintArea(printArea);
-                        }
-
-                    }
-
                     this.set('_offset', configuration.$.offset.clone());
                 } else if (mode === SCALE) {
-
                     this.set({
                         _scale: _.clone(configuration.$.scale),
                         _offset: configuration.$.offset.clone()
@@ -723,6 +773,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var snapStepSize = 45;
                     var snapPoints = _.range(0, 360 + snapStepSize, snapStepSize);
                     snapPoints.push(configuration.$.rotation);
+                    for (var i = 0; i < this.$snapAngles.length; i++) {
+                        snapPoints.push(this.$snapAngles[i].rot);
+                    }
+
                     rotateAngle = this.snapOneDimension(rotateAngle, snapPoints, rotationSnippingThreshold);
                     rotateAngle %= 360;
                     if (this.$.centerVector && snapPoints.indexOf(rotateAngle) !== -1) {
