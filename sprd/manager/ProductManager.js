@@ -1026,7 +1026,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     minimumDesignScale = configuration._getMinimalScale(printType);
                 }
 
-                var maxPrintTypeScale = maxWidth / boundingBox.width;
+                var maxPrintTypeScale = printTypeWidth / boundingBox.width;
 
                 if (configuration instanceof SpecialTextConfiguration || (configuration instanceof DesignConfiguration && !configuration.$.design.isVectorDesign())) {
                     maxPrintTypeScale = 1;
