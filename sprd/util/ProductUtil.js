@@ -6,14 +6,14 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             return a.$.weight - b.$.weight;
         },
 
-        getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearanceId) {
+        getPossiblePrintTypesForDesignOnPrintArea: function(design, printArea, appearance) {
 
             if (!(design && design.$.printTypes)) {
                 return [];
             }
 
             return ArrayUtil.average(design.$.printTypes.$items,
-                this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId))
+                this.getPossiblePrintTypesForPrintAreas([printArea], appearance))
                 .sort(this.sortPrintTypeByWeight);
         },
 
@@ -24,25 +24,24 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                 return [];
             }
 
-            return this.getPossiblePrintTypesForDesignOnPrintArea(design, defaultPrintArea, product.$.appearance.$.id);
+            return this.getPossiblePrintTypesForDesignOnPrintArea(design, defaultPrintArea, product.$.appearance);
 
         },
 
-        getPossiblePrintTypesForTextOnPrintArea: function (fontFamily, printArea, appearanceId) {
+        getPossiblePrintTypesForTextOnPrintArea: function(fontFamily, printArea, appearance) {
             return ArrayUtil.average(fontFamily.$.printTypes.$items,
-                this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId))
+                this.getPossiblePrintTypesForPrintAreas([printArea], appearance))
                 .sort(this.sortPrintTypeByWeight);
         },
 
-        getPossiblePrintTypesForPrintAreas: function (printAreas, appearanceId) {
+        getPossiblePrintTypesForPrintAreas: function(printAreas, appearance) {
             var ret = [];
 
             printAreas = ArrayUtil.getAsArray(printAreas);
 
             _.each(printAreas, function (printArea) {
 
-                var productType = printArea.$parent,
-                    appearance = productType.getAppearanceById(appearanceId);
+                var productType = printArea.$parent;
 
                 if (appearance) {
                     _.each(appearance.$.printTypes.$items, function (printType) {
@@ -58,8 +57,8 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             return ret;
         },
 
-        getPossiblePrintTypesForSpecialText: function (printArea, appearanceId) {
-            return _.filter(this.getPossiblePrintTypesForPrintAreas([printArea], appearanceId) || [],
+        getPossiblePrintTypesForSpecialText: function(printArea, appearance) {
+            return _.filter(this.getPossiblePrintTypesForPrintAreas([printArea], appearance) || [],
                 function (printType) {
                     // just digital print types
                     return !printType.isPrintColorColorSpace() && printType.isScalable();

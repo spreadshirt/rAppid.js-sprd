@@ -187,7 +187,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 return ret;
             }
 
-            tmp = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(font.getFontFamily(), printArea, appearance.$.id);
+            tmp = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(font.getFontFamily(), printArea, appearance);
             _.each(tmp, function(element) {
                 if (ret.indexOf(element) === -1) {
                     ret.push(element);
@@ -204,12 +204,12 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             }
         },
 
-        getPossiblePrintTypesForPrintArea: function(printArea, appearanceId) {
+        getPossiblePrintTypesForPrintArea: function(printArea, appearance) {
             var fontFamily = this.$.font.getFontFamily(),
                 text = this.$.text;
 
             if (text) {
-                return ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearanceId);
+                return ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance);
             }
         },
 

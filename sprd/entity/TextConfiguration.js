@@ -542,7 +542,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     if (leaf) {
                         do {
                             if (leaf.$.style && leaf.$.style.$.font) {
-                                tmp = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(leaf.$.style.$.font.getFontFamily(), printArea, appearance.$.id);
+                                tmp = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(leaf.$.style.$.font.getFontFamily(), printArea, appearance);
                                 _.each(tmp, function (element) {
                                     if (ret.indexOf(element) === -1) {
                                         ret.push(element);
@@ -557,7 +557,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return ret;
             }.onChange("printArea", "design"),
 
-            getPossiblePrintTypesForPrintArea: function (printArea, appearanceId) {
+            getPossiblePrintTypesForPrintArea: function(printArea, appearance) {
 
                 var fontFamilies = [],
                     printTypes = [];
@@ -577,7 +577,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
 
                 for (var i = 0; i < fontFamilies.length; i++) {
-                    printTypes.push(ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamilies[i], printArea, appearanceId));
+                    printTypes.push(ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamilies[i], printArea, appearance));
                 }
 
                 return ArrayUtil.average.apply(ArrayUtil, printTypes);

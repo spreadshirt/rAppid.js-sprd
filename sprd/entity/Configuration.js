@@ -159,7 +159,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             // when configuration is too small for print type or it is a DD print type try to find another print type that fits better
             if (printType && (printTypeTooSmall || printTypeWasScaled) && this.$context && this.$context.$contextModel && !printTypeChanged && sizeChanged) {
                 var product = this.$context.$contextModel,
-                    appearanceId = this.$context.$contextModel.get('appearance.id'),
+                    appearanceId = this.$context.$contextModel.get('appearance'),
                     originalPrintType = this.$.originalPrintType;
                 if (product.$.configurations.size() > 0 && !printTypeTooSmall && originalPrintType) {
                     var revertPossible = true;
@@ -167,7 +167,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                     for (var j = 0; j < configurations.length; j++) {
                         var config = configurations[j];
 
-                        var possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(printArea, appearanceId);
+                        var possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(printArea, appearance);
 
                         if (config !== this && config.$.printArea === printArea && (possiblePrintTypes.indexOf(originalPrintType) === -1 || !config.isPrintTypeAvailable(originalPrintType))) {
                             revertPossible = false;
@@ -180,7 +180,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                     }
                 }
 
-                var printTypes = this.getPossiblePrintTypesForPrintArea(this.$.printArea, appearanceId);
+                var printTypes = this.getPossiblePrintTypesForPrintArea(this.$.printArea, appearance);
                 var preferredPrintType = null,
                     val,
                     newPrintType;
@@ -383,7 +383,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 printArea = this.$.printArea;
 
             if (printArea && appearance) {
-                ret = ProductUtil.getPossiblePrintTypesForPrintAreas([printArea], appearance.$.id);
+                ret = ProductUtil.getPossiblePrintTypesForPrintAreas([printArea], appearance);
             }
 
             return ret;
@@ -395,6 +395,15 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         getPossiblePrintTypesForPrintArea: function() {
             return [];
+        },
+
+        getPreferredPrintArea: function(printAreas, appearance) {
+            var self = this;
+
+            return _.find(printAreas, function(printArea) {
+                var possiblePrintTypes = self.getPossiblePrintTypesForPrintArea(printArea, appearance);
+                return printArea && self.isAllowedOnPrintArea(printArea) && possiblePrintTypes.length;
+            });
         },
 
         allowScale: function() {
