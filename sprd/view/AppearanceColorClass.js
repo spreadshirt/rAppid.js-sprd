@@ -11,7 +11,7 @@ define(["js/ui/View", "sprd/data/ImageService"], function (View, ImageService) {
 
         defaults: {
             appearance: null,
-            componentClass: "appearance-color appearance-{appearance.id}",
+            componentClass: "appearance-color appearance-{appearance.id} {whiteClass()}",
             title: "{appearance.name}",
             showTitle: true
         },
@@ -62,6 +62,10 @@ define(["js/ui/View", "sprd/data/ImageService"], function (View, ImageService) {
 
             return imageService.appearanceImage(appearance.$.id);
 
+        }.onChange("appearance"),
+
+        whiteClass: function() {
+            return /#f{6}/i.test(this.get("appearance.colors[0].color().toString()") || "") ? "white" : "";
         }.onChange("appearance")
 
     });

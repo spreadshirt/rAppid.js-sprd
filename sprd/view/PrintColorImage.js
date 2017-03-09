@@ -7,7 +7,7 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
             loaded: false,
             platform: "{PARAMETER().platform}",
             "data-print-color-id": "{printColor.id}",
-            componentClass: "print-color-image",
+            componentClass: "print-color-image {whiteClass()}",
             backgroundColor: "{backgroundColor()}",
             backgroundImage: "{backgroundImage()}",
             backgroundPosition: "{backgroundPosition()}",
@@ -35,6 +35,10 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
             return this.get("printColor.toHexString()");
 
         }.onChange("printColor", "printColor.toHexString()"),
+
+        whiteClass: function() {
+            return /#f{6}/i.test(this.get("printColor.toHexString()") || "") ? "white" : "";
+        }.onChange("printColor"),
 
         alt: function() {
             // TODO: translate colors

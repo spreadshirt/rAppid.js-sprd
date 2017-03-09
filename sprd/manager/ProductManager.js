@@ -959,9 +959,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 configuration.mainConfigurationRenderer = null;
 
                 configuration.clearErrors();
-                self._positionConfiguration(configuration);
-
                 product._addConfiguration(configuration);
+                self._positionConfiguration(configuration);
                 bus.trigger('Application.productChanged', null);
             },
 
@@ -1265,6 +1264,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         config.set("_size", config.$._size, {force: true});
                         config.set("isNew", textConfiguration.$.isNew);
+                        config.set("isTemplate", textConfiguration.$.isTemplate);
 
                         callback && callback(err, config);
 
@@ -1384,6 +1384,26 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 });
             },
 
+            convertText: function(product, configuration) {
+                if (configuration) {
+                    var font = configuration.$.font ? configuration.$.font : configuration.getUsedFonts()[0],
+                        fontFamily = font.getFontFamily();
+
+                    if (configuration instanceof TextConfiguration) {
+                        this.convertTextToBendingText(product, configuration, {
+                            printColor: configuration.$.printColors.at(0),
+                            font: font,
+                            fontFamily: fontFamily
+                        });
+                    } else if (configuration instanceof BendingTextConfiguration) {
+                        this.convertBendingTextToText(product, configuration, {
+                            printColor: configuration.$.printColors.at(0),
+                            font: font,
+                            fontFamily: fontFamily
+                        });
+                    }
+                }
+            },
 
             checkConfigurationOffset: function(product, configuration) {
 

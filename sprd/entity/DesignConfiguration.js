@@ -53,7 +53,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
 
                 var original = this.get('originalPrintType');
-                if (original && original == oldPrintType) {
+                if (original && original !== oldPrintType) {
                     this.set('originalPrintType', null);
                 }
 

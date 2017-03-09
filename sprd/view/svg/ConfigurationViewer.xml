@@ -58,14 +58,6 @@
                     cy="{handleY()}"
                     r="{pixelToViewBox(_handleWidth)}"/>
 
-
-        <svg:g selected="{isScalable()}" class="configuration-handle-icon scale"
-               scaleX="{pixelToViewBox(_handleIconScale)}" scaleY="{scaleX}"
-               translateX="{substract(_configurationWidth,pixelToViewBox(_handleOffset))}"
-               translateY="{substract(_configurationHeight,pixelToViewBox(_handleOffset))}"
-               style="pointer-events: none"/>
-
-
     </svg:g>
 
 
