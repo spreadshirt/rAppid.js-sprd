@@ -455,18 +455,6 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 return null;
             }.onChange('productType.stockStates'),
 
-            appearanceBrightness: function () {
-
-                var color = this.get("appearance.getMainColor()");
-
-                if (color) {
-                    return color.distanceTo("#000000") < color.distanceTo("#FFFFFF") ?
-                        "dark" : "bright";
-                }
-
-                return "";
-            }.onChange(["appearance"]),
-
             isReadyForCompose: function () {
                 var ready = true;
 

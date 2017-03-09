@@ -60,7 +60,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     })
                     .seq(function() {
-                        product.removeExampleConfiguration();
                         self.convertConfigurations(product, productType, appearance);
                     })
                     .seq(function() {
@@ -100,13 +99,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              */
             convertConfigurations: function(product, productType, appearance) {
                 var self = this;
-                var removeConfigurations = _.filter(product.$.configurations.$items, function(configuration) {
+                product.removeExampleConfiguration();
+                var removedConfigurations = _.filter(product.$.configurations.$items, function(configuration) {
                     return !self.convertConfiguration(product, configuration, productType, appearance);
                 });
 
-                if (removeConfigurations.length) {
-                    self.trigger('on:removedConfigurations', {configurations: removeConfigurations}, self);
-                    product.$.configurations.remove(removeConfigurations);
+                if (removedConfigurations.length) {
+                    self.trigger('on:removedConfigurations', {configurations: removedConfigurations}, self);
+                    product.$.configurations.remove(removedConfigurations);
                 }
             },
 
@@ -162,6 +162,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
 
                     if (printType) {
+                        if (configuration instanceof TextConfiguration || configuration instanceof BendingTextConfiguration) {
+                            configuration.setColor(0, self.getPrintTypeColor(printType, appearance));
+                        }
                         self._moveConfigurationToView(product, configuration, printType, targetPrintArea);
                         return true;
                     }
@@ -284,7 +287,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         designConfiguration.init({}, cb);
                     })
                     .seq(function() {
-                        self._positionConfiguration(this.vars["designConfiguration"]);
+                        self.positionConfiguration(this.vars["designConfiguration"]);
                     })
                     .exec(function(err, results) {
                         if (!err) {
@@ -313,7 +316,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     configuration.set("maxHeight", 1);
 
                     // determinate position
-                    self._positionConfiguration(configuration);
+                    self.positionConfiguration(configuration);
 
                     configuration.set("maxHeight", null);
 
@@ -385,7 +388,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     configuration.set("maxHeight", 1);
 
                     // determinate position
-                    self._positionConfiguration(configuration);
+                    self.positionConfiguration(configuration);
 
                     configuration.set("maxHeight", null);
                 };
@@ -394,6 +397,18 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 this._addText(product, params, createConfigurationFnc, finalizeFnc, callback)
             }
             ,
+
+            getPrintTypeColor: function(printType, appearance, startColor) {
+                var color = appearance.brightness() !== "dark" ? "#000000" : "#FFFFFF";
+
+                if (startColor) {
+                    color = printType.getClosestPrintColor(startColor.toHexString());
+                } else {
+                    color = printType.getClosestPrintColor(color);
+                }
+
+                return color;
+            },
 
             _addText: function(product, params, createConfigurationFnc, finalizeFnc, callback) {
 
@@ -569,15 +584,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         printType.fetch(null, cb);
                     })
                     .seq("printTypeColor", function() {
-                        var color = product.appearanceBrightness() !== "dark" ? "#000000" : "#FFFFFF";
-
-                        if (printColor) {
-                            color = printType.getClosestPrintColor(printColor.toHexString());
-                        } else {
-                            color = printType.getClosestPrintColor(color);
-                        }
-
-
+                        var color = self.getPrintTypeColor(printType, appearance, printColor);
                         if (!color) {
                             throw "No print type color";
                         }
@@ -739,7 +746,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq(function() {
                         var configuration = this.vars["configuration"];
                         // determinate position
-                        self._positionConfiguration(configuration);
+                        self.positionConfiguration(configuration);
 
                         if (params.offset) {
                             configuration.set({'offset': params.offset}, PREVENT_VALIDATION_OPTIONS);
@@ -810,7 +817,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 configuration.clearErrors();
                 product._addConfiguration(configuration);
-                self._positionConfiguration(configuration);
+                self.positionConfiguration(configuration);
                 bus.trigger('Application.productChanged', null);
             }
             ,
@@ -834,16 +841,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq(function(cb) {
                         printType.fetch(null, cb);
                     })
-                    .seq(function() {
-                        validations = self.validateMove(printType, printArea, configuration, product);
+                    .seq('validMove', function() {
+                        return self.validateMove(printType, printArea, configuration, product);
                     })
-                    .exec(function(err) {
+                    .exec(function(err, results) {
                         if (!err) {
-                            var valid = validations && _.every(validations, function(val) {
-                                    return !val;
-                                });
-
-                            if (valid) {
+                            if (results.validMove) {
                                 self._moveConfigurationToView(product, configuration, printType, printArea);
                                 callback && callback();
                             } else {
@@ -978,8 +981,29 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
             },
 
-            _positionConfiguration: function(configuration) {
-                configuration.set(this.getConfigurationPosition(configuration), PREVENT_VALIDATION_OPTIONS);
+            positionConfiguration: function(configuration) {
+                if (configuration instanceof BendingTextConfiguration) {
+                    this.positionBendingTextConfiguration(configuration);
+                } else {
+                    configuration.set(this.getConfigurationPosition(configuration), PREVENT_VALIDATION_OPTIONS);
+                }
+            },
+
+            positionBendingTextConfiguration: function(configuration) {
+                var self = this;
+
+                function closedFn () {
+                    if (configuration.$._size.$.width !== 0 && configuration.$._size.$.height !== 0) {
+                        configuration.unbind('sizeChanged', closedFn);
+                        self.positionBendingTextConfiguration(configuration);
+                    }
+                }
+
+                if (configuration.$._size.$.width === 0 || configuration.$._size.$.height === 0) {
+                    configuration.bind('sizeChanged', closedFn)
+                } else {
+                    configuration.set(this.getConfigurationPosition(configuration), PREVENT_VALIDATION_OPTIONS);
+                }
             },
 
             getConfigurationPosition: function(configuration, printArea, printType) {
