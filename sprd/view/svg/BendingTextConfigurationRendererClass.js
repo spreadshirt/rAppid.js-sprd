@@ -15,6 +15,8 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             oldSize: null
         },
 
+        $classAttributes: ['textPath', 'path', 'text', 'oldSize'],
+
         inject: {
             bus: Bus
         },
@@ -103,11 +105,13 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
 
                 var textBBox = this.$.text.$el.getBBox();
 
+                var _size = configuration.$._size;
+                _size.set({
+                    width: textPathRect.width,
+                    height: textPathRect.height
+                });
+
                 configuration.set({
-                    _size: new Size({
-                        width: textPathRect.width,
-                        height: textPathRect.height
-                    }),
                     textPathOffsetX: (textPathRect.width - pathRect.width) * 0.5,
                     textPathOffsetY: -textBBox.y
                 });

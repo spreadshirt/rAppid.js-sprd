@@ -136,11 +136,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
             var recalculateSize = function() {
                 var self = this;
+                self.trigger("recalculateSize", self);
                 this.trigger('configurationChanged');
-
-                setTimeout(function() {
-                    self.trigger("recalculateSize", this);
-                }, 1);
             };
 
             this.bind("change:text", recalculateSize, this);
