@@ -112,6 +112,10 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                     textPathOffsetY: -textBBox.y
                 });
 
+                configuration._setError(configuration._validateTransform({
+                    validateHardBoundary: true
+                }));
+
                 configuration.trigger("sizeChanged");
             }
         },
