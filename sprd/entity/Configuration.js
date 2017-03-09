@@ -159,7 +159,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             // when configuration is too small for print type or it is a DD print type try to find another print type that fits better
             if (printType && (printTypeTooSmall || printTypeWasScaled) && this.$context && this.$context.$contextModel && !printTypeChanged && sizeChanged) {
                 var product = this.$context.$contextModel,
-                    appearanceId = this.$context.$contextModel.get('appearance'),
+                    appearance = this.$context.$contextModel.get('appearance'),
                     originalPrintType = this.$.originalPrintType;
                 if (product.$.configurations.size() > 0 && !printTypeTooSmall && originalPrintType) {
                     var revertPossible = true;
