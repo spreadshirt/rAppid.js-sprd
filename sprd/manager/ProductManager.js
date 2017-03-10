@@ -133,6 +133,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 return initialPrintType;
             },
 
+
+            addConfiguration: function(product, configuration, callback) {
+                return this.convertConfiguration(product, configuration, product.$.productType, product.$.appearance);
+            },
+
             /***
              * Converts a configuration of a product with the given productType and appearance
              * @param {sprd.model.Product} product
