@@ -349,6 +349,13 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return Math.abs(this.size().$.width * scale);
         }.onChange("scale", "size()").on("sizeChanged"),
 
+        center: function() {
+            return {
+                x: this.get('offset.x') + this.width() / 2,
+                y: this.get('offset.y') + this.height() / 2
+            }
+        }.onChange("offset", "offset.x", "offset.y", "width()", "height()"),
+
         isScalable: function() {
             return this.get("printType.isScalable()");
         }.onChange("printType"),
