@@ -39,6 +39,14 @@ define(['js/core/Base'], function (Base) {
 
         getZ: function() {
             return this.components[2];
+        },
+
+        getAsPoint: function() {
+            return {
+                x: this.getX(),
+                y: this.getY(),
+                z: this.getZ()
+            }
         }
     }, {
         distance: function(vector) {
@@ -119,7 +127,11 @@ define(['js/core/Base'], function (Base) {
         },
 
         createFromPoint: function(point) {
-            return new Vector([point.x, point.y]);
+            return new Vector([point.x, point.y, point.z]);
+        },
+
+        create: function(x, y, z) {
+            return new Vector([x, y, z]);
         }
     });
 
