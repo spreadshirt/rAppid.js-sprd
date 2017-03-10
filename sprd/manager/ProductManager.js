@@ -1,5 +1,5 @@
-define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", "sprd/util/ArrayUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sketchomat/util/PrintValidator"],
-    function(IProductManager, _, flow, ProductUtil, ArrayUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List, PrintValidator) {
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", "sprd/util/ArrayUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sketchomat/util/PrintValidator", "sprd/type/Vector"],
+    function(IProductManager, _, flow, ProductUtil, ArrayUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List, PrintValidator, Vector) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
@@ -134,8 +134,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             },
 
 
-            addConfiguration: function(product, configuration, callback) {
-                return this.convertConfiguration(product, configuration, product.$.productType, product.$.appearance);
+            addConfiguration: function(product, configuration, options) {
+                return this.convertConfiguration(product, configuration, product.$.productType, product.$.appearance, options);
             },
 
             /***
@@ -144,9 +144,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @param {sprd.model.Configuration} configuration
              * @param {sprd.model.ProductType} productType
              * @param {sprd.entity.Appearance} appearance
+             * @param {Object} options
              * @returns {Boolean} If the conversion was successful
              */
-            convertConfiguration: function(product, configuration, productType, appearance) {
+            convertConfiguration: function(product, configuration, productType, appearance, options) {
                 var self = this;
                 var closestView = productType.getViewByConfiguration(configuration);
                 var closestPrintArea = closestView ? closestView.getDefaultPrintArea() : productType.getDefaultPrintArea();
@@ -155,22 +156,22 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var targetPrintArea = configuration.getPreferredPrintArea(printAreas, appearance);
                 var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(targetPrintArea, appearance);
 
+                options = options || {};
                 if (targetPrintArea) {
                     var initialPrintType = this.getInitialPrintType(configuration, possiblePrintTypes);
                     if (initialPrintType) {
                         ArrayUtil.move(possiblePrintTypes, initialPrintType, 0);
                     }
 
-                    var printType = _.find(possiblePrintTypes, function(print) {
-                        return self.validateMove(print, targetPrintArea, configuration, product);
-                    });
+                    var validatedMove = self.validateMove(possiblePrintTypes, targetPrintArea, configuration, product, options);
 
-
-                    if (printType) {
+                    if (validatedMove) {
                         if (configuration instanceof TextConfiguration || configuration instanceof BendingTextConfiguration) {
-                            configuration.setColor(0, self.getPrintTypeColor(printType, appearance));
+                            configuration.setColor(0, self.getPrintTypeColor(validatedMove.printType, appearance));
                         }
-                        self._moveConfigurationToView(product, configuration, printType, targetPrintArea);
+
+                        options.transform = validatedMove.transform;
+                        self._moveConfigurationToView(product, configuration, validatedMove.printType, targetPrintArea, options);
                         return true;
                     }
                 }
@@ -802,7 +803,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             }
             ,
 
-            _moveConfigurationToView: function(product, configuration, printType, printArea) {
+            _moveConfigurationToView: function(product, configuration, printType, printArea, options) {
                 var self = this,
                     bus = this.$.bus;
 
@@ -812,9 +813,16 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
 
                 product.$.configurations.remove(configuration);
+
+                if (!options.respectTransform && !options.respectScale) {
+                    configuration.set('scale', {x: 1, y: 1});
+                }
+
+                if (!options.respectTransform && !options.respectRotation) {
+                    configuration.set('rotation', 0);
+                }
+
                 configuration.set({
-                    rotation: 0,
-                    scale: {x: 1, y: 1},
                     printType: printType,
                     printArea: printArea
                 }, {silent: true});
@@ -822,17 +830,23 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 configuration.clearErrors();
                 product._addConfiguration(configuration);
-                self.positionConfiguration(configuration);
+                self.positionConfiguration(configuration, printArea, printType, options);
                 bus.trigger('Application.productChanged', null);
             }
             ,
 
-            moveConfigurationToView: function(product, configuration, view, callback) {
+            moveConfigurationToView: function(product, configuration, view, options, callback) {
 
                 var self = this,
                     printArea,
-                    printType,
-                    validations;
+                    printType;
+
+                options = options || {};
+
+                if (_.isFunction(options) && !callback) {
+                    callback = options;
+                    options = null;
+                }
 
                 view = view || product.$.view || product.getDefaultView();
 
@@ -846,59 +860,65 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq(function(cb) {
                         printType.fetch(null, cb);
                     })
-                    .seq('validMove', function() {
-                        return self.validateMove(printType, printArea, configuration, product);
+                    .seq('validatedMove', function() {
+                        return self.validateMove(printType, printArea, configuration, product, options);
                     })
                     .exec(function(err, results) {
                         if (!err) {
-                            if (results.validMove) {
-                                self._moveConfigurationToView(product, configuration, printType, printArea);
+                            if (results.validatedMove) {
+                                options.transform = results.validatedMove.transform;
+                                self._moveConfigurationToView(product, configuration, printType, printArea, options);
                                 callback && callback();
                             } else {
-                                self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea);
+                                self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea, options);
                                 callback && callback(new Error('Validation errors found. Configuration moved to old view'));
                             }
                         } else {
-                            self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea);
+                            self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea, options);
                             callback && callback(new Error('Something went wrong preparing the move of the configuration.'));
                         }
                     });
             }
             ,
 
-            validateMove: function(printTypes, printArea, configuration, product) {
+
+            validateMove: function(printTypes, printArea, configuration, product, options) {
+                var validatedMoveForPrintTypes = this.validateConfigurationMoveList(printTypes, printArea, configuration, options);
+                return _.find(validatedMoveForPrintTypes, function(validatedMove) {
+                    return validatedMove && _.every(validatedMove.validations, function(validation) {
+                            return !validation;
+                        });
+                });
+            },
+
+            validateConfigurationMoveList: function(printTypes, printArea, configuration, options) {
                 if (!(printTypes instanceof Array)) {
                     printTypes = [printTypes];
                 }
 
                 if (configuration instanceof DesignConfiguration && configuration.$.design
                     && !PrintValidator.canBePrinted(configuration.$.design, product, printTypes, printArea)) {
-                    return null;
+                    return [];
                 }
 
-                var validationsForTypes = this.validateConfigurationMoveList(printTypes, printArea, configuration);
-                return _.some(validationsForTypes, function(validations) {
-                    return validations && _.every(validations, function(validation) {
-                            return !validation;
-                        });
-                });
-            }
-            ,
-
-            validateConfigurationMoveList: function(printTypes, printArea, configuration) {
                 var ret = [];
                 for (var i = 0; i < printTypes.length; i++) {
-                    ret.push(this.validateConfigurationMove(printTypes[i], printArea, configuration));
+                    ret.push(this.validateConfigurationMove(printTypes[i], printArea, configuration, options));
                 }
 
                 return ret;
             }
             ,
 
-            validateConfigurationMove: function(printType, printArea, configuration) {
+            validateConfigurationMove: function(printType, printArea, configuration, options) {
                 try {
-                    var scale = this.getConfigurationPosition(configuration, printArea, printType).scale;
-                    return configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), scale);
+                    var transform = this.getConfigurationPosition(configuration, printArea, printType, options);
+                    var validations = configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), transform.scale);
+                    return {
+                        printType: printType,
+                        validations: validations,
+                        transform: transform
+                    }
                 } catch (e) {
                     return null;
                 }
@@ -919,11 +939,17 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             }
             ,
 
-            moveConfigurationsToView: function(product, configurations, view, callback) {
+            moveConfigurationsToView: function(product, configurations, view, options, callback) {
                 var self = this;
+
+                if (_.isFunction(options) && !callback) {
+                    callback = options;
+                    options = null;
+                }
+
                 flow()
                     .parEach(configurations.toArray(), function(config, cb) {
-                        self.moveConfigurationToView(product, config, view, function(err, result) {
+                        self.moveConfigurationToView(product, config, view, options, function(err, result) {
                             cb();
                         });
                     })
@@ -979,6 +1005,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             }
             ,
 
+            centerAtPoint: function(point, rect) {
+                return this.centerAt(point.x, point.y, rect);
+            },
+
             centerAt: function(x, y, rect) {
                 return {
                     x: x - rect.width / 2,
@@ -986,37 +1016,67 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
             },
 
-            positionConfiguration: function(configuration) {
+            positionConfiguration: function(configuration, printArea, printType, options) {
+                options = options || {};
+
                 if (configuration instanceof BendingTextConfiguration) {
-                    this.positionBendingTextConfiguration(configuration);
+                    this.positionBendingTextConfiguration(configuration, printArea, printType, options);
                 } else {
-                    configuration.set(this.getConfigurationPosition(configuration), PREVENT_VALIDATION_OPTIONS);
+                    var transform = options.transform || this.getConfigurationPosition(configuration, printArea, printType, options);
+                    configuration.set(transform, PREVENT_VALIDATION_OPTIONS);
                 }
             },
 
-            positionBendingTextConfiguration: function(configuration) {
+            positionBendingTextConfiguration: function(configuration, printArea, printType, options) {
                 var self = this;
 
                 function closedFn () {
                     if (configuration.$._size.$.width !== 0 && configuration.$._size.$.height !== 0) {
                         configuration.unbind('sizeChanged', closedFn);
-                        self.positionBendingTextConfiguration(configuration);
+                        self.positionBendingTextConfiguration(configuration, printArea, printType, options);
                     }
                 }
 
                 if (configuration.$._size.$.width === 0 || configuration.$._size.$.height === 0) {
                     configuration.bind('sizeChanged', closedFn)
                 } else {
-                    configuration.set(this.getConfigurationPosition(configuration), PREVENT_VALIDATION_OPTIONS);
+                    configuration.set(this.getConfigurationPosition(configuration, printArea, printType, options), PREVENT_VALIDATION_OPTIONS);
                 }
             },
 
-            getConfigurationPosition: function(configuration, printArea, printType) {
+            getConfigurationCenterAsRatio: function(configuration) {
+                return this.getPointAsRatio(configuration.center(), configuration.$.printArea);
+            },
+
+            getOffsetAsRatio: function(offset, printArea) {
+                return this.getPointAsRatio(offset.$, printArea);
+            },
+
+            getPointAsRatio: function(point, printArea) {
+                return {
+                    x: point.x / printArea.get("boundary.size.width"),
+                    y: point.y / printArea.get("boundary.size.height")
+                }
+            },
+
+            getVectorAsRatio: function(vector, printArea) {
+                return this.getPointAsRatio(vector.getAsPoint(), printArea);
+            },
+
+            getRatioAsPoint: function(ratioPoint, printArea) {
+                return {
+                    x: ratioPoint.x * printArea.get("boundary.size.width"),
+                    y: ratioPoint.y * printArea.get("boundary.size.height")
+                }
+            },
+
+            getConfigurationPosition: function(configuration, printArea, printType, options) {
 
                 if (!configuration) {
                     throw new Error('No configuration argument.');
                 }
 
+                options = options || {};
                 printArea = printArea || configuration.$.printArea;
                 printType = printType || configuration.$.printType;
 
@@ -1035,20 +1095,25 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     boundingBox,
                     defaultBoxCenterX = defaultBox.x + defaultBox.width / 2,
                     defaultBoxCenterY = defaultBox.y + defaultBox.height / 2,
+                    defaultCenter = Vector.create(defaultBoxCenterX, defaultBoxCenterY),
                     offset = configuration.$.offset.clone();
 
                 boundingBox = configuration._getBoundingBox();
-                var centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
-                offset.set({
-                    x: centeredOffset.x,
-                    y: defaultBox.y
-                });
-
-
-                // scale to fit into default box
+                var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
                 var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
-                var minimumDesignScale;
+                var desiredScale = options.respectTransform || options.respectScale ? configuration.$.scale.x * printAreaRatio : scaleToFitDefaultBox;
+                var desiredRatio = options.respectTransform || options.respectPosition ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultCenter, printArea);
+                boundingBox = configuration._getBoundingBox(null, null, null, null, desiredScale);
+                var desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
+                offset.set(desiredOffset);
 
+                // offset.set({
+                //     x: desiredOffset.x,
+                //     y: defaultBox.y
+                // });
+
+
+                var minimumDesignScale;
                 if (configuration instanceof DesignConfiguration && printType.isEnlargeable()) {
                     minimumDesignScale = (configuration.get("design.restrictions.minimumScale") || 100) / 100;
                 } else if (configuration instanceof TextConfiguration && printType.isEnlargeable()) {
@@ -1061,27 +1126,27 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     maxPrintTypeScale = 1;
                 }
 
-                var scale = this.clamp(scaleToFitDefaultBox, minimumDesignScale || 0, maxPrintTypeScale);
+                var scale = this.clamp(desiredScale, minimumDesignScale || 0, maxPrintTypeScale);
 
                 boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
-                centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
+                desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                 // position centered within defaultBox
-                offset.set('x', centeredOffset.x);
+                offset.set('x', desiredOffset.x);
 
                 var scaleToFitWidth,
                     scaleToFitHeight;
 
                 if (offset.$.x < 0 || offset.$.x + boundingBox.width > maxWidth) {
-                    // hard boundary error
-                    var maxPossibleWidthToHardBoundary = Math.min(defaultBoxCenterX, maxWidth - defaultBoxCenterX) * 2;
+                    // hard boundary error in x direction
+                    var maxPossibleWidthToHardBoundary = Math.min(offset.$.x, maxWidth - offset.$.x) * 2;
 
                     // scale to avoid hard boundary error
                     scaleToFitWidth = maxPossibleWidthToHardBoundary / boundingBox.width;
                     scale = scale * scaleToFitWidth;
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
-                    centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
+                    desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     // position centered within defaultBox
-                    offset.set('x', centeredOffset.x);
+                    offset.set('x', desiredOffset.x);
                 }
 
                 if (boundingBox.height > maxHeight) {
@@ -1093,19 +1158,24 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     scale = scale * scaleToFitHeight;
 
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
-                    centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
+                    desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     // position centered within defaultBox
-                    offset.set(centeredOffset);
+                    offset.set(desiredOffset);
                 }
 
                 if (offset.$.y < 0 || offset.$.y + boundingBox.height > maxHeight) {
-                    // hard boundary error
+                    // hard boundary error in y direction
 
-                    // center in print area
+                    var maxPossibleHeightToHardBoundary = Math.min(offset.$.y, maxHeight - offset.$.y) * 2;
+                    scaleToFitHeight = maxPossibleHeightToHardBoundary / boundingBox.height;
+                    scale = scale * scaleToFitHeight;
+                    boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
+                    desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
+                    offset.set('y', desiredOffset.y);
 
-                    offset.set({
-                        y: maxHeight / 2 - boundingBox.height / 2
-                    });
+                    // offset.set({
+                    //     y: maxHeight / 2 - boundingBox.height / 2
+                    // });
                 }
 
                 // configuration.set({

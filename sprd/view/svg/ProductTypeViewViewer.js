@@ -144,9 +144,9 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                         }
                         if (possiblePrintTypes.length) {
                             var product = dndObject.viewer.$.product;
-                            var validMove = productManager.validateMove(possiblePrintTypes, printArea, configuration, product);
+                            var validatedMove = productManager.validateMove(possiblePrintTypes, printArea, configuration, product);
 
-                            if (!validMove) {
+                            if (!validatedMove) {
                                 hovered = DROP_HOVERED.INVALID;
                             } else {
                                 hovered = DROP_HOVERED.YES;
