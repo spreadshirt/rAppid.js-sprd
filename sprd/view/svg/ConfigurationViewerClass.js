@@ -93,7 +93,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this.bind("change:_rotation", this._transformationChanged, this);
                 }
 
-                this.bind('configuration._size', "change", this.adjustOffset, this);
                 this.bind('configuration', "change:docked", this.dockedConfiguration, this);
                 this.bind('productViewer', 'change:width', this._productViewerSizeChanged, this);
                 this.bind(["productViewer", "change:selectedConfiguration"], function() {
@@ -288,18 +287,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             _commitSelected: function() {
                 this.$wasSelected = false;
-            },
-
-            adjustOffset: function(e) {
-                var oldSize = e.target.$previousAttributes,
-                    newSize = e.$;
-                var offset = this.$.configuration.$.offset;
-                if (offset && newSize && oldSize && (oldSize.width !== 0 || oldSize.height !== 0)) {
-                    offset.set({
-                        x: offset.$.x + ((oldSize.width - newSize.width) || 0) / 2,
-                        y: offset.$.y + ((oldSize.height - newSize.height) || 0) / 2
-                    });
-                }
             },
 
             addSnapLine: function(x, y, rot, owner) {
