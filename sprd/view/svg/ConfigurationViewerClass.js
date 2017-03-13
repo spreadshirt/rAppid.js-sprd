@@ -312,9 +312,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             addSnapValue: function(value, owner, list) {
                 var alreadyAdded = false;
                 for (var i = 0; i < list.length; i++) {
-                    var owners = list.owners;
+                    var owners = list[i].owners;
                     var currentValue = list[i].value;
-                    if (value == currentValue) {
+                    if (value === currentValue) {
                         if (owners.indexOf(owner) === -1) {
                             owners.push(owner);
                         }
