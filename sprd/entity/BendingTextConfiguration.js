@@ -18,6 +18,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             loading: false,
             initialized: false,
             isNew: false,
+            isTemplate: false,
 
             angle: 50,
             path: PATH_TYPE.OUTER_CIRCLE,

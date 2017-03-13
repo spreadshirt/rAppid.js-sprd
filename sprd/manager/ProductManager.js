@@ -323,6 +323,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     });
 
                     configuration.set('isNew', params.isNew);
+                    configuration.set('isTemplate', params.isTemplate);
 
                     configuration.set("maxHeight", 1);
 
@@ -395,6 +396,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 var finalizeFnc = function(configuration) {
                     configuration.set('isNew', params.isNew);
+                    configuration.set('isTemplate', params.isTemplate);
 
                     configuration.set("maxHeight", 1);
 
@@ -438,6 +440,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     fontFamilyName: "Arial",
                     addToProduct: true,
                     isNew: true,
+                    isTemplate: false,
                     fontSize: 25,
                     printColor: null,
                     autoGrow: true
@@ -636,7 +639,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printTypeId: null,
                     font: null,
                     addToProduct: true,
-                    isNew: true
+                    isNew: true,
+                    isTemplate: false
                 });
 
                 var self = this,
@@ -753,6 +757,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         configuration.init({}, cb);
 
                         configuration.set('isNew', params.isNew);
+                        configuration.set('isTemplate', params.isTemplate);
                     })
                     .seq(function() {
                         var configuration = this.vars["configuration"];
@@ -1275,6 +1280,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var width = specialTextConfiguration.width();
                 _.defaults(params, {
                     isNew: false,
+                    isTemplate: false,
                     addToProduct: true,
                     removeConfiguration: true,
                     text: (specialTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, "")
@@ -1295,6 +1301,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             }, 'offset': offset,
                             rotation: specialTextConfiguration.$.rotation,
                             isNew: specialTextConfiguration.$.isNew,
+                            isTemplate: specialTextConfiguration.$.isTemplate,
                             originalConfiguration: specialTextConfiguration
                         });
 
@@ -1312,6 +1319,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var width = bendingTextConfiguration.width();
                 _.defaults(params, {
                     isNew: false,
+                    isTemplate: true,
                     addToProduct: true,
                     removeConfiguration: true,
                     text: (bendingTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, "")
@@ -1332,6 +1340,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             }, 'offset': offset,
                             rotation: bendingTextConfiguration.$.rotation,
                             isNew: bendingTextConfiguration.$.isNew,
+                            isTemplate: bendingTextConfiguration.$.isTemplate,
                             originalConfiguration: bendingTextConfiguration
                         });
 
