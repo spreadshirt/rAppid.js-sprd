@@ -883,15 +883,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
 
             validateMove: function(printTypes, printArea, configuration, product, options) {
-                var validatedMoveForPrintTypes = this.validateConfigurationMoveList(printTypes, printArea, configuration, options);
-                return _.find(validatedMoveForPrintTypes, function(validatedMove) {
-                    return validatedMove && _.every(validatedMove.validations, function(validation) {
-                            return !validation;
-                        });
-                });
-            },
-
-            validateConfigurationMoveList: function(printTypes, printArea, configuration, options) {
                 if (!(printTypes instanceof Array)) {
                     printTypes = [printTypes];
                 }
@@ -901,14 +892,17 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     return [];
                 }
 
-                var ret = [];
-                for (var i = 0; i < printTypes.length; i++) {
-                    ret.push(this.validateConfigurationMove(printTypes[i], printArea, configuration, options));
-                }
+                var validatedMove = null,
+                    self = this;
+                _.find(printTypes, function(printType) {
+                    validatedMove = self.validateConfigurationMove(printType, printArea, configuration, options);
+                    return validatedMove && _.every(validatedMove.validations, function(validation) {
+                            return !validation;
+                        });
+                });
 
-                return ret;
-            }
-            ,
+                return validatedMove;
+            },
 
             validateConfigurationMove: function(printType, printArea, configuration, options) {
                 try {
