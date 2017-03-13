@@ -163,9 +163,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         ArrayUtil.move(possiblePrintTypes, initialPrintType, 0);
                     }
 
-                    var validatedMove = self.validateMove(possiblePrintTypes, targetPrintArea, configuration, product, options);
+                    var validatedMove;
+                    if (options.preventValidations) {
+                        validatedMove = {printType: possiblePrintTypes[0]};
+                    } else {
+                        validatedMove = self.validateMove(possiblePrintTypes, targetPrintArea, configuration, product, options);
+                    }
 
-                    if (validatedMove) {
+                    if (options.preventValidations || validatedMove) {
                         if (configuration instanceof TextConfiguration || configuration instanceof BendingTextConfiguration) {
                             configuration.setColor(0, self.getPrintTypeColor(validatedMove.printType, appearance));
                         }
