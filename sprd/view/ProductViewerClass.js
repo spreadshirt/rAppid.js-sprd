@@ -199,7 +199,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 e.preventDefault();
                 e.stopPropagation();
 
-                this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view, function(err) {
+                this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view, {respectTransform: true}, function(err) {
                     if(err) {
                         bus.trigger("ProductViewer.copyToViewError", err);
                         newConfiguration = null;

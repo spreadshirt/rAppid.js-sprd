@@ -841,13 +841,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printArea,
                     printType;
 
-                options = options || {};
-
                 if (_.isFunction(options) && !callback) {
                     callback = options;
                     options = null;
                 }
 
+                options = options || {};
                 view = view || product.$.view || product.getDefaultView();
 
                 flow()
