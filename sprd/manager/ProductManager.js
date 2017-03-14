@@ -163,14 +163,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         ArrayUtil.move(possiblePrintTypes, initialPrintType, 0);
                     }
 
-                    var validatedMove;
-                    if (options.preventValidations) {
+                    var validatedMove = self.validateMove(possiblePrintTypes, targetPrintArea, configuration, product, options);
+                    if (!validatedMove && options.preventValidations) {
                         validatedMove = {printType: possiblePrintTypes[0]};
-                    } else {
-                        validatedMove = self.validateMove(possiblePrintTypes, targetPrintArea, configuration, product, options);
                     }
 
-                    if (options.preventValidations || validatedMove) {
+                    if (validatedMove) {
                         if (configuration instanceof TextConfiguration || configuration instanceof BendingTextConfiguration) {
                             configuration.setColor(0, self.getPrintTypeColor(validatedMove.printType, appearance));
                         }
@@ -182,6 +180,50 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
 
                 return false;
+            },
+
+            getTargetPrintArea: function(product, params) {
+                var view = params.view,
+                    printArea = params.printArea,
+                    perspective = params.perspective,
+                    productType = product.$.productType;
+
+                if (!printArea && perspective && !view) {
+                    view = productType.getViewByPerspective(perspective);
+                }
+
+                if (!printArea && view) {
+                    if (!productType.containsView(view)) {
+                        throw new Error("View not on ProductType");
+                    }
+
+                    // TODO: look for print area that supports print types, etc...
+                    printArea = view.getDefaultPrintArea();
+                }
+
+                view = product.$.view || product.getDefaultView();
+                if (!printArea && view) {
+                    printArea = view.getDefaultPrintArea();
+                }
+
+                return printArea;
+            },
+
+            getPrintTypesForDesign: function(product, design, printArea, printType, appearance) {
+                appearance = appearance || product.$.appearance;
+                var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance);
+
+                if (printType && !_.contains(possiblePrintTypes, printType)) {
+                    throw new Error("PrintType not possible for design and printArea");
+                }
+
+                printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
+
+                if (!printType) {
+                    throw new Error("No printType available");
+                }
+
+                return ArrayUtil.move(possiblePrintTypes, printType, 0);
             },
 
             /**
@@ -208,8 +250,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printArea = params.printArea,
                     view = params.view,
                     appearance = product.$.appearance,
-                    printType = params.printType,
-                    possiblePrintTypes;
+                    printType = params.printType;
 
                 if (!design) {
                     callback(new Error("No design"));
@@ -233,53 +274,17 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         productType.fetch(null, cb);
                     })
                     .seq("printArea", function() {
-
-                        if (!printArea && params.perspective && !view) {
-                            view = productType.getViewByPerspective(params.perspective);
-                        }
-
-                        if (!printArea && view) {
-                            // get print area by view
-                            if (!productType.containsView(view)) {
-                                throw new Error("View not on ProductType");
-                            }
-
-                            // TODO: look for print area that supports print types, etc...
-                            printArea = view.getDefaultPrintArea();
-                        }
-
-                        view = product.$.view || product.getDefaultView();
-                        if (!printArea && view) {
-                            printArea = view.getDefaultPrintArea();
-                        }
-
-                        if (!printArea) {
-                            throw new Error("target PrintArea couldn't be found.");
-                        }
-
-                        if (printArea.get("restrictions.designAllowed") === false) {
+                        var printArea = self.getTargetPrintArea(product, params);
+                        if (!printArea.get("restrictions.designAllowed")) {
                             throw new Error("designs cannot be added to this print area");
                         }
 
                         return printArea;
                     })
-                    .seq("printType", function() {
-                        possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance);
-
-                        if (printType && !_.contains(possiblePrintTypes, printType)) {
-                            throw new Error("PrintType not possible for design and printArea");
-                        }
-
-                        printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes, possiblePrintTypes[0]) || printType || possiblePrintTypes[0];
-
-                        if (!printType) {
-                            throw new Error("No printType available");
-                        }
-
-                        return printType;
-                    })
-                    .seq(function(cb) {
-                        printType.fetch(null, cb);
+                    .seq("printTypes", function() {
+                        var printTypes = self.getPrintTypesForDesign(product, design, this.vars.printArea, printType);
+                        printType = printTypes[0];
+                        return printTypes;
                     })
                     .seq("designConfiguration", function() {
                         var entity = product.createEntity(DesignConfiguration);
@@ -297,15 +302,16 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         bus.setUp(designConfiguration);
                         designConfiguration.init({}, cb);
                     })
-                    .seq(function() {
-                        self.positionConfiguration(this.vars["designConfiguration"]);
+                    .seq('validatedMove', function() {
+                        return self.validateMove(this.vars.printTypes, this.vars.printArea, this.vars.designConfiguration, product);
+                    })
+                    .seq(function(cb) {
+                        this.vars.validatedMove && this.vars.validatedMove.printType.fetch(null, cb);
                     })
                     .exec(function(err, results) {
-                        if (!err) {
-                            product.removeExampleConfiguration();
-                            product._addConfiguration(results.designConfiguration);
+                        if (!err && results.validatedMove) {
+                            self._moveConfigurationToView(product, results.designConfiguration, results.validatedMove.printType, results.printArea, {transform: results.validatedMove.transform});
                         }
-                        self.$.bus.trigger('Application.productChanged', product);
                         callback && callback(err, results.designConfiguration);
                     });
 
@@ -837,9 +843,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printArea: printArea
                 }, {silent: true});
                 configuration.mainConfigurationRenderer = null;
-
-                configuration.clearErrors();
                 product._addConfiguration(configuration);
+                configuration.clearErrors();
                 self.positionConfiguration(configuration, printArea, printType, options);
                 bus.trigger('Application.productChanged', null);
             }
@@ -898,7 +903,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (configuration instanceof DesignConfiguration && configuration.$.design
                     && !PrintValidator.canBePrinted(configuration.$.design, product, printTypes, printArea)) {
-                    return [];
+                    return null;
                 }
 
                 var validatedMove = null,
@@ -1099,12 +1104,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     defaultBoxCenterX = defaultBox.x + defaultBox.width / 2,
                     defaultBoxCenterY = defaultBox.y + defaultBox.height / 2,
                     defaultCenter = Vector.create(defaultBoxCenterX, defaultBoxCenterY),
-                    offset = configuration.$.offset.clone();
+                    offset = configuration.$.offset.clone(),
+                    center;
 
                 boundingBox = configuration._getBoundingBox();
                 var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
                 var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
-                var desiredScaleFactor = options.respectTransform || options.respectScale ? configuration.$.scale.x * printAreaRatio : scaleToFitDefaultBox;
+                var desiredScaleFactor = options.respectTransform || options.respectScale ? printAreaRatio : scaleToFitDefaultBox;
                 var desiredScale = configuration.$.scale.x * desiredScaleFactor;
                 var desiredRatio = options.respectTransform || options.respectPosition ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultCenter, printArea);
                 boundingBox = configuration._getBoundingBox(null, null, null, null, desiredScale);
@@ -1128,42 +1134,48 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var scale = this.clamp(desiredScale, minimumDesignScale || 0, maxPrintTypeScale);
                 boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                 desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                offset.set('x', desiredOffset.x);
+                offset.set(desiredOffset);
 
                 var scaleToFitWidth,
                     scaleToFitHeight;
 
-                if (offset.$.x < 0 || offset.$.x + boundingBox.width > maxWidth) {
-                    // hard boundary error in x direction
-                    var maxPossibleWidthToHardBoundary = Math.min(offset.$.x, maxWidth - offset.$.x) * 2;
+                if ((options.respectTransform || options.respectPosition) &&
+                    (offset.$.x < 0 || offset.$.y < 0 || offset.$.x + boundingBox.width > printAreaWidth || offset.$.y + boundingBox.height > printAreaHeight)) {
+                    desiredOffset = this.centerAtPoint(this.getRatioAsPoint(this.getVectorAsRatio(defaultCenter, printArea), printArea), boundingBox);
+                    offset.set(desiredOffset);
+                }
+
+                if (offset.$.x < 0 || offset.$.x + boundingBox.width > printAreaWidth) {
+                    var centerX = boundingBox.x + boundingBox.width / 2;
+                    var maxPossibleWidthToHardBoundary = Math.min(centerX - offset.$.x, printAreaWidth - centerX) * 2;
 
                     // scale to avoid hard boundary error
-                    scaleToFitWidth = boundingBox.width / maxPossibleWidthToHardBoundary;
-                    scale = Math.min(scale, scaleToFitWidth);
+                    scaleToFitWidth = maxPossibleWidthToHardBoundary / boundingBox.width;
+                    scale = scale * scaleToFitWidth;
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     offset.set(desiredOffset);
                 }
 
                 if (boundingBox.height > maxHeight) {
-                    // y-scale needed to fit print area
+                    // y-scale needed to fit print area and print type
                     // calculate maxScale to fix height
-                    scaleToFitHeight = boundingBox.height / maxHeight;
+                    scaleToFitHeight = maxHeight / boundingBox.height;
 
                     // TODO: try the two different scales, prefer defaultBox and fallback to printArea if size to small
-                    scale = scale = Math.min(scale, scaleToFitHeight);
+                    scale = scale * scaleToFitHeight;
 
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     offset.set(desiredOffset);
                 }
 
-                if (offset.$.y < 0 || offset.$.y + boundingBox.height > maxHeight) {
-                    // hard boundary error in y direction
-
-                    var maxPossibleHeightToHardBoundary = Math.min(offset.$.y, maxHeight - offset.$.y) * 2;
+                if (offset.$.y < 0 || offset.$.y + boundingBox.height > printAreaHeight) {
+                    // print area hard boundary error in y direction
+                    var centerY = boundingBox.y + boundingBox.height / 2;
+                    var maxPossibleHeightToHardBoundary = Math.min(centerY - offset.$.y, printAreaHeight - centerY) * 2;
                     scaleToFitHeight = boundingBox.height / maxPossibleHeightToHardBoundary;
-                    scale = Math.min(scale, scaleToFitHeight);
+                    scale = scale * scaleToFitHeight;
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     offset.set(desiredOffset);
