@@ -154,10 +154,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var printAreas = [closestPrintArea].concat(productType.$.printAreas.$items);
 
                 var targetPrintArea = configuration.getPreferredPrintArea(printAreas, appearance);
-                var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(targetPrintArea, appearance);
 
                 options = options || {};
                 if (targetPrintArea) {
+                    var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(targetPrintArea, appearance);
                     var initialPrintType = this.getInitialPrintType(configuration, possiblePrintTypes);
                     if (initialPrintType) {
                         ArrayUtil.move(possiblePrintTypes, initialPrintType, 0);
