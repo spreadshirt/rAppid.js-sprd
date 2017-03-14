@@ -84,7 +84,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     return;
                 }
 
-                this.convertConfigurations(product, product.$.productType, appearance);
+                this.convertConfigurations(product, product.$.productType, appearance, {respectTransform: true});
                 product.set({
                     appearance: appearance
                 });
@@ -1104,16 +1104,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 boundingBox = configuration._getBoundingBox();
                 var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
                 var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
-                var desiredScale = options.respectTransform || options.respectScale ? configuration.$.scale.x * printAreaRatio : scaleToFitDefaultBox;
+                var desiredScaleFactor = options.respectTransform || options.respectScale ? configuration.$.scale.x * printAreaRatio : scaleToFitDefaultBox;
+                var desiredScale = configuration.$.scale.x * desiredScaleFactor;
                 var desiredRatio = options.respectTransform || options.respectPosition ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultCenter, printArea);
                 boundingBox = configuration._getBoundingBox(null, null, null, null, desiredScale);
                 var desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                 offset.set(desiredOffset);
-
-                // offset.set({
-                //     x: desiredOffset.x,
-                //     y: defaultBox.y
-                // });
 
 
                 var minimumDesignScale;
@@ -1123,17 +1119,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     minimumDesignScale = configuration._getMinimalScale(printType);
                 }
 
-                var maxPrintTypeScale = printTypeWidth / boundingBox.width;
+                var maxPrintTypeScale = Math.min(printTypeWidth / boundingBox.width, printTypeHeight / boundingBox.height);
 
                 if (configuration instanceof SpecialTextConfiguration || (configuration instanceof DesignConfiguration && !configuration.$.design.isVectorDesign())) {
                     maxPrintTypeScale = 1;
                 }
 
                 var scale = this.clamp(desiredScale, minimumDesignScale || 0, maxPrintTypeScale);
-
                 boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                 desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                // position centered within defaultBox
                 offset.set('x', desiredOffset.x);
 
                 var scaleToFitWidth,
@@ -1144,25 +1138,23 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     var maxPossibleWidthToHardBoundary = Math.min(offset.$.x, maxWidth - offset.$.x) * 2;
 
                     // scale to avoid hard boundary error
-                    scaleToFitWidth = maxPossibleWidthToHardBoundary / boundingBox.width;
-                    scale = scale * scaleToFitWidth;
+                    scaleToFitWidth = boundingBox.width / maxPossibleWidthToHardBoundary;
+                    scale = Math.min(scale, scaleToFitWidth);
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                    // position centered within defaultBox
-                    offset.set('x', desiredOffset.x);
+                    offset.set(desiredOffset);
                 }
 
                 if (boundingBox.height > maxHeight) {
                     // y-scale needed to fit print area
                     // calculate maxScale to fix height
-                    scaleToFitHeight = maxHeight / boundingBox.height;
+                    scaleToFitHeight = boundingBox.height / maxHeight;
 
                     // TODO: try the two different scales, prefer defaultBox and fallback to printArea if size to small
-                    scale = scale * scaleToFitHeight;
+                    scale = scale = Math.min(scale, scaleToFitHeight);
 
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                    // position centered within defaultBox
                     offset.set(desiredOffset);
                 }
 
@@ -1170,20 +1162,17 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     // hard boundary error in y direction
 
                     var maxPossibleHeightToHardBoundary = Math.min(offset.$.y, maxHeight - offset.$.y) * 2;
-                    scaleToFitHeight = maxPossibleHeightToHardBoundary / boundingBox.height;
-                    scale = scale * scaleToFitHeight;
+                    scaleToFitHeight = boundingBox.height / maxPossibleHeightToHardBoundary;
+                    scale = Math.min(scale, scaleToFitHeight);
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                    offset.set('y', desiredOffset.y);
-
-                    // offset.set({
-                    //     y: maxHeight / 2 - boundingBox.height / 2
-                    // });
+                    offset.set(desiredOffset);
                 }
 
-                // configuration.set({
-                //     offset: offset
-                // }, PREVENT_VALIDATION_OPTIONS);
+                if (_.isNaN(scale) || _.isNaN(offset.$.y) || _.isNaN(offset.$.x)) {
+                    throw Error('Part of the transform is not a number');
+                }
+
                 return {
                     offset: offset,
                     scale: {
