@@ -60,7 +60,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     })
                     .seq(function() {
-                        self.convertConfigurations(product, productType, appearance);
+                        self.convertConfigurations(product, productType, appearance, {
+                            respectTransform: true,
+                            preventValidations: true
+                        });
                     })
                     .seq(function() {
                         // first set product type
@@ -97,11 +100,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @param {sprd.model.ProductType} productType
              * @param {sprd.entity.Appearance} appearance
              */
-            convertConfigurations: function(product, productType, appearance) {
+            convertConfigurations: function(product, productType, appearance, options) {
                 var self = this;
                 product.removeExampleConfiguration();
-                var removedConfigurations = _.filter(product.$.configurations.$items, function(configuration) {
-                    return !self.convertConfiguration(product, configuration, productType, appearance);
+                var removedConfigurations = _.filter(product.$.configurations.clone().$items, function(configuration) {
+                    return !self.convertConfiguration(product, configuration, productType, appearance, options);
                 });
 
                 if (removedConfigurations.length) {
