@@ -377,6 +377,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     var entity = product.createEntity(TextConfiguration);
 
                     entity.set({
+                        autoGrow: params.autoGrow,
                         printType: printType,
                         printArea: printArea,
                         textFlow: textFlow,
