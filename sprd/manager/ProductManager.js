@@ -422,7 +422,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     configuration.set("maxHeight", 1);
 
                     // determinate position
-                    params.addToProduct && self.validateAndMove(product, printTypes);
+                    params.addToProduct && self.validateAndMove(product, configuration, printTypes);
 
                     configuration.set("maxHeight", null);
                 };
