@@ -148,6 +148,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @returns {Boolean} If the conversion was successful
              */
             convertConfiguration: function(product, configuration, productType, appearance, options) {
+                options = options || {};
                 var self = this;
                 var closestView = options.toCurrentView ? product.$.view : productType.getViewByConfiguration(configuration);
                 var closestPrintArea = closestView ? closestView.getDefaultPrintArea() : productType.getDefaultPrintArea();
@@ -169,10 +170,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     }
 
                     if (validatedMove) {
-                        if (configuration instanceof TextConfiguration || configuration instanceof BendingTextConfiguration) {
-                            configuration.setColor(0, self.getPrintTypeColor(validatedMove.printType, appearance));
-                        }
-
                         options.transform = validatedMove.transform;
                         self._moveConfigurationToView(product, configuration, validatedMove.printType, targetPrintArea, options);
                         return true;
@@ -317,11 +314,25 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
+            validateAndMove: function(product, configuration, printTypes, printArea, options) {
+                var validatedMove = this.validateMove(printTypes, printArea, configuration, product, options);
+
+                if (!validatedMove) {
+                    validatedMove = {printType: printTypes[0]};
+                }
+
+                if (validatedMove) {
+                    options = options || {};
+                    options.transform = validatedMove.transform;
+                    this._moveConfigurationToView(product, configuration, validatedMove.printType, printArea, options);
+                }
+            },
+
             addText: function(product, params, callback) {
 
                 var self = this;
 
-                var finalizeFnc = function(configuration, params) {
+                var finalizeFnc = function(configuration, printTypes, params) {
 
                     configuration.$.selection.set({
                         activeIndex: configuration.$.textFlow.textLength() - 1,
@@ -331,10 +342,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     configuration.set('isNew', params.isNew);
                     configuration.set('isTemplate', params.isTemplate);
 
+
                     configuration.set("maxHeight", 1);
 
-                    // determinate position
-                    self.positionConfiguration(configuration);
+                    params.addToProduct && self.validateAndMove(product, configuration, printTypes);
 
                     configuration.set("maxHeight", null);
 
@@ -400,14 +411,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     return entity;
                 };
 
-                var finalizeFnc = function(configuration) {
+                var finalizeFnc = function(configuration, printTypes, params) {
                     configuration.set('isNew', params.isNew);
                     configuration.set('isTemplate', params.isTemplate);
 
                     configuration.set("maxHeight", 1);
 
                     // determinate position
-                    self.positionConfiguration(configuration);
+                    params.addToProduct && self.validateAndMove(product, printTypes);
 
                     configuration.set("maxHeight", null);
                 };
@@ -458,11 +469,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     bus = this.$.bus,
                     productType = product.$.productType,
                     printArea = params.printArea,
-                    view = params.view,
                     font = null,
                     appearance = product.$.appearance,
                     printType = params.printType,
-                    printTypeId = params.printTypeId,
                     printColor = params.printColor;
 
                 if (!text) {
@@ -545,29 +554,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         return fontFamily;
                     })
                     .seq("printArea", function() {
-
-                        if (!printArea && params.perspective && !view) {
-                            view = productType.getViewByPerspective(params.perspective);
-                        }
-
-                        if (!printArea && view) {
-                            // get print area by view
-                            if (!productType.containsView(view)) {
-                                throw new Error("View not on ProductType");
-                            }
-
-                            // TODO: look for print area that supports print types, etc...
-                            printArea = view.getDefaultPrintArea();
-                        }
-
-                        view = product.$.view || product.getDefaultView();
-                        if (!printArea && view) {
-                            printArea = view.getDefaultPrintArea();
-                        }
-
-                        if (!printArea) {
-                            throw new Error("target PrintArea couldn't be found.");
-                        }
+                        printArea = self.getTargetPrintArea(product, params);
 
                         if (printArea.get("restrictions.textAllowed") === false) {
                             throw new Error("text cannot be added to this print area");
@@ -575,33 +562,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         return printArea;
                     })
-                    .seq("printType", function() {
+                    .seq("printTypes", function() {
                         var fontFamily = this.vars.fontFamily;
                         var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance);
-
-                        if (printType && !_.contains(possiblePrintTypes, printType)) {
-                            throw new Error("PrintType not possible for text and printArea");
-                        }
-
-                        if (printTypeId) {
-                            for (var i = possiblePrintTypes.length; i--;) {
-                                if (possiblePrintTypes[i].$.id == printTypeId) {
-                                    printType = possiblePrintTypes[i];
-                                    break;
-                                }
-                            }
-                        }
-
-                        printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
-
-                        if (!printType) {
-                            throw new Error("No printType available");
-                        }
-
-                        return printType;
-                    })
-                    .seq(function(cb) {
-                        printType.fetch(null, cb);
+                        printType = possiblePrintTypes[0];
+                        return possiblePrintTypes;
                     })
                     .seq("printTypeColor", function() {
                         var color = self.getPrintTypeColor(printType, appearance, printColor);
@@ -620,13 +585,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         configuration.init({}, cb);
                     })
                     .seq(function() {
-                        finalizeFnc(this.vars.configuration, params);
+                        finalizeFnc(this.vars.configuration, this.vars.printTypes, params);
                     })
                     .exec(function(err, results) {
-                        if (!err && params.addToProduct) {
-                            product.removeExampleConfiguration();
-                            product._addConfiguration(results.configuration);
-                        }
                         callback && callback(err, results.configuration);
                         params.addToProduct && self.$.bus.trigger('Application.productChanged', product);
                     });
@@ -823,10 +784,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var self = this,
                     bus = this.$.bus;
 
-                if (!printType && !printArea) {
-                    printType = configuration.$.printType;
-                    printArea = configuration.$.printArea;
-                }
+                printType = printType || configuration.$.printType;
+                printArea = printArea || configuration.$.printArea;
 
                 product.$.configurations.remove(configuration);
 
@@ -905,6 +864,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     && !PrintValidator.canBePrinted(configuration.$.design, product, printTypes, printArea)) {
                     return null;
                 }
+
+                ArrayUtil.move(printTypes, PrintTypeEqualizer.getPreferredPrintType(product, printArea, printTypes), 0);
 
                 var validatedMove = null,
                     self = this;
@@ -1104,8 +1065,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     defaultBoxCenterX = defaultBox.x + defaultBox.width / 2,
                     defaultBoxCenterY = defaultBox.y + defaultBox.height / 2,
                     defaultCenter = Vector.create(defaultBoxCenterX, defaultBoxCenterY),
-                    offset = configuration.$.offset.clone(),
-                    center;
+                    offset = configuration.$.offset.clone();
 
                 boundingBox = configuration._getBoundingBox();
                 var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
