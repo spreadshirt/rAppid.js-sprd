@@ -149,7 +149,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              */
             convertConfiguration: function(product, configuration, productType, appearance, options) {
                 var self = this;
-                var closestView = productType.getViewByConfiguration(configuration);
+                var closestView = options.toCurrentView ? product.$.view : productType.getViewByConfiguration(configuration);
                 var closestPrintArea = closestView ? closestView.getDefaultPrintArea() : productType.getDefaultPrintArea();
                 var printAreas = [closestPrintArea].concat(productType.$.printAreas.$items);
 
