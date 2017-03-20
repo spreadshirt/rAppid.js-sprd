@@ -103,7 +103,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             convertConfigurations: function(product, productType, appearance, options) {
                 var self = this;
                 product.removeExampleConfiguration();
-                var removedConfigurations = _.filter(product.$.configurations.clone().$items, function(configuration) {
+                var removedConfigurations = _.filter(_.clone(product.$.configurations.$items), function(configuration) {
                     return !self.convertConfiguration(product, configuration, productType, appearance, options);
                 });
 
