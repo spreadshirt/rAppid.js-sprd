@@ -46,14 +46,6 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             }, this);
         },
 
-        _onDomAdded: function () {
-            this.callBase();
-            if (this.$.editable) {
-                // focus stage to enable keyboard interaction
-                this.$stage.focus();
-            }
-        },
-
         _commitSelectedConfiguration: function (selectedConfiguration, oldSelectedConfiguration) {
             if (this.$.product && oldSelectedConfiguration && (oldSelectedConfiguration.type === "text" || oldSelectedConfiguration.type ===  "specialText")) {
                 if (oldSelectedConfiguration.$.isNew) {
@@ -69,13 +61,6 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 }
 
             }
-
-            if (this.isRendered() && selectedConfiguration && !this.$stage.$browser.hasTouch) {
-                // when the selection changes make sure to focus the stage to allow keyboard interaction
-                // only needed on desktop
-                this.$stage.focus();
-            }
-
         },
 
         keyUp: function (e) {
