@@ -41,8 +41,6 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
             _.each(printAreas, function (printArea) {
 
-                var productType = printArea.$parent;
-
                 if (appearance) {
                     _.each(appearance.$.printTypes.$items, function (printType) {
                         if (!_.contains(printArea.$.restrictions.$.excludedPrintTypes.$items, printType) && !_.contains(ret, printType)) {
