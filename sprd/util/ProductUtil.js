@@ -113,6 +113,28 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                 .exec(function (err) {
                     callback(err, colors);
                 });
+        },
+
+        supportsPrintType: function(product, configuration, printTypeId) {
+            return !!_.find(this.getSupportedPrintTypes(product, configuration), function(printType) {
+                return printType.$.id == printTypeId
+            });
+        },
+
+        getSupportedPrintTypes: function(product, configuration) {
+            if (!configuration) {
+                return [];
+            }
+
+            var design = configuration.$.design,
+                printArea = configuration.$.printArea,
+                appearance = product.$.appearance;
+
+            if (configuration.type == "text" || configuration.type == "bendingText") {
+                return configuration.getPossiblePrintTypes(appearance);
+            } else {
+                return this.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance)
+            }
         }
     };
 

@@ -1,4 +1,4 @@
-define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElement"], function (Bindable, ProductUtil, ConcreteElement) {
+define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElement", "sprd/model/PrintType"], function(Bindable, ProductUtil, ConcreteElement, PrintType) {
 
 
     return Bindable.inherit('sprd.manager.PrintTypeEqualizer', {
@@ -6,7 +6,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 concreteElement: ConcreteElement
             },
 
-            _setUp: function () {
+            _setUp: function() {
                 this.callBase();
 
                 this.$.concreteElement.bind('getProduct().configurations', 'add', this._handleConfigurationAdd, this);
@@ -15,7 +15,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             },
 
 
-            _tearDown: function () {
+            _tearDown: function() {
                 this.callBase();
 
                 this.$.concreteElement.unbind('getProduct().configurations', 'add', this._handleConfigurationAdd, this);
@@ -23,17 +23,17 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 this.$.concreteElement.unbind('getProduct().configurations', 'item:printTypeSwitched', this._handlePrintTypeTransformed, this);
             },
 
-            _handleConfigurationAdd: function (e) {
+            _handleConfigurationAdd: function(e) {
                 var product = this.$.concreteElement.getProduct();
                 this.equalizeConfigurationsOnProduct(product, e.$.item.$.printType);
             },
 
-            _handleConfigurationRemove: function (e) {
+            _handleConfigurationRemove: function(e) {
                 var product = this.$.concreteElement.getProduct();
                 this.revertEqualizationOnProduct(product);
             },
 
-            _handlePrintTypeTransformed: function (e) {
+            _handlePrintTypeTransformed: function(e) {
                 var product = this.$.concreteElement.getProduct();
                 this.equalizeConfigurationsOnProduct(product, e.$.item.$.printType, e.$.item);
             },
@@ -46,7 +46,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 self.equalizeConfigurationsOnProduct(product);
             },
 
-            revertEqualization: function (product, printArea) {
+            revertEqualization: function(product, printArea) {
                 if (!product) {
                     return;
                 }
@@ -62,7 +62,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 }
             },
 
-            equalizeConfigurations: function(product, configurations, targetPrintType, excludedConfiguration) {
+            equalizeConfigurations: function(product, configurations, targetPrintType) {
                 if (!configurations || !product || this.$equalizingConfigurations) {
                     return;
                 }
@@ -70,12 +70,10 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 function checkPrintTypeForConfigurations (printType, appearance) {
                     for (i = 0; i < configurations.length; i++) {
                         config = configurations[i];
-                        if (excludedConfiguration !== config) {
-                            possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(config.$.printArea, appearance);
+                        possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(config.$.printArea, appearance);
 
-                            if (possiblePrintTypes.indexOf(printType) === -1 || !config.isPrintTypeAvailable(printType)) {
-                                return false;
-                            }
+                        if (possiblePrintTypes.indexOf(printType) === -1 || !config.isPrintTypeAvailable(printType)) {
+                            return false;
                         }
                     }
                     return true;
@@ -102,7 +100,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                         }
                     }
 
-                    if (!possiblePrintType && !excludedConfiguration) {
+                    if (!possiblePrintType) {
                         for (var j = 0; j < possiblePrintTypesOnPrintAreas.length; j++) {
                             if (checkPrintTypeForConfigurations(possiblePrintTypesOnPrintAreas[j], appearance)) {
                                 possiblePrintType = possiblePrintTypesOnPrintAreas[j];
@@ -115,15 +113,14 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     if (possiblePrintType) {
                         for (i = 0; i < configurations.length; i++) {
                             config = configurations[i];
-                            if (excludedConfiguration !== config) {
-                                if (possiblePrintType !== config.$.printType) {
-                                    config.set('originalPrintType', config.$.printType, {silent: true});
-                                }
-                                config.set('printType', possiblePrintType, {
-                                    printTypeEqualized: true,
-                                    printTypeTransformed: true
-                                });
+
+                            if (possiblePrintType !== config.$.printType) {
+                                config.set('originalPrintType', config.$.printType, {silent: true});
                             }
+                            config.set('printType', possiblePrintType, {
+                                printTypeEqualized: true,
+                                printTypeTransformed: true
+                            });
                         }
                     }
 
@@ -132,13 +129,19 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             },
 
             equalizeConfigurationsOnProduct: function(product, targetPrintType, excludedConfiguration) {
-                this.equalizeConfigurations(product, product.getConfigurationsOnPrintAreas(product.$.productType.$.printAreas.$items), targetPrintType, excludedConfiguration)
+                var allConfigurations = product.getConfigurationsOnPrintAreas(product.$.productType.$.printAreas.$items);
+
+                allConfigurations = _.filter(allConfigurations, function(configuration) {
+                    return configuration === excludedConfiguration || configuration.$.printType.$.id !== PrintType.Mapping.SpecialFlex;
+                });
+
+                this.equalizeConfigurations(product, allConfigurations, targetPrintType)
             }
         },
 
 
         {
-            getPreferredPrintType: function (product, printArea, possiblePrintTypes) {
+            getPreferredPrintType: function(product, printArea, possiblePrintTypes) {
                 var configurations = product.getConfigurationsOnPrintAreas(printArea);
                 if (configurations && configurations.length) {
                     // first sort the possible print types by the configurations that are on print area
