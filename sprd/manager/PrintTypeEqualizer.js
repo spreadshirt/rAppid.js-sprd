@@ -24,15 +24,26 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             },
 
             _handleConfigurationAdd: function (e) {
-                this.equalizeConfigurations(this.$.concreteElement.getProduct(), e.$.item.$.printArea, e.$.item.$.printType);
+                var product = this.$.concreteElement.getProduct();
+                this.equalizeConfigurationsOnProduct(product, e.$.item.$.printType);
             },
 
             _handleConfigurationRemove: function (e) {
-                this.revertEqualization(this.$.concreteElement.getProduct(), e.$.item.$.printArea);
+                var product = this.$.concreteElement.getProduct();
+                this.revertEqualizationOnProduct(product);
             },
 
             _handlePrintTypeTransformed: function (e) {
-                this.equalizeConfigurations(this.$.concreteElement.getProduct(), e.$.item.$.printArea, e.$.item.$.printType, e.$.item);
+                var product = this.$.concreteElement.getProduct();
+                this.equalizeConfigurationsOnProduct(product, e.$.item.$.printType, e.$.item);
+            },
+
+            revertEqualizationOnProduct: function(product) {
+                var self = this;
+                product.$.productType.$.printAreas.each(function(printArea) {
+                    self.revertEqualization(product, printArea);
+                });
+                self.equalizeConfigurationsOnProduct(product);
             },
 
             revertEqualization: function (product, printArea) {
@@ -49,12 +60,10 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                         config.set('printType', originalPrintType)
                     }
                 }
-
-                this.equalizeConfigurations(product, printArea);
             },
 
-            equalizeConfigurations: function (product, printArea, targetPrintType, excludedConfiguration) {
-                if (!printArea || !product || this.$equalizingConfigurations) {
+            equalizeConfigurations: function(product, configurations, targetPrintType, excludedConfiguration) {
+                if (!configurations || !product || this.$equalizingConfigurations) {
                     return;
                 }
 
@@ -62,7 +71,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     for (i = 0; i < configurations.length; i++) {
                         config = configurations[i];
                         if (excludedConfiguration !== config) {
-                            possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(printArea, appearance);
+                            possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(config.$.printArea, appearance);
 
                             if (possiblePrintTypes.indexOf(printType) === -1 || !config.isPrintTypeAvailable(printType)) {
                                 return false;
@@ -72,11 +81,14 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     return true;
                 }
 
-                var configurations = product.getConfigurationsOnPrintAreas([printArea]);
+                var printAreas = _.map(configurations, function(config) {
+                    return config.$.printArea;
+                });
+
                 if (configurations.length > 1) {
                     this.$equalizingConfigurations = true;
                     var appearance = product.get('appearance'),
-                        possiblePrintTypesOnPrintArea = ProductUtil.getPossiblePrintTypesForPrintAreas([printArea], appearance),
+                        possiblePrintTypesOnPrintAreas = ProductUtil.getPossiblePrintTypesForPrintAreas(printAreas, appearance),
                         possiblePrintType,
                         possiblePrintTypes,
                         config,
@@ -91,9 +103,9 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     }
 
                     if (!possiblePrintType && !excludedConfiguration) {
-                        for (var j = 0; j < possiblePrintTypesOnPrintArea.length; j++) {
-                            if (checkPrintTypeForConfigurations(possiblePrintTypesOnPrintArea[j], appearance)) {
-                                possiblePrintType = possiblePrintTypesOnPrintArea[j];
+                        for (var j = 0; j < possiblePrintTypesOnPrintAreas.length; j++) {
+                            if (checkPrintTypeForConfigurations(possiblePrintTypesOnPrintAreas[j], appearance)) {
+                                possiblePrintType = possiblePrintTypesOnPrintAreas[j];
                                 break;
                             }
                         }
@@ -117,6 +129,10 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
 
                     this.$equalizingConfigurations = false;
                 }
+            },
+
+            equalizeConfigurationsOnProduct: function(product, targetPrintType, excludedConfiguration) {
+                this.equalizeConfigurations(product, product.getConfigurationsOnPrintAreas(product.$.productType.$.printAreas.$items), targetPrintType, excludedConfiguration)
             }
         },
 
