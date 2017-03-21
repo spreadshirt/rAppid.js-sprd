@@ -102,7 +102,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              */
             convertConfigurations: function(product, productType, appearance, options) {
                 var self = this;
-                product.removeExampleConfiguration();
                 var removedConfigurations = _.filter(_.clone(product.$.configurations.$items), function(configuration) {
                     return !self.convertConfiguration(product, configuration, productType, appearance, options);
                 });
@@ -791,6 +790,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 printType = printType || configuration.$.printType;
                 printArea = printArea || configuration.$.printArea;
 
+                product.removeExampleConfiguration();
                 product.$.configurations.remove(configuration);
 
                 if (!options.respectTransform && !options.respectScale) {
