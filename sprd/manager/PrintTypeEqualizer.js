@@ -132,7 +132,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 var allConfigurations = product.getConfigurationsOnPrintAreas(product.$.productType.$.printAreas.$items);
 
                 allConfigurations = _.filter(allConfigurations, function(configuration) {
-                    return configuration === excludedConfiguration || configuration.$.printType.$.id !== PrintType.Mapping.SpecialFlex;
+                    return configuration !== excludedConfiguration || configuration.$.printType.$.id !== PrintType.Mapping.SpecialFlex;
                 });
 
                 this.equalizeConfigurations(product, allConfigurations, targetPrintType)
