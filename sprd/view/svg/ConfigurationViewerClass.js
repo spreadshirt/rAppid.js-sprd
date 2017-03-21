@@ -309,6 +309,25 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
+            addSnapValue: function(value, owner, list) {
+                var alreadyAdded = false;
+                for (var i = 0; i < list.length; i++) {
+                    var owners = list[i].owners;
+                    var currentValue = list[i].value;
+                    if (value === currentValue) {
+                        if (owners.indexOf(owner) === -1) {
+                            owners.push(owner);
+                        }
+
+                        alreadyAdded = true;
+                    }
+                }
+
+                if (!alreadyAdded) {
+                    this.$snapAngles.push({owners: [owner], value: value});
+                }
+            },
+
             addSnapLinesAtPoint: function(x, y, rot, owner) {
                 this.addSnapLine(x, y, rot, owner);
                 this.addSnapLine(x, y, rot + Math.PI / 2, owner);
@@ -316,7 +335,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             addSnapLines: function(point, dimension, length, pointAmounts, midPoint, rot, owner) {
                 var stepSize = length / (pointAmounts - 1),
-                    currentPoint = JSON.parse(JSON.stringify(point)),
+                    currentPoint = _.clone(point),
                     rotatedPoint;
 
                 for (var i = 0; i < pointAmounts; i++) {
@@ -325,7 +344,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     this.addSnapLinesAtPoint(rotatedPoint.x, rotatedPoint.y, rot, owner);
                 }
             },
-
 
             rotatePoint: function(x, y, rot, midX, midY) {
 
@@ -348,7 +366,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var oldDistance = this.distanceFromMidPoint(x, y, midX, midY);
                 var newDistance = this.distanceFromMidPoint(newPoint.x, newPoint.y, midX, midY);
 
-                var sameDistanceFromMidPoint = oldDistance.equals(oldDistance);
+                var sameDistanceFromMidPoint = oldDistance.equals(newDistance);
                 if (!sameDistanceFromMidPoint) {
                     throw new Error("Rotated point does not have same distance to midpoint.")
                 }
@@ -409,8 +427,51 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.addSnapLinesOfRect(rect.topLeft, rect.width, rect.height, rot, otherConfiguration);
             },
 
-            addSnapLinesOfPrintArea: function(printArea) {
-                var leftUpperCorner = {x: 0, y: 0};
+            addSnapAnglesOfConfiguration: function(otherConfiguration) {
+                this.addSnapValue(otherConfiguration.$.rotation, otherConfiguration, this.$snapAngles);
+                this.addSnapValue(otherConfiguration.$.rotation + 180, otherConfiguration, this.$snapAngles);
+            },
+
+            addSnapLinesOfOtherConfigurations: function(productViewer, configuration) {
+                if (productViewer && productViewer.$.product) {
+                    var configurationsOnPrintArea = productViewer.$.product.getConfigurationsOnPrintAreas([configuration.$.printArea]) || [],
+                        myIndex = _.indexOf(configurationsOnPrintArea, configuration);
+
+                    if (myIndex !== -1) {
+                        configurationsOnPrintArea.splice(myIndex, 1);
+                    }
+
+                    for (var i = 0; i < configurationsOnPrintArea.length; i++) {
+                        var otherConfiguration = configurationsOnPrintArea[i];
+                        this.addSnapLinesOfConfiguration(otherConfiguration);
+                    }
+                }
+            },
+
+            addSnapAnglesOfOtherConfigurations: function(productViewer, configuration) {
+                if (productViewer && productViewer.$.product) {
+                    var configurationsOnPrintArea = productViewer.$.product.getConfigurationsOnPrintAreas([configuration.$.printArea]) || [],
+                        myIndex = _.indexOf(configurationsOnPrintArea, configuration);
+
+                    if (myIndex !== -1) {
+                        configurationsOnPrintArea.splice(myIndex, 1);
+                    }
+
+                    for (var i = 0; i < configurationsOnPrintArea.length; i++) {
+                        var otherConfiguration = configurationsOnPrintArea[i];
+                        this.addSnapAnglesOfConfiguration(otherConfiguration);
+                    }
+                }
+            },
+
+            addSnapLinesOfPrintArea: function(configuration) {
+                var leftUpperCorner = {x: 0, y: 0},
+                    printArea = configuration.$.printArea;
+
+                if (!printArea) {
+                    return;
+                }
+
                 var midPoint = {x: printArea.width() / 2, y: printArea.height() / 2};
                 this.addSnapLines(leftUpperCorner, 'x', printArea.width(), 3, midPoint, 0, printArea);
                 this.addSnapLines(leftUpperCorner, 'y', printArea.height(), 3, midPoint, 0, printArea);
@@ -506,38 +567,20 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     "_mode": mode,
                     shiftKey: false
                 });
+
+                this._removeSnapLines();
+                this.$snapLines = [];
+                this.$snapAngles = [];
+
+                if (moveSnippingEnabled) {
+                    this.addSnapLinesOfOtherConfigurations(productViewer, configuration);
+                    this.addSnapLinesOfPrintArea(configuration);
+                    this.addSnapAnglesOfOtherConfigurations(productViewer, configuration);
+                }
+
                 if (mode === MOVE) {
-
-                    this._removeSnapLines();
-                    this.$snapLines = [];
-
-                    if (moveSnippingEnabled) {
-
-                        var printArea = configuration.$.printArea;
-
-                        if (printArea) {
-                            if (productViewer && productViewer.$.product) {
-                                var configurationsOnPrintArea = productViewer.$.product.getConfigurationsOnPrintAreas([printArea]) || [],
-                                    myIndex = _.indexOf(configurationsOnPrintArea, configuration);
-
-                                if (myIndex !== -1) {
-                                    configurationsOnPrintArea.splice(myIndex, 1);
-                                }
-
-                                for (var i = 0; i < configurationsOnPrintArea.length; i++) {
-                                    var otherConfiguration = configurationsOnPrintArea[i];
-                                    this.addSnapLinesOfConfiguration(otherConfiguration);
-                                }
-                            }
-
-                            self.addSnapLinesOfPrintArea(printArea);
-                        }
-
-                    }
-
                     this.set('_offset', configuration.$.offset.clone());
                 } else if (mode === SCALE) {
-
                     this.set({
                         _scale: _.clone(configuration.$.scale),
                         _offset: configuration.$.offset.clone()
@@ -676,22 +719,55 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            snapOneDimension: function(value, snapValues, threshold) {
+            snapAngle: function(configuration, value) {
+                if (rotateSnippingEnabled && !this.$.shiftKey) {
+                    var snapStepSize = 45;
+                    var snapPoints = _.range(0, 360 + snapStepSize, snapStepSize);
+                    snapPoints.push(configuration.$.rotation);
+                    for (var i = 0; i < snapPoints.length; i++) {
+                        this.$snapAngles.push({value: snapPoints[i], owner: null});
+                    }
 
+                    value = this.snapOneDimension(value, this.$snapAngles, rotationSnippingThreshold);
+                    var snapped = _.find(this.$snapAngles, function(ownedPoint) {
+                        return ownedPoint.value == value;
+                    });
+
+                    value %= 360;
+                    this.set('rotationSnap', this.$.centerVector && snapped);
+                }
+
+                return value;
+            },
+
+            snapScale: function(configuration, scale) {
+                if (rotateSnippingEnabled && !this.$.shiftKey) {
+                    scale = this.snapOneDimension(scale, [1], scaleSnippingThreshold);
+                }
+
+                return scale;
+            },
+
+            snapOneDimension: function(value, snapValues, threshold) {
                 for (var i = 0; i < snapValues.length; i++) {
                     var snapPoint = snapValues[i],
-                        difference = snapPoint - value,
+                        difference = snapPoint.value - value,
                         distance = Math.abs(difference),
-                        snapDifference, snapDistance = Number.MAX_VALUE;
+                        snapDifference, snapDistance = Number.MAX_VALUE,
+                        snappedPoint;
 
                     if (distance < threshold && distance < snapDistance) {
                         snapDifference = difference;
                         snapDistance = distance;
+                        snappedPoint = snapPoint;
                     }
                 }
 
                 if (snapDifference) {
                     value += snapDifference;
+                    _.each(snappedPoint.owners, function(owner) {
+                        owner.set('docked', true);
+                    });
                 }
 
                 return value;
@@ -719,16 +795,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     rotateAngle += 360;
                 }
 
-                if (rotateSnippingEnabled && !this.$.shiftKey) {
-                    var snapStepSize = 45;
-                    var snapPoints = _.range(0, 360 + snapStepSize, snapStepSize);
-                    snapPoints.push(configuration.$.rotation);
-                    rotateAngle = this.snapOneDimension(rotateAngle, snapPoints, rotationSnippingThreshold);
-                    rotateAngle %= 360;
-                    if (this.$.centerVector && snapPoints.indexOf(rotateAngle) !== -1) {
-                        this.set('rotationSnap', true);
-                    }
-                }
+                rotateAngle = this.snapAngle(configuration, rotateAngle);
 
                 var factor = this.localToGlobalFactor();
                 var halfWidth = (this.$._configurationWidth / 2) * factor.x,
@@ -789,7 +856,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            snap: function(configuration, deltaX, deltaY) {
+            snapMove: function(configuration, deltaX, deltaY) {
                 var self = this,
                     snappedLines = [],
                     factor = this.globalToLocalFactor(),
@@ -923,7 +990,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         newY = configuration.$.offset.$.y - deltaY * factor.y;
 
                     if (moveSnippingEnabled) {
-                        var snappedPoint = this.snap(configuration, deltaX, deltaY);
+                        var snappedPoint = this.snapMove(configuration, deltaX, deltaY);
                         newX = snappedPoint.x;
                         newY = snappedPoint.y;
                     }
@@ -973,51 +1040,34 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                     if (!this.rotates()) {
                         scaleFactor = currentDistance / this.$scaleDiagonalDistance;
-
-                        if (scaleSnippingEnabled && !this.$.shiftKey) {
-                            scaleFactor = this.snapOneDimension(scaleFactor, [1], scaleSnippingThreshold);
-                        }
-
-                        var scale = {
+                        scaleFactor = this.snapScale(configuration, scaleFactor);
+                        var newScale = {
                             x: scaleFactor * configuration.$.scale.x,
                             y: scaleFactor * configuration.$.scale.y
                         };
-
-                        var offsetX = configuration.$.offset.$.x;
-                        var offsetY = configuration.$.offset.$.y;
-
-                        newConfigurationWidth = configuration.width(scale.x);
-                        newConfigurationHeight = configuration.height(scale.y);
-                        var configurationWidth = configuration.width();
-                        var configurationHeight = configuration.height();
-
-                        this.set('_scale', scale, userInteractionOptions);
-
-                        this.$._offset.set({
-                            x: offsetX + (configurationWidth - newConfigurationWidth) / 2,
-                            y: offsetY + (configurationHeight - newConfigurationHeight) / 2
-                        }, userInteractionOptions);
+                        this.set('_scale', newScale, userInteractionOptions);
+                        this.$._offset.set(this.getCenteredOffset(configuration, newScale), userInteractionOptions);
 
                         self.set({
-                            _configurationWidth: newConfigurationWidth,
-                            _configurationHeight: newConfigurationHeight
+                            _configurationWidth: configuration.width(newScale.x),
+                            _configurationHeight: configuration.height(newScale.y)
                         }, userInteractionOptions);
                     }
                 }
+            },
 
-                function scaleWithFactor (scaleFactor) {
+            getCenteredOffset: function(configuration, scale) {
+                var offsetX = configuration.$.offset.$.x;
+                var offsetY = configuration.$.offset.$.y;
 
-                    var scale = {
-                        x: scaleFactor * configuration.$.scale.x,
-                        y: scaleFactor * configuration.$.scale.y
-                    };
+                var newConfigurationWidth = configuration.width(scale.x);
+                var newConfigurationHeight = configuration.height(scale.y);
+                var configurationWidth = configuration.width();
+                var configurationHeight = configuration.height();
 
-                    self.set('_scale', scale);
-
-                    self.set({
-                        _configurationWidth: configuration.width(scale.x),
-                        _configurationHeight: configuration.height(scale.y)
-                    });
+                return {
+                    x: offsetX + (configurationWidth - newConfigurationWidth) / 2,
+                    y: offsetY + (configurationHeight - newConfigurationHeight) / 2
                 }
             },
 

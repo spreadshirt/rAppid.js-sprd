@@ -11,9 +11,9 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
 
             textPath: null,
             path: null,
-
-            oldSize: null
         },
+
+        $classAttributes: ['textPath', 'path', 'text', 'oldSize'],
 
         inject: {
             bus: Bus
@@ -55,10 +55,10 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             }, this);
         },
 
-        _initializationComplete: function() {
-            this.callBase();
-            this.bind("configuration", "recalculateSize", this.balanceConfiguration, this);
-        },
+        // _initializationComplete: function() {
+        //     this.callBase();
+        //     // this.bind("configuration", "recalculateSize", this.balanceConfiguration, this);
+        // },
 
 
         loadFont: function() {
@@ -103,36 +103,33 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
 
                 var textBBox = this.$.text.$el.getBBox();
 
+                var _size = configuration.$._size;
+                this.balanceConfiguration(_size.$.width, textPathRect.width);
+                _size.set({
+                    width: textPathRect.width,
+                    height: textPathRect.height
+                });
+
                 configuration.set({
-                    _size: new Size({
-                        width: textPathRect.width,
-                        height: textPathRect.height
-                    }),
                     textPathOffsetX: (textPathRect.width - pathRect.width) * 0.5,
                     textPathOffsetY: -textBBox.y
                 });
+
+                configuration._setError(configuration._validateTransform({
+                    validateHardBoundary: true
+                }));
 
                 configuration.trigger("sizeChanged");
             }
         },
 
-        balanceConfiguration: function() {
+        balanceConfiguration: function(oldWidth, newWidth) {
             var configuration = this.$.configuration;
-            if (configuration) {
-                var oldSize = this.$.oldSize,
-                    newSize = configuration.$._size,
-                    scale = configuration.$.scale.x;
-
-                if (oldSize) {
-                    var offset = configuration.$.offset;
-                    configuration.$.offset.set({
-                        x: offset.$.x - ((newSize.$.width - oldSize.$.width) / 2 ) * (scale / this.$.normalScale)
-                    });
-                } else {
-                    this.set("normalScale", configuration.$.scale.x)
-                }
-
-                this.set("oldSize", newSize);
+            if (configuration && oldWidth && newWidth) {
+                var offset = configuration.$.offset;
+                configuration.$.offset.set({
+                    x: offset.$.x + ((oldWidth - newWidth) || 0) / 2
+                });
             }
         },
 

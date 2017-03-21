@@ -364,7 +364,7 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
                 printArea = this.$.printArea;
 
             if (printArea && appearance) {
-                ret = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance.$.id);
+                ret = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance);
             }
 
             return ret;
@@ -384,8 +384,8 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
                 printArea.get("restrictions.textAllowed") == true;
         },
 
-        getPossiblePrintTypesForPrintArea: function (printArea, appearanceId) {
-            return ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearanceId);
+        getPossiblePrintTypesForPrintArea: function(printArea, appearance) {
+            return ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance);
         },
 
         minimumScale: function () {

@@ -57,6 +57,7 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                     link.href = encodeURI(link.href);
                     elementPayload.editLink = link.href;
                 } else if (link.type == "continueShopping") {
+                    link.href = "";
                     elementPayload.continueShoppingLink = link.href;
                 }
             }

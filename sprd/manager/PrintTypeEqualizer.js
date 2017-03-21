@@ -58,11 +58,11 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     return;
                 }
 
-                function checkPrintTypeForConfigurations(printType) {
+                function checkPrintTypeForConfigurations (printType, appearance) {
                     for (i = 0; i < configurations.length; i++) {
                         config = configurations[i];
                         if (excludedConfiguration !== config) {
-                            possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(printArea, appearanceId);
+                            possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(printArea, appearance);
 
                             if (possiblePrintTypes.indexOf(printType) === -1 || !config.isPrintTypeAvailable(printType)) {
                                 return false;
@@ -75,9 +75,8 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 var configurations = product.getConfigurationsOnPrintAreas([printArea]);
                 if (configurations.length > 1) {
                     this.$equalizingConfigurations = true;
-
-                    var appearanceId = product.get('appearance.id');
-                    var possiblePrintTypesOnPrintArea = ProductUtil.getPossiblePrintTypesForPrintAreas([printArea], appearanceId),
+                    var appearance = product.get('appearance'),
+                        possiblePrintTypesOnPrintArea = ProductUtil.getPossiblePrintTypesForPrintAreas([printArea], appearance),
                         possiblePrintType,
                         possiblePrintTypes,
                         config,
@@ -93,7 +92,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
 
                     if (!possiblePrintType && !excludedConfiguration) {
                         for (var j = 0; j < possiblePrintTypesOnPrintArea.length; j++) {
-                            if (checkPrintTypeForConfigurations(possiblePrintTypesOnPrintArea[j])) {
+                            if (checkPrintTypeForConfigurations(possiblePrintTypesOnPrintArea[j], appearance)) {
                                 possiblePrintType = possiblePrintTypesOnPrintArea[j];
                                 break;
                             }
@@ -139,14 +138,13 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                         }
                     }
 
-                    var appearanceId = product.get('appearance.id'),
-                        cache = {};
+                    var cache = {};
                     for (var j = 0; j < possiblePrintTypes.length; j++) {
                         var possiblePrintType = possiblePrintTypes[j];
                         var fitsForAll = true;
                         for (var i = 0; i < configurations.length; i++) {
                             config = configurations[i];
-                            configPrintTypes = cache[config.$cid] || config.getPossiblePrintTypesForPrintArea(printArea, appearanceId);
+                            configPrintTypes = cache[config.$cid] || config.getPossiblePrintTypesForPrintArea(printArea, product.get('appearance'));
                             // if config on same printarea
                             // AND has DD print type
                             // AND this print type is supported

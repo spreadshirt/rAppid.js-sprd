@@ -21,7 +21,7 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
 
                 selected: "{selectedConfiguration}",
 
-                componentClass: "product-viewer {product.appearanceBrightness()}",
+                componentClass: "product-viewer {product.appearance.brightness()}",
 
                 editable: true
             },

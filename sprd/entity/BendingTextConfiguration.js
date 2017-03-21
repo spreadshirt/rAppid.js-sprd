@@ -18,6 +18,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             loading: false,
             initialized: false,
             isNew: false,
+            isTemplate: false,
 
             angle: 50,
             path: PATH_TYPE.OUTER_CIRCLE,
@@ -136,11 +137,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
             var recalculateSize = function() {
                 var self = this;
+                self.trigger("recalculateSize", self);
                 this.trigger('configurationChanged');
-
-                setTimeout(function() {
-                    self.trigger("recalculateSize", this);
-                }, 1);
             };
 
             this.bind("change:text", recalculateSize, this);
@@ -187,7 +185,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 return ret;
             }
 
-            tmp = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(font.getFontFamily(), printArea, appearance.$.id);
+            tmp = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(font.getFontFamily(), printArea, appearance);
             _.each(tmp, function(element) {
                 if (ret.indexOf(element) === -1) {
                     ret.push(element);
@@ -204,12 +202,12 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             }
         },
 
-        getPossiblePrintTypesForPrintArea: function(printArea, appearanceId) {
+        getPossiblePrintTypesForPrintArea: function(printArea, appearance) {
             var fontFamily = this.$.font.getFontFamily(),
                 text = this.$.text;
 
             if (text) {
-                return ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearanceId);
+                return ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance);
             }
         },
 

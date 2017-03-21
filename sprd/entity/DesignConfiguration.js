@@ -64,10 +64,11 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             _commitAfterEffect: function(afterEffect) {
                 var self = this;
+
                 if (!afterEffect) {
                     this.set('processedImage', null);
                 } else {
-                    AfterEffectHelper.applyAfterEffect(self.$.design, afterEffect, null, function(err, ctx) {
+                    AfterEffectHelper.applyAfterEffect(self.$.design, afterEffect, {crossOrigin: self.$stage.PARAMETER().admin}, function(err, ctx) {
                         if (!err) {
                             self.applyAfterEffect(ctx);
                         } else {
@@ -223,7 +224,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     design = this.$.design;
 
                 if (printArea && appearance && design) {
-                    ret = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
+                    ret = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance);
                 }
 
                 return ret;
@@ -345,8 +346,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return printArea && printArea.get("restrictions.designAllowed") == true;
             },
 
-            getPossiblePrintTypesForPrintArea: function(printArea, appearanceId) {
-                return ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(this.$.design, printArea, appearanceId);
+            getPossiblePrintTypesForPrintArea: function(printArea, appearance) {
+                return ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(this.$.design, printArea, appearance);
             },
 
             minimumScale: function() {

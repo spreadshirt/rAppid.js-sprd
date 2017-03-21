@@ -59,6 +59,16 @@ define(["underscore", "js/core/List"], function (_, List) {
             }
 
             return ret;
+        },
+
+        move: function(array, item, newIndex) {
+            var oldIndex = _.indexOf(array, item);
+            if (oldIndex >= 0 && oldIndex != newIndex) {
+                array.splice(oldIndex, 1);
+                array.splice(newIndex, 0, item);
+            }
+
+            return array;
         }
 
     };

@@ -11,7 +11,11 @@ define(['sprd/data/SprdModel', 'sprd/entity/Price', 'sprd/entity/ConcreteElement
             quantity: Number,
             price: Price,
             element: ConcreteElement,
-            shop: Shop
+            shop: Shop,
+            origin: {
+                type: Object,
+                required: false
+            }
         },
 
         totalVatIncluded: function () {
