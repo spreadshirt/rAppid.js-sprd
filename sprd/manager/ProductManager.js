@@ -26,11 +26,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @param {sprd.entity.Appearance} appearance
              * @param callback
              */
-            setProductType: function(product, productType, appearance, callback) {
-                if (appearance instanceof Function) {
+            setProductType: function(product, productType, appearance, options, callback) {
+                if (options instanceof Function) {
+                    callback = options;
+                    options = null;
+                } else if (appearance instanceof Function) {
                     callback = appearance;
                     appearance = null;
                 }
+
                 var self = this,
                     view;
 
@@ -60,10 +64,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     })
                     .seq(function() {
-                        self.convertConfigurations(product, productType, appearance, {
-                            respectTransform: true,
-                            preventValidations: true
-                        });
+                        self.convertConfigurations(product, productType, appearance, options);
                     })
                     .seq(function() {
                         // first set product type
@@ -155,12 +156,20 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var closestView = options.toCurrentView ? product.$.view : productType.getViewByConfiguration(configuration);
                 var closestPrintArea = closestView ? closestView.getDefaultPrintArea() : productType.getDefaultPrintArea();
                 var printAreas = [closestPrintArea].concat(productType.$.printAreas.$items);
+                var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(closestPrintArea, appearance);
 
-                var targetPrintArea = configuration.getPreferredPrintArea(printAreas, appearance);
+                var targetPrintArea = closestPrintArea;
+                if ((!possiblePrintTypes || !possiblePrintTypes.length) && options.allowPrintAreaChange) {
+                    targetPrintArea = configuration.getPreferredPrintArea(printAreas, appearance);
+                }
 
-                options = options || {};
                 if (targetPrintArea) {
-                    var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(targetPrintArea, appearance);
+                    possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(targetPrintArea, appearance);
+
+                    if (!possiblePrintTypes || !possiblePrintTypes.length) {
+                        return false;
+                    }
+
                     var initialPrintType = this.getInitialPrintType(configuration, possiblePrintTypes);
                     if (initialPrintType) {
                         ArrayUtil.move(possiblePrintTypes, initialPrintType, 0);
@@ -173,7 +182,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     if (validatedMove) {
                         options.transform = validatedMove.transform;
-                        self._moveConfigurationToView(product, configuration, validatedMove.printType, targetPrintArea, options);
+                        self._moveConfiguration(product, configuration, validatedMove.printType, targetPrintArea, options);
                         return true;
                     }
                 }
@@ -309,7 +318,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     })
                     .exec(function(err, results) {
                         if (!err && results.validatedMove) {
-                            self._moveConfigurationToView(product, results.designConfiguration, results.validatedMove.printType, results.printArea, {transform: results.validatedMove.transform});
+                            self._moveConfiguration(product, results.designConfiguration, results.validatedMove.printType, results.printArea, {transform: results.validatedMove.transform});
                         }
                         callback && callback(err, results.designConfiguration);
                     });
@@ -326,7 +335,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 if (validatedMove) {
                     options = options || {};
                     options.transform = validatedMove.transform;
-                    this._moveConfigurationToView(product, configuration, validatedMove.printType, printArea, options);
+                    this._moveConfiguration(product, configuration, validatedMove.printType, printArea, options);
                 }
             },
 
@@ -783,7 +792,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             }
             ,
 
-            _moveConfigurationToView: function(product, configuration, printType, printArea, options) {
+            _moveConfiguration: function(product, configuration, printType, printArea, options) {
                 var self = this,
                     bus = this.$.bus;
 
@@ -844,14 +853,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         if (!err) {
                             if (results.validatedMove) {
                                 options.transform = results.validatedMove.transform;
-                                self._moveConfigurationToView(product, configuration, printType, printArea, options);
+                                self._moveConfiguration(product, configuration, printType, printArea, options);
                                 callback && callback();
                             } else {
-                                self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea, options);
+                                self._moveConfiguration(product, configuration, configuration.$.printType, configuration.$.printArea, options);
                                 callback && callback(new Error('Validation errors found. Configuration moved to old view'));
                             }
                         } else {
-                            self._moveConfigurationToView(product, configuration, configuration.$.printType, configuration.$.printArea, options);
+                            self._moveConfiguration(product, configuration, configuration.$.printType, configuration.$.printArea, options);
                             callback && callback(new Error('Something went wrong preparing the move of the configuration.'));
                         }
                     });
@@ -1435,7 +1444,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 if (middlePoint.x < 0 || middlePoint.y < 0 || middlePoint.x > right || middlePoint.y > bottom) {
                     // outside the view
                     //product.$.configurations.remove(configuration);
-                    this._moveConfigurationToView(product, configuration);
+                    this._moveConfiguration(product, configuration);
                     return true;
                 }
 
