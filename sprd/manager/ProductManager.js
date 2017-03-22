@@ -796,6 +796,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var self = this,
                     bus = this.$.bus;
 
+                options = options || {};
                 printType = printType || configuration.$.printType;
                 printArea = printArea || configuration.$.printArea;
 
