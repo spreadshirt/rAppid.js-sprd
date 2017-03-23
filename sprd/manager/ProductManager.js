@@ -119,23 +119,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 });
             },
 
-            getInitialPrintType: function(configuration, possiblePrintTypes) {
-                var initialPrintType = configuration.$.printType;
-                if (initialPrintType && !_.contains(possiblePrintTypes, initialPrintType)) {
-                    // print type not possible any more
-                    initialPrintType = null;
-                }
-
-                // if digital print type
-                // try to find another digital print type which is before the current print type
-                // this is needed to switch back from DD to DT
-                var firstDigital = this.getFirstDigital(possiblePrintTypes);
-                if (initialPrintType && !initialPrintType.isPrintColorColorSpace() && firstDigital) {
-                    initialPrintType = firstDigital;
-                }
-                return initialPrintType;
-            },
-
 
             addConfiguration: function(product, configuration, options) {
                 return this.convertConfiguration(product, configuration, product.$.productType, product.$.appearance, options);
@@ -170,10 +153,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         return false;
                     }
 
-                    var initialPrintType = this.getInitialPrintType(configuration, possiblePrintTypes);
-                    if (initialPrintType) {
-                        ArrayUtil.move(possiblePrintTypes, initialPrintType, 0);
-                    }
+                    ArrayUtil.move(possiblePrintTypes, configuration.$.printType, 0);
 
                     var validatedMove = self.validateMove(possiblePrintTypes, targetPrintArea, configuration, product, options);
                     if (!validatedMove && options.preventValidations) {
