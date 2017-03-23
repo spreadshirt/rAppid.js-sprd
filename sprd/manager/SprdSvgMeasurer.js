@@ -1,4 +1,4 @@
-define(["text/composer/SvgMeasurer", "xaml!text/ui/SvgTextArea"], function (SvgMeasurer, SvgTextArea) {
+define(["text/composer/SvgMeasurer", "xaml!text/ui/SvgTextAreaBase"], function (SvgMeasurer, SvgTextArea) {
 
     return SvgMeasurer.inherit("sprd.manager.SprdSvgMeasurer", {
 
