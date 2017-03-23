@@ -804,17 +804,21 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 product.$.configurations.remove(configuration);
 
                 if (!options.respectTransform && !options.respectScale) {
-                    configuration.set('scale', {x: 1, y: 1});
+                    configuration.set('scale', {x: 1, y: 1}, {silent: true});
                 }
 
                 if (!options.respectTransform && !options.respectRotation) {
-                    configuration.set('rotation', 0);
+                    configuration.set('rotation', 0, {silent: true});
                 }
 
                 configuration.set({
                     printType: printType,
                     printArea: printArea
-                }, {silent: true});
+                }, {
+                    silent: true,
+                    printTypeTransformed: true
+                });
+
                 configuration.mainConfigurationRenderer = null;
                 product._addConfiguration(configuration);
                 configuration.clearErrors();
