@@ -47,6 +47,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
         },
 
         _commitSelectedConfiguration: function (selectedConfiguration, oldSelectedConfiguration) {
+            document.activeElement.blur();
             if (this.$.product && oldSelectedConfiguration && (oldSelectedConfiguration.type === "text" || oldSelectedConfiguration.type ===  "specialText")) {
                 if (oldSelectedConfiguration.$.isNew) {
                     this.$.product.$.configurations.remove(oldSelectedConfiguration);
