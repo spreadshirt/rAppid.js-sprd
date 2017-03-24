@@ -28,6 +28,16 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
         },
 
+        getPossiblePrintTypesForConfiguration: function(configuration, appearance) {
+            var possiblePrintTypes = this.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, configuration.$.printArea, appearance);
+            return _.filter(possiblePrintTypes, function(printType) {
+                var validations = configuration._validatePrintTypeSize(printType, configuration.width(), configuration.height(), configuration.$.scale);
+                return _.every(validations, function(validation) {
+                    return !validation;
+                })
+            });
+        },
+
         getPossiblePrintTypesForTextOnPrintArea: function(fontFamily, printArea, appearance) {
             return ArrayUtil.average(fontFamily.$.printTypes.$items,
                 this.getPossiblePrintTypesForPrintAreas([printArea], appearance))
@@ -116,8 +126,8 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
         },
 
         supportsPrintType: function(product, configuration, printTypeId) {
-            return !!_.find(this.getSupportedPrintTypes(product, configuration), function(printType) {
-                return printType.$.id == printTypeId
+            return _.any(this.getSupportedPrintTypes(product, configuration), function(printType) {
+                return printType.$.id === printTypeId
             });
         },
 
@@ -126,14 +136,12 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                 return [];
             }
 
-            var design = configuration.$.design,
-                printArea = configuration.$.printArea,
-                appearance = product.$.appearance;
+            var appearance = product.$.appearance;
 
             if (configuration.type == "text" || configuration.type == "bendingText") {
                 return configuration.getPossiblePrintTypes(appearance);
             } else {
-                return this.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance)
+                return this.getPossiblePrintTypesForConfiguration(configuration, appearance)
             }
         }
     };
