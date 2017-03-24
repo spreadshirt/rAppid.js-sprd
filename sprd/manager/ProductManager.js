@@ -1221,7 +1221,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     } else {
 
                         params.removeConfiguration && product.$.configurations.remove(specialTextConfiguration);
-                        var s = width / config.width();
+                        var s = width / config.width(1);
                         config.set({
                             'scale': {
                                 x: s,
@@ -1260,7 +1260,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     } else {
 
                         params.removeConfiguration && product.$.configurations.remove(bendingTextConfiguration);
-                        var s = width / config.width();
+                        var s = width / config.width(1);
                         config.set({
                             'scale': {
                                 x: s,
