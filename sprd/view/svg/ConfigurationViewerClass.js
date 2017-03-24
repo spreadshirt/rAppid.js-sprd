@@ -95,6 +95,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 this.bind('configuration', "change:docked", this.dockedConfiguration, this);
                 this.bind('productViewer', 'change:width', this._productViewerSizeChanged, this);
+                this.bind('productViewer', 'change:viewBoxObj', this._productViewerSizeChanged, this);
                 this.bind(["productViewer", "change:selectedConfiguration"], function() {
                     if (this.isSelectedConfiguration()) {
                         this.focus();

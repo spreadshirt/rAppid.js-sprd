@@ -783,11 +783,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 product.removeExampleConfiguration();
                 product.$.configurations.remove(configuration);
 
-                if (!options.respectTransform && !options.respectScale) {
+                if (!options.respectTransform) {
                     configuration.set('scale', {x: 1, y: 1}, {silent: true});
-                }
-
-                if (!options.respectTransform && !options.respectRotation) {
                     configuration.set('rotation', 0, {silent: true});
                 }
 
@@ -1068,9 +1065,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 boundingBox = configuration._getBoundingBox();
                 var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
                 var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
-                var desiredScaleFactor = options.respectTransform || options.respectScale ? printAreaRatio : scaleToFitDefaultBox;
+                var desiredScaleFactor = options.respectTransform ? printAreaRatio : scaleToFitDefaultBox;
                 var desiredScale = configuration.$.scale.x * desiredScaleFactor;
-                var desiredRatio = options.respectTransform || options.respectPosition ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultCenter, printArea);
+                var desiredRatio = options.respectTransform ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultCenter, printArea);
                 boundingBox = configuration._getBoundingBox(null, null, null, null, desiredScale);
                 var desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                 offset.set(desiredOffset);
@@ -1094,45 +1091,17 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                 offset.set(desiredOffset);
 
-                var scaleToFitWidth,
-                    scaleToFitHeight;
 
-                if ((options.respectTransform || options.respectPosition) &&
-                    (offset.$.x < 0 || offset.$.y < 0 || offset.$.x + boundingBox.width > printAreaWidth || offset.$.y + boundingBox.height > printAreaHeight)) {
-                    desiredOffset = this.centerAtPoint(this.getRatioAsPoint(this.getVectorAsRatio(defaultCenter, printArea), printArea), boundingBox);
-                    offset.set(desiredOffset);
-                }
-
-                if (offset.$.x < 0 || offset.$.x + boundingBox.width > printAreaWidth) {
-                    var centerX = boundingBox.x + boundingBox.width / 2;
-                    var maxPossibleWidthToHardBoundary = Math.min(centerX - offset.$.x, printAreaWidth - centerX) * 2;
-
-                    // scale to avoid hard boundary error
-                    scaleToFitWidth = maxPossibleWidthToHardBoundary / boundingBox.width;
+                if (boundingBox.width > printAreaWidth) {
+                    var scaleToFitWidth = printAreaWidth / boundingBox.width;
                     scale = scale * scaleToFitWidth;
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     offset.set(desiredOffset);
                 }
 
-                if (boundingBox.height > maxHeight) {
-                    // y-scale needed to fit print area and print type
-                    // calculate maxScale to fix height
-                    scaleToFitHeight = maxHeight / boundingBox.height;
-
-                    // TODO: try the two different scales, prefer defaultBox and fallback to printArea if size to small
-                    scale = scale * scaleToFitHeight;
-
-                    boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
-                    desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                    offset.set(desiredOffset);
-                }
-
-                if (offset.$.y < 0 || offset.$.y + boundingBox.height > printAreaHeight) {
-                    // print area hard boundary error in y direction
-                    var centerY = boundingBox.y + boundingBox.height / 2;
-                    var maxPossibleHeightToHardBoundary = Math.min(centerY - offset.$.y, printAreaHeight - centerY) * 2;
-                    scaleToFitHeight = boundingBox.height / maxPossibleHeightToHardBoundary;
+                if (boundingBox.height > printAreaHeight) {
+                    var scaleToFitHeight = printAreaHeight / boundingBox.height;
                     scale = scale * scaleToFitHeight;
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
