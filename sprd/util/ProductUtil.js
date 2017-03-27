@@ -29,7 +29,11 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
         },
 
         getPossiblePrintTypesForConfiguration: function(configuration, appearance) {
-            var possiblePrintTypes = this.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, configuration.$.printArea, appearance);
+            if (!configuration) {
+                return null;
+            }
+
+            var possiblePrintTypes = configuration.getPossiblePrintTypes(appearance);
             return _.filter(possiblePrintTypes, function(printType) {
                 var validations = configuration._validatePrintTypeSize(printType, configuration.width(), configuration.height(), configuration.$.scale);
                 return _.every(validations, function(validation) {
@@ -126,24 +130,26 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
         },
 
         supportsPrintType: function(product, configuration, printTypeId) {
-            return _.any(this.getSupportedPrintTypes(product, configuration), function(printType) {
-                return printType.$.id === printTypeId
+            return this.hasPrintType(product, configuration, function(printType) {
+                return printType.$.id === printTypeId;
+            })
+        },
+
+        findPrintType: function(product, configuration, predicate) {
+            var possiblePrintTypes = this.getPossiblePrintTypesForConfiguration(configuration, product.$.appearance);
+            return _.find(possiblePrintTypes, function(printType) {
+                return predicate(printType);
             });
         },
 
-        getSupportedPrintTypes: function(product, configuration) {
-            if (!configuration) {
-                return [];
-            }
+        hasPrintType: function(product, configuration, predicate) {
+            return !!this.findPrintType(product, configuration, predicate);
+        },
 
-            var appearance = product.$.appearance;
-
-            if (configuration.type == "text" || configuration.type == "bendingText") {
-                return configuration.getPossiblePrintTypes(appearance);
-            } else {
-                return this.getPossiblePrintTypesForConfiguration(configuration, appearance)
-            }
+        supportsDigital: function(product, configuration, predicate) {
+            return this.hasPrintType(product, configuration, function(printType) {
+                return !printType.isPrintColorColorSpace();
+            })
         }
     };
-
 });
