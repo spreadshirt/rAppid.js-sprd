@@ -151,6 +151,34 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             }, this)
         },
 
+        _validatePrintTypeSize: function(printType, width, height, scale) {
+            var ret = this.callBase();
+
+            if (!printType || !scale) {
+                return ret;
+            }
+
+            ret.minBound = this._isScaleTooSmall(printType, scale);
+
+            return ret;
+        },
+
+        _isScaleTooSmall: function(printType, scale) {
+            var font = this.$.font,
+                fontSize = this.$.fontSize;
+
+            if (printType.isShrinkable()) {
+                return false;
+            }
+
+            if (font && fontSize) {
+                return Math.min(Math.abs(scale.x), Math.abs(scale.y)) < font.$.minimalSize / fontSize;
+            }
+
+            return false;
+        },
+
+
         textPath: function() {
             var a = this.$.angle;
 

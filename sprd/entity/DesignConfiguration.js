@@ -80,6 +80,19 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
             },
 
+            _validatePrintTypeSize: function(printType, width, height, scale) {
+                var ret = this.callBase();
+
+                var design = this.$.design;
+
+                if (!printType || !scale || !design) {
+                    return ret;
+                }
+
+                ret.minBound = !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale"));
+
+                return ret;
+            },
 
             _setProcessedSize: function() {
                 var afterEffect = this.$.afterEffect;
