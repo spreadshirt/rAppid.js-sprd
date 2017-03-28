@@ -97,20 +97,22 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                     mediaType: "json"
                 }, this.callBase());
 
-                if (/\bProduct\b/.test(resource.constructor.name)) {
+                var resourceName = resource.constructor.name;
+                if (/\bProduct\b/.test(resourceName)) {
                     _.defaults(ret, {
                         mode: "designer"
                     });
                 }
 
                 var mode = this.$.mode;
-                if (mode) {
+
+                if (mode && !(/\bCollection\b/.test(resourceName) && /\bDesign(Category)?\b/i.test(resourceName))) {
                     ret = _.defaults(ret, {
                         mode: mode
                     });
                 }
 
-                if (resource.constructor.name.indexOf("Label") > -1) {
+                if (resourceName.indexOf("Label") > -1) {
                     ret.fullData = true
                 }
                 return ret;
