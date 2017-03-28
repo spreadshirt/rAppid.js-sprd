@@ -1,5 +1,4 @@
-define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElement", "sprd/model/PrintType"], function(Bindable, ProductUtil, ConcreteElement, PrintType) {
-
+define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElement", "sprd/model/PrintType", "sprd/config/NeonFlexColors"], function(Bindable, ProductUtil, ConcreteElement, PrintType, NeonFlexColors) {
 
     return Bindable.inherit('sprd.manager.PrintTypeEqualizer', {
             inject: {
@@ -79,7 +78,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             },
 
             equalizeConfigurations: function(product, configurations, targetPrintType) {
-                if (!configurations || !configurations.length || !product || this.$equalizingConfigurations) {
+                if (!configurations || configurations.length <= 1 || !product || this.$equalizingConfigurations) {
                     return;
                 }
 
@@ -135,7 +134,11 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 var allConfigurations = product.getConfigurationsOnPrintAreas(product.$.productType.$.printAreas.$items);
 
                 allConfigurations = _.filter(allConfigurations, function(configuration) {
-                    return configuration !== excludedConfiguration && configuration.$.printType.$.id !== PrintType.Mapping.SpecialFlex;
+                    return configuration !== excludedConfiguration
+                        && configuration.$.printType.$.id !== PrintType.Mapping.SpecialFlex
+                        && _.every(configuration.$.printColors.$items, function(printColor) {
+                            return NeonFlexColors[product.$stage.PARAMETER().platform].indexOf(printColor.$.id) === -1;
+                        });
                 });
 
                 this.equalizeConfigurations(product, allConfigurations, targetPrintType)
