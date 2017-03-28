@@ -1,5 +1,5 @@
-define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", "sprd/util/ArrayUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sketchomat/util/PrintValidator", "sprd/type/Vector"],
-    function(IProductManager, _, flow, ProductUtil, ArrayUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List, PrintValidator, Vector) {
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", "sprd/util/ArrayUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sketchomat/util/PrintValidator", "sprd/type/Vector", "js/type/Color"],
+    function(IProductManager, _, flow, ProductUtil, ArrayUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List, PrintValidator, Vector, Color) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
@@ -137,8 +137,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 options = options || {};
                 var self = this;
                 var closestView = options.toCurrentView ? product.$.view : productType.getViewByConfiguration(configuration);
-                var closestPrintArea = closestView ? closestView.getDefaultPrintArea() : productType.getDefaultPrintArea();
-                var printAreas = [closestPrintArea].concat(productType.$.printAreas.$items);
+                var closestPrintArea = (closestView ? closestView.getDefaultPrintArea() : null) || productType.getDefaultPrintArea();
+                var printAreas = ArrayUtil.move(productType.$.printAreas.$items, closestPrintArea, 0);
+
                 var possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(closestPrintArea, appearance);
 
                 var targetPrintArea = closestPrintArea;
@@ -162,6 +163,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     if (validatedMove) {
                         options.transform = validatedMove.transform;
+                        configuration.$.printColors.each(function(printColor, index) {
+                            configuration.setColor(index, validatedMove.printType.getClosestPrintColor(self.convertColor(appearance, printColor.color())));
+                        });
+
                         self._moveConfiguration(product, configuration, validatedMove.printType, targetPrintArea, options);
                         return true;
                     }
@@ -430,6 +435,20 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
 
                 return color;
+            },
+
+            convertColor: function(appearance, color) {
+                var white = new Color.RGB(0, 0, 0),
+                    black = new Color.RGB(255, 255, 255),
+                    threshold = 20,
+                    distance = color.distanceTo(appearance.brightness() === "dark" ? white : black),
+                    newColor = color;
+
+                if (distance < threshold) {
+                    newColor = color.invert();
+                }
+
+                return newColor;
             },
 
             _addText: function(product, params, createConfigurationFnc, finalizeFnc, callback) {
