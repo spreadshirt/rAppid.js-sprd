@@ -62,21 +62,25 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 }
             },
 
-            equalizeConfigurations: function(product, configurations, targetPrintType) {
-                if (!configurations || !product || this.$equalizingConfigurations) {
-                    return;
+            checkPrintTypeForConfigurations: function(configurations, printType, appearance) {
+                if (!printType || !appearance) {
+                    return false;
                 }
 
-                function checkPrintTypeForConfigurations (printType, appearance) {
-                    for (i = 0; i < configurations.length; i++) {
-                        config = configurations[i];
-                        possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(config.$.printArea, appearance);
+                for (var i = 0; i < configurations.length; i++) {
+                    var config = configurations[i];
+                    var possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(config.$.printArea, appearance);
 
-                        if (possiblePrintTypes.indexOf(printType) === -1 || !config.isPrintTypeAvailable(printType)) {
-                            return false;
-                        }
+                    if (possiblePrintTypes.indexOf(printType) === -1 || !config.isPrintTypeAvailable(printType)) {
+                        return false;
                     }
-                    return true;
+                }
+                return true;
+            },
+
+            equalizeConfigurations: function(product, configurations, targetPrintType) {
+                if (!configurations || !configurations.length || !product || this.$equalizingConfigurations) {
+                    return;
                 }
 
                 var printAreas = _.map(configurations, function(config) {
@@ -88,21 +92,20 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     var appearance = product.get('appearance'),
                         possiblePrintTypesOnPrintAreas = ProductUtil.getPossiblePrintTypesForPrintAreas(printAreas, appearance),
                         possiblePrintType,
-                        possiblePrintTypes,
                         config,
                         i;
 
                     // if we have a target print type
                     // check if this fits for all
                     if (targetPrintType) {
-                        if (checkPrintTypeForConfigurations(targetPrintType)) {
+                        if (this.checkPrintTypeForConfigurations(configurations, targetPrintType, appearance)) {
                             possiblePrintType = targetPrintType;
                         }
                     }
 
                     if (!possiblePrintType) {
                         for (var j = 0; j < possiblePrintTypesOnPrintAreas.length; j++) {
-                            if (checkPrintTypeForConfigurations(possiblePrintTypesOnPrintAreas[j], appearance)) {
+                            if (this.checkPrintTypeForConfigurations(configurations, possiblePrintTypesOnPrintAreas[j], appearance)) {
                                 possiblePrintType = possiblePrintTypesOnPrintAreas[j];
                                 break;
                             }
@@ -132,7 +135,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 var allConfigurations = product.getConfigurationsOnPrintAreas(product.$.productType.$.printAreas.$items);
 
                 allConfigurations = _.filter(allConfigurations, function(configuration) {
-                    return configuration !== excludedConfiguration || configuration.$.printType.$.id !== PrintType.Mapping.SpecialFlex;
+                    return configuration !== excludedConfiguration && configuration.$.printType.$.id !== PrintType.Mapping.SpecialFlex;
                 });
 
                 this.equalizeConfigurations(product, allConfigurations, targetPrintType)
