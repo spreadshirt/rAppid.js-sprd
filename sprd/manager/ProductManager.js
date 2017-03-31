@@ -119,7 +119,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 });
             },
 
-
             addConfiguration: function(product, configuration, options) {
                 return this.convertConfiguration(product, configuration, product.$.productType, product.$.appearance, options);
             },
@@ -1091,10 +1090,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         },
                     boundingBox,
                     defaultBoxCenterX = defaultBox.x + defaultBox.width / 2,
+                    defaultBoxCenterY = defaultBox.y + defaultBox.height / 2,
                     offset = configuration.$.offset.clone();
 
                 boundingBox = configuration._getBoundingBox();
-                var defaultDesiredOffset = Vector.create(defaultBoxCenterX, defaultBox.y + configuration.width() / 2);
+                var defaultDesiredOffset = Vector.create(defaultBoxCenterX, defaultBoxCenterY);
                 var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
                 var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
                 var desiredScaleFactor = options.respectTransform ? printAreaRatio : scaleToFitDefaultBox;
@@ -1102,7 +1102,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var desiredRatio = options.respectTransform ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultDesiredOffset, printArea);
                 boundingBox = configuration._getBoundingBox(null, null, null, null, desiredScale);
                 var desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                offset.set(desiredOffset);
+                offset.set({
+                    x: desiredOffset.x,
+                    y: defaultBox.y
+                });
 
 
                 var minimumDesignScale;
