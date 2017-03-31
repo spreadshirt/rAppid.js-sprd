@@ -1091,17 +1091,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     offset = configuration.$.offset.clone();
 
                 boundingBox = configuration._getBoundingBox();
+                var defaultDesiredOffset = Vector.create(defaultBoxCenterX, defaultBox.y + configuration.width() / 2);
                 var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
                 var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
                 var desiredScaleFactor = options.respectTransform ? printAreaRatio : scaleToFitDefaultBox;
                 var desiredScale = configuration.$.scale.x * desiredScaleFactor;
-                var desiredRatio = options.respectTransform ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultCenter, printArea);
+                var desiredRatio = options.respectTransform ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultDesiredOffset, printArea);
                 boundingBox = configuration._getBoundingBox(null, null, null, null, desiredScale);
                 var desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                offset.set({
-                    x: desiredOffset.x,
-                    y: defaultBox.y
-                });
+                offset.set(desiredOffset);
 
 
                 var minimumDesignScale;
