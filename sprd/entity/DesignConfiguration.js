@@ -87,10 +87,12 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     return ret;
                 }
 
-                var maximalDpiSize = this.getMaximalSizeRespectingDPI(printType);
+                if (!design.isVectorDesign()) {
+                    var maximalDpiSize = this.getMaximalSizeRespectingDPI(printType);
+                    ret.dpiBound = maximalDpiSize.height < height || maximalDpiSize < width;
+                }
 
                 ret.minBound = !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale"));
-                ret.dpiBound = maximalDpiSize.height < height || maximalDpiSize < width;
 
                 return ret;
             },

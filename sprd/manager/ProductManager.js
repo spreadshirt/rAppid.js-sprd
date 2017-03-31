@@ -1057,6 +1057,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
             },
 
+            floor: function(num, digits) {
+                var factor = Math.pow(10, digits);
+                return Math.floor(num * factor) / factor;
+            },
+
             getConfigurationPosition: function(configuration, printArea, printType, options) {
 
                 if (!configuration) {
@@ -1103,7 +1108,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     minimumDesignScale = configuration._getMinimalScale(printType);
                 }
 
-                var maxPrintTypeScale = desiredScale * Math.min(printTypeWidth / boundingBox.width, printTypeHeight / boundingBox.height);
+                // flooring after 3rd digit,
+                // because configuration._getBoundingBox with maxPrintTypeScale plucked in would give width > printTypeWidth
+                // the difference being smaller than 10^-8.
+                var maxPrintTypeScale = this.floor(desiredScale * Math.min(printTypeWidth / boundingBox.width, printTypeHeight / boundingBox.height), 3);
 
                 if (configuration instanceof SpecialTextConfiguration || (configuration instanceof DesignConfiguration && !configuration.$.design.isVectorDesign())) {
                     maxPrintTypeScale = 1;
