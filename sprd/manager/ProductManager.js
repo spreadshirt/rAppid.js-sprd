@@ -424,8 +424,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
 
                 this._addText(product, params, createConfigurationFnc, finalizeFnc, callback)
-            }
-            ,
+            },
 
             getPrintTypeColor: function(printType, appearance, startColor) {
                 var color = appearance.brightness() !== "dark" ? "#000000" : "#FFFFFF";
@@ -605,8 +604,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         params.addToProduct && self.$.bus.trigger('Application.productChanged', product);
                     });
 
-            }
-            ,
+            },
 
             addSpecialText: function(product, params, callback) {
 
@@ -760,8 +758,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         params.addToProduct && self.$.bus.trigger('Application.productChanged', product);
                     });
 
-            }
-            ,
+            },
 
             getPrintType: function(printArea, configuration, product) {
                 var possiblePrintTypes,
@@ -790,8 +787,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
 
                 return printType;
-            }
-            ,
+            },
 
             _addConfiguration: function(product, configuration, printType, printArea, options) {
                 var self = this,
@@ -829,8 +825,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 //configuration.mainConfigurationRenderer = null;
                 self.positionConfiguration(configuration, printArea, printType, options);
-            }
-            ,
+            },
 
             moveConfigurationToView: function(product, configuration, view, options, callback) {
 
@@ -874,8 +869,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             callback && callback(new Error('Something went wrong preparing the move of the configuration.'));
                         }
                     });
-            }
-            ,
+            },
 
 
             validateMove: function(printTypes, printArea, configuration, product, options) {
@@ -915,8 +909,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     console.error(e);
                     return null;
                 }
-            }
-            ,
+            },
 
             getPrintArea: function(view, productType) {
                 if (!view) {
@@ -929,8 +922,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 // TODO: look for print area that supports print types, etc...
                 return view.getDefaultPrintArea();
-            }
-            ,
+            },
 
             moveConfigurationsToView: function(product, configurations, view, options, callback) {
                 var self = this;
@@ -947,8 +939,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         });
                     })
                     .exec(callback)
-            }
-            ,
+            },
 
             setTextForConfiguration: function(text, configuration, options) {
                 if (!(configuration instanceof TextConfiguration)) {
@@ -985,8 +976,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 configuration.set('textFlow', textFlow);
                 textFlow.trigger('operationComplete', null, textFlow);
                 this.$.bus.trigger('Application.productChanged', null);
-            }
-            ,
+            },
 
             clamp: function(value, min, max) {
 
@@ -995,8 +985,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
 
                 return Math.min(Math.max(value, min), max);
-            }
-            ,
+            },
 
             centerAtPoint: function(point, rect) {
                 return this.centerAt(point.x, point.y, rect);
@@ -1157,8 +1146,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         y: scale
                     }
                 }
-            }
-            ,
+            },
 
             convertTextToSpecialText: function(product, textConfiguration, params, callback) {
                 params = params || {};
@@ -1199,8 +1187,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
 
                 });
-            }
-            ,
+            },
 
             convertTextToBendingText: function(product, textConfiguration, params, callback) {
                 params = params || {};
@@ -1237,8 +1224,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     }
 
                 });
-            }
-            ,
+            },
 
             convertSpecialTextToText: function(product, specialTextConfiguration, params, callback) {
                 params = params || {};
@@ -1276,8 +1262,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         self.$.bus.trigger('Application.productChanged', product);
                     }
                 });
-            }
-            ,
+            },
 
             convertBendingTextToText: function(product, bendingTextConfiguration, params, callback) {
                 params = params || {};
@@ -1315,8 +1300,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         self.$.bus.trigger('Application.productChanged', product);
                     }
                 });
-            }
-            ,
+            },
 
             convertText: function(product, configuration) {
                 if (configuration) {
@@ -1337,8 +1321,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         });
                     }
                 }
-            }
-            ,
+            },
 
             checkConfigurationOffset: function(product, configuration) {
 
@@ -1349,8 +1332,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 this._checkConfigurationOutsideSoftBoundedPrintArea(product, configuration);
 
-            }
-            ,
+            },
 
             _checkConfigurationOutsideSoftBoundedPrintArea: function(product, configuration) {
 
@@ -1376,8 +1358,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 return false;
 
-            }
-            ,
+            },
 
             _checkConfigurationOutsideViewPort: function(product, configuration) {
 
