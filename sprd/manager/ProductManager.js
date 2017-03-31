@@ -1103,8 +1103,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 boundingBox = configuration._getBoundingBox(null, null, null, null, desiredScale);
                 var desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                 offset.set({
-                    x: desiredOffset.x,
-                    y: defaultBox.y
+                    x: desiredOffset.x
+                });
+                offset.set({
+                    y: options.respectTransform ? desiredOffset.x : defaultBox.y
                 });
 
 
