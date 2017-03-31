@@ -1185,9 +1185,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var scaleToFitWidth,
                     scaleToFitHeight;
 
-                if (offset.$.x < 0 || offset.$.x + boundingBox.width > maxWidth) {
+                if (offset.$.x < 0 || offset.$.x + boundingBox.width > printAreaWidth) {
                     // hard boundary error
-                    var maxPossibleWidthToHardBoundary = Math.min(defaultBoxCenterX, maxWidth - defaultBoxCenterX) * 2;
+                    var maxPossibleWidthToHardBoundary = Math.min(defaultBoxCenterX, printAreaWidth - defaultBoxCenterX) * 2;
 
                     // scale to avoid hard boundary error
                     scaleToFitWidth = maxPossibleWidthToHardBoundary / boundingBox.width;
