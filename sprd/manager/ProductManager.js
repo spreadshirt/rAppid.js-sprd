@@ -299,7 +299,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         return self.validateMove(this.vars.printTypes, this.vars.printArea, this.vars.designConfiguration, product);
                     })
                     .seq(function(cb) {
-                        this.vars.validatedMove && this.vars.validatedMove.printType.fetch(null, cb);
+                        if (!this.vars.validatedMove) {
+                            return cb();
+                        }
+                        this.vars.validatedMove.printType.fetch(null, cb);
                     })
                     .exec(function(err, results) {
                         if (!err && results.validatedMove) {
@@ -896,13 +899,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             validateConfigurationMove: function(printType, printArea, configuration, options) {
                 try {
                     var transform = this.getConfigurationPosition(configuration, printArea, printType, options);
-                    var validations = configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), transform.scale);
+                    var validations = configuration._validatePrintTypeSize(printType, configuration.width(transform.scale.x), configuration.height(transform.scale.y), transform.scale);
                     return {
                         printType: printType,
                         validations: validations,
                         transform: transform
                     }
                 } catch (e) {
+                    console.error(e);
                     return null;
                 }
             }
@@ -1089,7 +1093,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var desiredRatio = options.respectTransform ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultCenter, printArea);
                 boundingBox = configuration._getBoundingBox(null, null, null, null, desiredScale);
                 var desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                offset.set(desiredOffset);
+                offset.set("x", desiredOffset.x);
 
 
                 var minimumDesignScale;
@@ -1099,7 +1103,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     minimumDesignScale = configuration._getMinimalScale(printType);
                 }
 
-                var maxPrintTypeScale = Math.min(printTypeWidth / boundingBox.width, printTypeHeight / boundingBox.height);
+                var maxPrintTypeScale = desiredScale * Math.min(printTypeWidth / boundingBox.width, printTypeHeight / boundingBox.height);
 
                 if (configuration instanceof SpecialTextConfiguration || (configuration instanceof DesignConfiguration && !configuration.$.design.isVectorDesign())) {
                     maxPrintTypeScale = 1;
@@ -1108,7 +1112,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var scale = this.clamp(desiredScale, minimumDesignScale || 0, maxPrintTypeScale);
                 boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                 desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                offset.set(desiredOffset);
+                offset.set("x", desiredOffset.x);
 
 
                 if (boundingBox.width > printAreaWidth) {
@@ -1116,7 +1120,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     scale = scale * scaleToFitWidth;
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                    offset.set(desiredOffset);
+                    offset.set("x", desiredOffset.x);
                 }
 
                 if (boundingBox.height > printAreaHeight) {
@@ -1124,7 +1128,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     scale = scale * scaleToFitHeight;
                     boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                    offset.set(desiredOffset);
+                    offset.set("x", desiredOffset.x);
                 }
 
                 if (_.isNaN(scale) || _.isNaN(offset.$.y) || _.isNaN(offset.$.x)) {

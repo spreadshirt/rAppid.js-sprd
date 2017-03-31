@@ -81,14 +81,16 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             _validatePrintTypeSize: function(printType, width, height, scale) {
                 var ret = this.callBase();
-
                 var design = this.$.design;
 
-                if (!printType || !scale || !design) {
+                if (!printType || !scale || !_.isNumber(width) || !_.isNumber(height) || !design) {
                     return ret;
                 }
 
+                var maximalDpiSize = this.getMaximalSizeRespectingDPI(printType);
+
                 ret.minBound = !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale"));
+                ret.dpiBound = maximalDpiSize.height < height || maximalDpiSize < width;
 
                 return ret;
             },
@@ -263,6 +265,17 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                         id: originalDesign.get('wtfMbsId'),
                         href: "/" + originalDesign.get("id")
                     };
+                }
+            },
+
+            getMaximalSizeRespectingDPI: function(printType) {
+                printType = printType || this.$.printType;
+                var dpi = printType.$.dpi,
+                    designSize = this.get('design.size');
+
+                return {
+                    width: Math.round(designSize.$.width / this.$.printType.$.dpi, 2) * 25.4,
+                    height: Math.round(designSize.$.height / this.$.printType.$.dpi, 2) * 25.4
                 }
             },
 
