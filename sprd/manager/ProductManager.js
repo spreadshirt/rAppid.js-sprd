@@ -167,7 +167,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             configuration.setColor(index, validatedMove.printType.getClosestPrintColor(self.convertColor(appearance, printColor.color())));
                         });
 
-                        self._moveConfiguration(product, configuration, validatedMove.printType, targetPrintArea, options);
+                        self._addConfiguration(product, configuration, validatedMove.printType, targetPrintArea, options);
                         return true;
                     }
                 }
@@ -306,14 +306,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     })
                     .exec(function(err, results) {
                         if (!err && results.validatedMove) {
-                            self._moveConfiguration(product, results.designConfiguration, results.validatedMove.printType, results.printArea, {transform: results.validatedMove.transform});
+                            self._addConfiguration(product, results.designConfiguration, results.validatedMove.printType, results.printArea, {transform: results.validatedMove.transform});
                         }
                         callback && callback(err, results.designConfiguration);
                     });
 
             },
 
-            validateAndMove: function(product, configuration, printTypes, printArea, options) {
+            validateAndAdd: function(product, configuration, printTypes, printArea, options) {
                 var validatedMove = this.validateMove(printTypes, printArea, configuration, product, options);
 
                 if (!validatedMove) {
@@ -323,7 +323,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 if (validatedMove) {
                     options = options || {};
                     options.transform = validatedMove.transform;
-                    this._moveConfiguration(product, configuration, validatedMove.printType, printArea, options);
+                    this._addConfiguration(product, configuration, validatedMove.printType, printArea, options);
                 }
             },
 
@@ -344,7 +344,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     configuration.set("maxHeight", 1);
 
-                    params.addToProduct && self.validateAndMove(product, configuration, printTypes);
+                    params.addToProduct && self.validateAndAdd(product, configuration, printTypes);
 
                     configuration.set("maxHeight", null);
 
@@ -418,7 +418,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     configuration.set("maxHeight", 1);
 
                     // determinate position
-                    params.addToProduct && self.validateAndMove(product, configuration, printTypes);
+                    params.addToProduct && self.validateAndAdd(product, configuration, printTypes);
 
                     configuration.set("maxHeight", null);
                 };
@@ -794,6 +794,19 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             }
             ,
 
+            _addConfiguration: function(product, configuration, printType, printArea, options) {
+                var self = this,
+                    bus = this.$.bus;
+
+                this._moveConfiguration(product, configuration, printType, printArea, options);
+                if (!product.$.configurations.contains(configuration)) {
+                    product.removeExampleConfiguration();
+                    product._addConfiguration(configuration);
+                }
+                configuration.clearErrors();
+                bus.trigger('Application.productChanged', null);
+            },
+
             _moveConfiguration: function(product, configuration, printType, printArea, options) {
                 var self = this,
                     bus = this.$.bus;
@@ -801,9 +814,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 options = options || {};
                 printType = printType || configuration.$.printType;
                 printArea = printArea || configuration.$.printArea;
-
-                product.removeExampleConfiguration();
-                product.$.configurations.remove(configuration);
 
                 if (!options.respectTransform) {
                     configuration.set('scale', {x: 1, y: 1}, {silent: true});
@@ -814,15 +824,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printType: printType,
                     printArea: printArea
                 }, {
-                    silent: true,
+                    //silent: true,
                     printTypeTransformed: true
                 });
 
-                configuration.mainConfigurationRenderer = null;
-                product._addConfiguration(configuration);
-                configuration.clearErrors();
+                //configuration.mainConfigurationRenderer = null;
                 self.positionConfiguration(configuration, printArea, printType, options);
-                bus.trigger('Application.productChanged', null);
             }
             ,
 
@@ -1076,8 +1083,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printAreaHeight = printArea.get("boundary.size.height"),
                     printTypeWidth = printType.get('size.width'),
                     printTypeHeight = printType.get('size.height'),
-                    maxHeight = Math.min(printAreaHeight, printTypeHeight),
-                    maxWidth = Math.min(printAreaWidth, printTypeWidth),
                     defaultBox = printArea.$.defaultBox || {
                             x: 0,
                             y: 0,
@@ -1086,8 +1091,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         },
                     boundingBox,
                     defaultBoxCenterX = defaultBox.x + defaultBox.width / 2,
-                    defaultBoxCenterY = defaultBox.y + defaultBox.height / 2,
-                    defaultCenter = Vector.create(defaultBoxCenterX, defaultBoxCenterY),
                     offset = configuration.$.offset.clone();
 
                 boundingBox = configuration._getBoundingBox();
@@ -1429,7 +1432,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (middlePoint.x < 0 || middlePoint.y < 0 || middlePoint.x > right || middlePoint.y > bottom) {
                     // outside the view
-                    //product.$.configurations.remove(configuration);
                     this._moveConfiguration(product, configuration);
                     return true;
                 }

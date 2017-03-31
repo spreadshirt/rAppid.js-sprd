@@ -276,8 +276,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     designSize = this.get('design.size');
 
                 return {
-                    width: Math.round(designSize.$.width / this.$.printType.$.dpi, 2) * 25.4,
-                    height: Math.round(designSize.$.height / this.$.printType.$.dpi, 2) * 25.4
+                    width: Math.round(designSize.$.width / dpi, 2) * 25.4,
+                    height: Math.round(designSize.$.height / dpi, 2) * 25.4
                 }
             },
 
