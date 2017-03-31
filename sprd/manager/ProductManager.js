@@ -1098,7 +1098,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var desiredRatio = options.respectTransform ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultCenter, printArea);
                 boundingBox = configuration._getBoundingBox(null, null, null, null, desiredScale);
                 var desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
-                offset.set("x", desiredOffset.x);
+                offset.set({
+                    x: desiredOffset.x,
+                    y: defaultBox.y
+                });
 
 
                 var minimumDesignScale;
