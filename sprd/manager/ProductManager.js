@@ -64,6 +64,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     })
                     .seq(function() {
+                        options = options || {};
+                        options.allowPrintAreaChange = true;
                         self.convertConfigurations(product, productType, appearance, options);
                     })
                     .seq(function() {
@@ -1082,18 +1084,25 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     defaultBoxCenterY = defaultBox.y + defaultBox.height / 2,
                     offset = configuration.$.offset.clone();
 
+                // Print type is used in configuration.size() for designConfigurations
+                // So to get the right boundingboxes the parameter printType needs to be used in the size
+                var oldPrintType = configuration.$.printType;
+                configuration.set('printType', printType, {silent: true});
+
                 boundingBox = configuration._getBoundingBox();
-                var defaultDesiredOffset = Vector.create(defaultBoxCenterX, defaultBoxCenterY);
                 var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
+
                 var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
                 var desiredScaleFactor = options.respectTransform ? printAreaRatio : scaleToFitDefaultBox;
                 var desiredScale = configuration.$.scale.x * desiredScaleFactor;
+
+                var defaultDesiredOffset = Vector.create(defaultBoxCenterX, defaultBoxCenterY);
                 var desiredRatio = options.respectTransform ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultDesiredOffset, printArea);
                 boundingBox = configuration._getBoundingBox(null, null, null, null, desiredScale);
                 var desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                 offset.set({
                     x: desiredOffset.x,
-                    y: options.respectTransform ? desiredOffset.x : defaultBox.y
+                    y: options.respectTransform ? desiredOffset.y : defaultBox.y
                 });
 
 
@@ -1135,9 +1144,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     offset.set("x", desiredOffset.x);
                 }
 
+                configuration.set('printType', oldPrintType, {silent: true});
                 if (_.isNaN(scale) || _.isNaN(offset.$.y) || _.isNaN(offset.$.x)) {
                     throw Error('Part of the transform is not a number');
                 }
+
 
                 return {
                     offset: offset,
