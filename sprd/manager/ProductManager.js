@@ -1151,7 +1151,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     offset = configuration.$.offset.clone(),
                     scale = Math.min(configuration.$.scale.x, configuration.$.scale.y);
 
-                boundingBox = configuration._getBoundingBox();
+                var isTextConfiguration = configuration instanceof TextConfiguration;
+                boundingBox = configuration._getBoundingBox(undefined, undefined, undefined,  undefined, undefined, isTextConfiguration);
+                //boundingBox = configuration._getBoundingBox();
                 var centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
                 offset.set({
                     x: centeredOffset.x,
@@ -1160,22 +1162,24 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
 
                 // scale to fit into default box
-                var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
+                var scaleToFitDefaultBox = isTextConfiguration ? 1 : Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
+
                 var minimumDesignScale;
 
                 if (configuration instanceof DesignConfiguration && printType.isEnlargeable()) {
                     minimumDesignScale = (configuration.get("design.restrictions.minimumScale") || 100) / 100;
-                } else if (configuration instanceof TextConfiguration && printType.isEnlargeable()) {
+                } else if (isTextConfiguration && printType.isEnlargeable()) {
                     minimumDesignScale = configuration._getMinimalScale(printType);
                 }
 
-                var maxPrintTypeScale = maxWidth / boundingBox.width;
+                var maxPrintTypeScale = scale * (maxWidth / boundingBox.width);
 
                 if (configuration instanceof SpecialTextConfiguration || (configuration instanceof DesignConfiguration && !configuration.$.design.isVectorDesign())) {
                     maxPrintTypeScale = 1;
                 }
 
                 scale = this.clamp(scaleToFitDefaultBox, minimumDesignScale || 0, maxPrintTypeScale);
+
 
                 boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                 centeredOffset = this.centerAt(defaultBoxCenterX, defaultBoxCenterY, boundingBox);
