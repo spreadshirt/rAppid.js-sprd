@@ -1,4 +1,4 @@
-define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElement"], function(Bindable, ProductUtil, ConcreteElement) {
+define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElement", "sprd/model/PrintType"], function(Bindable, ProductUtil, ConcreteElement, PrintType) {
 
     return Bindable.inherit('sprd.manager.PrintTypeEqualizer', {
             inject: {
@@ -129,6 +129,10 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             },
 
             equalizeConfigurationsOnProduct: function(product, targetPrintType, excludedConfiguration) {
+                if (targetPrintType && targetPrintType.$.id === PrintType.Mapping.SpecialFlex) {
+                    return;
+                }
+
                 var allConfigurations = product.getConfigurationsOnPrintAreas(product.$.productType.$.printAreas.$items);
 
                 allConfigurations = _.filter(allConfigurations, function(configuration) {
