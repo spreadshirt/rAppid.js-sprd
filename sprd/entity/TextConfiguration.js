@@ -152,8 +152,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 composer.compose(textFlow, textArea.$, function (err, composedTextFlow) {
 
-                    if (composedTextFlow && !skipHeight) {
-                        if (!textArea.$.autoGrow) {
+                    if (composedTextFlow) {
+                        if (!textArea.$.autoGrow && !skipHeight) {
                             self.$.textArea.set('height', composedTextFlow.composed.getHeight());
                         } else {
                             var alignment = composedTextFlow.getAlignmentOfWidestSpan();
@@ -167,7 +167,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                             self.$.textArea.set(composedTextFlow.measure);
                         }
 
-                        self.trigger("sizeChanged");
+                        //self.trigger("sizeChanged");
                     }
 
                     var opt = _.clone(options);
