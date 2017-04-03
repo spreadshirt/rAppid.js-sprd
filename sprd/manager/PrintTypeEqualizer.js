@@ -82,10 +82,6 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     return;
                 }
 
-                if (configurations.length === 1 && !targetPrintType) {
-                    return;
-                }
-
                 var printAreas = _.map(configurations, function(config) {
                     return config.$.printArea;
                 });
