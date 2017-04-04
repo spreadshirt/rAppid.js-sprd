@@ -66,6 +66,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq(function() {
                         options = options || {};
                         options.allowPrintAreaChange = true;
+                        options.respectTransform = true;
                         self.convertConfigurations(product, productType, appearance, options);
                     })
                     .seq(function() {

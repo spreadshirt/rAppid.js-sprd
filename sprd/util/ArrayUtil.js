@@ -69,8 +69,22 @@ define(["underscore", "js/core/List"], function (_, List) {
             }
 
             return array;
-        }
+        },
 
+        moveToStart: function(array, items) {
+            if (!_.isArray(items)) {
+                items = [item];
+            }
+
+            var self = this;
+            items = this.removeDuplicates(items);
+
+            for (var i = 0; i < items.length; i++) {
+                self.move(array, items[i], 0);
+            }
+
+            return array;
+        }
     };
 
 });
