@@ -47,6 +47,19 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             return basketItem;
         },
 
+        updateElement: function(element) {
+            var items = this.$.basketItems,
+                index = items.indexOf(element.get('item.basketItem'));
+
+            if (index === -1) {
+                return;
+            }
+
+            var basketItem = items.at(index);
+            delete element.$.item.$.basketItem;
+            basketItem.set('element', element);
+        },
+
         items: function () {
             return this.$.basketItems
         }.onChange("basketItems"),
