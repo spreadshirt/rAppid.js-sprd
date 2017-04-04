@@ -39,8 +39,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 _offset: "{configuration.offset}",
                 _scale: "{configuration.scale}",
 
-                _configurationWidth: "{configuration.width()}",
-                _configurationHeight: "{configuration.height()}",
+                _configurationWidth: "{configuration.width(_scale.x)}",
+                _configurationHeight: "{configuration.height(_scale.y)}",
 
                 _rotation: "{configuration.rotation}",
 
@@ -1048,11 +1048,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         };
                         this.set('_scale', newScale, userInteractionOptions);
                         this.$._offset.set(this.getCenteredOffset(configuration, newScale), userInteractionOptions);
-
-                        self.set({
-                            _configurationWidth: configuration.width(newScale.x),
-                            _configurationHeight: configuration.height(newScale.y)
-                        }, userInteractionOptions);
                     }
                 }
             },

@@ -167,7 +167,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                             self.$.textArea.set(composedTextFlow.measure);
                         }
 
-                        //self.trigger("sizeChanged");
+                        self.trigger("sizeChanged");
                     }
 
                     var opt = _.clone(options);
