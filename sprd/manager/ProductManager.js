@@ -861,14 +861,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         if (!err) {
                             if (results.validatedMove) {
                                 options.transform = results.validatedMove.transform;
-                                self._moveConfiguration(product, configuration, printType, printArea, options);
+                                self._addConfiguration(product, configuration, printType, printArea, options);
                                 callback && callback();
                             } else {
-                                self._moveConfiguration(product, configuration, configuration.$.printType, configuration.$.printArea, options);
+                                self._addConfiguration(product, configuration, configuration.$.printType, configuration.$.printArea, options);
                                 callback && callback(new Error('Validation errors found. Configuration moved to old view'));
                             }
                         } else {
-                            self._moveConfiguration(product, configuration, configuration.$.printType, configuration.$.printArea, options);
+                            self._addConfiguration(product, configuration, configuration.$.printType, configuration.$.printArea, options);
                             callback && callback(new Error('Something went wrong preparing the move of the configuration.'));
                         }
                     });
@@ -1428,7 +1428,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (middlePoint.x < 0 || middlePoint.y < 0 || middlePoint.x > right || middlePoint.y > bottom) {
                     // outside the view
-                    this._moveConfiguration(product, configuration);
+                    this._addConfiguration(product, configuration);
                     return true;
                 }
 
