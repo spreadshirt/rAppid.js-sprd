@@ -1,4 +1,4 @@
-define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/lib/Text2Path", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", "underscore"], function(DesignConfigurationBase, Size, Font, ProductUtil, Text2Path, BlobImage, IImageUploadService, flow, _) {
+define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/lib/Text2Path", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", "underscore", "sprd/util/ArrayUtil"], function(DesignConfigurationBase, Size, Font, ProductUtil, Text2Path, BlobImage, IImageUploadService, flow, _, ArrayUtil) {
     var PATH_TYPE = {
         OUTER_CIRCLE: "outer_circle",
         INNER_CIRCLE: "inner_circle",
@@ -213,7 +213,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 return ret;
             }
 
-            tmp = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(font.getFontFamily(), printArea, appearance);
+            tmp = this.getPossiblePrintTypesForPrintArea(printArea, appearance);
             _.each(tmp, function(element) {
                 if (ret.indexOf(element) === -1) {
                     ret.push(element);
@@ -235,7 +235,11 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 text = this.$.text;
 
             if (text) {
-                return ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance);
+                var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance),
+                    digitalPrintTypes = _.filter(possiblePrintTypes, function(printType) {
+                        return !printType.isPrintColorColorSpace();
+                    });
+                return ArrayUtil.moveToStart(possiblePrintTypes, digitalPrintTypes);
             }
         },
 

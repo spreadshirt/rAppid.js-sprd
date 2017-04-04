@@ -385,15 +385,9 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return Size.empty;
         },
 
-        possiblePrintTypes: function(appearance) {
-            var ret = [],
-                printArea = this.$.printArea;
-
-            if (printArea && appearance) {
-                ret = ProductUtil.getPossiblePrintTypesForPrintAreas([printArea], appearance);
-            }
-
-            return ret;
+        getPossiblePrintTypes: function(appearance) {
+            var printArea = this.$.printArea;
+            return this.getPossiblePrintTypesForPrintArea(printArea, appearance);
         }.onChange("printArea"),
 
         isAllowedOnPrintArea: function(printArea) {

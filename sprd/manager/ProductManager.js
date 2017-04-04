@@ -410,15 +410,18 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         font: font,
                         printColors: printColors
                     });
+
                     return entity;
                 };
 
                 var finalizeFnc = function(configuration, printTypes, params) {
+
                     configuration.set('isNew', params.isNew);
                     configuration.set('isTemplate', params.isTemplate);
 
                     configuration.set("maxHeight", 1);
 
+                    printTypes = configuration.getPossiblePrintTypes(product.$.appearance);
                     // determinate position
                     params.addToProduct && self.validateAndAdd(product, configuration, printTypes);
 
@@ -1210,12 +1213,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     removeConfiguration: true,
                     text: textConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "")
                 });
+
+                product.$.configurations.remove(textConfiguration);
+
                 var self = this;
                 this.addBendingText(product, params, function(err, config) {
                     if (err) {
                         callback && callback(err);
                     } else {
-                        params.removeConfiguration && product.$.configurations.remove(textConfiguration);
+                        !params.removeConfiguration && product.$.configurations.add(textConfiguration);
                         var s = width / config.width(1);
                         config.set({
                             'scale': {
