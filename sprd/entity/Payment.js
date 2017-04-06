@@ -30,6 +30,10 @@ define(["js/data/Entity"], function (Entity) {
             cb && cb();
         },
 
+        _beforeCompose: function(cb) {
+            cb && cb();
+        },
+
         /***
          * determinate the real payment method. This is a hook so the credit card
          * payment type group can select the payment method
