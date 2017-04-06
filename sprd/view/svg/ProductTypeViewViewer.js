@@ -36,7 +36,12 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             _view: null,
             _productType: null,
 
-            imageService: null
+            imageService: null,
+
+            scaleX: "{zoomToPrintAreaFactor()}",
+            scaleY: "{zoomToPrintAreaFactor()}",
+            translateX: "{translateX()}",
+            translateY: "{translateY()}"
         },
 
         $classAttributes: ["productViewer", "product", "imageService"],
@@ -323,9 +328,87 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
                     this.addChild(printAreaViewer);
                     this.$printAreas.push(printAreaViewer);
-
                 }
+            }
 
+
+        },
+
+        zoomToPrintAreaFactor: function() {
+            var view = this.get('_view');
+            var viewMaps = view.$.viewMaps.$items;
+            var surroundingRect = this.surroundingRectForViewMaps(viewMaps);
+            var minScaleFactor = Math.min(view.get('size.width') / surroundingRect.width, view.get('size.height') / surroundingRect.height) - 1;
+            return 1 + minScaleFactor * this.$.productViewer.$.zoomToPrintArea;
+        }.onChange('_view.size.width', '_view.size.height', 'productViewer.zoomToPrintArea'),
+
+        translateX: function() {
+            var scale = this.$.scaleX;
+            var viewWidth = this.get('_view.size.width');
+            var scaleOffset = ((scale - 1) / 2) * -viewWidth;
+            var view = this.get('_view');
+            var viewMaps = view.$.viewMaps.$items;
+            var surroundingRect = this.surroundingRectForViewMaps(viewMaps);
+            var currentCenterY = surroundingRect.x + surroundingRect.width / 2;
+            return scaleOffset - (currentCenterY - viewWidth / 2)
+        }.onChange('scaleX', '_view.size.width'),
+
+        translateY: function() {
+            var scale = this.$.scaleY;
+            var viewHeight = this.get('_view.size.height');
+            var scaleOffset = ((scale - 1) / 2) * -viewHeight;
+            var view = this.get('_view');
+            var viewMaps = view.$.viewMaps.$items;
+            var surroundingRect = this.surroundingRectForViewMaps(viewMaps);
+            var currentCenterY = surroundingRect.y + surroundingRect.height / 2;
+            return scaleOffset - (currentCenterY - viewHeight / 2)
+        }.onChange('scaleY', '_view.size.height'),
+
+
+        surroundingRectForViewMaps: function(viewMaps) {
+            if (!viewMaps || !viewMaps.length) {
+                return null;
+            }
+
+            var viewMapsRects = _.map(viewMaps, function(viewMap) {
+                return {
+                    x: viewMap.$.offset.$.x,
+                    y: viewMap.$.offset.$.y,
+                    width: viewMap.$.printArea.$._size.width,
+                    height: viewMap.$.printArea.$._size.height
+                }
+            });
+
+            return this.surroundingRect(viewMapsRects);
+        },
+
+        surroundingRect: function(rects) {
+            if (!rects || !rects.length) {
+                return null;
+            }
+
+
+            var smallestXRect = _.min(rects, function(rect) {
+                return rect.x;
+            });
+
+            var smallestYRect = _.min(rects, function(rect) {
+                return rect.y;
+            });
+
+            var biggestXRect = _.max(rects, function(rect) {
+                return rect.x + rect.width;
+            });
+
+            var biggestYRect = _.max(rects, function(rect) {
+                return rect.y + rect.height;
+            });
+
+            return {
+                x: smallestXRect.x,
+                y: smallestYRect.y,
+                width: biggestXRect.x + biggestXRect.width - smallestXRect.x,
+                height: biggestYRect.y + biggestXRect.height - smallestYRect.y
             }
         },
 

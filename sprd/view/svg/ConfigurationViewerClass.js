@@ -497,6 +497,16 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return svgPoint;
             },
 
+            localToGlobalFactor: function() {
+                var matrix = this.$el.getScreenCTM();
+                return {x: matrix.a, y: matrix.d};
+            },
+
+            globalToLocalFactor: function() {
+                var matrix = this.$el.getScreenCTM().inverse();
+                return {x: matrix.a, y: matrix.d};
+            },
+
             _down: function(e, mode, initiator) {
 
                 var self = this,

@@ -23,10 +23,11 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
 
                 componentClass: "product-viewer {product.appearance.brightness()}",
 
-                editable: true
+                editable: true,
+                zoomToPrintArea: 0
             },
 
-            $classAttributes: ["product", "view", "editable", "selectedConfiguration", "imageService", "viewBoxObj"],
+            $classAttributes: ["product", "view", "editable", "selectedConfiguration", "imageService", "viewBoxObj", "zoomToPrintArea"],
 
             ctor: function () {
 
@@ -106,6 +107,13 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
                 view && this.setViewBox(0, 0, width, height);
                 this._renderProductTypeView(this.$._productType, view);
             },
+
+            zoomToPrintAreaFactor: function() {
+                var view = this.get('_view');
+                var viewMaps = view.$.viewMaps.$items;
+                var surroundingRect = this.surroundingRectForViewMaps(viewMaps);
+                return 1 + (Math.min(view.get('size.width') / surroundingRect.width, view.get('size.height') / surroundingRect.height) - 1) * this.$.productViewer.$.zoomToPrintArea;
+            }.onChange('_view.size.width', '_view.size.height', 'zoomToPrintArea'),
 
             setViewBox: function(x, y, width, height) {
                 this.callBase();
