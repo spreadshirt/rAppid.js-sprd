@@ -1,6 +1,6 @@
 define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
-        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "designer/manager/TrackingManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sprd/helper/AfterEffectHelper"],
-    function(DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, TrackingManager, IImageUploadService, BlobImage, AfterEffectHelper) {
+        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sprd/helper/AfterEffectHelper"],
+    function(DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, AfterEffectHelper) {
 
         return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
@@ -25,8 +25,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             inject: {
-                imageUploadService: IImageUploadService,
-                tracking: TrackingManager
+                imageUploadService: IImageUploadService
             },
 
             type: "design",
@@ -80,6 +79,23 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
             },
 
+            _validatePrintTypeSize: function(printType, width, height, scale) {
+                var ret = this.callBase();
+                var design = this.$.design;
+
+                if (!printType || !scale || !_.isNumber(width) || !_.isNumber(height) || !design) {
+                    return ret;
+                }
+
+                if (!design.isVectorDesign()) {
+                    var maximalDpiSize = this.getMaximalSizeRespectingDPI(printType);
+                    ret.dpiBound = maximalDpiSize.height < height || maximalDpiSize < width;
+                }
+
+                ret.minBound = !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale"));
+
+                return ret;
+            },
 
             _setProcessedSize: function() {
                 var afterEffect = this.$.afterEffect;
@@ -254,6 +270,17 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
             },
 
+            getMaximalSizeRespectingDPI: function(printType) {
+                printType = printType || this.$.printType;
+                var dpi = printType.$.dpi,
+                    designSize = this.get('design.size');
+
+                return {
+                    width: Math.round(designSize.$.width / dpi, 2) * 25.4,
+                    height: Math.round(designSize.$.height / dpi, 2) * 25.4
+                }
+            },
+
             originalSize: function() {
                 return this.getSizeForPrintType(this.$.printType, {original: true});
             },
@@ -279,7 +306,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 if (!afterEffect) {
                     callback && callback();
                 } else {
-                    this.$.tracking.trackMaskSaved(afterEffect);
                     flow()
                         .seq('ctx', function(cb) {
                             AfterEffectHelper.applyAfterEffect(design, afterEffect, {fullSize: true}, cb);

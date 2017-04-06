@@ -1,12 +1,11 @@
-define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElement"], function (Bindable, ProductUtil, ConcreteElement) {
-
+define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElement", "sprd/model/PrintType"], function(Bindable, ProductUtil, ConcreteElement, PrintType) {
 
     return Bindable.inherit('sprd.manager.PrintTypeEqualizer', {
             inject: {
                 concreteElement: ConcreteElement
             },
 
-            _setUp: function () {
+            _setUp: function() {
                 this.callBase();
 
                 this.$.concreteElement.bind('getProduct().configurations', 'add', this._handleConfigurationAdd, this);
@@ -15,7 +14,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             },
 
 
-            _tearDown: function () {
+            _tearDown: function() {
                 this.callBase();
 
                 this.$.concreteElement.unbind('getProduct().configurations', 'add', this._handleConfigurationAdd, this);
@@ -23,19 +22,30 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 this.$.concreteElement.unbind('getProduct().configurations', 'item:printTypeSwitched', this._handlePrintTypeTransformed, this);
             },
 
-            _handleConfigurationAdd: function (e) {
-                this.equalizeConfigurations(this.$.concreteElement.getProduct(), e.$.item.$.printArea, e.$.item.$.printType);
+            _handleConfigurationAdd: function(e) {
+                var product = this.$.concreteElement.getProduct();
+                this.equalizeConfigurationsOnProduct(product, e.$.item.$.printType);
             },
 
-            _handleConfigurationRemove: function (e) {
-                this.revertEqualization(this.$.concreteElement.getProduct(), e.$.item.$.printArea);
+            _handleConfigurationRemove: function(e) {
+                var product = this.$.concreteElement.getProduct();
+                this.revertEqualizationOnProduct(product);
             },
 
-            _handlePrintTypeTransformed: function (e) {
-                this.equalizeConfigurations(this.$.concreteElement.getProduct(), e.$.item.$.printArea, e.$.item.$.printType, e.$.item);
+            _handlePrintTypeTransformed: function(e) {
+                var product = this.$.concreteElement.getProduct();
+                this.equalizeConfigurationsOnProduct(product, e.$.item.$.printType, e.$.item);
             },
 
-            revertEqualization: function (product, printArea) {
+            revertEqualizationOnProduct: function(product) {
+                var self = this;
+                product.$.productType.$.printAreas.each(function(printArea) {
+                    self.revertEqualization(product, printArea);
+                });
+                self.equalizeConfigurationsOnProduct(product);
+            },
+
+            revertEqualization: function(product, printArea) {
                 if (!product) {
                     return;
                 }
@@ -49,80 +59,94 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                         config.set('printType', originalPrintType)
                     }
                 }
-
-                this.equalizeConfigurations(product, printArea);
             },
 
-            equalizeConfigurations: function (product, printArea, targetPrintType, excludedConfiguration) {
-                if (!printArea || !product || this.$equalizingConfigurations) {
+            checkPrintTypeForConfigurations: function(configurations, printType, appearance) {
+                if (!printType || !appearance) {
+                    return false;
+                }
+
+                for (var i = 0; i < configurations.length; i++) {
+                    var config = configurations[i];
+                    var possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(config.$.printArea, appearance);
+
+                    if (possiblePrintTypes.indexOf(printType) === -1 || !config.isPrintTypeAvailable(printType)) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+
+            equalizeConfigurations: function(product, configurations, targetPrintType) {
+                if (!configurations || !product || this.$equalizingConfigurations) {
                     return;
                 }
 
-                function checkPrintTypeForConfigurations (printType, appearance) {
+                var printAreas = _.map(configurations, function(config) {
+                    return config.$.printArea;
+                });
+
+                this.$equalizingConfigurations = true;
+                var appearance = product.get('appearance'),
+                    possiblePrintTypesOnPrintAreas = ProductUtil.getPossiblePrintTypesForPrintAreas(printAreas, appearance),
+                    possiblePrintType,
+                    config,
+                    i;
+
+                // if we have a target print type
+                // check if this fits for all
+                if (targetPrintType) {
+                    if (this.checkPrintTypeForConfigurations(configurations, targetPrintType, appearance)) {
+                        possiblePrintType = targetPrintType;
+                    }
+                }
+
+                if (!possiblePrintType) {
+                    for (var j = 0; j < possiblePrintTypesOnPrintAreas.length; j++) {
+                        if (this.checkPrintTypeForConfigurations(configurations, possiblePrintTypesOnPrintAreas[j], appearance)) {
+                            possiblePrintType = possiblePrintTypesOnPrintAreas[j];
+                            break;
+                        }
+                    }
+                }
+
+                // switch print type
+                if (possiblePrintType) {
                     for (i = 0; i < configurations.length; i++) {
                         config = configurations[i];
-                        if (excludedConfiguration !== config) {
-                            possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(printArea, appearance);
 
-                            if (possiblePrintTypes.indexOf(printType) === -1 || !config.isPrintTypeAvailable(printType)) {
-                                return false;
-                            }
+                        if (possiblePrintType !== config.$.printType) {
+                            config.set('originalPrintType', config.$.printType, {silent: true});
                         }
+                        config.set('printType', possiblePrintType, {
+                            printTypeEqualized: true,
+                            printTypeTransformed: true
+                        });
                     }
-                    return true;
                 }
 
-                var configurations = product.getConfigurationsOnPrintAreas([printArea]);
-                if (configurations.length > 1) {
-                    this.$equalizingConfigurations = true;
-                    var appearance = product.get('appearance'),
-                        possiblePrintTypesOnPrintArea = ProductUtil.getPossiblePrintTypesForPrintAreas([printArea], appearance),
-                        possiblePrintType,
-                        possiblePrintTypes,
-                        config,
-                        i;
+                this.$equalizingConfigurations = false;
+            },
 
-                    // if we have a target print type
-                    // check if this fits for all
-                    if (targetPrintType) {
-                        if (checkPrintTypeForConfigurations(targetPrintType)) {
-                            possiblePrintType = targetPrintType;
-                        }
-                    }
-
-                    if (!possiblePrintType && !excludedConfiguration) {
-                        for (var j = 0; j < possiblePrintTypesOnPrintArea.length; j++) {
-                            if (checkPrintTypeForConfigurations(possiblePrintTypesOnPrintArea[j], appearance)) {
-                                possiblePrintType = possiblePrintTypesOnPrintArea[j];
-                                break;
-                            }
-                        }
-                    }
-
-                    // switch print type
-                    if (possiblePrintType) {
-                        for (i = 0; i < configurations.length; i++) {
-                            config = configurations[i];
-                            if (excludedConfiguration !== config) {
-                                if (possiblePrintType !== config.$.printType) {
-                                    config.set('originalPrintType', config.$.printType, {silent: true});
-                                }
-                                config.set('printType', possiblePrintType, {
-                                    printTypeEqualized: true,
-                                    printTypeTransformed: true
-                                });
-                            }
-                        }
-                    }
-
-                    this.$equalizingConfigurations = false;
+            equalizeConfigurationsOnProduct: function(product, targetPrintType, excludedConfiguration) {
+                if (targetPrintType && targetPrintType.$.id === PrintType.Mapping.SpecialFlex) {
+                    return;
                 }
+
+                var allConfigurations = product.getConfigurationsOnPrintAreas(product.$.productType.$.printAreas.$items);
+
+                allConfigurations = _.filter(allConfigurations, function(configuration) {
+                    return configuration !== excludedConfiguration
+                        && !ProductUtil.isSpecial(configuration);
+                });
+
+                this.equalizeConfigurations(product, allConfigurations, targetPrintType)
             }
         },
 
 
         {
-            getPreferredPrintType: function (product, printArea, possiblePrintTypes) {
+            getPreferredPrintType: function(product, printArea, possiblePrintTypes) {
                 var configurations = product.getConfigurationsOnPrintAreas(printArea);
                 if (configurations && configurations.length) {
                     // first sort the possible print types by the configurations that are on print area

@@ -6,7 +6,7 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
 
                 height: 300,
                 width: 300,
-
+                viewBoxObj: null,
                 // the view to show
                 view: null,
 
@@ -26,7 +26,7 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
                 editable: true
             },
 
-            $classAttributes: ["product", "view", "editable", "selectedConfiguration", "imageService"],
+            $classAttributes: ["product", "view", "editable", "selectedConfiguration", "imageService", "viewBoxObj"],
 
             ctor: function () {
 
@@ -104,8 +104,17 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
                 }
 
                 view && this.setViewBox(0, 0, width, height);
-
                 this._renderProductTypeView(this.$._productType, view);
+            },
+
+            setViewBox: function(x, y, width, height) {
+                this.callBase();
+                this.set('viewBoxObj', {
+                    x: x,
+                    y: y,
+                    width: width,
+                    height: height
+                });
             },
 
             _commitProduct: function (product) {
