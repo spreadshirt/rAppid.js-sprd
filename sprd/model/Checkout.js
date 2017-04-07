@@ -76,8 +76,8 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
                     var checkoutData = processor.compose(self, "save");
 
                     var fingerPrint = this.vars.fingerPrint;
-                    if (fingerPrint) {
-                        checkoutData.fingerPrint = fingerPrint;
+                    if (fingerPrint && checkoutData.payment) {
+                        checkoutData.payment.fingerPrint = fingerPrint;
                     }
 
                     var valueField = document.createElement("input");
