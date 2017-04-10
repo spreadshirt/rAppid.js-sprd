@@ -215,7 +215,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     variation = 0xFE00 <= charCode && charCode <= 0xFE0F;
 
 
-                return isSpecialCharacterEmoji || inEmoticonBlock || miscSymbol || dingbat || variation;
+                return isSpecialCharacterEmoji || miscSymbolsAndPictogram || transportAndMap || inEmoticonBlock || miscSymbol || dingbat || variation;
             },
 
             containsEmoji: function(string) {
