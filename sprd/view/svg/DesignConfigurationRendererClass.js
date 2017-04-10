@@ -1,6 +1,6 @@
 define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Renderer) {
 
-    return Renderer.inherit("sprd.view.svg.DesignConfigurationRenderer", {
+    return Renderer.inherit("sprd.view.svg.DesignConfigurationRendererClass", {
 
         defaults: {
             tagName: "g",
