@@ -200,9 +200,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         this._setError("copyright", badWord);
                     }
 
-                    if (this.containsEmoji(text)) {
-                        this._setError("emojis", "FOOBAR");
-                    }
+                    this._setError("emoji", this.containsEmoji(text));
                 }
             },
 
