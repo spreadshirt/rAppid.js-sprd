@@ -336,12 +336,18 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
         zoomToPrintArea: function() {
 
             var zoomToPrintArea = this.get("productViewer.zoomToPrintArea");
+            var view = this.get('_view');
 
-            if (!zoomToPrintArea) {
+            if (!(zoomToPrintArea && view)) {
+                this.set({
+                    scaleX: 1,
+                    scaleY: 1,
+                    translateX: 0,
+                    translateY: 0
+                });
                 return;
             }
 
-            var view = this.get('_view');
             var surroundingRect = this.surroundingRectOfViewMapsInView(view);
             var viewWidth = view.get('size.width');
             var viewHeight = view.get('size.height');
