@@ -830,6 +830,7 @@ set the default appearance of the product is used.
                 <attribute name="imageService"/>
                 <attribute name="error" default="{product.configurationsOnViewError(view)}"/>
                 <attribute name="copiedConfiguration"/>
+                <attribute name="zoomToPrintArea"/>
             </extension>
         </complexContent>
     </complexType>
@@ -857,6 +858,7 @@ set the default appearance of the product is used.
                 <attribute name="imageService"/>
                 <attribute name="error" default="{product.configurationsOnViewError(view)}"/>
                 <attribute name="copiedConfiguration"/>
+                <attribute name="zoomToPrintArea"/>
                 <attribute name="onconfigurationSelect" default="_onConfigurationSelectHandler" type="string"/>
                 <attribute name="ondeselectConfiguration" default="_onDeselectConfigurationHandler" type="string"/>
             </extension>
