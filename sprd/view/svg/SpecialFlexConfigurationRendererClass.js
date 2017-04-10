@@ -1,6 +1,6 @@
 define(['sprd/view/svg/ConfigurationRenderer'], function (Renderer) {
 
-    return Renderer.inherit("sprd.view.svg.DesignConfigurationRenderer", {
+    return Renderer.inherit("sprd.view.svg.SpecialFlexConfigurationRendererClass", {
 
         defaults: {
             tagName: "g",
