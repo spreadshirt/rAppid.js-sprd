@@ -23,7 +23,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             error: "{product.configurationsOnViewError(view)}",
             componentClass: "product-viewer",
 
-            copiedConfiguration: null
+            copiedConfiguration: null,
+            zoomToPrintArea: 0
         },
 
         inject: {

@@ -36,12 +36,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             _view: null,
             _productType: null,
 
-            imageService: null,
-
-            scaleX: "{zoomToPrintAreaFactor()}",
-            scaleY: "{zoomToPrintAreaFactor()}",
-            translateX: "{translateX()}",
-            translateY: "{translateY()}"
+            imageService: null
         },
 
         $classAttributes: ["productViewer", "product", "imageService"],
@@ -50,6 +45,10 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             this.$printAreas = [];
 
             this.callBase();
+
+            this.bind("productViewer", "change:zoomToPrintArea", function() {
+                this.zoomToPrintArea();
+            }, this);
 
             productTypeViewViewer.push(this);
         },
@@ -329,17 +328,34 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     this.addChild(printAreaViewer);
                     this.$printAreas.push(printAreaViewer);
                 }
+
+                this.zoomToPrintArea();
             }
-
-
         },
 
-        zoomToPrintAreaFactor: function() {
+        zoomToPrintArea: function() {
+
+            var zoomToPrintArea = this.get("productViewer.zoomToPrintArea");
+
+            if (!zoomToPrintArea) {
+                return;
+            }
+
             var view = this.get('_view');
             var surroundingRect = this.surroundingRectOfViewMapsInView(view);
-            var minScaleFactor = Math.min(view.get('size.width') / surroundingRect.width, view.get('size.height') / surroundingRect.height) - 1;
-            return 1 + minScaleFactor * this.$.productViewer.$.zoomToPrintArea;
-        }.onChange('_view.size.width', '_view.size.height', 'productViewer.zoomToPrintArea'),
+            var viewWidth = view.get('size.width');
+            var viewHeight = view.get('size.height');
+            var minScaleFactor = Math.min(viewWidth / surroundingRect.width, viewHeight / surroundingRect.height) - 1;
+            var scale = 1 + minScaleFactor * zoomToPrintArea;
+
+            this.set({
+                scaleX: scale,
+                scaleY: scale,
+                translateX: viewWidth / 2 - scale * (surroundingRect.x + surroundingRect.width / 2),
+                translateY: viewHeight / 2 - scale * (surroundingRect.y + surroundingRect.height / 2)
+            });
+
+        },
 
         translateX: function() {
             var scale = this.$.scaleX,

@@ -4,5 +4,5 @@
                                focused="{focused}"
                                imageService="{imageService}"
                                selectedConfiguration="{{selectedConfiguration}}"
-                               width="{width}" height="{height}" zoomToPrintArea="0.8" editable="{editable}"/>
+                               width="{width}" height="{height}" zoomToPrintArea="{zoomToPrintArea}" editable="{editable}"/>
 </sprdView:ProductViewerClass>
