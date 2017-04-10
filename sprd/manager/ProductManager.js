@@ -165,11 +165,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     if (validatedMove) {
                         options.transform = validatedMove.transform;
+                        self._addConfiguration(product, configuration, validatedMove.printType, targetPrintArea, options);
                         configuration.$.printColors.each(function(printColor, index) {
                             configuration.setColor(index, validatedMove.printType.getClosestPrintColor(self.convertColor(appearance, printColor.color())));
                         });
-
-                        self._addConfiguration(product, configuration, validatedMove.printType, targetPrintArea, options);
                         return true;
                     }
                 }
@@ -1094,8 +1093,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 configuration.set('printType', printType, {silent: true});
 
                 boundingBox = configuration._getBoundingBox();
+                //TODO: if quotient of widths is unequal to quotient of heights, then switching between 2 print areas can make the configuration smaller and smaller
+                //example: between product type 812 and 1052
                 var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
-
                 var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
                 var desiredScaleFactor = options.respectTransform ? printAreaRatio : scaleToFitDefaultBox;
                 var desiredScale = configuration.$.scale.x * desiredScaleFactor;
