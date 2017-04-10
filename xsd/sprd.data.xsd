@@ -1,20 +1,63 @@
 <schema targetNamespace="sprd.data"
     xmlns="http://www.w3.org/2001/XMLSchema"
-    xmlns:ns1="js.core"
-    xmlns:ns2="js.data"
+    xmlns:ns1="js.data"
+    xmlns:ns2="js.core"
     xmlns:ns="sprd.data">
     <import/>
     <import/>
+    <element name="DesignerApiDataSource" type="ns:DesignerApiDataSource"/>
+    <element name="DesignerApiDataSourceClass" type="ns:DesignerApiDataSourceClass"/>
+    <element name="IImageUploadService" type="ns:IImageUploadService"/>
     <element name="ImageServerDataSource" type="ns:ImageServerDataSource"/>
     <element name="ImageServerDataSourceClass" type="ns:ImageServerDataSourceClass"/>
     <element name="ImageService" type="ns:ImageService"/>
     <element name="ImageUploadService" type="ns:ImageUploadService"/>
+    <element name="ImageUploadServiceV2" type="ns:ImageUploadServiceV2"/>
     <element name="LabelService" type="ns:LabelService"/>
     <element name="SprdApiDataSource" type="ns:SprdApiDataSource"/>
     <element name="SprdApiDataSourceClass" type="ns:SprdApiDataSourceClass"/>
     <element name="SprdDataSource" type="ns:SprdDataSource"/>
     <element name="TranslationService" type="ns:TranslationService"/>
     <element name="TranslationServiceClass" type="ns:TranslationServiceClass"/>
+    <complexType name="DesignerApiDataSource">
+        <complexContent>
+            <extension base="ns:DesignerApiDataSourceClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.DesignerApiDataSource"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="language"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="DesignerApiDataSourceClass">
+        <complexContent>
+            <extension base="ns1:RestDataSource">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.DesignerApiDataSourceClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="language"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="IImageUploadService">
+        <complexContent>
+            <extension base="ns2:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.IImageUploadService"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="uploadContext"/>
+            </extension>
+        </complexContent>
+    </complexType>
     <complexType name="ImageServerDataSource">
         <complexContent>
             <extension base="ns:ImageServerDataSourceClass">
@@ -41,7 +84,7 @@
     </complexType>
     <complexType name="ImageService">
         <complexContent>
-            <extension base="ns1:Component">
+            <extension base="ns2:Component">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageService"></documentation>
                 </annotation>
@@ -58,20 +101,33 @@
     </complexType>
     <complexType name="ImageUploadService">
         <complexContent>
-            <extension base="ns1:Component">
+            <extension base="ns:IImageUploadService">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageUploadService"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="uploadContext"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ImageUploadServiceV2">
+        <complexContent>
+            <extension base="ns:IImageUploadService">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.ImageUploadServiceV2"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="maxRetries" default="30"/>
+                <attribute name="retryTimeout" default="1000"/>
             </extension>
         </complexContent>
     </complexType>
     <complexType name="LabelService">
         <complexContent>
-            <extension base="ns1:Component">
+            <extension base="ns2:Component">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.data.LabelService"></documentation>
                 </annotation>
@@ -99,6 +155,8 @@
                 </sequence>
                 <attribute name="locale" default="en_EU"/>
                 <attribute name="keepRawData"/>
+                <attribute name="noCache"/>
+                <attribute name="mode"/>
             </extension>
         </complexContent>
     </complexType>
@@ -113,12 +171,14 @@
                 </sequence>
                 <attribute name="locale" default="en_EU"/>
                 <attribute name="keepRawData"/>
+                <attribute name="noCache"/>
+                <attribute name="mode"/>
             </extension>
         </complexContent>
     </complexType>
     <complexType name="SprdDataSource">
         <complexContent>
-            <extension base="ns2:RestDataSource">
+            <extension base="ns1:RestDataSource">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.data.SprdDataSource"></documentation>
                 </annotation>

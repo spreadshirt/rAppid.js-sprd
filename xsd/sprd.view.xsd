@@ -27,7 +27,6 @@
     <element name="MiniBasket" type="ns:MiniBasket"/>
     <element name="MiniBasketClass" type="ns:MiniBasketClass"/>
     <element name="PrintColorImage" type="ns:PrintColorImage"/>
-    <element name="PrintColorImageClass" type="ns:PrintColorImageClass"/>
     <element name="PrintTypePanelBase" type="ns:PrintTypePanelBase"/>
     <element name="PrintTypeSelector" type="ns:PrintTypeSelector"/>
     <element name="PrintTypeSelectorClass" type="ns:PrintTypeSelectorClass"/>
@@ -39,6 +38,7 @@
     <element name="ProductViewSelectorClass" type="ns:ProductViewSelectorClass"/>
     <element name="ProductViewer" type="ns:ProductViewer"/>
     <element name="ProductViewerClass" type="ns:ProductViewerClass"/>
+    <element name="ScrollIntoViewDomNode" type="ns:ScrollIntoViewDomNode"/>
     <element name="SimpleColorPickerClass" type="ns:SimpleColorPickerClass"/>
     <element name="SimpleHorizontalColorPickerClass" type="ns:SimpleHorizontalColorPickerClass"/>
     <element name="SimpleProductViewSelector" type="ns:SimpleProductViewSelector"/>
@@ -46,6 +46,7 @@
     <element name="SizeFormatterClass" type="ns:SizeFormatterClass"/>
     <element name="SizeSelector" type="ns:SizeSelector"/>
     <element name="SizeSelectorClass" type="ns:SizeSelectorClass"/>
+    <element name="TemplateImage" type="ns:TemplateImage"/>
     <element name="UserImage" type="ns:UserImage"/>
     <element name="VirtualProductImage" type="ns:VirtualProductImage"/>
     <element name="VirtualProductView" type="ns:VirtualProductView"/>
@@ -61,6 +62,7 @@
                 </sequence>
                 <attribute name="appearance"/>
                 <attribute name="title" default="{appearance.name}"/>
+                <attribute name="showTitle" default="true"/>
             </extension>
         </complexContent>
     </complexType>
@@ -75,6 +77,7 @@
                 </sequence>
                 <attribute name="appearance"/>
                 <attribute name="title" default="{appearance.name}"/>
+                <attribute name="showTitle" default="true"/>
             </extension>
         </complexContent>
     </complexType>
@@ -88,6 +91,7 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="appearance"/>
+                <attribute name="showTitle" default="true"/>
                 <attribute name="productType"/>
                 <attribute name="product"/>
             </extension>
@@ -103,6 +107,7 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="appearance"/>
+                <attribute name="showTitle" default="true"/>
                 <attribute name="productType"/>
                 <attribute name="product"/>
                 <attribute name="onappearanceSelect" default="_onAppearanceSelectHandler" type="string"/>
@@ -543,6 +548,7 @@
                 <attribute name="website"/>
                 <attribute name="phone"/>
                 <attribute name="fax"/>
+                <attribute name="rstv"/>
             </extension>
         </complexContent>
     </complexType>
@@ -572,6 +578,7 @@
                 <attribute name="website"/>
                 <attribute name="phone"/>
                 <attribute name="fax"/>
+                <attribute name="rstv"/>
             </extension>
         </complexContent>
     </complexType>
@@ -609,32 +616,21 @@
     </complexType>
     <complexType name="PrintColorImage">
         <complexContent>
-            <extension base="ns:PrintColorImageClass">
+            <extension base="ns1:View">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.view.PrintColorImage"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+                <attribute name="printColor"/>
+                <attribute name="loaded"/>
+                <attribute name="platform" default="{PARAMETER().platform}"/>
                 <attribute name="data-print-color-id" default="{printColor.id}"/>
-                <attribute name="printColor"/>
-                <attribute name="loaded"/>
                 <attribute name="backgroundColor" default="{backgroundColor()}"/>
-            </extension>
-        </complexContent>
-    </complexType>
-    <complexType name="PrintColorImageClass">
-        <complexContent>
-            <extension base="ns1:View">
-                <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.PrintColorImageClass"></documentation>
-                </annotation>
-                <sequence>
-                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-                <attribute name="printColor"/>
-                <attribute name="loaded"/>
-                <attribute name="backgroundColor" default="{backgroundColor()}"/>
+                <attribute name="backgroundImage" default="{backgroundImage()}"/>
+                <attribute name="backgroundPosition" default="{backgroundPosition()}"/>
+                <attribute name="backgroundSize" default="34px"/>
             </extension>
         </complexContent>
     </complexType>
@@ -787,10 +783,10 @@ set the default appearance of the product is used.
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="product" default="null"/>
+                <attribute name="showViewNames"/>
+                <attribute name="product"/>
                 <attribute name="viewHeight" default="50"/>
                 <attribute name="viewWidth" default="50"/>
-                <attribute name="showViewNames"/>
             </extension>
         </complexContent>
     </complexType>
@@ -804,6 +800,9 @@ set the default appearance of the product is used.
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="showViewNames"/>
+                <attribute name="product"/>
+                <attribute name="viewHeight" default="50"/>
+                <attribute name="viewWidth" default="50"/>
             </extension>
         </complexContent>
     </complexType>
@@ -823,12 +822,14 @@ set the default appearance of the product is used.
                 <attribute name="selectedConfiguration"/>
                 <attribute name="editable" default="true"/>
                 <attribute name="focused" default="true"/>
+                <attribute name="autoDeselectConfiguration" default="true"/>
+                <attribute name="showConfigurationInformation"/>
                 <attribute name="productViewerSvg"/>
-                <attribute name="textArea"/>
-                <attribute name="textAreaPosition"/>
                 <attribute name="removeEmptyTextConfiguration" default="true"/>
+                <attribute name="bringSelectedConfigurationToFront" default="true"/>
                 <attribute name="imageService"/>
                 <attribute name="error" default="{product.configurationsOnViewError(view)}"/>
+                <attribute name="copiedConfiguration"/>
             </extension>
         </complexContent>
     </complexType>
@@ -848,13 +849,29 @@ set the default appearance of the product is used.
                 <attribute name="selectedConfiguration"/>
                 <attribute name="editable" default="true"/>
                 <attribute name="focused" default="true"/>
+                <attribute name="autoDeselectConfiguration" default="true"/>
+                <attribute name="showConfigurationInformation"/>
                 <attribute name="productViewerSvg"/>
-                <attribute name="textArea"/>
-                <attribute name="textAreaPosition"/>
                 <attribute name="removeEmptyTextConfiguration" default="true"/>
+                <attribute name="bringSelectedConfigurationToFront" default="true"/>
                 <attribute name="imageService"/>
                 <attribute name="error" default="{product.configurationsOnViewError(view)}"/>
+                <attribute name="copiedConfiguration"/>
                 <attribute name="onconfigurationSelect" default="_onConfigurationSelectHandler" type="string"/>
+                <attribute name="ondeselectConfiguration" default="_onDeselectConfigurationHandler" type="string"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="ScrollIntoViewDomNode">
+        <complexContent>
+            <extension base="ns1:View">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.ScrollIntoViewDomNode"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="scrollDelay"/>
             </extension>
         </complexContent>
     </complexType>
@@ -971,6 +988,26 @@ set the default appearance of the product is used.
                     </annotation>
                 </attribute>
                 <attribute name="appearance"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="TemplateImage">
+        <complexContent>
+            <extension base="ns:Image">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.TemplateImage"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="template" use="required">
+                    <annotation>
+                        <documentation>
+                        the template to show
+
+                    </documentation>
+                    </annotation>
+                </attribute>
             </extension>
         </complexContent>
     </complexType>
