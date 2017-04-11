@@ -363,24 +363,6 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
         },
 
-        translateX: function() {
-            var scale = this.$.scaleX,
-                surroundingRect = this.surroundingRectOfViewMapsInView(),
-                centerX = scale * (surroundingRect.x + surroundingRect.width / 2),
-                viewWidth = this.get('_view.size.width');
-
-            return viewWidth / 2 - centerX;
-        }.onChange('scaleX', '_view.size.width'),
-
-        translateY: function() {
-            var scale = this.$.scaleY,
-                viewHeight = this.get('_view.size.height'),
-                surroundingRect = this.surroundingRectOfViewMapsInView(),
-                centerY = scale * (surroundingRect.y + surroundingRect.height / 2);
-
-            return viewHeight / 2 - centerY;
-        }.onChange('scaleY', '_view.size.height'),
-
         surroundingRectOfViewMapsInView: function(view) {
             view = view || this.get('_view');
 
