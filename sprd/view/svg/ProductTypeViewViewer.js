@@ -55,14 +55,17 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
         url: function() {
             if (this.$.imageService && this.$._productType && this.$._view && this.$._productType.containsAppearance(this.$._appearance)) {
+                var width = this.$._width * (this.$.scaleX || 1);
+                var height = this.$._height * (this.$.scaleY || 1);
                 return this.$.imageService.productTypeImage(this.$._productType.$.id, this.$._view.$.id, this.$._appearance.$.id, {
-                    width: Math.max(this.$._width, this.$._height),
-                    height: Math.max(this.$._width, this.$._height)
+                    width: Math.max(width, height),
+                    height: Math.max(width, height)
                 });
             }
 
             return "";
-        }.onChange("_width", "_height", "_appearance"),
+        }.onChange("_width", "_height", "_appearance", "scaleX", "scaleY"),
+
 
         isPointInElement: function(x, y) {
 
