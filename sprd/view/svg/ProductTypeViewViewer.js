@@ -1,4 +1,4 @@
-define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/view/DndImage", "sprd/view/DndImageClass", "sprd/util/ProductUtil"], function(SvgElement, PrintAreaViewer, DndImage, DndImageClass, ProductUtil) {
+define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/view/DndImage", "sprd/view/DndImageClass", "sprd/util/ProductUtil", "sprd/util/ViewUtil"], function(SvgElement, PrintAreaViewer, DndImage, DndImageClass, ProductUtil, ViewUtil) {
 
 
     var dndObject = null,
@@ -352,7 +352,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 return;
             }
 
-            var surroundingRect = this.surroundingRectOfViewMapsInView(view);
+            var surroundingRect = ViewUtil.surroundingRectOfViewMapsInView(view);
             var viewWidth = view.get('size.width');
             var viewHeight = view.get('size.height');
             var minScaleFactor = Math.min(viewWidth / surroundingRect.width, viewHeight / surroundingRect.height) - 1;
@@ -365,63 +365,6 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 translateY: viewHeight / 2 - scale * (surroundingRect.y + surroundingRect.height / 2)
             });
 
-        },
-
-        surroundingRectOfViewMapsInView: function(view) {
-            view = view || this.get('_view');
-
-            if (!view) {
-                return null
-            }
-
-            return this.surroundingRectForViewMaps(view.$.viewMaps.$items);
-        },
-
-        surroundingRectForViewMaps: function(viewMaps) {
-            if (!viewMaps || !viewMaps.length) {
-                return null;
-            }
-
-            var viewMapsRects = _.map(viewMaps, function(viewMap) {
-                return {
-                    x: viewMap.$.offset.$.x,
-                    y: viewMap.$.offset.$.y,
-                    width: viewMap.$.printArea.$._size.width,
-                    height: viewMap.$.printArea.$._size.height
-                }
-            });
-
-            return this.surroundingRect(viewMapsRects);
-        },
-
-        surroundingRect: function(rects) {
-            if (!rects || !rects.length) {
-                return null;
-            }
-
-
-            var smallestXRect = _.min(rects, function(rect) {
-                return rect.x;
-            });
-
-            var smallestYRect = _.min(rects, function(rect) {
-                return rect.y;
-            });
-
-            var biggestXRect = _.max(rects, function(rect) {
-                return rect.x + rect.width;
-            });
-
-            var biggestYRect = _.max(rects, function(rect) {
-                return rect.y + rect.height;
-            });
-
-            return {
-                x: smallestXRect.x,
-                y: smallestYRect.y,
-                width: biggestXRect.x + biggestXRect.width - smallestXRect.x,
-                height: biggestYRect.y + biggestXRect.height - smallestYRect.y
-            }
         },
 
         getViewerForConfiguration: function(configuration) {
