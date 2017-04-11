@@ -336,6 +336,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
         zoomToPrintArea: function() {
 
             var zoomToPrintArea = this.get("productViewer.zoomToPrintArea");
+            var maxZoom = this.get("productViewer.maxZoom");
             var view = this.get('_view');
 
             if (!(zoomToPrintArea && view)) {
@@ -352,7 +353,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             var viewWidth = view.get('size.width');
             var viewHeight = view.get('size.height');
             var minScaleFactor = Math.min(viewWidth / surroundingRect.width, viewHeight / surroundingRect.height) - 1;
-            var scale = 1 + minScaleFactor * zoomToPrintArea;
+            var scale = 1 + Math.min(minScaleFactor * zoomToPrintArea, maxZoom);
 
             this.set({
                 scaleX: scale,

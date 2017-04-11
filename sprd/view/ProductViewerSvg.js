@@ -24,10 +24,11 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
                 componentClass: "product-viewer {product.appearance.brightness()}",
 
                 editable: true,
-                zoomToPrintArea: 0
+                zoomToPrintArea: 0,
+                maxZoom: 1
             },
 
-            $classAttributes: ["product", "view", "editable", "selectedConfiguration", "imageService", "viewBoxObj", "zoomToPrintArea"],
+            $classAttributes: ["product", "view", "editable", "selectedConfiguration", "imageService", "viewBoxObj", "zoomToPrintArea", "maxZoom"],
 
             ctor: function () {
 

@@ -24,7 +24,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             componentClass: "product-viewer",
 
             copiedConfiguration: null,
-            zoomToPrintArea: 0
+            zoomToPrintArea: 0,
+            maxZoom: 1
         },
 
         inject: {
