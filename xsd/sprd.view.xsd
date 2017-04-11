@@ -831,6 +831,7 @@ set the default appearance of the product is used.
                 <attribute name="error" default="{product.configurationsOnViewError(view)}"/>
                 <attribute name="copiedConfiguration"/>
                 <attribute name="zoomToPrintArea"/>
+                <attribute name="maxZoom" default="1"/>
             </extension>
         </complexContent>
     </complexType>
@@ -859,6 +860,7 @@ set the default appearance of the product is used.
                 <attribute name="error" default="{product.configurationsOnViewError(view)}"/>
                 <attribute name="copiedConfiguration"/>
                 <attribute name="zoomToPrintArea"/>
+                <attribute name="maxZoom" default="1"/>
                 <attribute name="onconfigurationSelect" default="_onConfigurationSelectHandler" type="string"/>
                 <attribute name="ondeselectConfiguration" default="_onDeselectConfigurationHandler" type="string"/>
             </extension>
