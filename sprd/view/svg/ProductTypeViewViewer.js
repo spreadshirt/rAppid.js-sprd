@@ -1,4 +1,4 @@
-define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/view/DndImage", "sprd/view/DndImageClass", "sprd/util/ProductUtil"], function(SvgElement, PrintAreaViewer, DndImage, DndImageClass, ProductUtil) {
+define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/view/DndImage", "sprd/view/DndImageClass", "sprd/util/ProductUtil", "sprd/util/ViewUtil"], function(SvgElement, PrintAreaViewer, DndImage, DndImageClass, ProductUtil, ViewUtil) {
 
 
     var dndObject = null,
@@ -46,19 +46,26 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
             this.callBase();
 
+            this.bind("productViewer", "change:zoomToPrintArea", function() {
+                this.zoomToPrintArea();
+            }, this);
+
             productTypeViewViewer.push(this);
         },
 
         url: function() {
             if (this.$.imageService && this.$._productType && this.$._view && this.$._productType.containsAppearance(this.$._appearance)) {
+                var width = this.$._width * (this.$.scaleX || 1);
+                var height = this.$._height * (this.$.scaleY || 1);
                 return this.$.imageService.productTypeImage(this.$._productType.$.id, this.$._view.$.id, this.$._appearance.$.id, {
-                    width: Math.max(this.$._width, this.$._height),
-                    height: Math.max(this.$._width, this.$._height)
+                    width: Math.max(width, height),
+                    height: Math.max(width, height)
                 });
             }
 
             return "";
-        }.onChange("_width", "_height", "_appearance"),
+        }.onChange("_width", "_height", "_appearance", "scaleX", "scaleY"),
+
 
         isPointInElement: function(x, y) {
 
@@ -323,10 +330,41 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
                     this.addChild(printAreaViewer);
                     this.$printAreas.push(printAreaViewer);
-
                 }
 
+                this.zoomToPrintArea();
             }
+        },
+
+        zoomToPrintArea: function() {
+
+            var zoomToPrintArea = this.get("productViewer.zoomToPrintArea");
+            var maxZoom = this.get("productViewer.maxZoom");
+            var view = this.get('_view');
+
+            if (!(zoomToPrintArea && view)) {
+                this.set({
+                    scaleX: 1,
+                    scaleY: 1,
+                    translateX: 0,
+                    translateY: 0
+                });
+                return;
+            }
+
+            var surroundingRect = ViewUtil.surroundingRectOfViewMapsInView(view);
+            var viewWidth = view.get('size.width');
+            var viewHeight = view.get('size.height');
+            var minScaleFactor = Math.min(viewWidth / surroundingRect.width, viewHeight / surroundingRect.height) - 1;
+            var scale = 1 + Math.min(minScaleFactor * zoomToPrintArea, maxZoom);
+
+            this.set({
+                scaleX: scale,
+                scaleY: scale,
+                translateX: viewWidth / 2 - scale * (surroundingRect.x + surroundingRect.width / 2),
+                translateY: viewHeight / 2 - scale * (surroundingRect.y + surroundingRect.height / 2)
+            });
+
         },
 
         getViewerForConfiguration: function(configuration) {

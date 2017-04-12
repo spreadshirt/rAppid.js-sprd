@@ -3,17 +3,56 @@
     xmlns:ns1="js.svg"
     xmlns:ns="sprd.view.svg">
     <import/>
+    <element name="BendingTextConfigurationRenderer" type="ns:BendingTextConfigurationRenderer"/>
+    <element name="BendingTextConfigurationRendererClass" type="ns:BendingTextConfigurationRendererClass"/>
     <element name="ConfigurationRenderer" type="ns:ConfigurationRenderer"/>
     <element name="ConfigurationViewer" type="ns:ConfigurationViewer"/>
     <element name="ConfigurationViewerClass" type="ns:ConfigurationViewerClass"/>
     <element name="DesignConfigurationRenderer" type="ns:DesignConfigurationRenderer"/>
+    <element name="DesignConfigurationRendererClass" type="ns:DesignConfigurationRendererClass"/>
     <element name="PrintAreaViewer" type="ns:PrintAreaViewer"/>
     <element name="PrintAreaViewerClass" type="ns:PrintAreaViewerClass"/>
     <element name="ProductTypeViewViewer" type="ns:ProductTypeViewViewer"/>
+    <element name="SpecialFlexConfigurationRenderer" type="ns:SpecialFlexConfigurationRenderer"/>
+    <element name="SpecialFlexConfigurationRendererClass" type="ns:SpecialFlexConfigurationRendererClass"/>
     <element name="SpecialTextConfigurationRenderer" type="ns:SpecialTextConfigurationRenderer"/>
     <element name="SpecialTextConfigurationRendererClass" type="ns:SpecialTextConfigurationRendererClass"/>
     <element name="TextConfigurationRenderer" type="ns:TextConfigurationRenderer"/>
     <element name="TextConfigurationRendererClass" type="ns:TextConfigurationRendererClass"/>
+    <complexType name="BendingTextConfigurationRenderer">
+        <complexContent>
+            <extension base="ns:BendingTextConfigurationRendererClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.BendingTextConfigurationRenderer"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="productViewer"/>
+                <attribute name="configurationViewer"/>
+                <attribute name="configuration"/>
+                <attribute name="textPath"/>
+                <attribute name="path"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="BendingTextConfigurationRendererClass">
+        <complexContent>
+            <extension base="ns:SpecialFlexConfigurationRenderer">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.BendingTextConfigurationRendererClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="productViewer"/>
+                <attribute name="configurationViewer"/>
+                <attribute name="configuration"/>
+                <attribute name="textPath"/>
+                <attribute name="path"/>
+            </extension>
+        </complexContent>
+    </complexType>
     <complexType name="ConfigurationRenderer">
         <complexContent>
             <extension base="ns1:SvgElement">
@@ -43,13 +82,18 @@
                 </sequence>
                 <attribute name="tagName" default="g"/>
                 <attribute name="configuration"/>
+                <attribute name="data-configuration-type" default="{configurationType()}"/>
                 <attribute name="productViewer"/>
                 <attribute name="printAreaViewer"/>
                 <attribute name="product"/>
                 <attribute name="focused" default="{isFocused()}"/>
                 <attribute name="selected" default="{isSelectedConfiguration()}"/>
                 <attribute name="imageService"/>
-                <attribute name="preventValidation"/>
+                <attribute name="preventValidation" default="true"/>
+                <attribute name="downVector"/>
+                <attribute name="moveVector"/>
+                <attribute name="centerVector"/>
+                <attribute name="rotationSnap"/>
             </extension>
         </complexContent>
     </complexType>
@@ -64,27 +108,44 @@
                 </sequence>
                 <attribute name="tagName" default="g"/>
                 <attribute name="configuration"/>
+                <attribute name="data-configuration-type" default="{configurationType()}"/>
                 <attribute name="productViewer"/>
                 <attribute name="printAreaViewer"/>
                 <attribute name="product"/>
                 <attribute name="focused" default="{isFocused()}"/>
                 <attribute name="selected" default="{isSelectedConfiguration()}"/>
                 <attribute name="imageService"/>
-                <attribute name="preventValidation"/>
+                <attribute name="preventValidation" default="true"/>
+                <attribute name="downVector"/>
+                <attribute name="moveVector"/>
+                <attribute name="centerVector"/>
+                <attribute name="rotationSnap"/>
             </extension>
         </complexContent>
     </complexType>
     <complexType name="DesignConfigurationRenderer">
         <complexContent>
-            <extension base="ns:ConfigurationRenderer">
+            <extension base="ns:DesignConfigurationRendererClass">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.DesignConfigurationRenderer"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="tagName" default="image"/>
-                <attribute name="href" default="{url()}"/>
+                <attribute name="data-mask-id" default="{configuration.afterEffect.id}"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="DesignConfigurationRendererClass">
+        <complexContent>
+            <extension base="ns:SpecialFlexConfigurationRenderer">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.DesignConfigurationRendererClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="data-mask-id" default="{configuration.afterEffect.id}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -142,6 +203,40 @@
             </extension>
         </complexContent>
     </complexType>
+    <complexType name="SpecialFlexConfigurationRenderer">
+        <complexContent>
+            <extension base="ns:SpecialFlexConfigurationRendererClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.SpecialFlexConfigurationRenderer"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="g"/>
+                <attribute name="maskId"/>
+                <attribute name="isSpecialFlex" default="{isSpecialFlex()}"/>
+                <attribute name="largeSize" default="{largeSize()}"/>
+                <attribute name="filter" default="{filter()}"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="SpecialFlexConfigurationRendererClass">
+        <complexContent>
+            <extension base="ns:ConfigurationRenderer">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.SpecialFlexConfigurationRendererClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="g"/>
+                <attribute name="maskId"/>
+                <attribute name="isSpecialFlex" default="{isSpecialFlex()}"/>
+                <attribute name="largeSize" default="{largeSize()}"/>
+                <attribute name="filter" default="{filter()}"/>
+            </extension>
+        </complexContent>
+    </complexType>
     <complexType name="SpecialTextConfigurationRenderer">
         <complexContent>
             <extension base="ns:SpecialTextConfigurationRendererClass">
@@ -178,8 +273,6 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="onclick" default="_handleClick"/>
-                <attribute name="tagName" default="g"/>
                 <attribute name="productViewer"/>
                 <attribute name="configurationViewer"/>
                 <attribute name="configuration"/>
@@ -190,14 +283,13 @@
     </complexType>
     <complexType name="TextConfigurationRendererClass">
         <complexContent>
-            <extension base="ns:ConfigurationRenderer">
+            <extension base="ns:SpecialFlexConfigurationRenderer">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.TextConfigurationRendererClass"></documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="tagName" default="g"/>
                 <attribute name="productViewer"/>
                 <attribute name="configurationViewer"/>
                 <attribute name="configuration"/>

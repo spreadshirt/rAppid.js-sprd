@@ -1,7 +1,7 @@
 define(["js/core/Component", "sprd/entity/FileSystemImage", "sprd/entity/RemoteImage", "sprd/type/UploadDesign", "sprd/data/IframeUpload", "sprd/entity/BlobImage", "underscore"]
     , function(Component, FileSystemImage, RemoteImage, UploadDesign, iFrameUpload, BlobImage, _) {
 
-    return Component.inherit('sprd.data.ImageUploadService', {
+    return Component.inherit('sprd.data.IImageUploadService', {
 
         defaults: {
             uploadContext: null

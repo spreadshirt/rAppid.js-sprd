@@ -36,6 +36,7 @@
                     </documentation>
                     </annotation>
                 </attribute>
+                <attribute name="price"/>
                 <attribute name="ontrackingInitialized" default="_onTrackingInitializedHandler" type="string">
                     <annotation>
                         <documentation>
@@ -118,7 +119,7 @@ the window object
                 <attribute name="locale"/>
                 <attribute name="host"/>
                 <attribute name="platform" default="EU"/>
-                <attribute name="basePath" default="/sprd-frontend/wellness/track"/>
+                <attribute name="basePath" default="/shopData/wellness"/>
             </extension>
         </complexContent>
     </complexType>

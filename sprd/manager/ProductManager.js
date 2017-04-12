@@ -165,11 +165,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     if (validatedMove) {
                         options.transform = validatedMove.transform;
+                        self._addConfiguration(product, configuration, validatedMove.printType, targetPrintArea, options);
                         configuration.$.printColors.each(function(printColor, index) {
                             configuration.setColor(index, validatedMove.printType.getClosestPrintColor(self.convertColor(appearance, printColor.color())));
                         });
-
-                        self._addConfiguration(product, configuration, validatedMove.printType, targetPrintArea, options);
                         return true;
                     }
                 }
@@ -410,15 +409,18 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         font: font,
                         printColors: printColors
                     });
+
                     return entity;
                 };
 
                 var finalizeFnc = function(configuration, printTypes, params) {
+
                     configuration.set('isNew', params.isNew);
                     configuration.set('isTemplate', params.isTemplate);
 
                     configuration.set("maxHeight", 1);
 
+                    printTypes = configuration.getPossiblePrintTypes(product.$.appearance);
                     // determinate position
                     params.addToProduct && self.validateAndAdd(product, configuration, printTypes);
 
@@ -1091,8 +1093,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 configuration.set('printType', printType, {silent: true});
 
                 boundingBox = configuration._getBoundingBox();
+                //TODO: if quotient of widths is unequal to quotient of heights, then switching between 2 print areas can make the configuration smaller and smaller
+                //example: between product type 812 and 1052
                 var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
-
                 var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
                 var desiredScaleFactor = options.respectTransform ? printAreaRatio : scaleToFitDefaultBox;
                 var desiredScale = configuration.$.scale.x * desiredScaleFactor;
@@ -1210,12 +1213,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     removeConfiguration: true,
                     text: textConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "")
                 });
+
+                product.$.configurations.remove(textConfiguration);
+
                 var self = this;
                 this.addBendingText(product, params, function(err, config) {
                     if (err) {
                         callback && callback(err);
                     } else {
-                        params.removeConfiguration && product.$.configurations.remove(textConfiguration);
+                        !params.removeConfiguration && product.$.configurations.add(textConfiguration);
                         var s = width / config.width(1);
                         config.set({
                             'scale': {

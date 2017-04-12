@@ -98,6 +98,7 @@ BasketItem
                 <attribute name="onbasketSaving" default="_onBasketSavingHandler" type="string"/>
                 <attribute name="onbasketInitialized" default="_onBasketInitializedHandler" type="string"/>
                 <attribute name="oncouponApplied" default="_onCouponAppliedHandler" type="string"/>
+                <attribute name="oncouponRemoved" default="_onCouponRemovedHandler" type="string"/>
             </extension>
         </complexContent>
     </complexType>
