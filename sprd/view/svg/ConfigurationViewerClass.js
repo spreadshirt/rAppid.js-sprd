@@ -479,12 +479,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             toScreenCoords: function(vector, svg, CTMmatrix) {
+                svg = svg || this.getSvgRoot().$el;
                 CTMmatrix = CTMmatrix || svg.getScreenCTM();
                 var svgPoint = this.toSvgPoint(vector, svg);
                 return Vector.createFromPoint(svgPoint.matrixTransform(CTMmatrix));
             },
 
             toSvgCoords: function(vector, svg, CTMmatrix) {
+                svg = svg || this.getSvgRoot().$el;
                 CTMmatrix = CTMmatrix || svg.getScreenCTM();
                 var svgPoint = this.toSvgPoint(vector, svg);
                 return Vector.createFromPoint(svgPoint.matrixTransform(CTMmatrix.inverse()));
@@ -498,12 +500,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             localToGlobalFactor: function() {
-                var matrix = this.$el.getScreenCTM();
+                var matrix = this.$.printAreaViewer.$.productTypeViewViewer.$el.getScreenCTM();
                 return {x: matrix.a, y: matrix.d};
             },
 
             globalToLocalFactor: function() {
-                var matrix = this.$el.getScreenCTM().inverse();
+                var matrix = this.$.printAreaViewer.$.productTypeViewViewer.$el.getScreenCTM().inverse();
                 return {x: matrix.a, y: matrix.d};
             },
 
