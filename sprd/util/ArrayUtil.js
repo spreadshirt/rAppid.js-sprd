@@ -79,7 +79,7 @@ define(["underscore", "js/core/List"], function (_, List) {
             var self = this;
             items = this.removeDuplicates(items);
 
-            for (var i = 0; i < items.length; i++) {
+            for (var i = items.length - 1; i >= 0; i--) {
                 self.move(array, items[i], 0);
             }
 
