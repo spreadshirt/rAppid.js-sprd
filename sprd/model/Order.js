@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/data/Collection", "sprd/model/Delivery", "sprd/entity/Price"], function(SprdModel, Shop, OrderItem, Collection, Delivery, Price) {
+define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/data/Collection", "sprd/model/Delivery", "sprd/entity/Price", "sprd/model/User"], function(SprdModel, Shop, OrderItem, Collection, Delivery, Price, User) {
 
     var Shipping = Delivery.Shipping.inherit("sprd.model.Order.Shipping", {
         schema: {
@@ -16,6 +16,7 @@ define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/da
 
         schema: {
             shop: Shop,
+            user: User,
             orderItems: Collection.of(OrderItem),
             billing: Delivery.Billing,
             shipping: Shipping,
