@@ -11,7 +11,8 @@ define(['sprd/data/SprdModel', 'js/data/Collection', 'sprd/model/Shop', "sprd/mo
                 designCategories: Collection.of(DesignCategory),
                 labels: Collection.of(Label),
                 objectLabels: Collection.of(ObjectLabel),
-                addresses: Collection.of(UserAddress)
+                addresses: Collection.of(UserAddress),
+                type: String
             }
         });
     });
