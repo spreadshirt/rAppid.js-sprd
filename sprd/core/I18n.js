@@ -19,7 +19,6 @@ define(["js/core/I18n"], function(I18n) {
 
             return this.callBase();
 
-
-        }
+        }.onChange("translations")
     })
 });
