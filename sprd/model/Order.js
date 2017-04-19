@@ -20,7 +20,11 @@ define(["sprd/data/SprdModel", "sprd/model/Shop", "sprd/model/OrderItem", "js/da
             billing: Delivery.Billing,
             shipping: Shipping,
             repayable: Boolean,
-            priceTotal: Price
+            priceTotal: Price,
+            user: {
+                type: Object,
+                required: false
+            }
         },
 
         totalItemsCount: function() {
