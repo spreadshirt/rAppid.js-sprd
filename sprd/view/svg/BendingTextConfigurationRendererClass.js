@@ -10,7 +10,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             configuration: null,
 
             textPath: null,
-            path: null
+            path: null,
         },
 
         $classAttributes: ['textPath', 'path', 'text', 'oldSize'],
@@ -55,39 +55,11 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             }, this);
         },
 
-        generateImage: function(callback) {
-            var text = this.$.text,
-                configuration = this.$.configuration,
-                font = configuration.get("font");
+        // _initializationComplete: function() {
+        //     this.callBase();
+        //     // this.bind("configuration", "recalculateSize", this.balanceConfiguration, this);
+        // },
 
-            var assetContainer = this.$el;
-            var textPathBBox = assetContainer.getElementsByTagName("textPath")[0].getBBox();
-            var backgroundRect = assetContainer.getElementsByClassName("text-configuration-background")[0];
-            var style = window.getComputedStyle(backgroundRect);
-
-            assetContainer = assetContainer.cloneNode(true);
-            backgroundRect = assetContainer.getElementsByClassName("text-configuration-background")[0];
-            backgroundRect.fill = style.getPropertyValue("fill");
-            backgroundRect['fill-opacity'] = style.getPropertyValue("fill-opacity");
-            var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            svg.appendChild(assetContainer);
-            svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-            svg.setAttribute("viewBox", [textPathBBox.x, textPathBBox.y, textPathBBox.width, textPathBBox.height].join(" "));
-            svg.setAttribute('preserveAspectRatio', 'none');
-
-            var width = configuration.getSvgWidthRespectingDPI(textPathBBox.width * configuration.$.scale.x);
-            svg.setAttribute("width", width + "px");
-            svg.setAttribute("height", (parseInt(width * textPathBBox.height / textPathBBox.width) + 1) + "px");
-
-            var image = new Image();
-            image.onload = function() {
-                callback && callback(null, image);
-            };
-
-            image.onerror = callback;
-
-            image.src = "data:image/svg+xml;base64," + btoa(svg.outerHTML);
-        },
 
         loadFont: function() {
             var svgRoot = this.getSvgRoot(),
