@@ -243,10 +243,6 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             }
         },
 
-        getSvgWidthRespectingDPI: function(width) {
-            return Math.round((width * this.$.printType.$.dpi / 25.4) + 50, 0);
-        },
-
         save: function(callback) {
             var text = this.mainConfigurationRenderer.$.text,
                 font = this.$.font,
@@ -268,21 +264,17 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
                 flow()
                     .seq('svg', function(cb) {
-                        if (!digitalPrint) {
-                            Text2Path(text.$el, fontSVGUrl, {
-                                fill: fill,
-                                width: self.getSvgWidthRespectingDPI(self.width())
-                            }, cb);
-                        } else {
-                            cb();
-                        }
+                        Text2Path(text.$el, fontSVGUrl, {
+                            fill: fill,
+                            width: Math.round((self.width() * self.$.printType.$.dpi / 25.4) + 50, 0)
+                        }, cb);
                     })
                     .seq("blob", function(cb) {
+                        var svg = this.vars.svg;
+
                         if (digitalPrint) {
-                            self.mainConfigurationRenderer.generateImage(function(err, image) {
-                                if (err) {
-                                    return cb(err);
-                                }
+                            var image = new Image();
+                            image.onload = function() {
                                 try {
                                     var canvas = document.createElement("canvas");
                                     canvas.width = image.naturalWidth;
@@ -295,9 +287,14 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                                 } catch (e) {
                                     cb(e);
                                 }
-                            });
+                            };
+
+                            image.onerror = cb;
+
+                            image.src = "data:image/svg+xml;base64," + btoa(svg);
+
                         } else {
-                            var svg = '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE svg PUBLIC " -//W3C//DTD SVG 20000303 Stylable//EN" "http://www.w3.org/TR/2000/03/WD-SVG-20000303/DTD/svg-20000303-stylable.dtd">' + this.vars.svg;
+                            svg = '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE svg PUBLIC " -//W3C//DTD SVG 20000303 Stylable//EN" "http://www.w3.org/TR/2000/03/WD-SVG-20000303/DTD/svg-20000303-stylable.dtd">' + this.vars.svg;
                             cb(null, new Blob([svg], {type: "image/svg"}));
                         }
                     })
@@ -309,7 +306,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
                         self.$.imageUploadService.upload(img, cb);
                     })
-                    .seq("design", function() {
+                    .seq("design",function() {
                         return this.vars.uploadDesign.$.design;
                     })
                     .exec(function(err, results) {
