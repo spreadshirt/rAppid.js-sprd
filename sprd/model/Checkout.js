@@ -26,11 +26,14 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
             flow()
                 .par({
                     foo: function(cb) {
+
+                        if (!payment) {
+                            return cb();
+                        }
                         payment._beforeCompose(cb);
                     },
                     fingerPrint: function(cb) {
-
-                        if (payment.supportsFingerPrinting) {
+                        if (payment && payment.supportsFingerPrinting) {
                             self.getFingerPrint(function(err, fingerPrint) {
 
                                 if (err && console.error) {
