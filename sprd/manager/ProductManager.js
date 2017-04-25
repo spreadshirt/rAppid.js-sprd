@@ -1126,6 +1126,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     maxPrintTypeScale = 1;
                 }
 
+                //TODO: (fix) bending -> scale gets NaN
                 var scale = this.clamp(desiredScale, minimumDesignScale || 0, maxPrintTypeScale);
                 boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                 desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
