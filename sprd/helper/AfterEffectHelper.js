@@ -1,4 +1,4 @@
-define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/AnimFrame'], function(Size, Base, flow, AnimFrame) {
+define(['sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/extensions/AnimFrame', 'sprd/extensions/CanvasToBlob'], function(Size, Base, flow, AnimFrame, CanvasToBlob) {
 
         return {
             computeProcessedImageDebounced: function(design, afterEffect, options, callback) {
