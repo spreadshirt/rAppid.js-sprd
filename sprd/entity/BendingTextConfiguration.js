@@ -30,6 +30,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
         },
 
         type: "bendingText",
+        representationType: "text",
 
         $events: [
             "recalculateSize"

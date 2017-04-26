@@ -25,6 +25,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
             type: "text",
+            representationType: "text",
 
             ctor: function(attributes) {
 
