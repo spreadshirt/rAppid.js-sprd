@@ -326,6 +326,25 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         },
 
+        _getRotatedBoundingBox: function(offset, width, height, rotation, scale, onlyContent, xOffset) {
+
+            offset = offset || this.$.offset;
+            width = width || this.width(scale);
+            height = height || this.height(scale);
+            rotation = rotation || this.$.rotation;
+
+            var x = offset.$.x,
+                y = offset.$.y;
+
+            return {
+                x: x,
+                y: y,
+                rotation: rotation,
+                height: height,
+                width: width
+            };
+        },
+
         size: function() {
             this.log("size() not implemented", "debug");
             return Size.empty;

@@ -1092,7 +1092,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var oldPrintType = configuration.$.printType;
                 configuration.set('printType', printType, {silent: true});
 
-                boundingBox = configuration._getBoundingBox();
+                boundingBox = configuration._getRotatedBoundingBox();
                 //TODO: if quotient of widths is unequal to quotient of heights, then switching between 2 print areas can make the configuration smaller and smaller
                 //example: between product type 812 and 1052
                 var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
@@ -1102,7 +1102,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 var defaultDesiredOffset = Vector.create(defaultBoxCenterX, defaultBoxCenterY);
                 var desiredRatio = options.respectTransform ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultDesiredOffset, printArea);
-                boundingBox = configuration._getBoundingBox(null, null, null, null, desiredScale);
+                boundingBox = configuration._getRotatedBoundingBox(null, null, null, null, desiredScale);
                 var desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                 offset.set({
                     x: desiredOffset.x,
@@ -1128,7 +1128,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 //TODO: (fix) bending -> scale gets NaN
                 var scale = this.clamp(desiredScale, minimumDesignScale || 0, maxPrintTypeScale);
-                boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
+                boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
                 desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                 offset.set("x", desiredOffset.x);
 
@@ -1136,7 +1136,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 if (boundingBox.width > printAreaWidth) {
                     var scaleToFitWidth = printAreaWidth / boundingBox.width;
                     scale = scale * scaleToFitWidth;
-                    boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
+                    boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     offset.set("x", desiredOffset.x);
                 }
@@ -1144,7 +1144,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 if (boundingBox.height > printAreaHeight) {
                     var scaleToFitHeight = printAreaHeight / boundingBox.height;
                     scale = scale * scaleToFitHeight;
-                    boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
+                    boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     offset.set("x", desiredOffset.x);
                 }
