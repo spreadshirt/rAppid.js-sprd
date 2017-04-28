@@ -133,11 +133,12 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     return;
                 }
 
-                var allConfigurations = product.getConfigurationsOnPrintAreas(product.$.productType.$.printAreas.$items);
+                var allConfigurations = product.getConfigurationsOnPrintAreas(product.$.productType.$.printAreas.$items),
+                    platform = product.$stage && product.$stage.PARAMETER().platform;
 
                 allConfigurations = _.filter(allConfigurations, function(configuration) {
                     return configuration !== excludedConfiguration
-                        && !ProductUtil.isSpecial(configuration);
+                        && !ProductUtil.isSpecial(configuration, platform);
                 });
 
                 this.equalizeConfigurations(product, allConfigurations, targetPrintType)
