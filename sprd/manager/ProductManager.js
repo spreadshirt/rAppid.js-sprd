@@ -911,7 +911,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         transform: transform
                     }
                 } catch (e) {
-                    console.error(e);
                     return null;
                 }
             },
