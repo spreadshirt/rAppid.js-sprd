@@ -28,7 +28,7 @@ define(["sprd/data/SprdModel", "js/data/Entity", 'js/core/Bindable'], function(M
 
             var parameters = ret.parameters;
             parameters && parameters.each(function(property) {
-                var value = property.$.value;
+                var value = property.get('value');
 
                 if (!isNaN(parseFloat(value))) {
                     value = parseFloat(value);
