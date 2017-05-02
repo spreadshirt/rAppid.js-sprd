@@ -31,6 +31,7 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
         },
 
         type: "specialText",
+        representationType: "text",
 
         inject: {
             pimpImageService: PimpImageService,

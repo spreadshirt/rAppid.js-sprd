@@ -1,4 +1,4 @@
-define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sprd/entity/Scale", "flow", "rAppid"], function(AfterEffect, Design, Offset, Scale, flow, rappid) {
+define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "js/core/Base", "sprd/entity/Scale", "flow", "rAppid"], function(AfterEffect, Design, Offset, Base, Scale, flow, rappid) {
 
     return AfterEffect.inherit("sketchomat.model.Mask", {
         defaults: {
@@ -60,14 +60,15 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "sp
 
             options = options || {};
 
-            if (!this.$.destinationWidth || !this.$.destinationHeight) {
-                throw Error('Cannot center mask. No destination parameters set');
-            }
-
             newX = x;
             newY = y;
 
             if (options.relative) {
+                if (!this.$.destinationWidth || !this.$.destinationHeight) {
+                    this.log('Cannot center mask. No destination dimensions set', Base.LOGLEVEL.ERROR);
+                    return;
+                }
+
                 newX = x * this.$.destinationWidth;
                 newY = y * this.$.destinationHeight;
             }
