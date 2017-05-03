@@ -21,7 +21,7 @@ define(["js/core/Error"], function (Error) {
                         }
                     }
                 }
-                return new ProductCreationError("ProductCreationError", ProductCreationError.ErrorCodes.PRODUCT_CREATION);
+                return new ProductCreationError("ProductCreationError", ProductCreationError.ErrorCodes.PRODUCT_CREATION, err);
             }
 
         });
