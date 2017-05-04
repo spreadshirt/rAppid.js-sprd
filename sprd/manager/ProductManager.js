@@ -7,6 +7,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
         };
         // factor * print area height = font size
         var INITIAL_FONT_SIZE_SCALE_FACTOR = 0.07;
+        var COLOR_CONVERSION_THRESHOLD = 35;
 
         return IProductManager.inherit("sprd.manager.ProductManager", {
 
@@ -443,15 +444,20 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 return color;
             },
 
-            convertColor: function(appearance, color) {
-                var white = new Color.RGB(0, 0, 0),
-                    black = new Color.RGB(255, 255, 255),
-                    threshold = 20,
-                    distance = color.distanceTo(appearance.brightness() === "dark" ? white : black),
-                    newColor = color;
+            convertColor: function(appearance, oldColor) {
+                var appearanceColors = appearance.get('colors'),
+                    singleColorAppearance = appearanceColors.length == 1;
 
-                if (distance < threshold) {
-                    newColor = color.invert();
+                if (!singleColorAppearance) {
+                    return oldColor;
+                }
+
+                var appearanceColor = appearanceColors.at(0),
+                    distance = oldColor.distanceTo(appearanceColor.color()),
+                    newColor = oldColor;
+
+                if (distance < COLOR_CONVERSION_THRESHOLD) {
+                    newColor = oldColor.invert();
                 }
 
                 return newColor;
