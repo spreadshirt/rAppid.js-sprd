@@ -1,12 +1,13 @@
-define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Renderer) {
+define(['xaml!sprd/view/svg/PatternRenderer'], function (Renderer) {
 
-    return Renderer.inherit("sprd.view.svg.DesignConfigurationRendererClass", {
+    return Renderer.inherit("sprd.view.svg.PatternRenderer", {
 
         defaults: {
             tagName: "g",
             maskId: null,
             "data-mask-id": "{configuration.afterEffect.id}",
             isSpecialFlex: "{isSpecialFlex()}",
+            isFlock: "{isFlock()}",
             largeSize: "{largeSize()}",
             filter: "{filter()}"
         },

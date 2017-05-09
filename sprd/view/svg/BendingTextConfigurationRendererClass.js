@@ -1,6 +1,6 @@
-define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size", 'js/core/Bus'], function(SpecialFlexConfigurationRenderer, Size, Bus) {
+define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus'], function(PatternRenderer, Size, Bus) {
 
-    return SpecialFlexConfigurationRenderer.inherit("sprd.view.svg.BendingTextConfigurationRendererClass", {
+    return PatternRenderer.inherit("sprd.view.svg.BendingTextConfigurationRendererClass", {
 
         defaults: {
             tagName: "g",
@@ -10,7 +10,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             configuration: null,
 
             textPath: null,
-            path: null,
+            path: null
         },
 
         $classAttributes: ['textPath', 'path', 'text', 'oldSize'],
@@ -138,7 +138,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
                 printColors = configuration.$.printColors,
                 printColor = null;
 
-            if (printColors && printColors.size() && !this.isSpecialFlex()) {
+            if (printColors && printColors.size() && !this.isSpecialFlex() && !this.isFlock()) {
                 printColor = printColors.at(0).toHexString();
             }
 

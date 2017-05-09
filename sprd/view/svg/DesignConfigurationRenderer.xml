@@ -1,4 +1,4 @@
 <sprdSvg:DesignConfigurationRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:sprdSvg="sprd.view.svg">
-    <rect mask="url(#{maskId})" style="fill: url(#p{maskId})" width="{width}" height="{height}" visible="{isSpecialFlex}"/>
-    <image href="{url()}" width="{width}" height="{height}" visible="{not(isSpecialFlex)}"/>
+    <rect mask="url(#{maskId})" style="fill: url(#p{maskId})" width="{width}" height="{height}" visible="{isSpecialColor}"/>
+    <image href="{url()}" width="{width}" height="{height}" visible="{not(isSpecialColor)}"/>
 </sprdSvg:DesignConfigurationRendererClass>

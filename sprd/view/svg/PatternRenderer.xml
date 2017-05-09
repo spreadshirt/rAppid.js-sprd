@@ -1,10 +1,10 @@
-<sprdSvg:SpecialFlexConfigurationRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:sprdSvg="sprd.view.svg">
+<sprdSvg:PatternRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:sprdSvg="sprd.view.svg">
 
-    <mask id="{maskId}" visible="{isSpecialFlex}">
+    <mask id="{maskId}" visible="{isSpecialColor}">
         <image href="{maskUrl()}" width="{width}" height="{height}"/>
     </mask>
 
-    <pattern id="p{maskId}" visible="{isSpecialFlex}" width="1" height="1" >
+    <pattern id="p{maskId}" visible="{isSpecialColor}" width="1" height="1" >
         <image width="{largeSize}" height="{largeSize}" href="{patternUrl()}" />
     </pattern>
 
@@ -16,4 +16,4 @@
         <feComposite in="SourceGraphic" in2="colorShadow" operator="over"/>
     </filter>
 
-</sprdSvg:SpecialFlexConfigurationRendererClass>
+</sprdSvg:PatternRendererClass>

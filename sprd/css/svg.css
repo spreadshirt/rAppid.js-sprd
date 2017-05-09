@@ -122,7 +122,8 @@ image {
     stroke-width: 3;
 }
 
-.configuration-viewer.printType-16 tspan {
+.configuration-viewer.printType-16 tspan,
+.configuration-viewer.printType-2 tspan{
     fill: inherit;
 }
 
