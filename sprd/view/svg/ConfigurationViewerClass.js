@@ -389,25 +389,50 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             getRectFromTextConfiguration: function(configuration, x, y) {
-                x = x || configuration.$.offset.$.x;
-                y = y || configuration.$.offset.$.y;
+                if (!configuration) {
+                    return null;
+                }
+
+                var offset = configuration.$.offset,
+                    bound = configuration.$.bound,
+                    scale = configuration.$.scale;
+
+                if (!bound || !scale || !offset) {
+                    return null;
+                }
+
+                x = x || offset.$.x;
+                y = y || offset.$.y;
 
                 var corner = {
-                    x: x + configuration.$.bound.x * configuration.$.scale.x,
-                    y: y + configuration.$.bound.y * configuration.$.scale.y
+                    x: x + bound.x * scale.x,
+                    y: y + bound.y * scale.y
                 };
 
-                var height = configuration.$.bound.height * configuration.$.scale.x;
-                var width = configuration.$.bound.width * configuration.$.scale.y;
+                var height = bound.height * scale.x;
+                var width = bound.width * scale.y;
                 return {topLeft: corner, height: height, width: width};
             },
 
             getRectFromConfiguration: function(configuration, x, y) {
-                x = x || configuration.$.offset.$.x;
-                y = y || configuration.$.offset.$.y;
+                if (!configuration) {
+                    return null;
+                }
+
+                var offset = configuration.$.offset;
+
+                if (!offset) {
+                    return null;
+                }
+
+                x = x || offset.$.x;
+                y = y || offset.$.y;
 
                 if (configuration instanceof TextConfiguration) {
-                    return this.getRectFromTextConfiguration(configuration, x, y);
+                    var textRect = this.getRectFromTextConfiguration(configuration, x, y);
+                    if (textRect) {
+                        return textRect;
+                    }
                 }
 
                 var corner = {
@@ -425,6 +450,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             addSnapLinesOfConfiguration: function(otherConfiguration) {
                 var rect = this.getRectFromConfiguration(otherConfiguration);
                 var rot = this.degreeToRadian(otherConfiguration.$.rotation);
+
+                if (!rect) {
+                    return;
+                }
+
                 this.addSnapLinesOfRect(rect.topLeft, rect.width, rect.height, rot, otherConfiguration);
             },
 
@@ -820,6 +850,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             rotateRect: function(configuration, newX, newY, rot) {
                 var rect = this.getRectFromConfiguration(configuration, newX, newY);
+
+                if (!rect) {
+                    return null;
+                }
+
                 var rotatePoint = {
                     x: newX + configuration.width() / 2,
                     y: newY + configuration.height() / 2
@@ -843,11 +878,19 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             getSnapPoints: function(configuration, newX, newY, rot) {
                 var rect = this.rotateRect(configuration, newX, newY, rot);
+                if (!rect) {
+                    return null;
+                }
+
                 return [rect.topLeftCorner, rect.topRightCorner, rect.midPoint, rect.bottomLeftCorner, rect.bottomRightCorner];
             },
 
             getSides: function(configuration, newX, newY, rot) {
                 var rect = this.rotateRect(configuration, newX, newY, rot);
+
+                if (!rect) {
+                    return null;
+                }
 
                 var upperHorizontal = new Line(rect.topLeftCorner.x, rect.topLeftCorner.y, rot);
                 var lowerHorizontal = new Line(rect.bottomLeftCorner.x, rect.bottomLeftCorner.y, rot);
@@ -891,7 +934,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         snapDistance = Math.max();
                         var sides = this.getSides(configuration, newX, newY, rot);
                         var snapPoints = this.getSnapPoints(configuration, newX, newY, rot);
-                        for (var i = 0; i < sides.length; i++) {
+                        for (var i = 0; sides && i < sides.length; i++) {
                             side = sides[i];
                             for (var l = 0; l < lines.length; l++) {
                                 snapLine = lines[l].line;
@@ -916,7 +959,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                         }
 
-                        for (var p = 0; p < snapPoints.length; p++) {
+                        for (var p = 0; snapPoints && p < snapPoints.length; p++) {
                             var snapPoint = snapPoints[p];
                             var rotatedVector = new Vector([snapPoint.x, snapPoint.y]);
 

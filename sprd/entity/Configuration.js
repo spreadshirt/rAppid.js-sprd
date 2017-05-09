@@ -169,7 +169,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
                         var possiblePrintTypes = config.getPossiblePrintTypesForPrintArea(printArea, appearance);
 
-                        if (config !== this && config.$.printArea === printArea && (possiblePrintTypes.indexOf(originalPrintType) === -1 || !config.isPrintTypeAvailable(originalPrintType))) {
+                        if (config !== this && config.$.printArea === printArea && (!possiblePrintTypes || possiblePrintTypes.indexOf(originalPrintType) === -1 || !config.isPrintTypeAvailable(originalPrintType))) {
                             revertPossible = false;
                         }
 

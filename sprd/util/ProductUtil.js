@@ -158,10 +158,11 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             })
         },
 
-        isSpecial: function(configuration) {
+        isSpecial: function(configuration, platform) {
+            platform = platform || configuration.$stage.PARAMETER().platform;
             return configuration.$.printType.$.id === PrintType.Mapping.SpecialFlex
                 || _.some(configuration.$.printColors.$items, function(printColor) {
-                    return NeonFlexColors[configuration.$stage.PARAMETER().platform].indexOf(printColor.$.id) !== -1;
+                    return NeonFlexColors[platform].indexOf(printColor.$.id) !== -1;
                 });
         }
     };

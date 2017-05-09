@@ -1,4 +1,4 @@
-define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", "sprd/util/ArrayUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sketchomat/util/PrintValidator", "sprd/type/Vector", "js/type/Color"],
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", "sprd/util/ArrayUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sprd/util/PrintValidator", "sprd/type/Vector", "js/type/Color"],
     function(IProductManager, _, flow, ProductUtil, ArrayUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List, PrintValidator, Vector, Color) {
 
 
@@ -7,6 +7,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
         };
         // factor * print area height = font size
         var INITIAL_FONT_SIZE_SCALE_FACTOR = 0.07;
+        var COLOR_CONVERSION_THRESHOLD = 35;
 
         return IProductManager.inherit("sprd.manager.ProductManager", {
 
@@ -443,15 +444,20 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 return color;
             },
 
-            convertColor: function(appearance, color) {
-                var white = new Color.RGB(0, 0, 0),
-                    black = new Color.RGB(255, 255, 255),
-                    threshold = 20,
-                    distance = color.distanceTo(appearance.brightness() === "dark" ? white : black),
-                    newColor = color;
+            convertColor: function(appearance, oldColor) {
+                var appearanceColors = appearance.get('colors'),
+                    singleColorAppearance = appearanceColors.length == 1;
 
-                if (distance < threshold) {
-                    newColor = color.invert();
+                if (!singleColorAppearance) {
+                    return oldColor;
+                }
+
+                var appearanceColor = appearanceColors.at(0),
+                    distance = oldColor.distanceTo(appearanceColor.color()),
+                    newColor = oldColor;
+
+                if (distance < COLOR_CONVERSION_THRESHOLD) {
+                    newColor = oldColor.invert();
                 }
 
                 return newColor;
@@ -911,7 +917,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         transform: transform
                     }
                 } catch (e) {
-                    console.error(e);
                     return null;
                 }
             },
