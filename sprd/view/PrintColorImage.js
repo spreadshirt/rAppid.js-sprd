@@ -1,4 +1,4 @@
-define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/config/SpecialFlex", "sprd/config/Flock"], function(View, ImageService, PrintType, SpecialFlex, Flock) {
+define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/config/SpecialFlex", "sprd/config/Flock", "sprd/config/RealisticFlexColors"], function(View, ImageService, PrintType, SpecialFlex, Flock, RealisticFlexColors) {
 
     return View.inherit('sprd.view.PrintColorImage', {
 
@@ -57,7 +57,10 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
             var printColor = this.$.printColor;
             if (printColor) {
                 var printType = printColor.getPrintType();
-                return printType && (printType.$.id === PrintType.Mapping.SpecialFlex || printType.$.id === PrintType.Mapping.Flock);
+                return printType && (
+                    printType.$.id === PrintType.Mapping.SpecialFlex ||
+                    printType.$.id === PrintType.Mapping.Flock ||
+                    printColor.$.id in RealisticFlexColors[this.PARAMETER().platform]);
             }
 
             return false;
@@ -77,6 +80,10 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
 
                 if (colorInformation.printType === PrintType.Mapping.Flock) {
                     return "url(" + this.baseUrl("sprd/img/flock.png") + ")";
+                }
+
+                if (colorInformation.printType === PrintType.Mapping.Flex) {
+                    return "url(" + this.baseUrl("sprd/img/realisticFlex.png") + ")";
                 }
             } else {
                 return this.$.imageService.printColorImage(this.$.printColor.$.id, {
@@ -105,8 +112,10 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
                 return {};
             }
 
-            var specialFlexColorIndex = (SpecialFlex[this.PARAMETER().platform] || {})[color.$.id];
-            var flockColorIndex = (Flock[this.PARAMETER().platform] || {})[color.$.id];
+            var platform = this.PARAMETER().platform;
+            var specialFlexColorIndex = (SpecialFlex[platform] || {})[color.$.id];
+            var flockColorIndex = (Flock[platform] || {})[color.$.id];
+            var realisticFlexColorIndex = (RealisticFlexColors[platform] || {})[color.$.id];
 
             if (specialFlexColorIndex !== undefined) {
                 return {
@@ -119,6 +128,13 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
                 return {
                     index: flockColorIndex,
                     printType: PrintType.Mapping.Flock
+                };
+            }
+
+            if (realisticFlexColorIndex !== undefined) {
+                return {
+                    index: realisticFlexColorIndex,
+                    printType: PrintType.Mapping.Flex
                 };
             }
 

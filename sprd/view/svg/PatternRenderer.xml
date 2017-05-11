@@ -1,12 +1,13 @@
-<sprdSvg:PatternRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:sprdSvg="sprd.view.svg">
+<sprdSvg:PatternRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:sprdSvg="sprd.view.svg" xmlns:js="js.core">
 
-    <mask id="{maskId}" visible="{isSpecialColor}">
-        <image href="{maskUrl()}" width="{width}" height="{height}"/>
-    </mask>
+    <js:Repeat items="{configuration.printColors}" >
+        <js:Template name="item">
+            <pattern id="p{maskId}-{index}" width="1" height="1" visible="{isSpecialColor(index)}">
+                <image width="{largeSize}" height="{largeSize}" href="{patternUrl(index)}"/>
+            </pattern>
+        </js:Template>
+    </js:Repeat>
 
-    <pattern id="p{maskId}" visible="{isSpecialColor}" width="1" height="1" >
-        <image width="{largeSize}" height="{largeSize}" href="{patternUrl()}" />
-    </pattern>
 
     <filter id="g{maskId}" filterUnits="userSpaceOnUse">
         <feGaussianBlur stdDeviation="7.5"/>

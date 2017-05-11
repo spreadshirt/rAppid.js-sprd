@@ -1,4 +1,4 @@
-define(['sprd/view/svg/ConfigurationRenderer'], function(Renderer) {
+define(['sprd/view/svg/ConfigurationRenderer', 'sprd/config/RealisticFlexColors', 'js/type/Color'], function(Renderer, RealisticFlexColors, Color) {
 
     return Renderer.inherit("sprd.view.svg.PatternRendererClass", {
 
@@ -7,7 +7,6 @@ define(['sprd/view/svg/ConfigurationRenderer'], function(Renderer) {
             maskId: null,
             isSpecialFlex: "{isSpecialFlex()}",
             isFlock: "{isFlock()}",
-            isSpecialColor: "{isSpecialColor()}",
             largeSize: "{largeSize()}",
             filter: "{filter()}"
         },
@@ -22,9 +21,9 @@ define(['sprd/view/svg/ConfigurationRenderer'], function(Renderer) {
             return colorId == 90 ? "url(#g" + this.$.maskId + ")" : "";
         }.on(["configuration.printColors", "reset"]),
 
-        isSpecialColor: function() {
-            return this.isSpecialFlex() || this.isFlock();
-        }.onChange("configuration.printType"),
+        isSpecialColor: function(layerIndex) {
+            return this.isSpecialFlex() || this.isFlock() || this.isRealisticFlexColor(layerIndex);
+        }.onChange("configuration.printType").on(["configuration.printColors", "reset"]),
 
         isSpecialFlex: function() {
             return this.get("configuration.printType.id") == 16;
@@ -34,13 +33,33 @@ define(['sprd/view/svg/ConfigurationRenderer'], function(Renderer) {
             return this.get("configuration.printType.id") == 2;
         }.onChange("configuration.printType"),
 
+        isRealisticFlexColor: function(layerIndex) {
+            layerIndex = layerIndex || 0;
+
+            var colorId = this.get("configuration.printColors["+ layerIndex + "].id") || null;
+            return this.get("configuration.printType.id") == 14 && (colorId in RealisticFlexColors[this.PARAMETER().platform]);
+        }.onChange("configuration.printType"),
+
+        hasSpecialColor: function() {
+            var printColors = this.get("configuration.printColors");
+
+            for (var layerIndex = 0; layerIndex < printColors.length; layerIndex++) {
+                if (this.isSpecialColor(layerIndex)) {
+                    return true
+                }
+            }
+
+            return false;
+        }.onChange("configuration.printType").on(["configuration.printColors", "reset"]),
+
         largeSize: function() {
             return this.$.width >= this.$.height ? this.$.width : this.$.height;
         }.onChange("width", "height"),
 
-        patternUrl: function() {
+        patternUrl: function(layerIndex) {
 
-            var colorId = this.get("configuration.printColors[0].id");
+            layerIndex = layerIndex || 0;
+            var colorId = this.get("configuration.printColors[" + layerIndex + "].id");
 
             if (colorId == null) {
                 return;
@@ -54,11 +73,21 @@ define(['sprd/view/svg/ConfigurationRenderer'], function(Renderer) {
                 return this.baseUrl("sprd/img/flock/" + colorId + ".jpg");
             }
 
+            if (this.isRealisticFlexColor(layerIndex)) {
+                return this.baseUrl("sprd/img/realisticFlexColors/" + colorId + ".jpg");
+            }
+
         }.on(["configuration.printColors", "reset"]),
 
-        maskUrl: function() {
+        maskUrl: function(layer) {
 
             if (this.$.imageService && this.$.configuration && this.$.configuration.$.design) {
+                var colors = this.$.configuration.$.printColors;
+                var layerColor = colors[layer];
+
+                if (!layerColor) {
+                    return null;
+                }
 
                 var maxSize = Math.min(this.$._width, 600),
                     options = {},
@@ -70,11 +99,12 @@ define(['sprd/view/svg/ConfigurationRenderer'], function(Renderer) {
                     options.height = maxSize;
                 }
 
-                var colors = this.$.configuration.$.printColors.size(),
-                    printColors = [];
+                var printColors = [];
                 for (var i = 0; i < colors; i++) {
-                    printColors.push("FFFFFF");
+                    printColors.push("none");
                 }
+
+                printColors[layer] = "FFFFFF";
 
                 options.printColors = printColors;
                 options.version = design.$.version;

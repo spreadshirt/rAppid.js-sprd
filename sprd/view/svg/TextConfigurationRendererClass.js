@@ -12,7 +12,8 @@ define(['xaml!sprd/view/svg/PatternRenderer', 'js/core/Bus'], function(PatternRe
             showSelection: "{configurationViewer.isSelectedConfiguration()}",
             textArea: null,
 
-            imageService: null
+            imageService: null,
+            hasSpecialColor: "{hasSpecialColor()}"
         },
 
         inject: {
