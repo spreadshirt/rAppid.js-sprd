@@ -27,7 +27,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 dy: "{dy()}",
 
                 textPathOffsetX: 0,
-                textPathOffsetY: 0
+                textPathOffsetY: 0,
+                transformer: null,
             },
 
             type: "bendingText",
@@ -54,6 +55,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                     self = this;
                 options = options || {};
 
+                this.initTransformer();
                 if (!_.isEmpty(properties)) {
                     flow()
                         .seq(function(cb) {
@@ -113,6 +115,11 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                     callback && callback();
                 }
 
+            },
+
+            initTransformer: function() {
+                var shop = this.$.designerApi.createEntity(Shop, this.$.context.$.id);
+                this.set('transformer', shop.createEntity(Transformer));
             },
 
             size: function() {
@@ -248,9 +255,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
             save: function(callback) {
                 var text = this.mainConfigurationRenderer.$.text,
-                    font = this.$.font,
                     self = this,
-                    fontSVGUrl = this.mainConfigurationRenderer.$.imageService.fontUrl(font, "svg#font"),
                     digitalPrint = !this.$.printType.isPrintColorColorSpace();
 
                 var cacheId = [self.$.angle, self.$.text, self.$.font.$.id, self.$.fontSize];
@@ -267,11 +272,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
                     flow()
                         .seq('svg', function(cb) {
-                            // Text2Path(text.$el, fontSVGUrl, {
-                            //     fill: fill,
-                            //     width: Math.round((self.width() * self.$.printType.$.dpi / 25.4) + 50, 0)
-                            // }, cb);
-                            self.transformTextPath(text.$el, {
+                            self.transformTextPath({
                                 fill: fill,
                                 width: Math.round((self.width() * self.$.printType.$.dpi / 25.4) + 50, 0)
                             }, cb);
@@ -327,33 +328,10 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
             },
 
-            transformTextPath: function(textNode, options, callback) {
-                options = options || {};
-                var shop = this.$.designerApi.createEntity(Shop, this.$.context.$.id);
-                var transformer = shop.createEntity(Transformer);
-
-                var bbox = this.mainConfigurationRenderer.$.text.$el.getBBox();
-                var svgNamespace = 'http://www.w3.org/2000/svg';
-                var svg = document.createElementNS(svgNamespace, "svg");
-                svg.setAttribute("viewBox", [bbox.x, bbox.y, bbox.width, bbox.height].join(" "));
-                var assetContainer = this.mainConfigurationRenderer.$el.cloneNode(true);
-                assetContainer.removeChild(assetContainer.firstElementChild);
-                assetContainer.removeChild(assetContainer.firstElementChild);
-                assetContainer.lastElementChild.removeAttribute("style");
-                svg.appendChild(assetContainer);
-                var w = Math.abs(bbox.x - bbox.width),
-                    h = Math.abs(bbox.y - bbox.height);
-                if (options.width) {
-                    svg.setAttribute("width", options.width + "px");
-                    svg.setAttribute("height", (parseInt(options.width * h / w) + 1) + "px");
-                }
-
-                if (options.fill) {
-                    svg.setAttribute("fill", options.fill);
-                }
-
-                svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-                svgContent = svg.outerHTML;
+            transformTextPath: function(options, callback) {
+                var svg = this.mainConfigurationRenderer.getTextPathSvg(options),
+                    svgContent = svg.outerHTML,
+                    transformer = this.$.transformer;
 
                 transformer.set('content', svgContent);
                 transformer.save(null, function(err, transformer) {
