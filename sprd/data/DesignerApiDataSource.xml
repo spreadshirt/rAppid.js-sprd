@@ -3,5 +3,8 @@
         <conf:ResourceConfiguration modelClassName="sprd.model.TemplateCategory" path="categories">
             <conf:ResourceConfiguration modelClassName="sprd.model.Template" path="templates"/>
         </conf:ResourceConfiguration>
+        <conf:ResourceConfiguration modelClassName="sprd.model.AbstractShop" path="shops">
+            <conf:ResourceConfiguration modelClassName="sprd.model.Transformer" path="text/transform" processor="TransformationProcessor"/>
+        </conf:ResourceConfiguration>
     </conf:DataSourceConfiguration>
 </data:DesignerApiDataSourceClass>
