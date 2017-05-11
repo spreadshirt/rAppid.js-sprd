@@ -147,7 +147,7 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
             this.removeElementsBlackListTags(assetContainer, ["path", "text"]);
 
             // Remove styling.
-            var attrBlacklist = ["style", "fill", "class", "isSpecialFlex", "maskId", "largeSize", "filter"];
+            var attrBlacklist = ["style", "class", "isSpecialFlex", "maskId", "largeSize", "filter"];
             this.removeAttributesOnDescendants(assetContainer, attrBlacklist);
             svg.appendChild(assetContainer);
 
