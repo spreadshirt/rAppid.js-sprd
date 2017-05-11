@@ -136,20 +136,23 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer', "sprd/entity/Size
         getTextPathSvg: function(options) {
             options = options || {};
 
-            var textBbox = this.$.text.$el.getBBox(),
+            var size = this.$.configuration.$._size.$,
                 svgNamespace = 'http://www.w3.org/2000/svg',
                 svg = document.createElementNS(svgNamespace, "svg");
             assetContainer = this.$el.cloneNode(true);
 
-            svg.setAttribute("viewBox", [textBbox.x, textBbox.y, textBbox.width, textBbox.height].join(" "));
+            svg.setAttribute("viewBox", [0, 0, size.width, size.height].join(" "));
+
             //Remove redundant elements.
             this.removeElementsBlackListTags(assetContainer, ["path", "text"]);
+
             // Remove styling.
-            this.removeAttributesOnDescendants(assetContainer, ["style", "fill"]);
+            var attrBlacklist = ["style", "fill", "class", "isSpecialFlex", "maskId", "largeSize", "filter"];
+            this.removeAttributesOnDescendants(assetContainer, attrBlacklist);
             svg.appendChild(assetContainer);
 
-            var w = Math.abs(textBbox.x - textBbox.width),
-                h = Math.abs(textBbox.y - textBbox.height);
+            var w = size.width,
+                h = size.height;
 
             if (options.width) {
                 svg.setAttribute("width", options.width + "px");

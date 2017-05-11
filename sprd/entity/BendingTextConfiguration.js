@@ -330,7 +330,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
             transformTextPath: function(options, callback) {
                 var svg = this.mainConfigurationRenderer.getTextPathSvg(options),
-                    svgContent = svg.outerHTML,
+                    doctypeString = '<!DOCTYPE svg [ <!ENTITY nbsp " &#160;">] >',
+                    svgContent = doctypeString + svg.outerHTML,
                     transformer = this.$.transformer;
 
                 transformer.set('content', svgContent);
