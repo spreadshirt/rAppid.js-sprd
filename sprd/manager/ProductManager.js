@@ -408,7 +408,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         text: text,
                         fontSize: fontSize,
                         font: font,
-                        printColors: printColors
+                        printColors: printColors,
+                        angle: params.angle
                     });
 
                     return entity;
@@ -1326,7 +1327,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 });
             },
 
-            convertText: function(product, configuration) {
+            convertText: function(product, configuration, angle) {
                 if (configuration) {
                     var font = configuration.$.font ? configuration.$.font : configuration.getUsedFonts()[0],
                         fontFamily = font.getFontFamily();
@@ -1335,7 +1336,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         this.convertTextToBendingText(product, configuration, {
                             printColor: configuration.$.printColors.at(0),
                             font: font,
-                            fontFamily: fontFamily
+                            fontFamily: fontFamily,
+                            angle: angle
                         });
                     } else if (configuration instanceof BendingTextConfiguration) {
                         this.convertBendingTextToText(product, configuration, {
