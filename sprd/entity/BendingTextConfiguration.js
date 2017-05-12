@@ -190,7 +190,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
 
             textPath: function() {
-                var a = this.$.angle;
+                var a = this.$.angle,
+                    a = Math.sign(a) * (360 - Math.abs(a));
 
                 this.set("path", PATH_TYPE.OUTER_CIRCLE);
                 if (a < 0) {
