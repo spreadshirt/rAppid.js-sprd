@@ -1,6 +1,6 @@
 define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
 
-    return PatternRenderer.inherit("sprd.view.svg.PatternRenderer", {
+    return PatternRenderer.inherit("sprd.view.svg.DesignConfigurationRendererClass", {
 
         defaults: {
             tagName: "g",
