@@ -10,11 +10,11 @@
     <element name="ConfigurationViewerClass" type="ns:ConfigurationViewerClass"/>
     <element name="DesignConfigurationRenderer" type="ns:DesignConfigurationRenderer"/>
     <element name="DesignConfigurationRendererClass" type="ns:DesignConfigurationRendererClass"/>
+    <element name="PatternRenderer" type="ns:PatternRenderer"/>
+    <element name="PatternRendererClass" type="ns:PatternRendererClass"/>
     <element name="PrintAreaViewer" type="ns:PrintAreaViewer"/>
     <element name="PrintAreaViewerClass" type="ns:PrintAreaViewerClass"/>
     <element name="ProductTypeViewViewer" type="ns:ProductTypeViewViewer"/>
-    <element name="SpecialFlexConfigurationRenderer" type="ns:SpecialFlexConfigurationRenderer"/>
-    <element name="SpecialFlexConfigurationRendererClass" type="ns:SpecialFlexConfigurationRendererClass"/>
     <element name="SpecialTextConfigurationRenderer" type="ns:SpecialTextConfigurationRenderer"/>
     <element name="SpecialTextConfigurationRendererClass" type="ns:SpecialTextConfigurationRendererClass"/>
     <element name="TextConfigurationRenderer" type="ns:TextConfigurationRenderer"/>
@@ -38,7 +38,7 @@
     </complexType>
     <complexType name="BendingTextConfigurationRendererClass">
         <complexContent>
-            <extension base="ns:SpecialFlexConfigurationRenderer">
+            <extension base="ns:PatternRenderer">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.BendingTextConfigurationRendererClass"></documentation>
                 </annotation>
@@ -138,7 +138,7 @@
     </complexType>
     <complexType name="DesignConfigurationRendererClass">
         <complexContent>
-            <extension base="ns:SpecialFlexConfigurationRenderer">
+            <extension base="ns:PatternRenderer">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.DesignConfigurationRendererClass"></documentation>
                 </annotation>
@@ -146,6 +146,42 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="data-mask-id" default="{configuration.afterEffect.id}"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="PatternRenderer">
+        <complexContent>
+            <extension base="ns:PatternRendererClass">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.PatternRenderer"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="g"/>
+                <attribute name="maskId"/>
+                <attribute name="isSpecialFlex" default="{isSpecialFlex()}"/>
+                <attribute name="isFlock" default="{isFlock()}"/>
+                <attribute name="largeSize" default="{largeSize()}"/>
+                <attribute name="filter" default="{filter()}"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="PatternRendererClass">
+        <complexContent>
+            <extension base="ns:ConfigurationRenderer">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.PatternRendererClass"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="g"/>
+                <attribute name="maskId"/>
+                <attribute name="isSpecialFlex" default="{isSpecialFlex()}"/>
+                <attribute name="isFlock" default="{isFlock()}"/>
+                <attribute name="largeSize" default="{largeSize()}"/>
+                <attribute name="filter" default="{filter()}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -203,40 +239,6 @@
             </extension>
         </complexContent>
     </complexType>
-    <complexType name="SpecialFlexConfigurationRenderer">
-        <complexContent>
-            <extension base="ns:SpecialFlexConfigurationRendererClass">
-                <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.SpecialFlexConfigurationRenderer"></documentation>
-                </annotation>
-                <sequence>
-                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-                <attribute name="tagName" default="g"/>
-                <attribute name="maskId"/>
-                <attribute name="isSpecialFlex" default="{isSpecialFlex()}"/>
-                <attribute name="largeSize" default="{largeSize()}"/>
-                <attribute name="filter" default="{filter()}"/>
-            </extension>
-        </complexContent>
-    </complexType>
-    <complexType name="SpecialFlexConfigurationRendererClass">
-        <complexContent>
-            <extension base="ns:ConfigurationRenderer">
-                <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.SpecialFlexConfigurationRendererClass"></documentation>
-                </annotation>
-                <sequence>
-                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-                <attribute name="tagName" default="g"/>
-                <attribute name="maskId"/>
-                <attribute name="isSpecialFlex" default="{isSpecialFlex()}"/>
-                <attribute name="largeSize" default="{largeSize()}"/>
-                <attribute name="filter" default="{filter()}"/>
-            </extension>
-        </complexContent>
-    </complexType>
     <complexType name="SpecialTextConfigurationRenderer">
         <complexContent>
             <extension base="ns:SpecialTextConfigurationRendererClass">
@@ -278,12 +280,13 @@
                 <attribute name="configuration"/>
                 <attribute name="showSelection" default="{configurationViewer.isSelectedConfiguration()}"/>
                 <attribute name="textArea"/>
+                <attribute name="hasSpecialColor" default="{hasSpecialColor()}"/>
             </extension>
         </complexContent>
     </complexType>
     <complexType name="TextConfigurationRendererClass">
         <complexContent>
-            <extension base="ns:SpecialFlexConfigurationRenderer">
+            <extension base="ns:PatternRenderer">
                 <annotation>
                     <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.TextConfigurationRendererClass"></documentation>
                 </annotation>
@@ -295,6 +298,7 @@
                 <attribute name="configuration"/>
                 <attribute name="showSelection" default="{configurationViewer.isSelectedConfiguration()}"/>
                 <attribute name="textArea"/>
+                <attribute name="hasSpecialColor" default="{hasSpecialColor()}"/>
             </extension>
         </complexContent>
     </complexType>
