@@ -1,7 +1,7 @@
-define(["js/data/RestDataSource", "sprd/model/processor/TransformerProcessor"], function(RestDataSource, TransformerProcessor) {
+define(["js/data/RestDataSource", "sprd/model/processor/TransformerProcessor", "underscore"], function(RestDataSource, TransformerProcessor, _) {
 
     var SVG_MIME_TYPE = "image/svg+xml";
-    var DesignerApiDataSource = RestDataSource.inherit("sprd.data.DesignerApiDataSource", {
+    var DesignerApiDataSource = RestDataSource.inherit("sprd.data.DesignerApiDataSourceClass", {
 
         defaults: {
             language: null
@@ -23,11 +23,6 @@ define(["js/data/RestDataSource", "sprd/model/processor/TransformerProcessor"], 
 
             return ret;
 
-
-        },
-
-        getHeaderParameters: function(method, model) {
-            return this.callBase();
         },
 
         getFormatProcessor: function(action, model) {
