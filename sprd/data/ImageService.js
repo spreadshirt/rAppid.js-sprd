@@ -128,7 +128,10 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             if (!isNaN(parseInt(cacheId)) && !parameter.sameOrigin) {
                 // use the full qualified endpoint
                 imgServer = this.$.endPoint;
-                imgServer = imgServer.replace(/(\/\/image)\./, '$1' + (cacheId % subDomainCount) + ".");
+
+                if (subDomainCount) {
+                    imgServer = imgServer.replace(/(\/\/image)\./, '$1' + (cacheId % subDomainCount) + ".");
+                }
             } else {
                 imgServer = this.$.gateway;
             }

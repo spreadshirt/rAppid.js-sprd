@@ -1,4 +1,18 @@
-<sprdSvg:DesignConfigurationRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:sprdSvg="sprd.view.svg">
-    <rect mask="url(#{maskId})" style="fill: url(#p{maskId})" width="{width}" height="{height}" visible="{isSpecialFlex}"/>
-    <image href="{url()}" width="{width}" height="{height}" visible="{not(isSpecialFlex)}"/>
+<sprdSvg:DesignConfigurationRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:sprdSvg="sprd.view.svg" xmlns:js="js.core">
+
+    <js:Repeat items="{configuration.printColors}">
+        <js:Template name="item">
+            <mask id="{maskId}-{index}">
+                <image href="{maskUrl(index)}" width="{width}" height="{height}"/>
+            </mask>
+        </js:Template>
+    </js:Repeat>
+
+    <js:Repeat items="{configuration.printColors}" itemKey="printColor">
+        <js:Template name="item">
+            <rect mask="url(#{maskId}-{index})" style="fill: {fillUrl(index)}" width="{width}" height="{height}"/>
+        </js:Template>
+    </js:Repeat>
+
+    <image href="{url()}" width="{width}" height="{height}" visible="{not(hasSpecialColor())}"/>
 </sprdSvg:DesignConfigurationRendererClass>

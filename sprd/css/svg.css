@@ -122,7 +122,9 @@ image {
     stroke-width: 3;
 }
 
-.configuration-viewer.printType-16 tspan {
+.configuration-viewer.printType-16 tspan,
+.configuration-viewer.printType-2 tspan,
+.configuration-viewer.printType-14 g[hasSpecialColor="true"] tspan{
     fill: inherit;
 }
 

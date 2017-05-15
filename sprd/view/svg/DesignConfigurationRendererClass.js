@@ -1,12 +1,13 @@
-define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Renderer) {
+define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
 
-    return Renderer.inherit("sprd.view.svg.DesignConfigurationRendererClass", {
+    return PatternRenderer.inherit("sprd.view.svg.PatternRenderer", {
 
         defaults: {
             tagName: "g",
             maskId: null,
             "data-mask-id": "{configuration.afterEffect.id}",
             isSpecialFlex: "{isSpecialFlex()}",
+            isFlock: "{isFlock()}",
             largeSize: "{largeSize()}",
             filter: "{filter()}"
         },
@@ -30,22 +31,19 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Render
 
                 if (!design.isVectorDesign()) {
                     return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
-
-                } else {
-                    return this.$.imageService.designImage(design.$.wtfMbsId, options)
                 }
 
             }
             return null;
         }.onChange("design", "_width", "_height", "configuration.processedImage").on(["configuration.printColors", "reset"]),
 
-        maskUrl: function() {
+        maskUrl: function(layerIndex) {
 
             if (this.$.imageService && this.$.configuration && this.$.configuration.$.design) {
 
                 var maxSize = Math.min(this.$._width, 600),
-                options = {},
-                design = this.$.configuration.$.design;
+                    options = {},
+                    design = this.$.configuration.$.design;
 
                 if (this.$.width >= this.$.height) {
                     options.width = maxSize;
@@ -56,8 +54,10 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Render
                 var colors = this.$.configuration.$.printColors.size(),
                     printColors = [];
                 for (var i = 0; i < colors; i++) {
-                    printColors.push("FFFFFF");
+                    printColors.push("none");
                 }
+
+                printColors[layerIndex] = "FFFFFF";
 
                 options.printColors = printColors;
                 options.version = design.$.version;
@@ -72,8 +72,18 @@ define(['xaml!sprd/view/svg/SpecialFlexConfigurationRenderer'], function (Render
 
 
             return null;
-        }.onChange("design", "_width", "_height").on(["configuration.printColors", "reset"])
+        }.onChange("design", "_width", "_height").on(["configuration.printColors", "reset"]),
 
+        fillUrl: function(layerIndex) {
+            //there are some designs where the layer order needs to be switched
+            var fixedLayerIndex = this.get("configuration.design.colors.$items")[layerIndex].$.layer;
 
+            if (this.isSpecialColor(fixedLayerIndex)) {
+                return "url(#p" + this.$.maskId + "-" + fixedLayerIndex + ")";
+            }
+
+            var printColors = this.get("configuration.printColors.$items");
+            return printColors[fixedLayerIndex].color().toString();
+        }
     })
 });

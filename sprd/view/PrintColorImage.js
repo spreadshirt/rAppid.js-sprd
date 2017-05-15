@@ -1,4 +1,4 @@
-define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/config/SpecialFlex"], function(View, ImageService, PrintType, SpecialFlex) {
+define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/config/SpecialFlex", "sprd/config/Flock", "sprd/config/RealisticFlexColors"], function(View, ImageService, PrintType, SpecialFlex, Flock, RealisticFlexColors) {
 
     return View.inherit('sprd.view.PrintColorImage', {
 
@@ -57,7 +57,10 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
             var printColor = this.$.printColor;
             if (printColor) {
                 var printType = printColor.getPrintType();
-                return printType && printType.$.id === PrintType.Mapping.SpecialFlex;
+                return printType && (
+                    printType.$.id === PrintType.Mapping.SpecialFlex ||
+                    printType.$.id === PrintType.Mapping.Flock ||
+                    printColor.$.id in RealisticFlexColors[this.PARAMETER().platform]);
             }
 
             return false;
@@ -68,8 +71,20 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
                 return null;
             }
 
-            if (this.getColorIndex() != null) {
-                return "url(" + this.baseUrl("sprd/img/specialFlex.png") + ")";
+            var colorInformation = this.getColorInformation();
+
+            if (colorInformation.index != null) {
+                if (colorInformation.printType === PrintType.Mapping.SpecialFlex) {
+                    return "url(" + this.baseUrl("sprd/img/specialFlex.png") + ")";
+                }
+
+                if (colorInformation.printType === PrintType.Mapping.Flock) {
+                    return "url(" + this.baseUrl("sprd/img/flock.png") + ")";
+                }
+
+                if (colorInformation.printType === PrintType.Mapping.Flex) {
+                    return "url(" + this.baseUrl("sprd/img/realisticFlex.png") + ")";
+                }
             } else {
                 return this.$.imageService.printColorImage(this.$.printColor.$.id, {
                     width: this.$.width,
@@ -80,23 +95,50 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
         }.onChange('printColor', "imageService"),
 
         backgroundPosition: function() {
-            var index = this.getColorIndex(),
+            var information = this.getColorInformation(),
                 backgroundSize = this.$.backgroundSize,
                 scalingFactor = parseInt(backgroundSize.replace(/[^\d.]/g, ''));
 
-            if (index == null) {
+            if (information.index == null) {
                 return "";
             }
 
-            return "0 " + ((index) * -scalingFactor) + "px";
+            return "0 " + ((information.index) * -scalingFactor) + "px";
         }.onChange('printColor'),
 
-        getColorIndex: function() {
+        getColorInformation: function() {
             var color = this.$.printColor;
             if (!color) {
-                return null;
+                return {};
             }
-            return (SpecialFlex[this.PARAMETER().platform] || {})[color.$.id];
+
+            var platform = this.PARAMETER().platform;
+            var specialFlexColorIndex = (SpecialFlex[platform] || {})[color.$.id];
+            var flockColorIndex = (Flock[platform] || {})[color.$.id];
+            var realisticFlexColorIndex = (RealisticFlexColors[platform] || {})[color.$.id];
+
+            if (specialFlexColorIndex !== undefined) {
+                return {
+                    index: specialFlexColorIndex,
+                    printType: PrintType.Mapping.SpecialFlex
+                };
+            }
+
+            if (flockColorIndex !== undefined) {
+                return {
+                    index: flockColorIndex,
+                    printType: PrintType.Mapping.Flock
+                };
+            }
+
+            if (realisticFlexColorIndex !== undefined) {
+                return {
+                    index: realisticFlexColorIndex,
+                    printType: PrintType.Mapping.Flex
+                };
+            }
+
+            return {};
         }
     });
 });
