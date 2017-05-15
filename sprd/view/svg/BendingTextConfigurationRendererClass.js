@@ -136,23 +136,22 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
         getTextPathSvg: function(options) {
             options = options || {};
 
-            var size = this.$.configuration.$._size.$,
+            var textBbox = this.$.text.$el.getBBox(),
                 svgNamespace = 'http://www.w3.org/2000/svg',
                 svg = document.createElementNS(svgNamespace, "svg");
             assetContainer = this.$el.cloneNode(true);
 
-            svg.setAttribute("viewBox", [0, 0, size.width, size.height].join(" "));
-
+            svg.setAttribute("viewBox", [textBbox.x, textBbox.y, textBbox.width, textBbox.height].join(" "));
             //Remove redundant elements.
             this.removeElementsBlackListTags(assetContainer, ["path", "text"]);
 
-            // Remove styling.
+            // Remove attributes.
             var attrBlacklist = ["style", "class", "isSpecialFlex", "maskId", "largeSize", "filter"];
             this.removeAttributesOnDescendants(assetContainer, attrBlacklist);
             svg.appendChild(assetContainer);
 
-            var w = size.width,
-                h = size.height;
+            var w = textBbox.width,
+                h = textBbox.height;
 
             if (options.width) {
                 svg.setAttribute("width", options.width + "px");
