@@ -1,5 +1,5 @@
-define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/lib/Text2Path", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", "underscore", "sprd/util/ArrayUtil", "sprd/extensions/CanvasToBlob", "xaml!sprd/data/DesignerApiDataSource", "sprd/model/Transformer", "sprd/model/AbstractShop"],
-    function(DesignConfigurationBase, Size, Font, ProductUtil, Text2Path, BlobImage, IImageUploadService, flow, _, ArrayUtil, CanvasToBlob, DesignerApiDataSource, Transformer, Shop) {
+define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/lib/Text2Path", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", "underscore", "sprd/util/ArrayUtil", "sprd/extensions/CanvasToBlob", "xaml!sprd/data/DesignerApiDataSource", "sprd/model/Transformer", "sprd/model/AbstractShop", "sprd/entity/TextConfiguration"],
+    function(DesignConfigurationBase, Size, Font, ProductUtil, Text2Path, BlobImage, IImageUploadService, flow, _, ArrayUtil, CanvasToBlob, DesignerApiDataSource, Transformer, Shop, TextConfiguration) {
         var PATH_TYPE = {
             OUTER_CIRCLE: "outer_circle",
             INNER_CIRCLE: "inner_circle",
@@ -28,7 +28,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
                 textPathOffsetX: 0,
                 textPathOffsetY: 0,
-                transformer: null
+                transformer: null,
+                copyrightWordList: null
             },
 
             type: "bendingText",
@@ -44,8 +45,19 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 context: "context"
             },
 
-            ctor: function() {
-                this.callBase();
+            ctor: function(attributes) {
+                attributes = attributes || {};
+
+                _.defaults(attributes, {
+                    copyrightWordList: TextConfiguration.getCopyrightWordList()
+                });
+
+                this.callBase(attributes);
+
+                this.$.copyrightWordList.bind("add", function() {
+                    this._validateText();
+                }, this);
+
                 this.$synchronizeCache = designCache;
             },
 
@@ -115,6 +127,10 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                     callback && callback();
                 }
 
+            },
+
+            _commitText: function() {
+                this._validateText();
             },
 
             initTransformer: function() {
@@ -358,6 +374,23 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                     };
                 }
 
+            },
+
+            _validateText: function() {
+                var text = (this.$.text || "").toLowerCase(),
+                    badWord,
+                    copyrightWordList = this.$.copyrightWordList;
+
+                if (text.length > 1) {
+                    // check that we don't contain copyright content
+                    if (copyrightWordList && copyrightWordList.size()) {
+                        badWord = copyrightWordList.find(function(word) {
+                            return text.indexOf(word.toLowerCase()) !== -1;
+                        });
+
+                        this._setError("copyright", badWord);
+                    }
+                }
             }
         });
     });
