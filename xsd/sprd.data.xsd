@@ -96,6 +96,7 @@
                 <attribute name="gateway" default="/image-server/v1"/>
                 <attribute name="detectWebP" default="true"/>
                 <attribute name="supportsWebP"/>
+                <attribute name="designCache"/>
             </extension>
         </complexContent>
     </complexType>

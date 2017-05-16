@@ -133,6 +133,9 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="data-mask-id" default="{configuration.afterEffect.id}"/>
+                <attribute name="loadedLayers"/>
+                <attribute name="viewer"/>
+                <attribute name="loading" default="{configuration.loading}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -146,6 +149,9 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="data-mask-id" default="{configuration.afterEffect.id}"/>
+                <attribute name="loadedLayers"/>
+                <attribute name="viewer"/>
+                <attribute name="loading" default="{configuration.loading}"/>
             </extension>
         </complexContent>
     </complexType>
