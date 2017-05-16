@@ -13,7 +13,9 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
             detectWebP: true,
 
-            supportsWebP: false
+            supportsWebP: false,
+
+            designCache: {}
         },
 
         ctor: function() {
@@ -102,6 +104,35 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
             var cacheId = options.cacheId || (designId || "").replace(/^.*?(\d+).*/, "$1");
             return this.buildUrl(['designs', designId], parameter, cacheId);
+        },
+
+        designImageFromCache: function(designId, options) {
+            var cache = this.get("designCache"),
+                size = options.width || options.height,
+                key = designId + "-" + options.version;
+
+            if(options.layerIndex != null) {
+                key += "-" + options.layerIndex;
+            }
+
+            var imageSrc = cache[key];
+
+            if (imageSrc) {
+                var currentSize = imageSrc.size || 0;
+
+                if (currentSize >= size) {
+                    return imageSrc.href;
+                }
+            }
+
+            var href = this.designImage(designId, options);
+
+            cache[key] = {
+                size: size,
+                href: href
+            };
+
+            return href
         },
 
         appearanceImage: function (appearanceId, options) {
