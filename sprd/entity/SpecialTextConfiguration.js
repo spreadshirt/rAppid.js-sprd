@@ -81,7 +81,8 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
                         self.$.pimpImageService.generateDesign({
                             text: self.$.text,
                             font: self.$.font,
-                            taskId: self.$.taskId
+                            taskId: self.$.taskId,
+                            align: self.$.align
                         }, cb);
                     }
 
