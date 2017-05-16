@@ -3,9 +3,51 @@
     xmlns:ns1="js.core"
     xmlns:ns="sprd.tracking">
     <import/>
+    <element name="DTM" type="ns:DTM"/>
     <element name="Omniture" type="ns:Omniture"/>
     <element name="Optimizely" type="ns:Optimizely"/>
     <element name="Wellness" type="ns:Wellness"/>
+    <complexType name="DTM">
+        <complexContent>
+            <extension base="ns1:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.tracking.DTM"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="enabled" default="true">
+                    <annotation>
+                        <documentation>
+                        indicated if _satellite tracking is enabled
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="debug">
+                    <annotation>
+                        <documentation>
+                        enables debugging to console
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="maxTries" default="10">
+                    <annotation>
+                        <documentation>
+                        the number of tries to find the '_satellite' object on the window object
+                    </documentation>
+                    </annotation>
+                </attribute>
+                <attribute name="ontrackingInitialized" default="_onTrackingInitializedHandler" type="string">
+                    <annotation>
+                        <documentation>
+                        the trackingInitialized event is dispatched after the '_satellite' object has been found on
+the window object
+                    </documentation>
+                    </annotation>
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
     <complexType name="Omniture">
         <complexContent>
             <extension base="ns1:Component">
