@@ -32,7 +32,8 @@ define(["js/core/Error"], function (Error) {
         CONFIGURATION_OVERLAP: -102,
         MAX_BOUND: -103,
         MIN_BOUND: -104,
-        COPYRIGHT: -105
+        COPYRIGHT: -105,
+        COLOR_OVERLAP: -106
     };
 
     errorTests = [
@@ -51,6 +52,14 @@ define(["js/core/Error"], function (Error) {
         {
             test: /blacklisted\sterm/,
             type: "COPYRIGHT"
+        },
+        {
+            test: /is\snot\sallowed\sabove/,
+            type: "CONFIGURATION_OVERLAP"
+        },
+        {
+            test: /not\sallowed\sabove\scolor/,
+            type: "COLOR_OVERLAP"
         }
     ];
 
