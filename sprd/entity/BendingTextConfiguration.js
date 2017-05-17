@@ -61,6 +61,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 this.$synchronizeCache = designCache;
             },
 
+
             init: function(options, callback) {
                 var properties = this.$.properties,
                     context = this.$.context,
