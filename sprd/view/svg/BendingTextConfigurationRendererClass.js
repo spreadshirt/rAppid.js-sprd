@@ -146,7 +146,7 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             this.removeElementsBlackListTags(assetContainer, ["path", "text"]);
 
             // Remove attributes.
-            var attrBlacklist = ["style", "class", "isSpecialFlex", "maskId", "largeSize", "filter"];
+            var attrBlacklist = ["style", "class", "isSpecialFlex", "maskId", "largeSize", "filter", "isFlock"];
             this.removeAttributesOnDescendants(assetContainer, attrBlacklist);
             svg.appendChild(assetContainer);
 
