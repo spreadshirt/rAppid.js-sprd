@@ -323,6 +323,62 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 product.$.configurations.remove(removeConfigurations);
             },
 
+            getTargetPrintArea: function(product, params) {
+                var view = params.view,
+                    printArea = params.printArea,
+                    perspective = params.perspective,
+                    productType = product.$.productType;
+
+                if (!printArea && perspective && !view) {
+                    view = productType.getViewByPerspective(perspective);
+                }
+
+                if (!printArea && view) {
+                    if (!productType.containsView(view)) {
+                        throw new Error("View not on ProductType");
+                    }
+
+                    // TODO: look for print area that supports print types, etc...
+                    printArea = view.getDefaultPrintArea();
+                }
+
+                view = product.$.view || product.getDefaultView();
+                if (!printArea && view) {
+                    printArea = view.getDefaultPrintArea();
+                }
+
+                return printArea;
+            },
+
+            getPrintTypesForDesign: function(product, design, printArea, printType, appearance) {
+                appearance = appearance || product.$.appearance;
+                var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
+
+                if (printType && !_.contains(possiblePrintTypes, printType)) {
+                    throw new Error("PrintType not possible for design and printArea");
+                }
+
+                printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
+
+                if (!printType) {
+                    throw new Error("No printType available");
+                }
+
+                return this.moveItem(possiblePrintTypes, printType);
+            },
+
+
+            moveItem: function(array, item, i) {
+                i = i || 0;
+                var index = array.indexOf(item);
+                if (index !== -1) {
+                    array.splice(index, 1);
+                    array.splice(i, 0, item);
+                }
+
+                return array;
+            },
+
             /**
              * Adds a design to a given Product
              * @param {sprd.model.Product} product
@@ -347,8 +403,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     printArea = params.printArea,
                     view = params.view,
                     appearance = product.$.appearance,
-                    printType = params.printType,
-                    possiblePrintTypes;
+                    printType = params.printType;
 
                 if (!design) {
                     callback(new Error("No design"));
@@ -372,53 +427,17 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         productType.fetch(null, cb);
                     })
                     .seq("printArea", function() {
-
-                        if (!printArea && params.perspective && !view) {
-                            view = productType.getViewByPerspective(params.perspective);
-                        }
-
-                        if (!printArea && view) {
-                            // get print area by view
-                            if (!productType.containsView(view)) {
-                                throw new Error("View not on ProductType");
-                            }
-
-                            // TODO: look for print area that supports print types, etc...
-                            printArea = view.getDefaultPrintArea();
-                        }
-
-                        view = product.$.view || product.getDefaultView();
-                        if (!printArea && view) {
-                            printArea = view.getDefaultPrintArea();
-                        }
-
-                        if (!printArea) {
-                            throw new Error("target PrintArea couldn't be found.");
-                        }
-
-                        if (printArea.get("restrictions.designAllowed") === false) {
+                        var printArea = self.getTargetPrintArea(product, params);
+                        if (!printArea.get("restrictions.designAllowed")) {
                             throw new Error("designs cannot be added to this print area");
                         }
 
                         return printArea;
                     })
-                    .seq("printType", function() {
-                        possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance.$.id);
-
-                        if (printType && !_.contains(possiblePrintTypes, printType)) {
-                            throw new Error("PrintType not possible for design and printArea");
-                        }
-
-                        printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes, possiblePrintTypes[0]) || printType || possiblePrintTypes[0];
-
-                        if (!printType) {
-                            throw new Error("No printType available");
-                        }
-
-                        return printType;
-                    })
-                    .seq(function(cb) {
-                        printType.fetch(null, cb);
+                    .seq("printTypes", function() {
+                        var printTypes = self.getPrintTypesForDesign(product, design, this.vars.printArea, printType);
+                        printType = printTypes[0];
+                        return printTypes;
                     })
                     .seq("designConfiguration", function() {
                         var entity = product.createEntity(DesignConfiguration);
@@ -436,19 +455,21 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         bus.setUp(designConfiguration);
                         designConfiguration.init({}, cb);
                     })
-                    .seq(function() {
-                        // determinate position
-                        self._positionConfiguration(this.vars["designConfiguration"]);
+                    .seq('validatedMove', function() {
+                        return self.getValidatedMove(this.vars.printTypes, this.vars.printArea, this.vars.designConfiguration, product);
+                    })
+                    .seq(function(cb) {
+                        if (!this.vars.validatedMove) {
+                            return cb();
+                        }
+                        this.vars.validatedMove.printType.fetch(null, cb);
                     })
                     .exec(function(err, results) {
-                        if (!err) {
-                            product.removeExampleConfiguration();
-                            product._addConfiguration(results.designConfiguration);
+                        if (!err && results.validatedMove) {
+                            self._moveConfigurationToView(product, results.designConfiguration, results.validatedMove.printType, results.printArea, {transform: results.validatedMove.transform});
                         }
-                        self.$.bus.trigger('Application.productChanged', product);
                         callback && callback(err, results.designConfiguration);
                     });
-
             },
 
             addText: function(product, params, callback) {
@@ -1007,6 +1028,30 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     });
             },
 
+            getValidatedMove: function(printTypes, printArea, configuration, product) {
+                if (!(printTypes instanceof Array)) {
+                    printTypes = [printTypes];
+                }
+
+                if (configuration instanceof DesignConfiguration && configuration.$.design
+                    && !PrintValidator.canBePrinted(configuration.$.design, product, printTypes, printArea)) {
+                    return null;
+                }
+
+                this.moveItem(printTypes, PrintTypeEqualizer.getPreferredPrintType(product, printArea, printTypes), 0);
+
+                var validatedMove = null,
+                    self = this;
+                _.find(printTypes, function(printType) {
+                    validatedMove = self.validateConfigurationMove(printType, printArea, configuration);
+                    return validatedMove && _.every(validatedMove.validations, function(validation) {
+                            return !validation;
+                        });
+                });
+
+                return validatedMove;
+            },
+
             validateMove: function(printTypes, printArea, configuration, product) {
                 if (!(printTypes instanceof Array)) {
                     printTypes = [printTypes];
@@ -1036,8 +1081,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             validateConfigurationMove: function(printType, printArea, configuration, product) {
                 try {
-                    var scale = this.getConfigurationPosition(configuration, printArea, printType).scale;
-                    return configuration._validatePrintTypeSize(printType, configuration.get('size.width'), configuration.get('size.height'), scale);
+                    var transform = this.getConfigurationPosition(configuration, printArea, printType);
+                    var validations = configuration._validatePrintTypeSize(printType, configuration.width(transform.scale.x), configuration.height(transform.scale.y), transform.scale);
+                    return {
+                        printType: printType,
+                        validations: validations,
+                        transform: transform
+                    }
                 } catch (e) {
                     return null;
                 }
