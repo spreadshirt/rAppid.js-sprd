@@ -830,8 +830,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 printArea = printArea || configuration.$.printArea;
 
                 if (!options.respectTransform) {
-                    configuration.set('scale', {x: 1, y: 1}, {silent: true});
-                    configuration.set('rotation', 0, {silent: true});
+                    if (!options.respectScale) {
+                        configuration.set('scale', {x: 1, y: 1}, {silent: true});
+                    }
+
+                    if (!options.respectRotation) {
+                        configuration.set('rotation', 0, {silent: true});
+                    }
                 }
 
                 configuration.set({
@@ -1110,7 +1115,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 //example: between product type 812 and 1052
                 var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
                 var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
-                var desiredScaleFactor = options.respectTransform ? printAreaRatio : scaleToFitDefaultBox;
+                var desiredScaleFactor = options.respectTransform || options.respectScale ? printAreaRatio : scaleToFitDefaultBox;
                 var desiredScale = configuration.$.scale.x * desiredScaleFactor;
 
                 var defaultDesiredOffset = Vector.create(defaultBoxCenterX, defaultBoxCenterY);
@@ -1449,7 +1454,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (middlePoint.x < 0 || middlePoint.y < 0 || middlePoint.x > right || middlePoint.y > bottom) {
                     // outside the view
-                    this._addConfiguration(product, configuration);
+                    this._addConfiguration(product, configuration, configuration.$.printType, configuration.$.printArea, {
+                        respectScale: true,
+                        respectRotation: true
+                    });
                     return true;
                 }
 
