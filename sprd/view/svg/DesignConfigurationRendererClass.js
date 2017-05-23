@@ -15,7 +15,7 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
             loading: "{configuration.loading}"
         },
 
-        $classAttributes: ["x", "y", "width", "height"],
+        $classAttributes: ["x", "y", "width", "height", "loadedLayers"],
 
         url: function() {
 
