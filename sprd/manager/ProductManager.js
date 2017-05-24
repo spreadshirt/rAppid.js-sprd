@@ -1073,7 +1073,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             validateConfigurationMoveList: function(printTypes, printArea, configuration, product) {
                 var ret = [];
                 for (var i = 0; i < printTypes.length; i++) {
-                    ret.push(this.validateConfigurationMove(printTypes[i], printArea, configuration, product));
+                    var validatedMove = this.validateConfigurationMove(printTypes[i], printArea, configuration, product);
+                    ret.push(validatedMove && validatedMove.validations);
                 }
 
                 return ret;
