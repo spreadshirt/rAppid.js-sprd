@@ -2,6 +2,9 @@ define(["js/core/Error"], function (Error) {
 
     var errorTests,
         ProductCreationError = Error.inherit('sprd.error.ProductCreationError', {
+            parseMessage: function() {
+                return this.detailedMessage.message.replace(/^(.*?)net\.sprd.*/g, "$1");
+            }
         }, {
             createFromResponse: function (err) {
 
@@ -9,19 +12,27 @@ define(["js/core/Error"], function (Error) {
                     return null;
                 }
 
+                var productCreationError;
                 if (err.xhr && err.xhr.responses) {
                     var message = err.xhr.responses.text;
 
                     for (var i = 0; i < errorTests.length; i++) {
                         var errorTest = errorTests[i];
                         if (errorTest.test.test(message)) {
-                            return new ProductCreationError(errorTest.type,
+                            productCreationError = new ProductCreationError(errorTest.type,
                                 ProductCreationError.ErrorCodes[errorTest.type] || ProductCreationError.ErrorCodes.PRODUCT_CREATION,
                                 err);
+
+                            productCreationError.detailedMessage = JSON.parse(message);
+
+                            return productCreationError;
                         }
                     }
                 }
-                return new ProductCreationError("ProductCreationError", ProductCreationError.ErrorCodes.PRODUCT_CREATION, err);
+                productCreationError = new ProductCreationError("ProductCreationError", ProductCreationError.ErrorCodes.PRODUCT_CREATION, err);
+
+                productCreationError.detailedMessage = JSON.parse(message);
+                return productCreationError;
             }
 
         });
