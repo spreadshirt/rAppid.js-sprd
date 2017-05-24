@@ -64,11 +64,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         }
 
                     })
-                    .seq(function() {
+                    .seq('removedConfigurations', function() {
                         options = options || {};
                         options.allowPrintAreaChange = true;
                         options.respectTransform = true;
-                        self.convertConfigurations(product, productType, appearance, options);
+                        return self.convertConfigurations(product, productType, appearance, options);
                     })
                     .seq(function() {
                         // first set product type
@@ -85,18 +85,21 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             },
 
-            setAppearance: function(product, appearance) {
-
+            setAppearance: function(product, appearance, options) {
+                options = options || {};
                 if (product.$.appearance.$.id === appearance.$.id) {
                     // same appearance, nothing to do
                     return;
                 }
 
-                this.convertConfigurations(product, product.$.productType, appearance, {respectTransform: true});
+                options.respectTransform = true;
+                var removedConfigurations = this.convertConfigurations(product, product.$.productType, appearance, options);
                 product.set({
                     appearance: appearance
                 });
                 this.$.bus && this.$.bus.trigger('Application.productChanged', product);
+
+                return removedConfigurations;
             },
 
             /***
@@ -106,15 +109,19 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
              * @param {sprd.entity.Appearance} appearance
              */
             convertConfigurations: function(product, productType, appearance, options) {
+                options = options || {};
+
                 var self = this;
                 var removedConfigurations = _.filter(_.clone(product.$.configurations.$items), function(configuration) {
                     return !self.convertConfiguration(product, configuration, productType, appearance, options);
                 });
 
-                if (removedConfigurations.length) {
+                if (removedConfigurations && removedConfigurations.length) {
                     self.trigger('on:removedConfigurations', {configurations: removedConfigurations}, self);
                     product.$.configurations.remove(removedConfigurations);
                 }
+
+                return removedConfigurations;
             },
 
             getFirstDigital: function(possiblePrintTypes) {
@@ -408,7 +415,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         text: text,
                         fontSize: fontSize,
                         font: font,
-                        printColors: printColors
+                        printColors: printColors,
+                        angle: params.angle
                     });
 
                     return entity;
@@ -1326,7 +1334,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 });
             },
 
-            convertText: function(product, configuration) {
+            convertText: function(product, configuration, angle) {
                 if (configuration) {
                     var font = configuration.$.font ? configuration.$.font : configuration.getUsedFonts()[0],
                         fontFamily = font.getFontFamily();
@@ -1335,7 +1343,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         this.convertTextToBendingText(product, configuration, {
                             printColor: configuration.$.printColors.at(0),
                             font: font,
-                            fontFamily: fontFamily
+                            fontFamily: fontFamily,
+                            angle: angle
                         });
                     } else if (configuration instanceof BendingTextConfiguration) {
                         this.convertBendingTextToText(product, configuration, {

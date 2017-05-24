@@ -9,10 +9,23 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
             fetched: false
         },
 
-        ctor: function() {
-            var self = this;
-            self.callBase();
-            self.fetchSvg(self.url());
+        clone: function(options) {
+            // Overwritten clone function, because a svg document contains circular content
+            // e.g. parent -> child -> parent -> child ...
+            // This will cause a stackoverflow.
+            var oldSvg = this.$.svg;
+            this.set('svg', null, {silent: true});
+
+            var clonedVectorMask = this.callBase();
+            clonedVectorMask.fetchSvg();
+
+            this.set('svg', oldSvg, {silent: true});
+            return clonedVectorMask;
+        },
+
+        initialize: function() {
+            this.callBase();
+            this.fetchSvg();
         },
 
         initImage: function(options, callback) {
@@ -30,7 +43,7 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
 
             flow()
                 .seq('data_uri', function(cb) {
-                    self.fetchSvg(self.url(), cb);
+                    self.fetchSvg(cb);
                 })
                 .seq('img', function(cb) {
                     var img = new Image();
@@ -51,8 +64,10 @@ define(["sprd/model/Mask", "flow", "rAppid"], function(Mask, flow, rappid) {
                 });
         },
 
-        fetchSvg: function(url, callback) {
-            var self = this;
+        fetchSvg: function(callback) {
+            var self = this,
+                url = this.url();
+
             if (!this.$.svg || !this.$.svg.rootElement) {
                 rappid.ajax(url, null, function(err, xhr) {
                     if (err) {

@@ -1,6 +1,6 @@
 define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
 
-    return PatternRenderer.inherit("sprd.view.svg.PatternRenderer", {
+    return PatternRenderer.inherit("sprd.view.svg.DesignConfigurationRendererClass", {
 
         defaults: {
             tagName: "g",
@@ -9,10 +9,15 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
             isSpecialFlex: "{isSpecialFlex()}",
             isFlock: "{isFlock()}",
             largeSize: "{largeSize()}",
-            filter: "{filter()}"
+            filter: "{filter()}",
+            loadedLayers: {},
+            viewer: null,
+            loading: "{configuration.loading}"
         },
 
-        url: function () {
+        $classAttributes: ["x", "y", "width", "height"],
+
+        url: function() {
 
             if (this.$.imageService && this.$.configuration && this.$.configuration.$.design && this.$.configuration.$.printColors) {
 
@@ -30,7 +35,7 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
                 options.version = design.$.version;
 
                 if (!design.isVectorDesign()) {
-                    return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
+                    return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImageFromCache(design.$.wtfMbsId, options);
                 }
 
             }
@@ -61,18 +66,31 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
 
                 options.printColors = printColors;
                 options.version = design.$.version;
+                options.layerIndex = layerIndex;
 
                 if (!design.isVectorDesign()) {
-                    return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImage(design.$.wtfMbsId, options);
+                    return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImageFromCache(design.$.wtfMbsId, options);
                 } else {
-                    return this.$.imageService.designImage(design.$.wtfMbsId, options)
+                    return this.$.imageService.designImageFromCache(design.$.wtfMbsId, options);
                 }
 
             }
 
-
             return null;
         }.onChange("design", "_width", "_height").on(["configuration.printColors", "reset"]),
+
+        handleLoad: function(index) {
+            var loadedLayers = this.get("loadedLayers") || {};
+            loadedLayers[index] = true;
+            this.set("loadedLayers", loadedLayers, {update: true, force: true});
+        },
+
+        allLayersLoaded: function() {
+            var loadedLayers = this.get("loadedLayers");
+            var length = Object.keys(loadedLayers).length;
+
+            return length == this.get("configuration.printColors.length");
+        }.onChange("loadedLayers").on(["configuration.printColors", "reset"]),
 
         fillUrl: function(layerIndex) {
             //there are some designs where the layer order needs to be switched
@@ -84,6 +102,19 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
 
             var printColors = this.get("configuration.printColors.$items");
             return printColors[fixedLayerIndex].color().toString();
-        }
+        },
+
+        loaderSize: function() {
+            return Math.min(this.$.height, this.$.width) * 0.5;
+        }.onChange("width", "height"),
+
+        loaderPos: function() {
+            var s = this.loaderSize() * 0.5;
+            return {
+                x: this.$.width * 0.5 - s,
+                y: this.$.height * 0.5 - s
+            }
+        }.onChange("width", "height")
+
     })
 });

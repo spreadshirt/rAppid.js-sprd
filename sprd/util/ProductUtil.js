@@ -28,18 +28,23 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
         },
 
-        getPossiblePrintTypesForConfiguration: function(configuration, appearance) {
+        getPossiblePrintTypesForConfiguration: function(configuration, appearance, skipValidation) {
             if (!configuration) {
                 return null;
             }
 
             var possiblePrintTypes = configuration.getPossiblePrintTypes(appearance);
-            return _.filter(possiblePrintTypes, function(printType) {
-                var validations = configuration._validatePrintTypeSize(printType, configuration.width(), configuration.height(), configuration.$.scale);
-                return _.every(validations, function(validation) {
-                    return !validation;
-                })
-            });
+
+            if(!skipValidation) {
+                return _.filter(possiblePrintTypes, function(printType) {
+                    var validations = configuration._validatePrintTypeSize(printType, configuration.width(), configuration.height(), configuration.$.scale);
+                    return _.every(validations, function(validation) {
+                        return !validation;
+                    })
+                });
+            }
+
+            return possiblePrintTypes;
         },
 
         getPossiblePrintTypesForTextOnPrintArea: function(fontFamily, printArea, appearance) {
@@ -136,7 +141,7 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
         },
 
         findPrintType: function(product, configuration, predicate) {
-            var possiblePrintTypes = this.getPossiblePrintTypesForConfiguration(configuration, product.$.appearance);
+            var possiblePrintTypes = this.getPossiblePrintTypesForConfiguration(configuration, product.$.appearance, true);
             return _.find(possiblePrintTypes, function(printType) {
                 return predicate(printType);
             });

@@ -517,7 +517,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                                     var lineElement = line.children[l].item;
 
                                     var tspan = {
-                                        content: [lineElement.$.text],
+                                        content: [lineElement.$.text.replace(/\xa0/g, "")],
                                         lineWidth: text.width
                                     };
 
