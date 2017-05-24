@@ -154,8 +154,10 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                 h = textBbox.height;
 
             if (options.width) {
-                svg.setAttribute("width", options.width + "px");
-                svg.setAttribute("height", (parseInt(options.width * h / w) + 1) + "px");
+                var width = options.width;
+                var height = w > 0 ? Math.ceil(width * h / w) : 0;
+                svg.setAttribute("width", width + "px");
+                svg.setAttribute("height", height + "px");
             }
 
             if (options.fill) {
