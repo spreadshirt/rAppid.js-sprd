@@ -202,7 +202,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     if (composedTextFlow) {
                         if (!textArea.$.autoGrow && !skipHeight) {
                             self.$.textArea.set('height', composedTextFlow.composed.getHeight());
-                        } else {
+                        } else if(textArea.$.autoGrow) {
                             var alignment = composedTextFlow.getAlignmentOfWidestSpan();
                             var alignmentFactor = composedTextFlow.alignmentToFactor(alignment);
 
@@ -693,6 +693,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 var ret = this.callBase(options);
                 ret.$stage = this.$stage;
+                ret.$.textArea = this.$.textArea.clone();
                 ret.$.composedTextFlow = null;
                 return ret;
             },
