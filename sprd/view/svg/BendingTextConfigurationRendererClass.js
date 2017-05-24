@@ -138,8 +138,8 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
             var textBbox = this.$.text.$el.getBBox(),
                 svgNamespace = 'http://www.w3.org/2000/svg',
-                svg = document.createElementNS(svgNamespace, "svg");
-            assetContainer = this.$el.cloneNode(true);
+                svg = document.createElementNS(svgNamespace, "svg"),
+                assetContainer = this.$el.cloneNode(true);
 
             svg.setAttribute("viewBox", [textBbox.x, textBbox.y, textBbox.width, textBbox.height].join(" "));
             //Remove redundant elements.
