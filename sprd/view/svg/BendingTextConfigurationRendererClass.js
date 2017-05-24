@@ -155,9 +155,9 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
             if (options.width) {
                 var width = options.width;
-                var height = w > 0 ? width * h / w : 0;
+                var height = w > 0 ? Math.ceil(width * h / w) : 0;
                 svg.setAttribute("width", width + "px");
-                svg.setAttribute("height", (parseInt(height) + 1) + "px");
+                svg.setAttribute("height", height + "px");
             }
 
             if (options.fill) {
