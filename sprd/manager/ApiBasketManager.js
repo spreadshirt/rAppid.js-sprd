@@ -229,6 +229,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                             return;
                         }
 
+                        self.trigger("on:basketInitialized", basket, self);
+
                         callback && callback();
 
                     } else {
