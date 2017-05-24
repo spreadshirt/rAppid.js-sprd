@@ -693,7 +693,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 var ret = this.callBase(options);
                 ret.$stage = this.$stage;
-                ret.$.textArea = this.$.textArea.clone();
+                ret.$.textArea = this.$.textArea && this.$.textArea.clone();
                 ret.$.composedTextFlow = null;
                 return ret;
             },
