@@ -52,16 +52,20 @@ define(['js/svg/Svg', 'js/core/Bus', 'underscore'], function(Svg, Bus, _) {
                 return null;
             }
 
-            this.setViewBox(textBbox.x, textBbox.y, textBbox.width || size.width, textBbox.height || size.height);
             elem.setAttribute("xmlns", svgNamespace);
             elem.setAttribute("xmlns:xlink", xlinkNS);
+            this.setViewBox(textBbox.x, textBbox.y, textBbox.width || size.width, textBbox.height || size.height);
+
             return elem;
         },
 
         getElementAsString: function(options) {
             var elem = this.getElement(options),
-                docString = '<!DOCTYPE svg [ <!ENTITY nbsp " &#160;">] >';
-            return docString + elem.outerHTML;
+                docString = '<!DOCTYPE svg [ <!ENTITY nbsp " &#160;">] >',
+                svgContent = elem.outerHTML;
+
+            svgContent = svgContent.replace(/\b[a-z0-9]+:href/ig, "xlink:href");
+            return docString + svgContent;
         }
     });
 });
