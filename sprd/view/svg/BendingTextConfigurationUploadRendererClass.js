@@ -6,8 +6,8 @@ define(['js/svg/Svg'], function(Svg) {
             configuration: null,
             x: 0,
             y: 0,
-            width: "{width()}",
-            height: "{height()}"
+            width: "{width()}px",
+            height: "{height()}px"
         },
 
         ctor: function() {
@@ -26,25 +26,16 @@ define(['js/svg/Svg'], function(Svg) {
         width: function() {
             var config = this.$.configuration;
             if (config) {
-                return Math.round(config.widthInMM() + 50)
+                return Math.round(config.widthInMM()) + 50;
             }
         }.on('configuration.widthInMM()'),
 
         height: function() {
             var config = this.$.configuration;
             if (config) {
-                var width = this.width(),
-                    h = this.$viewBoxHeight,
-                    w = this.$viewBoxWidth;
-
-
-                if (!w) {
-                    return 0;
-                } else {
-                    return Math.ceil(width * h / w);
-                }
+                return Math.round(config.heightInMM()) + 50;
             }
-        }.onChange('viewBox'),
+        }.on('configuration.heightInMM()'),
 
         getElement: function(options) {
             var textBbox = this.$.text.$el.getBBox(),
