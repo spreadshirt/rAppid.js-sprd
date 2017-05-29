@@ -134,14 +134,13 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
         },
 
         getTextPathSvg: function(options) {
-            options = options || {};
+            width = options.width || 0;
+            fill = options.fill || "#000000";
 
-            var textBbox = this.$.text.$el.getBBox(),
-                svgNamespace = 'http://www.w3.org/2000/svg',
+            var svgNamespace = 'http://www.w3.org/2000/svg',
                 svg = document.createElementNS(svgNamespace, "svg"),
                 assetContainer = this.$el.cloneNode(true);
 
-            svg.setAttribute("viewBox", [textBbox.x, textBbox.y, textBbox.width, textBbox.height].join(" "));
             //Remove redundant elements.
             this.removeElementsBlackListTags(assetContainer, ["path", "text"]);
 
@@ -150,19 +149,8 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             this.removeAttributesOnDescendants(assetContainer, attrBlacklist);
             svg.appendChild(assetContainer);
 
-            var w = textBbox.width,
-                h = textBbox.height;
-
-            if (options.width) {
-                var width = options.width;
-                var height = w > 0 ? Math.ceil(width * h / w) : 0;
-                svg.setAttribute("width", width + "px");
-                svg.setAttribute("height", height + "px");
-            }
-
-            if (options.fill) {
-                svg.setAttribute("fill", options.fill);
-            }
+            svg.setAttribute("width", width + "px");
+            svg.setAttribute("fill", options.fill);
 
             svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
             return svg;
