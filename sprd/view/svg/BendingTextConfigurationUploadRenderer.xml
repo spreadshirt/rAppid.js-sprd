@@ -1,0 +1,13 @@
+<sprdSvg:BendingTextConfigurationUploadRendererClass xmlns="http://www.w3.org/2000/svg"
+                                                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                     xmlns:sprdSvg="sprd.view.svg"
+                                                     fill="{configuration.getPrintColor()}">
+    <path cid="path" id="textPath" fill="none" _transform="translate({configuration.textPathOffsetX}, {configuration.textPathOffsetY})"
+          d="{configuration.textPath}"/>
+    <text cid="text" font-family="{configuration.font.getUniqueFontName()}" font-size="{configuration.fontSize}" text-anchor="middle" dy="{configuration.dy}">
+        <textPath xlink:href="#textPath" cid="textPath" startOffset="50%">
+            {configuration.text}
+        </textPath>
+    </text>
+
+</sprdSvg:BendingTextConfigurationUploadRendererClass>

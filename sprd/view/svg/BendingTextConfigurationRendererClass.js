@@ -133,39 +133,6 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             }
         },
 
-        getTextPathSvg: function(options) {
-            options = options || {};
-
-            var textBbox = this.$.text.$el.getBBox(),
-                svgNamespace = 'http://www.w3.org/2000/svg',
-                svg = document.createElementNS(svgNamespace, "svg");
-            assetContainer = this.$el.cloneNode(true);
-
-            svg.setAttribute("viewBox", [textBbox.x, textBbox.y, textBbox.width, textBbox.height].join(" "));
-            //Remove redundant elements.
-            this.removeElementsBlackListTags(assetContainer, ["path", "text"]);
-
-            // Remove attributes.
-            var attrBlacklist = ["style", "class", "isSpecialFlex", "maskId", "largeSize", "filter", "isFlock"];
-            this.removeAttributesOnDescendants(assetContainer, attrBlacklist);
-            svg.appendChild(assetContainer);
-
-            var w = textBbox.width,
-                h = textBbox.height;
-
-            if (options.width) {
-                svg.setAttribute("width", options.width + "px");
-                svg.setAttribute("height", (parseInt(options.width * h / w) + 1) + "px");
-            }
-
-            if (options.fill) {
-                svg.setAttribute("fill", options.fill);
-            }
-
-            svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-            return svg;
-        },
-
         removeElementsBlackListTags: function(node, tagList) {
             var children = node.childNodes,
                 toBeRemovedChildren = [];

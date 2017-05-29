@@ -1,5 +1,5 @@
-define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/lib/Text2Path", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", "underscore", "sprd/util/ArrayUtil", "sprd/extensions/CanvasToBlob", "xaml!sprd/data/DesignerApiDataSource", "sprd/model/Transformer", "sprd/model/AbstractShop", "sprd/entity/TextConfiguration"],
-    function(DesignConfigurationBase, Size, Font, ProductUtil, Text2Path, BlobImage, IImageUploadService, flow, _, ArrayUtil, CanvasToBlob, DesignerApiDataSource, Transformer, Shop, TextConfiguration) {
+define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/lib/Text2Path", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", "underscore", "sprd/util/ArrayUtil", "sprd/extensions/CanvasToBlob", "xaml!sprd/data/DesignerApiDataSource", "sprd/model/Transformer", "sprd/model/AbstractShop", "sprd/entity/TextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationUploadRenderer"],
+    function(DesignConfigurationBase, Size, Font, ProductUtil, Text2Path, BlobImage, IImageUploadService, flow, _, ArrayUtil, CanvasToBlob, DesignerApiDataSource, Transformer, Shop, TextConfiguration, BendingTextConfigurationUploadRenderer) {
         var PATH_TYPE = {
             OUTER_CIRCLE: "outer_circle",
             INNER_CIRCLE: "inner_circle",
@@ -289,10 +289,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
                     flow()
                         .seq('svg', function(cb) {
-                            self.transformTextPath({
-                                fill: fill,
-                                width: Math.round((self.width() * self.$.printType.$.dpi / 25.4) + 50, 0)
-                            }, cb);
+                            self.transformTextPath(cb);
                         })
                         .seq("blob", function(cb) {
                             var svg = this.vars.svg;
@@ -345,11 +342,32 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
             },
 
-            transformTextPath: function(options, callback) {
-                var svg = this.mainConfigurationRenderer.getTextPathSvg(options),
-                    doctypeString = '<!DOCTYPE svg [ <!ENTITY nbsp " &#160;">] >',
-                    svgContent = doctypeString + svg.outerHTML,
-                    transformer = this.$.transformer;
+            getPrintColor: function() {
+                var configuration = this,
+                    printColors = configuration.$.printColors,
+                    printColor = null;
+
+                if (printColors && printColors.size()) {
+                    printColor = printColors.at(0).toHexString();
+                }
+
+                return printColor;
+            }.on("printColors"),
+
+            transformTextPath: function(callback) {
+                try {
+                    var uploadRenderer = this.$stage.createComponent(BendingTextConfigurationUploadRenderer, {
+                        configuration: this
+                    });
+                    this.$stage.addChild(uploadRenderer);
+                    var svgContent = uploadRenderer.getElementAsString();
+                } catch (e) {
+                    debugger;
+                } finally {
+                    this.$stage.removeChild(uploadRenderer);
+                }
+
+                var transformer = this.$.transformer;
 
                 transformer.set('content', svgContent);
                 transformer.save(null, function(err, transformer) {
