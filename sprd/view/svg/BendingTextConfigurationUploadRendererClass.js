@@ -40,9 +40,9 @@ define(['js/svg/Svg', 'js/core/Bus', 'underscore'], function(Svg, Bus, _) {
 
             var textBbox = this.$.text.$el.getBBox(),
                 svgNamespace = 'http://www.w3.org/2000/svg',
+                xlinkNS = 'http://www.w3.org/1999/xlink',
                 elem = this.$el,
                 size = this.get('configuration._size');
-
 
             if (!elem) {
                 return null;
@@ -52,6 +52,7 @@ define(['js/svg/Svg', 'js/core/Bus', 'underscore'], function(Svg, Bus, _) {
 
             this.setViewBox(textBbox.x, textBbox.y, textBbox.width || size.width, textBbox.height || size.height);
             elem.setAttribute("xmlns", svgNamespace);
+            elem.setAttribute("xmlns:xlink", xlinkNS);
             return elem;
         },
 
