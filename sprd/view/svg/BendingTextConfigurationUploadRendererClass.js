@@ -52,8 +52,8 @@ define(['js/svg/Svg'], function(Svg) {
             elem.setAttribute("xmlns", svgNamespace);
             elem.setAttribute("xmlns:xlink", xlinkNS);
 
-            if (textBbox.width === 0 && textBbox.height === 0 && config) {
-                this.setViewBox(textBbox.x, textBbox.y, config.widthInMM(1), config.heightInMM(1));
+            if (textBbox.width === 0 && textBbox.height === 0) {
+                this.setViewBox(textBbox.x, textBbox.y, config && config.widthInMM(1), config && config.heightInMM(1));
             } else {
                 this.setViewBox(textBbox.x, textBbox.y, textBbox.width, textBbox.height);
             }
