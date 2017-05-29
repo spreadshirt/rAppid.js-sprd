@@ -37,12 +37,18 @@ define(['js/svg/Svg'], function(Svg) {
                     h = this.$viewBoxHeight,
                     w = this.$viewBoxWidth;
 
-                return w > 0 ? Math.ceil(width * h / w) : 0;
+
+                if (!w) {
+                    return 0;
+                } else {
+                    return Math.ceil(width * h / w);
+                }
             }
         }.onChange('viewBox'),
 
         getElement: function(options) {
             var textBbox = this.$.text.$el.getBBox(),
+                config = this.$.configuration,
                 svgNamespace = 'http://www.w3.org/2000/svg',
                 xlinkNS = 'http://www.w3.org/1999/xlink',
                 elem = this.$el,
@@ -54,7 +60,12 @@ define(['js/svg/Svg'], function(Svg) {
 
             elem.setAttribute("xmlns", svgNamespace);
             elem.setAttribute("xmlns:xlink", xlinkNS);
-            this.setViewBox(textBbox.x, textBbox.y, textBbox.width || size.width, textBbox.height || size.height);
+
+            if (textBbox.width === 0 && textBbox.height === 0 && config) {
+                this.setViewBox(textBbox.x, textBbox.y, config.widthInMM(1), config.heightInMM(1));
+            } else {
+                this.setViewBox(textBbox.x, textBbox.y, textBbox.width, textBbox.height);
+            }
 
             return elem;
         },
