@@ -267,6 +267,13 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         },
 
+        widthInMM: function() {
+            var printType = this.$.printType;
+            if (printType) {
+                return this.width() * printType.$.dpi / 25.4;
+            }
+        }.onChange('width()', 'printType.dpi'),
+
         _getBoundingBox: function(offset, width, height, rotation, scale, onlyContent, xOffset) {
 
             offset = offset || this.$.offset;
