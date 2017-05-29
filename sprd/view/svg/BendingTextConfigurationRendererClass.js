@@ -133,29 +133,6 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             }
         },
 
-        getTextPathSvg: function(options) {
-            width = options.width || 0;
-            fill = options.fill || "#000000";
-
-            var svgNamespace = 'http://www.w3.org/2000/svg',
-                svg = document.createElementNS(svgNamespace, "svg"),
-                assetContainer = this.$el.cloneNode(true);
-
-            //Remove redundant elements.
-            this.removeElementsBlackListTags(assetContainer, ["path", "text"]);
-
-            // Remove attributes.
-            var attrBlacklist = ["style", "class", "isSpecialFlex", "maskId", "largeSize", "filter", "isFlock"];
-            this.removeAttributesOnDescendants(assetContainer, attrBlacklist);
-            svg.appendChild(assetContainer);
-
-            svg.setAttribute("width", width + "px");
-            svg.setAttribute("fill", options.fill);
-
-            svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-            return svg;
-        },
-
         removeElementsBlackListTags: function(node, tagList) {
             var children = node.childNodes,
                 toBeRemovedChildren = [];

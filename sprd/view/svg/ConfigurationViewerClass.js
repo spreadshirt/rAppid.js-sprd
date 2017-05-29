@@ -1,5 +1,5 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer", "xaml!sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus", "sprd/util/UnitUtil", "sprd/entity/BendingTextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationRenderer", "sprd/type/Line", "sprd/extensions/Number"],
-    function(SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus, UnitUtil, BendingTextConfiguration, BendingTextConfigurationRenderer, Line, extension) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer", "xaml!sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus", "sprd/util/UnitUtil", "sprd/entity/BendingTextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationRenderer", "sprd/type/Line", "sprd/extensions/Number", "xaml!sprd/view/svg/BendingTextConfigurationUploadRenderer"],
+    function(SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus, UnitUtil, BendingTextConfiguration, BendingTextConfigurationRenderer, Line, extension, BendingTextConfigurationUploadRenderer) {
 
         var MOVE = "move",
             SCALE = "scale",
@@ -168,6 +168,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             _initializeRenderer: function() {
 
                 var rendererFactory,
+                    uploadFactory,
                     assetContainer = this.$._assetContainer,
                     configuration = this.$.configuration;
 
@@ -175,6 +176,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     rendererFactory = SpecialTextConfigurationRenderer;
                 } else if (configuration instanceof BendingTextConfiguration) {
                     rendererFactory = BendingTextConfigurationRenderer;
+                    uploadFactory = BendingTextConfigurationUploadRenderer;
                 } else if (configuration instanceof DesignConfiguration) {
                     rendererFactory = DesignConfigurationRenderer;
                 } else if (configuration instanceof TextConfiguration) {
@@ -190,6 +192,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         imageService: this.$.imageService
                     });
 
+                    if (uploadFactory) {
+                        var uploadAsset = this.createComponent(uploadFactory, {
+                            configuration: configuration,
+                            visible: false
+                        });
+                        assetContainer.addChild(uploadAsset);
+                    }
                     var softBoundary = this.get("_viewMap.printArea.boundary.soft.content.svg.path.d");
 
                     if (softBoundary) {

@@ -289,10 +289,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
                     flow()
                         .seq('svg', function(cb) {
-                            self.transformTextPath({
-                                fill: fill,
-                                width: Math.round((self.width() * self.$.printType.$.dpi / 25.4) + 50, 0)
-                            }, cb);
+                            self.transformTextPath(cb);
                         })
                         .seq("blob", function(cb) {
                             var svg = this.vars.svg;
@@ -345,11 +342,10 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
             },
 
-            transformTextPath: function(options, callback) {
-                var svg = this.mainConfigurationRenderer.getTextPathSvg(options),
-                    doctypeString = '<!DOCTYPE svg [ <!ENTITY nbsp " &#160;">] >',
-                    svgContent = doctypeString + svg.outerHTML,
-                    transformer = this.$.transformer;
+            transformTextPath: function(callback) {
+                var uploadRenderer = this.uploadRenderer;
+                var svgContent = uploadRenderer.getElementAsString();
+                var transformer = this.$.transformer;
 
                 transformer.set('content', svgContent);
                 transformer.save(null, function(err, transformer) {
