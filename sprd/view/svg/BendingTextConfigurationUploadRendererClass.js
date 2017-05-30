@@ -1,4 +1,4 @@
-define(['js/svg/Svg', 'js/core/Bus', 'underscore'], function(Svg, Bus, _) {
+define(['js/svg/Svg'], function(Svg) {
 
     return Svg.inherit("sprd.view.svg.BendingTextConfigurationRendererClass", {
 
