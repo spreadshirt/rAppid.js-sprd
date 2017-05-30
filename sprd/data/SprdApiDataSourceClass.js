@@ -99,7 +99,7 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
                 var currencyId = this.$.currencyId;
 
                 if (currencyId) {
-                    currency.currencyId = currencyId;
+                    currency.currency = currencyId;
                 }
 
                 var ret = _.defaults({
