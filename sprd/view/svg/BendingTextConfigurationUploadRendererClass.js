@@ -1,6 +1,6 @@
 define(['js/svg/Svg'], function(Svg) {
 
-    return Svg.inherit("sprd.view.svg.BendingTextConfigurationRendererClass", {
+    return Svg.inherit("sprd.view.svg.BendingTextConfigurationUploadRendererClass", {
 
         defaults: {
             configuration: null,
