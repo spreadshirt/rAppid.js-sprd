@@ -721,13 +721,26 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             removeDocking: function() {
                 var configuration = this.$.configuration;
+                if (!configuration) {
+                    return;
+                }
+
                 var printArea = configuration.$.printArea;
 
+                if (!printArea) {
+                    return;
+                }
+
                 printArea.set('docked', false);
-                var configurationsOnPrintArea = this.$.productViewer.$.product.getConfigurationsOnPrintAreas([printArea]) || [];
-                _.each(configurationsOnPrintArea, function(config) {
-                    config.set('docked', false);
-                })
+
+                var product = this.get('productViewer.product');
+
+                if (product) {
+                    var configurationsOnPrintArea = product.getConfigurationsOnPrintAreas([printArea]) || [];
+                    _.each(configurationsOnPrintArea, function(config) {
+                        config.set('docked', false);
+                    })
+                }
             },
 
             _removeSnapLines: function() {
