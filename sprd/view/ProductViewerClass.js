@@ -1,4 +1,4 @@
-define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/ImageService"], function (View, Bus, ProductManager, ImageService) {
+define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/ImageService", "designer/manager/FeatureManager"], function (View, Bus, ProductManager, ImageService, FeatureManager) {
     return View.inherit('sprd.view.ProductViewerClass', {
 
         defaults: {
@@ -31,7 +31,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
         inject: {
             bus: Bus,
             productManager: ProductManager,
-            imageService: ImageService
+            imageService: ImageService,
+            featureManager: FeatureManager
         },
 
         events: ['on:configurationSelect', "on:deselectConfiguration"],
@@ -181,7 +182,9 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             var copiedConfiguration = this.$.copiedConfiguration,
                 ctrlKey = e.metaKey || e.ctrlKey;
 
-            if (ctrlKey && e.keyCode === 86 && copiedConfiguration) {
+            var enableCopyPaste = this.$.featureManager.$.enableCopyPaste;
+
+            if (ctrlKey && e.keyCode === 86 && copiedConfiguration && enableCopyPaste) {
                 var newConfiguration = copiedConfiguration.clone(),
                     bus = self.$.bus;
 
@@ -298,7 +301,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     e.stopPropagation();
                 }
 
-                if (ctrlKey && (e.keyCode === 67 || e.keyCode === 88)) {
+                if (ctrlKey && (e.keyCode === 67 || e.keyCode === 88) && enableCopyPaste) {
                     this.set('copiedConfiguration', selectedConfiguration.clone());
 
                     if(e.keyCode === 88) {
