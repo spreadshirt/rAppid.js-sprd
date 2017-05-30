@@ -416,7 +416,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         fontSize: fontSize,
                         font: font,
                         printColors: printColors,
-                        angle: params.angle
+                        angle: params.angle,
+                        _size: params.size,
+                        offset: params.offset
                     });
 
                     return entity;
@@ -431,7 +433,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     printTypes = configuration.getPossiblePrintTypes(product.$.appearance);
                     // determinate position
-                    params.addToProduct && self.validateAndAdd(product, configuration, printTypes);
+                    params.addToProduct && self.validateAndAdd(product, configuration, printTypes, null, {respectTransform: true});
 
                     configuration.set("maxHeight", null);
                 };
@@ -1225,8 +1227,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             convertTextToBendingText: function(product, textConfiguration, params, callback) {
                 params = params || {};
-                var offset = textConfiguration.$.offset.clone();
-                var width = textConfiguration.width();
+
                 _.defaults(params, {
                     addToProduct: true,
                     removeConfiguration: true,
@@ -1241,17 +1242,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         callback && callback(err);
                     } else {
                         !params.removeConfiguration && product.$.configurations.add(textConfiguration);
-                        var s = width / config.width(1);
                         config.set({
-                            'scale': {
-                                x: s,
-                                y: s
-                            }, 'offset': offset,
                             rotation: textConfiguration.$.rotation,
                             originalConfiguration: textConfiguration
                         });
 
-                        config.set("_size", config.$._size, {force: true});
                         config.set("isNew", textConfiguration.$.isNew);
                         config.set("isTemplate", textConfiguration.$.isTemplate);
 
@@ -1349,7 +1344,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             printColor: configuration.$.printColors.at(0),
                             font: font,
                             fontFamily: fontFamily,
-                            angle: angle
+                            angle: angle,
+                            size: configuration.size(),
+                            offset: configuration.$.offset
                         });
                     } else if (configuration instanceof BendingTextConfiguration) {
                         this.convertBendingTextToText(product, configuration, {
