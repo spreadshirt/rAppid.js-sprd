@@ -1,4 +1,4 @@
-rect {
+rect:not([fill]) {
     fill: none;
 }
 

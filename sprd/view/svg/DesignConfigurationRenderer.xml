@@ -10,7 +10,8 @@
 
     <js:Repeat items="{configuration.printColors}" itemKey="printColor">
         <js:Template name="item">
-            <rect mask="url(#{maskId}-{index})" style="fill: {fillUrl(index)}" width="{width}" height="{height}" visible="{allLayersLoaded()}"/>
+            <rect mask="url(#{maskId}-{index})" fill="{fillUrl(index)}" width="{width}" height="{height}"
+                  visible="{allLayersLoaded()}"/>
         </js:Template>
     </js:Repeat>
 
