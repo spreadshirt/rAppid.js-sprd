@@ -89,6 +89,10 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
             var loadedLayers = this.get("loadedLayers");
             var length = Object.keys(loadedLayers).length;
 
+            if(this.$stage.$browser.isIE) {
+                return true;
+            }
+
             return length == this.get("configuration.printColors.length");
         }.onChange("loadedLayers").on(["configuration.printColors", "reset"]),
 
