@@ -10,6 +10,7 @@
     <element name="ConfigurationViewerClass" type="ns:ConfigurationViewerClass"/>
     <element name="DesignConfigurationRenderer" type="ns:DesignConfigurationRenderer"/>
     <element name="DesignConfigurationRendererClass" type="ns:DesignConfigurationRendererClass"/>
+    <element name="Image" type="ns:Image"/>
     <element name="PatternRenderer" type="ns:PatternRenderer"/>
     <element name="PatternRendererClass" type="ns:PatternRendererClass"/>
     <element name="PrintAreaViewer" type="ns:PrintAreaViewer"/>
@@ -152,6 +153,19 @@
                 <attribute name="loadedLayers"/>
                 <attribute name="viewer"/>
                 <attribute name="loading" default="{configuration.loading}"/>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="Image">
+        <complexContent>
+            <extension base="ns1:SvgElement">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.Image"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="tagName" default="image"/>
             </extension>
         </complexContent>
     </complexType>
