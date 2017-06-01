@@ -6,8 +6,8 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
         defaults: {
             paymentType: null,
             payment: null,
-
-            returnUrl: null
+            returnUrl: null,
+            fingerPrint: null
         },
 
         $isDependentObject: true,
@@ -24,29 +24,11 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
                 payment = this.$.payment;
 
             flow()
-                .par({
-                    foo: function(cb) {
-
-                        if (!payment) {
-                            return cb();
-                        }
-                        payment._beforeCompose(cb);
-                    },
-                    fingerPrint: function(cb) {
-                        if (payment && payment.supportsFingerPrinting) {
-                            self.getFingerPrint(function(err, fingerPrint) {
-
-                                if (err && console.error) {
-                                    console.error(err);
-                                }
-
-                                // ignore errors in getting the finger print
-                                cb(null, fingerPrint);
-                            });
-                        } else {
-                            cb();
-                        }
+                .seq(function(cb) {
+                    if (!payment) {
+                        return cb();
                     }
+                    payment._beforeCompose(cb);
                 })
                 .seq(function() {
 
@@ -78,7 +60,7 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
 
                     var checkoutData = processor.compose(self, "save");
 
-                    var fingerPrint = this.vars.fingerPrint;
+                    var fingerPrint = self.$.fingerPrint;
                     if (fingerPrint && checkoutData.payment) {
                         checkoutData.payment.fingerPrint = fingerPrint;
                     }
@@ -99,58 +81,6 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
 
         },
 
-        getFingerPrint: function(callback) {
-
-            flow()
-                .seq(function(c) {
-                    var url = "https://live.adyen.com/hpp/js/df.js?v=" + (new Date()).toISOString().replace(/-|T.*/g, ""),
-                        returned,
-                        timeoutHandle;
-
-                    function cb (err) {
-                        clearTimeout(timeoutHandle);
-
-                        if (!returned) {
-                            returned = true;
-                            c(err);
-                        }
-                    }
-
-                    timeoutHandle = setTimeout(function() {
-                        cb('timeout loading finger print library');
-                    }, 500);
-
-                    require([url], function() {
-                        cb();
-                    }, cb);
-                })
-                .seq("fingerPrint", function(cb) {
-                    var dfInitDS = window.dfInitDS,
-                        dfGetProp = window.dfGetProp,
-                        dfGetEntropy = window.dfGetEntropy,
-                        dfHashConcat = window.dfHashConcat;
-
-                    if (dfInitDS && dfGetEntropy && dfHashConcat && dfGetProp) {
-                        try {
-                            dfInitDS();
-
-                            var a = dfGetProp();
-                            var c = dfHashConcat(a);
-                            var h = dfGetEntropy();
-
-                            cb(null, c + ":" + h);
-                        } catch (a) {
-                            cb(a);
-                        }
-                    } else {
-                        cb("fingerprint not available")
-                    }
-                })
-                .exec(function(err, results) {
-                    callback && callback(err, results.fingerPrint);
-                });
-
-        },
 
         inIframe: function() {
             try {
