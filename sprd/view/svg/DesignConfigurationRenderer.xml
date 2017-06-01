@@ -3,7 +3,7 @@
     <js:Repeat items="{configuration.printColors}">
         <js:Template name="item">
             <mask id="{maskId}-{index}">
-                <image href="{maskUrl(index)}" onload="handleLoad(index)" width="{width}" height="{height}"/>
+                <sprdSvg:Image href="{maskUrl(index)}" onimageLoaded="handleLoad(index)" width="{width}" height="{height}"/>
             </mask>
         </js:Template>
     </js:Repeat>
