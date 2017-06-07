@@ -21,6 +21,14 @@ define(['js/svg/Svg'], function(Svg) {
             this.removeChild(this.$.defs);
         },
 
+        getText: function() {
+            var config = this.$.configuration;
+            if (config) {
+                var text = config.$.text.replace(/\n/g, " ");
+                return text.trim();
+            }
+        },
+
         $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text'],
 
         width: function() {
