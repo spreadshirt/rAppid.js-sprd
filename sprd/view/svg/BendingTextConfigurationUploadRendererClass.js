@@ -3,11 +3,7 @@ define(['js/svg/Svg'], function(Svg) {
     return Svg.inherit("sprd.view.svg.BendingTextConfigurationUploadRendererClass", {
 
         defaults: {
-            configuration: null,
-            x: 0,
-            y: 0,
-            width: "{width()}px",
-            height: "{height()}px"
+            configuration: null
         },
 
         ctor: function() {
@@ -29,7 +25,7 @@ define(['js/svg/Svg'], function(Svg) {
             }
         },
 
-        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text'],
+        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text', 'width', 'height', 'viewBox'],
 
         width: function() {
             var config = this.$.configuration;
@@ -46,12 +42,9 @@ define(['js/svg/Svg'], function(Svg) {
         }.on('configuration.heightInMM()'),
 
         getElement: function(options) {
-            var textBbox = this.$.text.$el.getBBox(),
-                config = this.$.configuration,
-                svgNamespace = 'http://www.w3.org/2000/svg',
+            var svgNamespace = 'http://www.w3.org/2000/svg',
                 xlinkNS = 'http://www.w3.org/1999/xlink',
-                elem = this.$el,
-                size = this.get('configuration._size');
+                elem = this.$el;
 
             if (!elem) {
                 return null;
@@ -59,12 +52,6 @@ define(['js/svg/Svg'], function(Svg) {
 
             elem.setAttribute("xmlns", svgNamespace);
             elem.setAttribute("xmlns:xlink", xlinkNS);
-
-            if (textBbox.width === 0 && textBbox.height === 0) {
-                this.setViewBox(textBbox.x, textBbox.y, config && config.widthInMM(1), config && config.heightInMM(1));
-            } else {
-                this.setViewBox(textBbox.x, textBbox.y, textBbox.width, textBbox.height);
-            }
 
             return elem;
         },
