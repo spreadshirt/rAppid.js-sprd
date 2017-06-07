@@ -3,7 +3,9 @@ define(['js/svg/Svg'], function(Svg) {
     return Svg.inherit("sprd.view.svg.BendingTextConfigurationUploadRendererClass", {
 
         defaults: {
-            configuration: null
+            configuration: null,
+            width: "{width()}px",
+            height: "{height()}px"
         },
 
         ctor: function() {
@@ -25,12 +27,14 @@ define(['js/svg/Svg'], function(Svg) {
             }
         },
 
-        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text', 'width', 'height', 'viewBox'],
+        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text', 'viewBox'],
 
         width: function() {
             var config = this.$.configuration;
             if (config) {
                 return Math.round(config.widthInMM()) + 50;
+            } else {
+                return 50;
             }
         }.on('configuration.widthInMM()'),
 
@@ -38,6 +42,8 @@ define(['js/svg/Svg'], function(Svg) {
             var config = this.$.configuration;
             if (config) {
                 return Math.round(config.heightInMM()) + 50;
+            } else {
+                return 50;
             }
         }.on('configuration.heightInMM()'),
 
