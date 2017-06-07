@@ -418,6 +418,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         printColors: printColors,
                         angle: params.angle,
                         _size: params.size,
+                        scale: params.scale,
                         offset: params.offset
                     });
 
@@ -1346,7 +1347,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             fontFamily: fontFamily,
                             angle: angle,
                             size: configuration.size(),
-                            offset: configuration.$.offset
+                            offset: configuration.$.offset,
+                            scale: configuration.$.scale
                         });
                     } else if (configuration instanceof BendingTextConfiguration) {
                         this.convertBendingTextToText(product, configuration, {
