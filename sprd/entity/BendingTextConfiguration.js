@@ -105,12 +105,18 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                                     y: properties.scale
                                 };
 
+                                var size = new Size({
+                                    width: properties.size.width,
+                                    height: properties.size.height
+                                });
+
                                 self.set({
                                     text: properties.text,
                                     angle: properties.angle || 50,
                                     path: properties.path || PATH_TYPE.OUTER_CIRCLE,
                                     font: fontFamily.getFont(fontWeight, fontStyle),
                                     fontSize: properties.fontSize || 16,
+                                    _size: size,
                                     scale: scale
                                 })
                             }
@@ -150,6 +156,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 ret.properties.fontSize = this.$.fontSize;
                 ret.properties.path = this.$.path;
                 ret.properties.scale = this.$.scale.x;
+                ret.properties.size = this.$._size.$;
 
                 return ret;
             },

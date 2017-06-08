@@ -107,15 +107,14 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
                 var newWidth = textPathRect.width,
                     oldWidth = _size.$.width,
-                    newHeight = textPathRect.height,
-                    oldHeight = _size.$.height;
+                    newHeight = textPathRect.height;
 
                 var widthScale = this.divideOrDefault(oldWidth, newWidth, 1) || 1,
                     currentScale = configuration.$.scale;
 
                 _size.set({
-                    width: textPathRect.width,
-                    height: textPathRect.height
+                    width: newWidth,
+                    height: newHeight
                 });
 
 
