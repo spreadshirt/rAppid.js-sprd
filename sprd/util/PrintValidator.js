@@ -1,15 +1,16 @@
-define(["sprd/util/ProductUtil", "underscore"], function(ProductUtil, _) {
+define(["sprd/util/ProductUtil", "underscore", "js/core/Base"], function(ProductUtil, _, Base) {
 
     var designPrintTypesCache = {};
 
-    var PrintValidator = {
+    return Base.inherit({}, {
 
         canBePrintedOnProduct: function(design, product) {
             product = product || this.$.product;
             var printAreas = product.get("productType.printAreas");
+            var self = this;
 
             var printArea = _.find(printAreas.$items, function(printArea) {
-                return PrintValidator.canBePrinted(design, product, null, printArea);
+                return self.canBePrinted(design, product, null, printArea);
             });
 
             return !!printArea;
@@ -18,7 +19,7 @@ define(["sprd/util/ProductUtil", "underscore"], function(ProductUtil, _) {
         canBePrinted: function(design, product, printTypes, printArea) {
             product = product || this.$.product;
 
-            if(!product) {
+            if (!product) {
                 return false;
             }
 
@@ -101,7 +102,7 @@ define(["sprd/util/ProductUtil", "underscore"], function(ProductUtil, _) {
 
             return !hardBoundaryError;
         }
-    };
-    return PrintValidator;
+    });
+
 
 });
