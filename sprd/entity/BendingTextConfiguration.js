@@ -6,7 +6,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             HEART: "heart"
         };
 
-        var designCache = {};
+        var designCache = {},
+            copyrightWordList = TextConfiguration.getCopyrightWordList();
 
         return DesignConfigurationBase.inherit('sprd.model.BendingTextConfiguration', {
 
@@ -45,16 +46,10 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 context: "context"
             },
 
-            ctor: function(attributes) {
-                attributes = attributes || {};
+            ctor: function() {
+                this.callBase();
 
-                _.defaults(attributes, {
-                    copyrightWordList: TextConfiguration.getCopyrightWordList()
-                });
-
-                this.callBase(attributes);
-
-                this.$.copyrightWordList.bind("add", function() {
+                copyrightWordList.bind("add", function() {
                     this._validateText();
                 }, this);
 
@@ -396,8 +391,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
             _validateText: function() {
                 var text = (this.$.text || "").toLowerCase(),
-                    badWord,
-                    copyrightWordList = this.$.copyrightWordList;
+                    badWord;
 
                 if (text.length > 1) {
                     // check that we don't contain copyright content

@@ -73,15 +73,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             type: "text",
             representationType: "text",
 
-            ctor: function(attributes) {
-
-                attributes = attributes || {};
-
-                _.defaults(attributes, {
-                    copyrightWordList: TextConfiguration.getCopyrightWordList()
-                });
-
-                this.callBase(attributes);
+            ctor: function() {
+                this.callBase();
 
                 copyrightWordList.bind("add", function() {
                     this.validateText();
