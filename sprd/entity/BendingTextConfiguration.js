@@ -106,8 +106,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                                 };
 
                                 var size = new Size({
-                                    width: properties.size.width,
-                                    height: properties.size.height
+                                    width: (properties.size && properties.size.width) || 0,
+                                    height: (properties.size && properties.size.height) || 0
                                 });
 
                                 self.set({
