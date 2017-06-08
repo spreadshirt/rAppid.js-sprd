@@ -364,7 +364,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                     this.$stage.addChild(uploadRenderer);
                     var svgContent = uploadRenderer.getElementAsString();
                 } catch (e) {
-                    debugger;
+                    callback(e, null);
                 } finally {
                     this.$stage.removeChild(uploadRenderer);
                 }
