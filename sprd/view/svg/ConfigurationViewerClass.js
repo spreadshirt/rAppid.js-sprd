@@ -1105,7 +1105,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     configuration.trigger("sizeChanged");
 
                 } else if (mode === SCALE) {
-                    this._rotate(x, y, configuration, userInteractionOptions);
+                    var baseScale = this.get('configuration.scale.y'),
+                        currentScale = this.$._scale.y,
+                        scaleDifference = Math.abs(currentScale - baseScale),
+                        scaleDifferenceRatio = scaleDifference / baseScale;
+
+                    if (!(this.scales() && scaleDifferenceRatio > 0.2)) {
+                        this._rotate(x, y, configuration, userInteractionOptions);
+                    }
 
                     if (!this.rotates()) {
                         scaleFactor = currentDistance / this.$scaleDiagonalDistance;
