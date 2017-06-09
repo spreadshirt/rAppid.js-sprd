@@ -59,7 +59,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 copyrightWordList: null,
                 isNew: false,
                 isTemplate: false,
-                autoGrow: false
+                autoGrow: false,
+                alignmentMatters: "{alignmentMatters()}"
             },
 
             inject: {
@@ -266,6 +267,80 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
 
                 return false;
+            },
+
+
+            alignmentMatters: function() {
+                var composedTextFlow = this.$.composedTextFlow;
+
+
+                if (!composedTextFlow) {
+                    return false;
+                }
+
+                var matters = composedTextFlow.alignmentMatters();
+
+                if (!matters) {
+                    var paragraphStyle = this.getParagraphStyleForWholeTextFlow();
+                    if (paragraphStyle && paragraphStyle.$.textAnchor !== 'start') {
+                        this.setStyleOnWholeFlow(null, {textAnchor: 'start'});
+                    }
+                }
+
+                return matters;
+            }.onChange('composedTextFlow'),
+
+
+            getParagraphStyleForWholeTextFlow: function() {
+                var selection = this.$.selection,
+                    textFlow = this.$.textFlow;
+
+                var selectionClone = selection.clone();
+                selectionClone.set({
+                    anchorIndex: 0,
+                    activeIndex: textFlow.textLength() - 1
+                });
+
+                return selectionClone.getCommonParagraphStyle(textFlow);
+            },
+
+            getCommonLeafStyleForWholeTextFlow: function() {
+                var selection = this.$.selection,
+                    textFlow = this.$.textFlow;
+
+                var selectionClone = selection.clone();
+                selectionClone.set({
+                    anchorIndex: 0,
+                    activeIndex: textFlow.textLength() - 1
+                });
+
+                return selectionClone.getCommonLeafStyle(textFlow);
+            },
+
+            setStyleOnWholeFlow: function(leafStyle, paragraphStyle) {
+                var textFlow = this.$.textFlow,
+                    applyOperation = this.$.ApplyStyleToElementOperation,
+                    Style = this.$.Style,
+                    selection = this.$.selection;
+
+                if (textFlow && applyOperation && Style) {
+                    selection = selection.clone();
+                    selection.set({
+                        anchorIndex: 0,
+                        activeIndex: textFlow.textLength() - 1
+                    });
+
+                    if (!(leafStyle instanceof Style)) {
+                        leafStyle = new Style(leafStyle)
+                    }
+
+                    if (!(paragraphStyle instanceof Style)) {
+                        paragraphStyle = new Style(paragraphStyle)
+                    }
+
+                    var operation = new applyOperation(selection, textFlow, leafStyle, paragraphStyle);
+                    operation.doOperation();
+                }
             },
 
             _validatePrintTypeSize: function(printType, width, height, scale) {
