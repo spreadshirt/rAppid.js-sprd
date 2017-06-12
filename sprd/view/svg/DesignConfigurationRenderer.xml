@@ -11,14 +11,14 @@
     <js:Repeat items="{configuration.printColors}" itemKey="printColor">
         <js:Template name="item">
             <rect mask="url(#{maskId}-{index})" fill="{fillUrl(index)}" width="{width}" height="{height}"
-                  visible="{allLayersLoaded()}"/>
+                  visible="{allLayersLoaded}"/>
         </js:Template>
     </js:Repeat>
 
     <image href="{url()}" width="{width}" height="{height}" visible="{not(hasSpecialColor())}"/>
 
     <image href="{baseUrl('sprd/css/loading-spin-white.svg')}" width="{loaderSize()}" height="{loaderSize()}"
-           x="{loaderPos().x}" y="{loaderPos().y}" class="loader-white" visible="{not(allLayersLoaded())}"/>
+           x="{loaderPos().x}" y="{loaderPos().y}" class="loader-white" visible="{not(allLayersLoaded)}"/>
     <image href="{baseUrl('sprd/css/loading-spin-black.svg')}" width="{loaderSize()}" height="{loaderSize()}"
-           x="{loaderPos().x}" y="{loaderPos().y}" class="loader-black" visible="{not(allLayersLoaded())}"/>
+           x="{loaderPos().x}" y="{loaderPos().y}" class="loader-black" visible="{not(allLayersLoaded)}"/>
 </sprdSvg:DesignConfigurationRendererClass>
