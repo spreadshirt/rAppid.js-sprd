@@ -137,6 +137,7 @@
                 <attribute name="loadedLayers"/>
                 <attribute name="viewer"/>
                 <attribute name="loading" default="{configuration.loading}"/>
+                <attribute name="allLayersLoaded" default="{allLayersLoaded()}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -153,6 +154,7 @@
                 <attribute name="loadedLayers"/>
                 <attribute name="viewer"/>
                 <attribute name="loading" default="{configuration.loading}"/>
+                <attribute name="allLayersLoaded" default="{allLayersLoaded()}"/>
             </extension>
         </complexContent>
     </complexType>
