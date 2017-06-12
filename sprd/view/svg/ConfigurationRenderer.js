@@ -7,6 +7,7 @@ define(['js/svg/SvgElement'], function(SvgElement) {
             width: "{configuration.size().width}",
             height: "{configuration.size().height}",
             focused: "{configurationViewer.focused}",
+            componentClass: "configuration-renderer",
 
             imageService: null
         },
