@@ -5,7 +5,7 @@ define(["sprd/util/ProductUtil", "underscore", "js/core/Base"], function(Product
     return Base.inherit({}, {
 
         canBePrintedOnProduct: function(design, product) {
-            product = product || this.$.product;
+            product = product || this.get("product");
             var printAreas = product.get("productType.printAreas");
             var self = this;
 
@@ -17,7 +17,7 @@ define(["sprd/util/ProductUtil", "underscore", "js/core/Base"], function(Product
         },
 
         canBePrinted: function(design, product, printTypes, printArea) {
-            product = product || this.$.product;
+            product = product || this.get("product");
 
             if (!product) {
                 return false;
