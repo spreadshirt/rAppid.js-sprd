@@ -1,6 +1,6 @@
 define([], function() {
 
-    if (!HTMLCanvasElement.prototype.toBlob) {
+    if (typeof HTMLCanvasElement !== "undefined" && !HTMLCanvasElement.prototype.toBlob) {
         Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
             value: function(callback, type, quality) {
 
@@ -16,7 +16,5 @@ define([], function() {
             }
         });
     }
-
-    return true;
 
 });

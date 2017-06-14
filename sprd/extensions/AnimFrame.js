@@ -1,6 +1,6 @@
 define([], function() {
 
-    if (window !== 'undefined') {
+    if (typeof window !== 'undefined') {
         window.requestAnimFrame = window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame ||
@@ -8,5 +8,5 @@ define([], function() {
                 window.setTimeout(callback, 1000 / 60);
             };
     }
-    return true;
+
 });
