@@ -2,6 +2,11 @@ rect:not([fill]) {
     fill: none;
 }
 
+.text-configuration-background {
+    fill: white !important;
+    opacity: 0.01;
+}
+
 image {
     -webkit-user-select: none;
 }

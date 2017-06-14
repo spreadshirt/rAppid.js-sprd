@@ -12,10 +12,11 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
             filter: "{filter()}",
             loadedLayers: {},
             viewer: null,
-            loading: "{configuration.loading}"
+            loading: "{configuration.loading}",
+            allLayersLoaded: "{allLayersLoaded()}"
         },
 
-        $classAttributes: ["x", "y", "width", "height"],
+        $classAttributes: ["x", "y", "width", "height", "loadedLayers"],
 
         url: function() {
 

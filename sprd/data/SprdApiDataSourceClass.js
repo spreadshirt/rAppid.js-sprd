@@ -44,6 +44,7 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
 
             defaults: {
                 locale: "en_EU",
+                currencyId: null,
                 parsePayloadOnCreate: false,
                 parsePayloadOnUpdate: false,
                 keepRawData: false,
@@ -93,9 +94,17 @@ define(["sprd/data/SprdDataSource", "js/data/DataSource", "js/data/RestDataSourc
             },
 
             getQueryParameters: function (method, resource) {
+
+                var currency = {};
+                var currencyId = this.$.currencyId;
+
+                if (currencyId) {
+                    currency.currency = currencyId;
+                }
+
                 var ret = _.defaults({
                     mediaType: "json"
-                }, this.callBase());
+                }, currency, this.callBase());
 
                 var resourceName = resource.constructor.name;
                 if (/\bProduct\b/.test(resourceName)) {

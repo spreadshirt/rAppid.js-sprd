@@ -6,7 +6,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             HEART: "heart"
         };
 
-        var designCache = {};
+        var designCache = {},
+            copyrightWordList = TextConfiguration.getCopyrightWordList();
 
         return DesignConfigurationBase.inherit('sprd.model.BendingTextConfiguration', {
 
@@ -29,7 +30,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 textPathOffsetX: 0,
                 textPathOffsetY: 0,
                 transformer: null,
-                copyrightWordList: null
+                copyrightWordList: null,
+                alignmentMatters: false
             },
 
             type: "bendingText",
@@ -45,16 +47,10 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 context: "context"
             },
 
-            ctor: function(attributes) {
-                attributes = attributes || {};
+            ctor: function() {
+                this.callBase();
 
-                _.defaults(attributes, {
-                    copyrightWordList: TextConfiguration.getCopyrightWordList()
-                });
-
-                this.callBase(attributes);
-
-                this.$.copyrightWordList.bind("add", function() {
+                copyrightWordList.bind("add", function() {
                     this._validateText();
                 }, this);
 
@@ -110,12 +106,18 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                                     y: properties.scale
                                 };
 
+                                var size = new Size({
+                                    width: (properties.size && properties.size.width) || 0,
+                                    height: (properties.size && properties.size.height) || 0
+                                });
+
                                 self.set({
                                     text: properties.text,
                                     angle: properties.angle || 50,
                                     path: properties.path || PATH_TYPE.OUTER_CIRCLE,
                                     font: fontFamily.getFont(fontWeight, fontStyle),
                                     fontSize: properties.fontSize || 16,
+                                    _size: size,
                                     scale: scale
                                 })
                             }
@@ -155,6 +157,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 ret.properties.fontSize = this.$.fontSize;
                 ret.properties.path = this.$.path;
                 ret.properties.scale = this.$.scale.x;
+                ret.properties.size = this.$._size.$;
 
                 return ret;
             },
@@ -362,7 +365,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                     this.$stage.addChild(uploadRenderer);
                     var svgContent = uploadRenderer.getElementAsString();
                 } catch (e) {
-                    debugger;
+                    callback(e, null);
                 } finally {
                     this.$stage.removeChild(uploadRenderer);
                 }
@@ -396,8 +399,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
             _validateText: function() {
                 var text = (this.$.text || "").toLowerCase(),
-                    badWord,
-                    copyrightWordList = this.$.copyrightWordList;
+                    badWord;
 
                 if (text.length > 1) {
                     // check that we don't contain copyright content

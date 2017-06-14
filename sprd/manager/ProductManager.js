@@ -416,7 +416,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         fontSize: fontSize,
                         font: font,
                         printColors: printColors,
-                        angle: params.angle
+                        angle: params.angle,
+                        _size: params.size,
+                        scale: params.scale,
+                        offset: params.offset
                     });
 
                     return entity;
@@ -431,7 +434,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     printTypes = configuration.getPossiblePrintTypes(product.$.appearance);
                     // determinate position
-                    params.addToProduct && self.validateAndAdd(product, configuration, printTypes);
+                    params.addToProduct && self.validateAndAdd(product, configuration, printTypes, null, {respectTransform: true});
 
                     configuration.set("maxHeight", null);
                 };
@@ -830,8 +833,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 printArea = printArea || configuration.$.printArea;
 
                 if (!options.respectTransform) {
-                    configuration.set('scale', {x: 1, y: 1}, {silent: true});
-                    configuration.set('rotation', 0, {silent: true});
+                    if (!options.respectScale) {
+                        configuration.set('scale', {x: 1, y: 1}, {silent: true});
+                    }
+
+                    if (!options.respectRotation) {
+                        configuration.set('rotation', 0, {silent: true});
+                    }
                 }
 
                 configuration.set({
@@ -1110,7 +1118,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 //example: between product type 812 and 1052
                 var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
                 var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
-                var desiredScaleFactor = options.respectTransform ? printAreaRatio : scaleToFitDefaultBox;
+                var desiredScaleFactor = options.respectTransform || options.respectScale ? printAreaRatio : scaleToFitDefaultBox;
                 var desiredScale = configuration.$.scale.x * desiredScaleFactor;
 
                 var defaultDesiredOffset = Vector.create(defaultBoxCenterX, defaultBoxCenterY);
@@ -1220,12 +1228,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
             convertTextToBendingText: function(product, textConfiguration, params, callback) {
                 params = params || {};
-                var offset = textConfiguration.$.offset.clone();
-                var width = textConfiguration.width();
+
                 _.defaults(params, {
                     addToProduct: true,
                     removeConfiguration: true,
-                    text: textConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n$/, "")
+                    text: textConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n/g, " ").trim()
                 });
 
                 product.$.configurations.remove(textConfiguration);
@@ -1236,17 +1243,11 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         callback && callback(err);
                     } else {
                         !params.removeConfiguration && product.$.configurations.add(textConfiguration);
-                        var s = width / config.width(1);
                         config.set({
-                            'scale': {
-                                x: s,
-                                y: s
-                            }, 'offset': offset,
                             rotation: textConfiguration.$.rotation,
                             originalConfiguration: textConfiguration
                         });
 
-                        config.set("_size", config.$._size, {force: true});
                         config.set("isNew", textConfiguration.$.isNew);
                         config.set("isTemplate", textConfiguration.$.isTemplate);
 
@@ -1344,7 +1345,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             printColor: configuration.$.printColors.at(0),
                             font: font,
                             fontFamily: fontFamily,
-                            angle: angle
+                            angle: angle,
+                            size: configuration.size(),
+                            offset: configuration.$.offset,
+                            scale: configuration.$.scale
                         });
                     } else if (configuration instanceof BendingTextConfiguration) {
                         this.convertBendingTextToText(product, configuration, {
@@ -1449,7 +1453,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (middlePoint.x < 0 || middlePoint.y < 0 || middlePoint.x > right || middlePoint.y > bottom) {
                     // outside the view
-                    this._addConfiguration(product, configuration);
+                    this._addConfiguration(product, configuration, configuration.$.printType, configuration.$.printArea, {
+                        respectScale: true,
+                        respectRotation: true
+                    });
                     return true;
                 }
 

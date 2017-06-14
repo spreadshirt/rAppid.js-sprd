@@ -108,9 +108,9 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "js
             var originalHeight = this.height(1);
             if (width && height && originalWidth && originalHeight) {
                 if (!this.$.initialized || options.force) {
-                    var factor = Math.min(width / originalWidth, height / originalHeight);
-                    this.$.scale.set('y', factor);
-                    this.$.scale.set('x', factor);
+                    var startFactor = Math.min(width / originalWidth, height / originalHeight) * 0.9;
+                    this.$.scale.set('y', startFactor);
+                    this.$.scale.set('x', startFactor);
                     this.calculateMaxOffset();
                     this.centerAt(width / 2, height / 2);
                     this.calculateMaxScale();

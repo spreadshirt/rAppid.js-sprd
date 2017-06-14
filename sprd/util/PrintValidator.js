@@ -1,19 +1,38 @@
-define(["sprd/util/ProductUtil", "underscore"], function(ProductUtil, _) {
+define(["sprd/util/ProductUtil", "underscore", "js/core/Base"], function(ProductUtil, _, Base) {
 
     var designPrintTypesCache = {};
 
-    return {
+    return Base.inherit({}, {
+
+        canBePrintedOnProduct: function(design, product) {
+            product = product || this.$.product;
+            var printAreas = product.get("productType.printAreas");
+            var self = this;
+
+            var printArea = _.find(printAreas.$items, function(printArea) {
+                return self.canBePrinted(design, product, null, printArea);
+            });
+
+            return !!printArea;
+        },
+
         canBePrinted: function(design, product, printTypes, printArea) {
             product = product || this.$.product;
-            printArea = printArea || product.$.view.getDefaultPrintArea();
 
-            if (!(design && product && product.$.appearance && (printTypes || design.$.printTypes))) {
+            if (!product) {
                 return false;
             }
 
-            var cacheId = [design.$.id, product.$.view.$.id, product.$.appearance.$.id].join("-");
+            printArea = printArea || product.$.view.getDefaultPrintArea();
+            var appearance = product.$.appearance;
+
+            if (!(design && product && appearance && (printTypes || design.$.printTypes))) {
+                return false;
+            }
+
+            var cacheId = [design.$.id, product.$.view.$.id, printArea.$.id, product.$.appearance.$.id].join("-");
             if (!printTypes && !designPrintTypesCache[cacheId]) {
-                designPrintTypesCache[cacheId] = ProductUtil.getPossiblePrintTypesForDesignOnProduct(design, product)
+                designPrintTypesCache[cacheId] = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance);
             }
 
             var possiblePrintTypes = printTypes || designPrintTypesCache[cacheId];
@@ -83,6 +102,7 @@ define(["sprd/util/ProductUtil", "underscore"], function(ProductUtil, _) {
 
             return !hardBoundaryError;
         }
-    }
+    });
+
 
 });

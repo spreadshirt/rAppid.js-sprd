@@ -261,7 +261,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     configView.$moving = false;
                     dndObject.dndImage.set('hoverState', DROP_HOVERED.NO);
 
-                    productManager.moveConfigurationToView(product, dndObject.config, viewer.$._view, function(err) {
+                    productManager.moveConfigurationToView(product, dndObject.config, viewer.$._view, {respectTransform: true}, function(err) {
                         if (!err) {
                             dndObject.viewer.$.product.set('view', viewer.$._view);
                         }

@@ -155,6 +155,7 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="locale" default="en_EU"/>
+                <attribute name="currencyId"/>
                 <attribute name="keepRawData"/>
                 <attribute name="noCache"/>
                 <attribute name="mode"/>
@@ -171,6 +172,7 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="locale" default="en_EU"/>
+                <attribute name="currencyId"/>
                 <attribute name="keepRawData"/>
                 <attribute name="noCache"/>
                 <attribute name="mode"/>

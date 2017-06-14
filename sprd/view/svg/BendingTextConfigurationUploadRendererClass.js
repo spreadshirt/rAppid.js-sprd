@@ -1,13 +1,11 @@
-define(['js/svg/Svg', 'js/core/Bus', 'underscore'], function(Svg, Bus, _) {
+define(['js/svg/Svg'], function(Svg) {
 
-    return Svg.inherit("sprd.view.svg.BendingTextConfigurationRendererClass", {
+    return Svg.inherit("sprd.view.svg.BendingTextConfigurationUploadRendererClass", {
 
         defaults: {
             configuration: null,
-            x: 0,
-            y: 0,
-            width: "{width()}",
-            height: "{height()}"
+            width: "{width()}px",
+            height: "{height()}px"
         },
 
         ctor: function() {
@@ -21,32 +19,38 @@ define(['js/svg/Svg', 'js/core/Bus', 'underscore'], function(Svg, Bus, _) {
             this.removeChild(this.$.defs);
         },
 
-        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text'],
+        getText: function() {
+            var config = this.$.configuration;
+            if (config) {
+                var text = config.$.text.replace(/\n/g, " ");
+                return text.trim();
+            }
+        },
+
+        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text', 'viewBox'],
 
         width: function() {
             var config = this.$.configuration;
             if (config) {
-                return Math.round(config.widthInMM() + 50)
+                return Math.round(config.widthInMM()) + 50;
+            } else {
+                return 50;
             }
         }.on('configuration.widthInMM()'),
 
         height: function() {
             var config = this.$.configuration;
             if (config) {
-                var width = this.width(),
-                    h = this.$viewBoxHeight,
-                    w = this.$viewBoxWidth;
-
-                return w > 0 ? Math.ceil(width * h / w) : 0;
+                return Math.round(config.heightInMM()) + 50;
+            } else {
+                return 50;
             }
-        }.onChange('viewBox'),
+        }.on('configuration.heightInMM()'),
 
         getElement: function(options) {
-            var textBbox = this.$.text.$el.getBBox(),
-                svgNamespace = 'http://www.w3.org/2000/svg',
+            var svgNamespace = 'http://www.w3.org/2000/svg',
                 xlinkNS = 'http://www.w3.org/1999/xlink',
-                elem = this.$el,
-                size = this.get('configuration._size');
+                elem = this.$el;
 
             if (!elem) {
                 return null;
@@ -54,7 +58,6 @@ define(['js/svg/Svg', 'js/core/Bus', 'underscore'], function(Svg, Bus, _) {
 
             elem.setAttribute("xmlns", svgNamespace);
             elem.setAttribute("xmlns:xlink", xlinkNS);
-            this.setViewBox(textBbox.x, textBbox.y, textBbox.width || size.width, textBbox.height || size.height);
 
             return elem;
         },

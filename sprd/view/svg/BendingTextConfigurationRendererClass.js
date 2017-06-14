@@ -104,10 +104,23 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                 var textBBox = this.$.text.$el.getBBox();
 
                 var _size = configuration.$._size;
-                this.balanceConfiguration(_size.$.width, textPathRect.width);
+
+                var newWidth = textPathRect.width,
+                    oldWidth = _size.$.width,
+                    newHeight = textPathRect.height;
+
+                var widthScale = this.divideOrDefault(oldWidth, newWidth, 1) || 1,
+                    currentScale = configuration.$.scale;
+
                 _size.set({
-                    width: textPathRect.width,
-                    height: textPathRect.height
+                    width: newWidth,
+                    height: newHeight
+                });
+
+
+                configuration.set('scale', {
+                    x: currentScale.x * widthScale,
+                    y: currentScale.y * widthScale
                 });
 
                 configuration.set({
@@ -121,6 +134,11 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
                 configuration.trigger("sizeChanged");
             }
+        },
+
+
+        divideOrDefault: function(a, b, defaultArgument) {
+            return b !== 0 ? a / b : defaultArgument;
         },
 
         balanceConfiguration: function(oldWidth, newWidth) {

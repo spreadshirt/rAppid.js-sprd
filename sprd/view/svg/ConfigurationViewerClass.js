@@ -721,13 +721,26 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             removeDocking: function() {
                 var configuration = this.$.configuration;
+                if (!configuration) {
+                    return;
+                }
+
                 var printArea = configuration.$.printArea;
 
+                if (!printArea) {
+                    return;
+                }
+
                 printArea.set('docked', false);
-                var configurationsOnPrintArea = this.$.productViewer.$.product.getConfigurationsOnPrintAreas([printArea]) || [];
-                _.each(configurationsOnPrintArea, function(config) {
-                    config.set('docked', false);
-                })
+
+                var product = this.get('productViewer.product');
+
+                if (product) {
+                    var configurationsOnPrintArea = product.getConfigurationsOnPrintAreas([printArea]) || [];
+                    _.each(configurationsOnPrintArea, function(config) {
+                        config.set('docked', false);
+                    })
+                }
             },
 
             _removeSnapLines: function() {
@@ -1092,7 +1105,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     configuration.trigger("sizeChanged");
 
                 } else if (mode === SCALE) {
-                    this._rotate(x, y, configuration, userInteractionOptions);
+                    var baseScale = this.get('configuration.scale.y'),
+                        currentScale = this.$._scale.y,
+                        scaleDifference = Math.abs(currentScale - baseScale),
+                        scaleDifferenceRatio = scaleDifference / baseScale;
+
+                    if (!(this.scales() && scaleDifferenceRatio > 0.2)) {
+                        this._rotate(x, y, configuration, userInteractionOptions);
+                    }
 
                     if (!this.rotates()) {
                         scaleFactor = currentDistance / this.$scaleDiagonalDistance;

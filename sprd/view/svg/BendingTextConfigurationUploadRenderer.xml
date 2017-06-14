@@ -6,7 +6,7 @@
           d="{configuration.textPath}"/>
     <text cid="text" font-family="{configuration.font.getUniqueFontName()}" font-size="{configuration.fontSize}" text-anchor="middle" dy="{configuration.dy}">
         <textPath xlink:href="#textPath" cid="textPath" startOffset="50%">
-            {configuration.text}
+            {getText()}
         </textPath>
     </text>
 

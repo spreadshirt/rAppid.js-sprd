@@ -134,33 +134,33 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                 });
         },
 
-        supportsPrintType: function(product, configuration, printTypeId) {
+        supportsPrintType: function(product, configuration, printTypeId, skipValidation) {
             return this.hasPrintType(product, configuration, function(printType) {
                 return printType.$.id === printTypeId;
-            })
+            }, skipValidation)
         },
 
-        findPrintType: function(product, configuration, predicate) {
-            var possiblePrintTypes = this.getPossiblePrintTypesForConfiguration(configuration, product.$.appearance, true);
+        findPrintType: function(product, configuration, predicate, skipValidation) {
+            var possiblePrintTypes = this.getPossiblePrintTypesForConfiguration(configuration, product.$.appearance, skipValidation);
             return _.find(possiblePrintTypes, function(printType) {
                 return predicate(printType);
             });
         },
 
-        hasPrintType: function(product, configuration, predicate) {
-            return !!this.findPrintType(product, configuration, predicate);
+        hasPrintType: function(product, configuration, skipValidation, predicate) {
+            return !!this.findPrintType(product, configuration, skipValidation, predicate);
         },
 
-        supportsDigital: function(product, configuration) {
+        supportsDigital: function(product, configuration, skipValidation) {
             return this.hasPrintType(product, configuration, function(printType) {
                 return !printType.isPrintColorColorSpace();
-            })
+            }, skipValidation)
         },
 
-        supportsNonDigital: function(product, configuration) {
+        supportsNonDigital: function(product, configuration, skipValidation) {
             return this.hasPrintType(product, configuration, function(printType) {
                 return printType.isPrintColorColorSpace();
-            })
+            }, skipValidation)
         },
 
         isSpecial: function(configuration, platform) {
