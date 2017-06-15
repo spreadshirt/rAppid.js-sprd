@@ -55,12 +55,6 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             }, this);
         },
 
-        // _initializationComplete: function() {
-        //     this.callBase();
-        //     // this.bind("configuration", "recalculateSize", this.balanceConfiguration, this);
-        // },
-
-
         loadFont: function() {
             var svgRoot = this.getSvgRoot(),
                 font = this.get("configuration.font"),
@@ -77,9 +71,10 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
         },
 
         recalculateSize: function() {
-            var textPath = this.$.textPath;
-            var path = this.$.path;
-            if (textPath && textPath.$el && path && path.$el) {
+            var textPath = this.$.textPath,
+                path = this.$.path,
+                text = this.$.text;
+            if (textPath && textPath.$el && path && path.$el && text && text.$el) {
 
                 var configuration = this.$.configuration;
                 if (configuration && configuration.mainConfigurationRenderer && configuration.mainConfigurationRenderer != this) {
@@ -87,9 +82,8 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                 }
 
                 //path fix for IE
-                path.set("d", configuration.$.textPath || "");
-                var text = this.$.text;
-                text.set("dy", configuration.$.dy);
+                path.set("d", configuration.textPath());
+                text.set("dy", configuration.dy());
 
                 configuration.mainConfigurationRenderer = this;
 
