@@ -115,7 +115,9 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }, this);
 
                 this.bind('configurations', 'item:change:offset', this._onConfigurationOffsetChanged, this);
-
+                this.bind('change:productType', function() {
+                    this.configurationsOnViewCache = {};
+                }, this)
             },
 
             getDefaultAppearance: function () {
