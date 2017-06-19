@@ -1235,14 +1235,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     text: textConfiguration.$.textFlow.text(0, -1, "\n").replace(/\n/g, " ").trim()
                 });
 
-                product.$.configurations.remove(textConfiguration);
-
                 var self = this;
                 this.addBendingText(product, params, function(err, config) {
                     if (err) {
                         callback && callback(err);
                     } else {
-                        !params.removeConfiguration && product.$.configurations.add(textConfiguration);
+                        params.removeConfiguration && product.$.configurations.remove(textConfiguration);
                         config.set({
                             rotation: textConfiguration.$.rotation,
                             originalConfiguration: textConfiguration
