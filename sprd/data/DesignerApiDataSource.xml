@@ -6,5 +6,7 @@
         <conf:ResourceConfiguration modelClassName="sprd.model.AbstractShop" path="shops">
             <conf:ResourceConfiguration modelClassName="sprd.model.Transformer" path="text/transform" processor="TransformationProcessor"/>
         </conf:ResourceConfiguration>
+        <conf:ResourceConfiguration modelClassName="sprd.model.AfterEffect" path="masks"/>
+
     </conf:DataSourceConfiguration>
 </data:DesignerApiDataSourceClass>

@@ -1,11 +1,15 @@
 define(["js/data/Model"], function(Model) {
 
-    var AfterEffect = Model.inherit("sketchomat.model.AfterEffect", {
+    var AfterEffect = Model.inherit("sprd.model.AfterEffect", {
 
         defaults: {
-            id: null,
-            namekey: null,
             initialized: false
+        },
+
+        schema: {
+            id: String,
+            name: String,
+            contentLink: String
         },
 
         ctor: function() {
@@ -20,10 +24,6 @@ define(["js/data/Model"], function(Model) {
             callback && callback(new Error("Not implemented."));
         },
 
-        getNamePath: function(path) {
-            return path + '.' + this.$.namekey;
-        },
-
         compose: function() {
             throw new Error("Not implemented.");
         },
@@ -33,7 +33,7 @@ define(["js/data/Model"], function(Model) {
         },
 
         previewUrl: function() {
-            throw new Error("Not implemented.");
+            return this.get('contentLink');
         },
 
         canvasScalingFactor: function(img) {
