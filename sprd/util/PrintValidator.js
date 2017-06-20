@@ -23,12 +23,22 @@ define(["sprd/util/ProductUtil", "underscore", "js/core/Base"], function(Product
                 return false;
             }
 
-            printArea = printArea || product.$.view.getDefaultPrintArea();
-            var appearance = product.$.appearance;
-
-            if (!(design && product && appearance && (printTypes || design.$.printTypes))) {
+            if (!design) {
                 return false;
             }
+
+            var appearance = product.$.appearance,
+                view = product.$.view;
+
+            if (!appearance || !view) {
+                return false;
+            }
+
+            if (!printTypes && !design.$.printTypes) {
+                return false;
+            }
+
+            printArea = printArea || view.getDefaultPrintArea();
 
             var cacheId = [design.$.id, product.$.view.$.id, printArea.$.id, product.$.appearance.$.id].join("-");
             if (!printTypes && !designPrintTypesCache[cacheId]) {
