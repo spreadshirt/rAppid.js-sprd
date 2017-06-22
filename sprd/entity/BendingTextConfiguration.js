@@ -319,7 +319,6 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                                 image.src = "data:image/svg+xml;base64," + btoa(svg);
 
                             } else {
-                                svg = '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE svg PUBLIC " -//W3C//DTD SVG 20000303 Stylable//EN" "http://www.w3.org/TR/2000/03/WD-SVG-20000303/DTD/svg-20000303-stylable.dtd">' + this.vars.svg;
                                 cb(null, new Blob([svg], {type: "image/svg"}));
                             }
                         })
