@@ -179,7 +179,7 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                 printColors = configuration.$.printColors,
                 printColor = null;
 
-            if (printColors && printColors.size() && !this.isSpecialFlex() && !this.isFlock()) {
+            if (printColors && printColors.size() && !this.isSpecialFlex() && !this.isFlock() && !this.isRealisticFlexColor()) {
                 printColor = printColors.at(0).toHexString();
             }
 
