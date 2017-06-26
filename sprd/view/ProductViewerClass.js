@@ -16,6 +16,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             productViewerSvg: null,
 
             removeEmptyTextConfiguration: true,
+            removeNewConfigurations: false,
             bringSelectedConfigurationToFront: true,
 
             imageService: null,
@@ -53,7 +54,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             var activeElement = document.activeElement;
             selectedConfiguration && activeElement && activeElement.blur && activeElement.blur();
             if (this.$.product && oldSelectedConfiguration && (oldSelectedConfiguration.type === "text" || oldSelectedConfiguration.type ===  "specialText")) {
-                if (oldSelectedConfiguration.$.isNew) {
+                if (oldSelectedConfiguration.$.isNew && this.$.removeNewConfigurations) {
                     this.$.product.$.configurations.remove(oldSelectedConfiguration);
                 }
                 if (this.$.removeEmptyTextConfiguration
