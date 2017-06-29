@@ -39,6 +39,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var self = this,
                     view;
 
+                if(product.get("productType.id") != productType.get("id")) {
+                    product.removeExampleConfiguration();
+                }
+
                 flow()
                     .seq(function(cb) {
                         productType.fetch(null, cb);
