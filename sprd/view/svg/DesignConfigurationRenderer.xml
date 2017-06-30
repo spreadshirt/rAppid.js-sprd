@@ -11,7 +11,7 @@
     <js:Repeat items="{configuration.printColors}" itemKey="printColor">
         <js:Template name="item">
             <rect mask="url(#{maskId}-{index})" fill="{fillUrl(index)}" width="{width}" height="{height}"
-                  visible="{allLayersLoaded}"/>
+                  visible="{allLayersLoaded}" data-fill="{fillColor(index)}"/>
         </js:Template>
     </js:Repeat>
 

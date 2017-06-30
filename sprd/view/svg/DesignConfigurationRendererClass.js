@@ -105,6 +105,12 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
             return printColors[fixedLayerIndex].color().toString();
         },
 
+        fillColor: function(layerIndex) {
+            var fixedLayerIndex = this.get("configuration.design.colors.$items")[layerIndex].$.layer;
+            var printColors = this.get("configuration.printColors.$items");
+            return printColors[fixedLayerIndex].color().toString();
+        },
+
         loaderSize: function() {
             return Math.min(this.$.height, this.$.width) * 0.5;
         }.onChange("width", "height"),
