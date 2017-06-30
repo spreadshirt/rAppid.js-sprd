@@ -115,7 +115,9 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }, this);
 
                 this.bind('configurations', 'item:change:offset', this._onConfigurationOffsetChanged, this);
-
+                this.bind('change:productType', function() {
+                    this.configurationsOnViewCache = {};
+                }, this)
             },
 
             getDefaultAppearance: function () {
@@ -338,6 +340,14 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }
 
                 flow()
+                    .seqEach(this.$.configurations.$items, function(configuration) {
+                        if (configuration instanceof TextConfiguration) {
+                            var text = configuration.$.textFlow.text(0, -1);
+                            if (/^[\s\n\r]*$/.test(text)) {
+                                self.$.configurations.remove(configuration);
+                            }
+                        }
+                    })
                     .parEach(this.$.configurations.$items, function (configuration, cb) {
                         configuration.save(cb);
                     })

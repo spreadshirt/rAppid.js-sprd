@@ -140,6 +140,22 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             }, skipValidation)
         },
 
+        supportsNoPrintType: function(product, configuration) {
+            if (!configuration || !product) {
+                return false;
+            }
+
+            var appearance = product.get('appearance');
+
+            if (appearance) {
+                var possiblePrintTypes = this.getPossiblePrintTypesForConfiguration(configuration, appearance);
+                return !possiblePrintTypes.length;
+            }
+
+
+            return false;
+        },
+
         findPrintType: function(product, configuration, predicate, skipValidation) {
             var possiblePrintTypes = this.getPossiblePrintTypesForConfiguration(configuration, product.$.appearance, skipValidation);
             return _.find(possiblePrintTypes, function(printType) {
