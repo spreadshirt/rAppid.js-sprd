@@ -31,7 +31,9 @@ define(["js/core/Error"], function (Error) {
                 }
                 productCreationError = new ProductCreationError("ProductCreationError", ProductCreationError.ErrorCodes.PRODUCT_CREATION, err);
 
-                productCreationError.detailedMessage = JSON.parse(message);
+                if (message) {
+                    productCreationError.detailedMessage = JSON.parse(message);
+                }
                 return productCreationError;
             }
 
