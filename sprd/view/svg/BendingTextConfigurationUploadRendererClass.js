@@ -4,7 +4,8 @@ define(['js/svg/Svg'], function(Svg) {
 
         defaults: {
             configuration: null,
-            width: "{width()}px"
+            width: "{width()}mm",
+            height: "{height()}mm"
         },
 
         ctor: function() {
@@ -31,11 +32,21 @@ define(['js/svg/Svg'], function(Svg) {
         width: function() {
             var config = this.$.configuration;
             if (config) {
-                return Math.round(config.widthInMM()) + 50;
+                return Math.round(config.widthInMM());
             } else {
                 return 50;
             }
         }.on('configuration.widthInMM()'),
+
+
+        height: function() {
+            var config = this.$.configuration;
+            if (config) {
+                return Math.round(config.heightInMM());
+            } else {
+                return 50;
+            }
+        }.on('configuration.heightInMM()'),
 
         getElement: function(options) {
             var svgNamespace = 'http://www.w3.org/2000/svg',
