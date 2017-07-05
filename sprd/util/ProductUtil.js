@@ -163,8 +163,8 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             });
         },
 
-        hasPrintType: function(product, configuration, skipValidation, predicate) {
-            return !!this.findPrintType(product, configuration, skipValidation, predicate);
+        hasPrintType: function(product, configuration, predicate, skipValidation) {
+            return !!this.findPrintType(product, configuration, predicate, skipValidation);
         },
 
         supportsDigital: function(product, configuration, skipValidation) {
@@ -179,8 +179,12 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             }, skipValidation)
         },
 
-        isSpecial: function(configuration, platform) {
-            platform = platform || configuration.$stage.PARAMETER().platform;
+        isSpecial: function(configuration) {
+            if (!configuration.$stage) {
+                return false;
+            }
+
+            var platform = configuration.$stage.PARAMETER().platform;
             return configuration.$.printType.$.id === PrintType.Mapping.SpecialFlex
                 || _.some(configuration.$.printColors.$items, function(printColor) {
                     return NeonFlexColors[platform].indexOf(printColor.$.id) !== -1;
