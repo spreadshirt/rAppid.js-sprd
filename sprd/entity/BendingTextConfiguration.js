@@ -291,8 +291,47 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 this.synchronizeFunctionCall(function(callback) {
 
                     flow()
-                        .seq('design', function(cb) {
+                        .seq('svg', function(cb) {
                             self.transformTextPath(cb);
+                        })
+                        .seq("blob", function(cb) {
+                            var svg = this.vars.svg;
+
+                            if (digitalPrint) {
+                                var image = new Image();
+                                image.onload = function() {
+                                    try {
+                                        var canvas = document.createElement("canvas");
+                                        canvas.width = image.naturalWidth;
+                                        canvas.height = image.naturalHeight;
+                                        canvas.getContext('2d').drawImage(image, 0, 0);
+
+                                        canvas.toBlob(function(blob) {
+                                            cb(null, blob);
+                                        }, "image/png");
+                                    } catch (e) {
+                                        cb(e);
+                                    }
+                                };
+
+                                image.onerror = cb;
+
+                                image.src = "data:image/svg+xml;base64," + btoa(svg);
+
+                            } else {
+                                cb(null, new Blob([svg], {type: "image/svg"}));
+                            }
+                        })
+                        .seq('uploadDesign', function(cb) {
+                            var img = new BlobImage({
+                                blob: this.vars.blob,
+                                filename: "bending-text" + (digitalPrint ? ".png" : ".svg")
+                            });
+
+                            self.$.imageUploadService.upload(img, cb);
+                        })
+                        .seq("design", function() {
+                            return this.vars.uploadDesign.$.design;
                         })
                         .exec(function(err, results) {
                             callback(err, results.design);
@@ -318,7 +357,6 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             }.on("printColors"),
 
             transformTextPath: function(callback) {
-                var self = this;
                 try {
                     var uploadRenderer = this.$stage.createComponent(BendingTextConfigurationUploadRenderer, {
                         configuration: this
@@ -335,18 +373,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
                 transformer.set('content', svgContent);
                 transformer.save(null, function(err, transformer) {
-                    if (err) {
-                        return callback(err, transformer);
-                    }
-
-                    var upload = transformer.get("content");
-
-                    var designId = (upload.designId || "").replace(/^u?/, "u"),
-                        design = self.$.context.getCollection("designs").createItem(designId);
-
-                    design.fetch(function(err) {
-                        callback(err, design);
-                    });
+                    callback(err, transformer.get("content"));
                 })
             },
 
