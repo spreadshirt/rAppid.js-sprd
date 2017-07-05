@@ -223,7 +223,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     throw new Error("PrintType not possible for design and printArea");
                 }
 
-                printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
+                printType = printType || possiblePrintTypes[0];
 
                 if (!printType) {
                     throw new Error("No printType available");
@@ -913,7 +913,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     return null;
                 }
 
-                ArrayUtil.move(printTypes, PrintTypeEqualizer.getPreferredPrintType(product, printArea, printTypes), 0);
+                //ArrayUtil.move(printTypes, PrintTypeEqualizer.getPreferredPrintType(product, printArea, printTypes), 0);
 
                 var validatedMove = null,
                     self = this;
