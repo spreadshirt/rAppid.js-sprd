@@ -199,7 +199,7 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             var platform = configuration.$stage.PARAMETER().platform;
             return configuration.$.printType.$.id === PrintType.Mapping.SpecialFlex
                 || _.some(configuration.$.printColors.$items, function(printColor) {
-                    return RealisticFlexColors[platform].indexOf(printColor.$.id) !== -1;
+                    return RealisticFlexColors[platform].hasOwnProperty(printColor.$.id);
                 });
         }
     };
