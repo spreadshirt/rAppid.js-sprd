@@ -650,7 +650,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return ret;
             },
 
-            setColor: function(layerIndex, color) {
+            setColor: function(layerIndex, printColor) {
                 if (this.$.ApplyStyleToElementOperation && this.$.Style) {
                     var selection = this.$.selection;
                     if (selection.$.anchorIndex === selection.$.activeIndex) {
@@ -661,9 +661,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         })
 
                     }
-                    new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new this.$.Style({printTypeColor: color})).doOperation();
+                    var printType = this.$.printType;
 
-                    this.$.printColors.reset([color]);
+                    if (!printType || !printColor) {
+                        return;
+                    }
+
+                    var convertedPrintColor = printType.getClosestPrintColor(printColor.color());
+                    new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new this.$.Style({printTypeColor: convertedPrintColor})).doOperation();
+
+                    this.$.printColors.reset([convertedPrintColor]);
                 }
 
             },
