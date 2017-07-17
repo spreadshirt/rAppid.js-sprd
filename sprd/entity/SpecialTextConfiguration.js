@@ -18,7 +18,8 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
             renderedText: null,
             renderedFontId: null,
             renderedAlign: null,
-            alignmentMatters: true
+            alignmentMatters: true,
+            isNew: false
         },
 
         schema: {
