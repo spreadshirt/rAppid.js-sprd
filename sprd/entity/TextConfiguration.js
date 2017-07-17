@@ -668,6 +668,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     }
 
                     var convertedPrintColor = printType.getClosestPrintColor(printColor.color());
+
+                    if (!convertedPrintColor) {
+                        return;
+                    }
+
                     new this.$.ApplyStyleToElementOperation(selection, this.$.textFlow, new this.$.Style({printTypeColor: convertedPrintColor})).doOperation();
 
                     this.$.printColors.reset([convertedPrintColor]);
