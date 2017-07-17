@@ -278,7 +278,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                     self = this,
                     digitalPrint = !this.$.printType.isPrintColorColorSpace();
 
-                var cacheId = [self.$.angle, self.$.text, self.$.font.$.id, self.$.fontSize];
+                var cacheId = [self.$.angle, self.$.text, self.$.font.$.id, self.$.fontSize, self.$.printType.$.id];
                 var fill = self.$.printColors.at(0).toHexString();
 
                 if (digitalPrint) {
