@@ -3,9 +3,10 @@ define(["js/core/I18n"], function(I18n) {
     return I18n.inherit({
         t: function(num, key) {
 
-            var args = Array.prototype.slice.call(arguments), isPlural;
-            key = args.shift();
-            if (_.isNumber(key) && key > 1) {
+            if (_.isNumber(num) && num > 1) {
+
+                var args = Array.prototype.slice.call(arguments);
+                key = args.shift();
 
                 if (key > 5) {
                     key = args.shift();
