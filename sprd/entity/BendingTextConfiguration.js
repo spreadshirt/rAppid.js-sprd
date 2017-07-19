@@ -94,6 +94,12 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                             }
                         })
                         .seq(function() {
+                            var printType = self.$.printType;
+                            if (printType) {
+                                self.setColor(null, printType.getClosestPrintColor(properties.fill))
+                            }
+                        })
+                        .seq(function() {
                             if (properties.text) {
 
                                 var fontFamily = this.vars.fontFamily,
@@ -155,6 +161,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 ret.properties.fontWeight = font.$.weight;
                 ret.properties.fontStyle = font.$.style;
                 ret.properties.fontSize = this.$.fontSize;
+                ret.properties.fill = this.$.printColors.at(0).toHexString();
                 ret.properties.path = this.$.path;
                 ret.properties.scale = this.$.scale.x;
                 ret.properties.size = this.$._size.$;
