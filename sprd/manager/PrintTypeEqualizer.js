@@ -9,6 +9,8 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
         }
         var printType = configuration.get('printType');
         return printType.$.id !== PrintType.Flock;
+    }, function(configuration) {
+        return !ProductUtil.isRealisticFlex(configuration);
     }];
 
     return Bindable.inherit('sprd.manager.PrintTypeEqualizer', {
