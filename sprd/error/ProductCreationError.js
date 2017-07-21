@@ -3,7 +3,11 @@ define(["js/core/Error"], function(Error) {
     var errorTests,
         ProductCreationError = Error.inherit('sprd.error.ProductCreationError', {
             parseMessage: function() {
-                return this.detailedMessage.message.replace(/^(.*?)net\.sprd.*/g, "$1");
+                if (this.detailedMessage && this.detailedMessage.message) {
+                    return this.detailedMessage.message.replace(/^(.*?)net\.sprd.*/g, "$1");
+                } else {
+                    return "Something went wrong. Could not create the product.";
+                }
             }
         }, {
             createFromResponse: function(err) {
@@ -36,7 +40,6 @@ define(["js/core/Error"], function(Error) {
                     try {
                         detailedMessage = JSON.parse(message);
                     } catch (e) {
-                        detailedMessage = "Something went wrong. Could not create the product.";
                     }
 
                     productCreationError.detailedMessage = detailedMessage;
