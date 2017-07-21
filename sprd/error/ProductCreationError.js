@@ -1,4 +1,4 @@
-define(["js/core/Error"], function (Error) {
+define(["js/core/Error"], function(Error) {
 
     var errorTests,
         ProductCreationError = Error.inherit('sprd.error.ProductCreationError', {
@@ -6,7 +6,7 @@ define(["js/core/Error"], function (Error) {
                 return this.detailedMessage.message.replace(/^(.*?)net\.sprd.*/g, "$1");
             }
         }, {
-            createFromResponse: function (err) {
+            createFromResponse: function(err) {
 
                 if (!err) {
                     return null;
@@ -32,7 +32,14 @@ define(["js/core/Error"], function (Error) {
                 productCreationError = new ProductCreationError("ProductCreationError", ProductCreationError.ErrorCodes.PRODUCT_CREATION, err);
 
                 if (message) {
-                    productCreationError.detailedMessage = JSON.parse(message);
+                    var detailedMessage = null;
+                    try {
+                        detailedMessage = JSON.parse(message);
+                    } catch (e) {
+                        detailedMessage = "Something went wrong. Could not create the product.";
+                    }
+
+                    productCreationError.detailedMessage = detailedMessage;
                 }
                 return productCreationError;
             }
