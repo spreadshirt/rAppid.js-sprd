@@ -40,6 +40,8 @@ define(["js/core/Error"], function(Error) {
                     try {
                         detailedMessage = JSON.parse(message);
                     } catch (e) {
+                        detailedMessage = {};
+                        detailedMessage.message = "Something went wrong. Could not create the product.";
                     }
 
                     productCreationError.detailedMessage = detailedMessage;
