@@ -96,7 +96,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             },
 
             equalizeConfigurations: function(product, configurations, targetPrintType) {
-                if (!configurations || !product || this.$equalizingConfigurations) {
+                if (!configurations || !configurations.length || configurations.length < 2 || !product || this.$equalizingConfigurations) {
                     return;
                 }
 
