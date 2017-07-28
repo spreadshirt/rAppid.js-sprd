@@ -12,7 +12,8 @@ define([], function() {
             74: 8,      // navy
             23: 9,      //light blue
             7: 10,      //silver grey
-            2: 11       // black
+            2: 11,       // black
+            6: 12       // green
         },
         NA: {
             1: 0,       // white,
