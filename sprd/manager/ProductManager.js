@@ -1052,7 +1052,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 if (configuration.$._size.$.width === 0 || configuration.$._size.$.height === 0) {
                     configuration.bind('sizeChanged', closedFn)
                 } else {
-                    configuration.set(this.getConfigurationPosition(configuration, printArea, printType, options), PREVENT_VALIDATION_OPTIONS);
+                    var transform = options.transform || this.getConfigurationPosition(configuration, printArea, printType, options);
+                    configuration.set(transform, PREVENT_VALIDATION_OPTIONS);
                 }
             },
 
