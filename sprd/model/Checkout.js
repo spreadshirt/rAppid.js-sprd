@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", "underscore", "rAppid", "flow", "require"], function(SprdModel, PaymentType, Payment, _, rAppid, flow, require) {
+define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", "underscore", "rAppid", "flow"], function(SprdModel, PaymentType, Payment, _, rAppid, flow) {
 
 
     return SprdModel.inherit("sprd.model.Checkout", {
