@@ -2,11 +2,11 @@ define(["js/core/Error"], function(Error) {
 
     var errorTests,
         ProductCreationError = Error.inherit('sprd.error.ProductCreationError', {
-            parseMessage: function() {
+            parseMessage: function(defaultMessage) {
                 if (this.detailedMessage && this.detailedMessage.message) {
                     return this.detailedMessage.message.replace(/^(.*?)net\.sprd.*/g, "$1");
                 } else {
-                    return "Something went wrong. Could not create the product.";
+                    return defaultMessage;
                 }
             }
         }, {
@@ -41,7 +41,6 @@ define(["js/core/Error"], function(Error) {
                         detailedMessage = JSON.parse(message);
                     } catch (e) {
                         detailedMessage = {};
-                        detailedMessage.message = "Something went wrong. Could not create the product.";
                     }
 
                     productCreationError.detailedMessage = detailedMessage;
