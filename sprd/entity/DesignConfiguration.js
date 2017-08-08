@@ -190,12 +190,17 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return this.getSizeForPrintType(this.$.printType);
             }.onChange("_dpi", "design", "processedSize"),
 
+            getSizeInPx(options) {
+                options = options || {};
+                return options.original ? this.$.design.$.size : this.$.processedSize || this.$.design.$.size;
+            },
+
             getSizeForPrintType: function(printType, options) {
                 options = options || {};
 
                 if (this.$.design && this.$.design.$.size && printType && printType.$.dpi) {
                     var dpi = printType.$.dpi;
-                    var size = options.original ? this.$.design.$.size : this.$.processedSize || this.$.design.$.size;
+                    var size = this.getSizeInPx(options);
                     return UnitUtil.convertSizeToMm(size, dpi);
                 }
 
@@ -273,7 +278,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             getMaximalSizeRespectingDPI: function(printType) {
                 printType = printType || this.$.printType;
                 var dpi = printType.$.dpi,
-                    size = this.size();
+                    size = this.getSizeInPx();
 
                 return {
                     width: Math.round(size.$.width / dpi, 2) * 25.4,

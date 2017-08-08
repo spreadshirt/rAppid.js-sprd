@@ -57,13 +57,18 @@ define(["js/core/Error"], function(Error) {
         MAX_BOUND: -103,
         MIN_BOUND: -104,
         COPYRIGHT: -105,
-        COLOR_OVERLAP: -106
+        COLOR_OVERLAP: -106,
+        DPI_BOUND: -107
     };
 
     errorTests = [
         {
             test: /smaller\sthan/,
             type: "MIN_BOUND"
+        },
+        {
+            test: /It is not allowed to enlarge/,
+            type: "DPI_BOUND"
         },
         {
             test: /HARD\sBOUNDARY/,
