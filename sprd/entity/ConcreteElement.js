@@ -52,7 +52,9 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
              *
              */
             originalProduct: null,
-            originalArticleId: null
+            originalArticleId: null,
+
+            selectedConfiguration: null
         },
 
         isEqual: function (concreteElement) {
