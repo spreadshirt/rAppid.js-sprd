@@ -1,6 +1,6 @@
 define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "js/core/Base", "sprd/entity/Scale", "flow", "rAppid"], function(AfterEffect, Design, Offset, Base, Scale, flow, rappid) {
 
-    return AfterEffect.inherit("sketchomat.model.Mask", {
+    return AfterEffect.inherit("sprd.model.Mask", {
         defaults: {
             htmlImage: null,
             offset: Offset,
@@ -43,16 +43,30 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "js
             this.trigger("processingParametersChanged");
         },
 
-        previewUrl: function() {
-            throw new Error("Not implemented");
-        },
-
         clamp: function(value, min, max) {
             return Math.max(min, Math.min(max, value));
         },
 
         initImage: function(options, callback) {
-            callback && callback(new Error("Not implemented"));
+            options = options || {};
+
+            if (!options.force && this.get('htmlImage') && this.get('htmlImage').complete) {
+                return callback && callback(null, this.get('htmlImage'));
+            }
+
+            var img = new Image(),
+                self = this;
+
+            img.onload = function() {
+                self.set('htmlImage', img);
+                callback && callback(null, img);
+            };
+
+            img.onerror = function(e) {
+                callback && callback(e);
+            };
+
+            img.src = this.previewUrl();
         },
 
         centerAt: function(x, y, options) {

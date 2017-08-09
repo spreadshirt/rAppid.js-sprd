@@ -9,7 +9,10 @@ define(["js/data/Model"], function(Model) {
         schema: {
             id: String,
             name: String,
-            contentLink: String
+            contentLink: String,
+            renderLink: String,
+            state: String,
+            href: String,
         },
 
         ctor: function() {
@@ -34,6 +37,10 @@ define(["js/data/Model"], function(Model) {
 
         previewUrl: function() {
             return this.get('contentLink');
+        },
+
+        fullImageSrc: function() {
+            return this.get('renderLink');
         },
 
         canvasScalingFactor: function(img) {
