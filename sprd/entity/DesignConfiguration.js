@@ -88,8 +88,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
 
                 if (!design.isVectorDesign()) {
-                    var maximalDpiSize = this.getMaximalSizeRespectingDPI(printType);
-                    ret.dpiBound = maximalDpiSize.height < height || maximalDpiSize < width;
+                    ret.dpiBound = scale.x > 1 || scale.y > 1;
                 }
 
                 ret.minBound = !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale"));
@@ -190,7 +189,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return this.getSizeForPrintType(this.$.printType);
             }.onChange("_dpi", "design", "processedSize"),
 
-            getSizeInPx(options) {
+            getSizeInPx: function(options) {
                 options = options || {};
                 return options.original ? this.$.design.$.size : this.$.processedSize || this.$.design.$.size;
             },
@@ -207,7 +206,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return Size.empty;
             },
 
-            // TODO: add onchange for design.restriction.allowScale
             isScalable: function() {
                 return this.get("printType.isScalable()") && this.$._allowScale;
             }.onChange("printType", "_allowScale"),
@@ -272,17 +270,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                         id: originalDesign.get('wtfMbsId'),
                         href: "/" + originalDesign.get("id")
                     };
-                }
-            },
-
-            getMaximalSizeRespectingDPI: function(printType) {
-                printType = printType || this.$.printType;
-                var dpi = printType.$.dpi,
-                    size = this.getSizeInPx();
-
-                return {
-                    width: Math.round(size.$.width / dpi, 2) * 25.4,
-                    height: Math.round(size.$.height / dpi, 2) * 25.4
                 }
             },
 
