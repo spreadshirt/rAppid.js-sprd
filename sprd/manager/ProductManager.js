@@ -39,6 +39,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var self = this,
                     view;
 
+                if(product.get("productType.id") != productType.get("id")) {
+                    product.removeExampleConfiguration();
+                }
+
                 flow()
                     .seq(function(cb) {
                         productType.fetch(null, cb);
@@ -219,7 +223,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     throw new Error("PrintType not possible for design and printArea");
                 }
 
-                printType = PrintTypeEqualizer.getPreferredPrintType(product, printArea, possiblePrintTypes) || printType || possiblePrintTypes[0];
+                printType = printType || possiblePrintTypes[0];
 
                 if (!printType) {
                     throw new Error("No printType available");
@@ -909,7 +913,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     return null;
                 }
 
-                ArrayUtil.move(printTypes, PrintTypeEqualizer.getPreferredPrintType(product, printArea, printTypes), 0);
+                //ArrayUtil.move(printTypes, PrintTypeEqualizer.getPreferredPrintType(product, printArea, printTypes), 0);
 
                 var validatedMove = null,
                     self = this;
@@ -1048,7 +1052,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 if (configuration.$._size.$.width === 0 || configuration.$._size.$.height === 0) {
                     configuration.bind('sizeChanged', closedFn)
                 } else {
-                    configuration.set(this.getConfigurationPosition(configuration, printArea, printType, options), PREVENT_VALIDATION_OPTIONS);
+                    var transform = options.transform || this.getConfigurationPosition(configuration, printArea, printType, options);
+                    configuration.set(transform, PREVENT_VALIDATION_OPTIONS);
                 }
             },
 

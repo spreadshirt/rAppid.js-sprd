@@ -94,6 +94,12 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                             }
                         })
                         .seq(function() {
+                            var printType = self.$.printType;
+                            if (printType && properties.fill) {
+                                self.setColor(null, printType.getClosestPrintColor(properties.fill))
+                            }
+                        })
+                        .seq(function() {
                             if (properties.text) {
 
                                 var fontFamily = this.vars.fontFamily,
@@ -155,6 +161,9 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 ret.properties.fontWeight = font.$.weight;
                 ret.properties.fontStyle = font.$.style;
                 ret.properties.fontSize = this.$.fontSize;
+                if (!this.$.printColors.isEmpty()) {
+                    ret.properties.fill = this.$.printColors.at(0).toHexString();
+                }
                 ret.properties.path = this.$.path;
                 ret.properties.scale = this.$.scale.x;
                 ret.properties.size = this.$._size.$;
@@ -255,7 +264,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
             setColor: function(layerIndex, color) {
                 var printColors = this.$.printColors;
-                if (printColors) {
+                if (printColors && color) {
                     printColors.reset([color]);
                 }
             },
@@ -278,7 +287,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                     self = this,
                     digitalPrint = !this.$.printType.isPrintColorColorSpace();
 
-                var cacheId = [self.$.angle, self.$.text, self.$.font.$.id, self.$.fontSize];
+                var cacheId = [self.$.angle, self.$.text, self.$.font.$.id, self.$.fontSize, self.$.printType.$.id];
                 var fill = self.$.printColors.at(0).toHexString();
 
                 if (digitalPrint) {

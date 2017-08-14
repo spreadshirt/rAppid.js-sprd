@@ -33,7 +33,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 var transform = [],
                     scale = this.$.scale,
                     rotation = this.$.rotation,
-
+                    design = this.$.design,
                     width = this.width(),
                     height = this.height();
 
@@ -66,18 +66,20 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
                 delete ret.design;
 
-                var printColorIds = [],
-                    printColorRGBs = [];
+                if (design && design.isVectorDesign()) {
+                    var printColorIds = [],
+                        printColorRGBs = [];
 
-                this.$.printColors.each(function(printColor) {
-                    printColorIds.push(printColor.$.id);
-                    printColorRGBs.push(printColor.color().toRGB().toString());
-                });
+                    this.$.printColors.each(function(printColor) {
+                        printColorIds.push(printColor.$.id);
+                        printColorRGBs.push(printColor.color().toRGB().toString());
+                    });
 
-                if (this.$.printType.isPrintColorColorSpace()) {
-                    ret.content.svg.image.printColorIds = printColorIds.join(" ");
-                } else {
-                    ret.content.svg.image.printColorRGBs = printColorRGBs.join(" ");
+                    if (this.$.printType.isPrintColorColorSpace()) {
+                        ret.content.svg.image.printColorIds = printColorIds.join(" ");
+                    } else {
+                        ret.content.svg.image.printColorRGBs = printColorRGBs.join(" ");
+                    }
                 }
 
                 ret.printColors = undefined;

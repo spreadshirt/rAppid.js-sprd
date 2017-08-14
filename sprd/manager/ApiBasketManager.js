@@ -102,6 +102,9 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
              */
             addElementToBasket: function (element, quantity, callback) {
                 if (this.$.basket) {
+
+                    this.fixBasketCurrency();
+
                     var basketItem = this.$.basket.addElement(element, quantity);
                     element = basketItem.$.element;
 
@@ -117,6 +120,18 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
 
                 callback && callback();
             },
+
+            fixBasketCurrency: function() {
+                var basket = this.$.basket,
+                    shop = this.$.shop;
+
+                if (shop && basket && basket.get("basketItems.$items.length") == 0) {
+                    basket.set({
+                        currency: shop.$.currency
+                    });
+                }
+            },
+
             /**
              * Updates the given basket item
              *
@@ -460,6 +475,9 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                                 self.$savingBasket = false;
                                 self.saveBasket();
                             } else {
+
+                                self.fixBasketCurrency();
+
                                 callCallbacks(err, basket);
                                 self.$savingBasket = false;
                                 self._triggerBasketUpdated();

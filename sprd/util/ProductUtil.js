@@ -1,4 +1,4 @@
-define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/ProductType", "flow", "sprd/entity/Price", "sprd/model/PrintType", "sprd/config/NeonFlexColors"], function(_, ArrayUtil, List, ProductType, flow, Price, PrintType, NeonFlexColors) {
+define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/ProductType", "flow", "sprd/entity/Price", "sprd/model/PrintType", "sprd/config/NeonFlexColors", "sprd/config/RealisticFlexColors"], function(_, ArrayUtil, List, ProductType, flow, Price, PrintType, NeonFlexColors, RealisticFlexColors) {
 
     return {
 
@@ -140,6 +140,22 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             }, skipValidation)
         },
 
+        supportsNoPrintType: function(product, configuration) {
+            if (!configuration || !product) {
+                return false;
+            }
+
+            var appearance = product.get('appearance');
+
+            if (appearance) {
+                var possiblePrintTypes = this.getPossiblePrintTypesForConfiguration(configuration, appearance);
+                return !possiblePrintTypes.length;
+            }
+
+
+            return false;
+        },
+
         findPrintType: function(product, configuration, predicate, skipValidation) {
             var possiblePrintTypes = this.getPossiblePrintTypesForConfiguration(configuration, product.$.appearance, skipValidation);
             return _.find(possiblePrintTypes, function(printType) {
@@ -147,8 +163,8 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             });
         },
 
-        hasPrintType: function(product, configuration, skipValidation, predicate) {
-            return !!this.findPrintType(product, configuration, skipValidation, predicate);
+        hasPrintType: function(product, configuration, predicate, skipValidation) {
+            return !!this.findPrintType(product, configuration, predicate, skipValidation);
         },
 
         supportsDigital: function(product, configuration, skipValidation) {
@@ -163,11 +179,27 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             }, skipValidation)
         },
 
-        isSpecial: function(configuration, platform) {
-            platform = platform || configuration.$stage.PARAMETER().platform;
+        isSpecial: function(configuration) {
+            if (!configuration.$stage) {
+                return false;
+            }
+
+            var platform = configuration.$stage.PARAMETER().platform;
             return configuration.$.printType.$.id === PrintType.Mapping.SpecialFlex
                 || _.some(configuration.$.printColors.$items, function(printColor) {
                     return NeonFlexColors[platform].indexOf(printColor.$.id) !== -1;
+                });
+        },
+
+        isRealisticFlex: function(configuration) {
+            if (!configuration.$stage) {
+                return false;
+            }
+
+            var platform = configuration.$stage.PARAMETER().platform;
+            return configuration.$.printType.$.id === PrintType.Mapping.SpecialFlex
+                || _.some(configuration.$.printColors.$items, function(printColor) {
+                    return RealisticFlexColors[platform].hasOwnProperty(printColor.$.id);
                 });
         }
     };

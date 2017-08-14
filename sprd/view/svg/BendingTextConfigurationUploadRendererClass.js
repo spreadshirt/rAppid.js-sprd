@@ -4,7 +4,7 @@ define(['js/svg/Svg'], function(Svg) {
 
         defaults: {
             configuration: null,
-            width: "{width()}px"
+            width: "{width()}mm"
         },
 
         ctor: function() {
@@ -31,7 +31,7 @@ define(['js/svg/Svg'], function(Svg) {
         width: function() {
             var config = this.$.configuration;
             if (config) {
-                return Math.round(config.widthInMM()) + 50;
+                return Math.round(config.widthInMM() + 50);
             } else {
                 return 50;
             }

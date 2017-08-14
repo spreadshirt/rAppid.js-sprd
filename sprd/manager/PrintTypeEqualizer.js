@@ -1,5 +1,18 @@
 define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElement", "sprd/model/PrintType"], function(Bindable, ProductUtil, ConcreteElement, PrintType) {
 
+    var excludedPrintTypes = [PrintType.SpecialFlex, PrintType.Flock];
+    var filters = [function(configuration) {
+        return !ProductUtil.isSpecial(configuration)
+    }, function(configuration) {
+        if (!configuration) {
+            return false;
+        }
+        var printType = configuration.get('printType');
+        return printType.$.id !== PrintType.Mapping.Flock;
+    }, function(configuration) {
+        return !ProductUtil.isRealisticFlex(configuration);
+    }];
+
     return Bindable.inherit('sprd.manager.PrintTypeEqualizer', {
             inject: {
                 concreteElement: ConcreteElement
@@ -83,7 +96,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             },
 
             equalizeConfigurations: function(product, configurations, targetPrintType) {
-                if (!configurations || !product || this.$equalizingConfigurations) {
+                if (!configurations || !configurations.length || configurations.length < 2 || !product || this.$equalizingConfigurations) {
                     return;
                 }
 
@@ -134,16 +147,14 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             },
 
             equalizeConfigurationsOnProduct: function(product, targetPrintType, excludedConfiguration) {
-                if (targetPrintType && targetPrintType.$.id === PrintType.Mapping.SpecialFlex) {
+                if (targetPrintType && excludedPrintTypes.indexOf(targetPrintType.$.id) !== -1) {
                     return;
                 }
 
-                var allConfigurations = product.getConfigurationsOnPrintAreas(product.$.productType.$.printAreas.$items),
-                    platform = product.$stage && product.$stage.PARAMETER().platform;
+                var allConfigurations = product.getConfigurationsOnPrintAreas(product.$.productType.$.printAreas.$items);
 
-                allConfigurations = _.filter(allConfigurations, function(configuration) {
-                    return configuration !== excludedConfiguration
-                        && !ProductUtil.isSpecial(configuration, platform);
+                _.each(filters, function(filter) {
+                    allConfigurations = _.filter(allConfigurations, filter);
                 });
 
                 this.equalizeConfigurations(product, allConfigurations, targetPrintType)
