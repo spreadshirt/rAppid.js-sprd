@@ -12,7 +12,7 @@ define(["js/data/Model"], function(Model) {
             contentLink: String,
             renderLink: String,
             state: String,
-            href: String,
+            href: String
         },
 
         ctor: function() {

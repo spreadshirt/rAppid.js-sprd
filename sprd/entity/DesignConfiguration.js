@@ -1,6 +1,6 @@
 define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
-        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sprd/helper/AfterEffectHelper"],
-    function (DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, AfterEffectHelper) {
+        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sprd/helper/AfterEffectHelper", "sprd/data/MaskService"],
+    function (DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, AfterEffectHelper, MaskService) {
 
         return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
@@ -26,6 +26,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             inject: {
                 imageUploadService: IImageUploadService,
+                maskService: MaskService,
                 context: "context"
             },
 
@@ -326,17 +327,17 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     //
                     //     self.$.imageUploadService.upload(img, cb);
                     // })
-                        .seq(function () {
+                        .seq("design", function (cb) {
                             var afterEffect = self.$.afterEffect;
                             if (afterEffect) {
-                                afterEffect.apply2(self.$.context.$.id, self.$.design.$.id);
+                                self.$.maskService.applyMask(afterEffect, self.$.design, self.$.context.$.id, cb);
                             }
                         })
                         .seq(function () {
                             self.set('originalDesign', design);
                             self._setAfterEffectProperties();
                             self._setOriginalDesignProperties();
-                            self.set('design', this.vars.uploadDesign.$.design);
+                            self.set('design', this.vars.design);
                             self.set('afterEffect', null);
                             self.trigger('configurationChanged');
                         })

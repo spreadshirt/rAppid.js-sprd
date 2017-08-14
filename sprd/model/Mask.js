@@ -9,8 +9,7 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             maxOffset: Offset,
             maxScale: Scale,
             destinationWidth: null,
-            destinationHeight: null,
-            applier: null
+            destinationHeight: null
         },
 
         _initializationComplete: function () {
@@ -19,27 +18,18 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             this.initBindings();
         },
 
-        apply2: function (shopId, designId, cb) {
-            var applier = this.get('applier'),
-                offset = this.get('offset'),
-                scale = this.get('scale');
-
-            if (!applier) {
+        getApplier: function (cb) {
+            var offset = this.get('offset'),
                 applier = this.createEntity(MaskApplier);
-                this.set('applier', applier);
-            }
 
             applier.set({
-                designId: designId,
-                targetShopId: shopId,
                 transformX: offset.$.x,
                 transformY: offset.$.y,
                 maskWidth: this.width(),
-                maskHeight: this.height()
+                maskHeight: this.height(),
             });
 
-            applier.save(null, function() {
-            })
+            return applier;
         },
 
         initDefaults: function() {
