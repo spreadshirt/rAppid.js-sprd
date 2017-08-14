@@ -1,4 +1,4 @@
-define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "js/core/Base", "sprd/entity/Scale", "flow", "rAppid"], function(AfterEffect, Design, Offset, Base, Scale, flow, rappid) {
+define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design", "sprd/entity/Offset", "js/core/Base", "sprd/entity/Scale", "flow", "rAppid"], function(AfterEffect, MaskApplier, Design, Offset, Base, Scale, flow, rappid) {
 
     return AfterEffect.inherit("sprd.model.Mask", {
         defaults: {
@@ -9,13 +9,37 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "js
             maxOffset: Offset,
             maxScale: Scale,
             destinationWidth: null,
-            destinationHeight: null
+            destinationHeight: null,
+            applier: null
         },
 
-        ctor: function() {
+        _initializationComplete: function () {
             this.callBase();
             this.initDefaults();
             this.initBindings();
+        },
+
+        apply2: function (shopId, designId, cb) {
+            var applier = this.get('applier'),
+                offset = this.get('offset'),
+                scale = this.get('scale');
+
+            if (!applier) {
+                applier = this.createEntity(MaskApplier);
+                this.set('applier', applier);
+            }
+
+            applier.set({
+                designId: designId,
+                targetShopId: shopId,
+                transformX: offset.$.x,
+                transformY: offset.$.y,
+                maskWidth: this.width(),
+                maskHeight: this.height()
+            });
+
+            applier.save(null, function() {
+            })
         },
 
         initDefaults: function() {
