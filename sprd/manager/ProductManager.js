@@ -96,7 +96,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     return;
                 }
 
-                options.respectTransform = true;
+                options.keepTransforms = true;
                 var removedConfigurations = this.convertConfigurations(product, product.$.productType, appearance, options);
                 product.set({
                     appearance: appearance
@@ -1035,6 +1035,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     this.positionBendingTextConfiguration(configuration, printArea, printType, options);
                 } else {
                     var transform = options.transform || this.getConfigurationPosition(configuration, printArea, printType, options);
+                    if (options.keepTransforms) {
+                        transform = {
+                            scale: configuration.$.scale,
+                            offset: configuration.$.offset,
+                        }
+                    }
                     configuration.set(transform, PREVENT_VALIDATION_OPTIONS);
                 }
             },

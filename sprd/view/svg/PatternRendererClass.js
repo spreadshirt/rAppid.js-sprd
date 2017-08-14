@@ -118,7 +118,26 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/config/RealisticFlexColors'
             }
 
             return null;
-        }.onChange("design", "_width", "_height").on(["configuration.printColors", "reset"])
+        }.onChange("design", "_width", "_height").on(["configuration.printColors", "reset"]),
+
+        getPrintColor: function() {
+            var configuration = this.$.configuration,
+                printColors = configuration.$.printColors,
+                printColor = null;
+
+            if (printColors && printColors.size() && !this.isSpecialFlex() && !this.isFlock() && !this.isRealisticFlexColor()) {
+                printColor = printColors.at(0).toHexString();
+            }
+
+            return printColor;
+        }.on(["configuration.printColors", "reset"]).onChange("configuration.printType"),
+
+        getFill: function() {
+            var maskId = this.$.maskId;
+            if (this.isSpecialColor()) {
+                return "fill: url(#p" + maskId + "-0);";
+            }
+        }.onChange('maskId').on("getPrintColor()", "isSpecialColor()")
 
     })
 });

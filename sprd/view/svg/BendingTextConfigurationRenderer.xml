@@ -4,7 +4,7 @@
 
     <path cid="path" class="path" id="textPath{maskId}" fill="none" _transform="translate({configuration.textPathOffsetX}, {configuration.textPathOffsetY})"
           d="{configuration.textPath}"/>
-    <text cid="text" class="bending-text" font-family="{configuration.font.getUniqueFontName()}" font-size="{configuration.fontSize}" id="text" text-anchor="middle" style="fill: url(#p{maskId}-0);" dy="{configuration.dy}">
+    <text cid="text" class="bending-text" font-family="{configuration.font.getUniqueFontName()}" font-size="{configuration.fontSize}" id="text" text-anchor="middle" style="{getFill()}" dy="{configuration.dy}">
         <textPath xlink:href="#textPath{maskId}" cid="textPath" startOffset="50%" fill="{getPrintColor()}">
             {configuration.text}
         </textPath>

@@ -173,19 +173,6 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             }
         },
 
-
-        getPrintColor: function() {
-            var configuration = this.$.configuration,
-                printColors = configuration.$.printColors,
-                printColor = null;
-
-            if (printColors && printColors.size() && !this.isSpecialFlex() && !this.isFlock() && !this.isRealisticFlexColor()) {
-                printColor = printColors.at(0).toHexString();
-            }
-
-            return printColor;
-        }.on(["configuration.printColors", "reset"]).onChange("configuration.printType"),
-
         bus_StageRendered: function() {
             this.loadFont();
         }.bus("Stage.Rendered")
