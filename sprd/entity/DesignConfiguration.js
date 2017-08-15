@@ -90,8 +90,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
 
                 if (!design.isVectorDesign()) {
-                    var maximalDpiSize = this.getMaximalSizeRespectingDPI(printType);
-                    ret.dpiBound = maximalDpiSize.height < height || maximalDpiSize < width;
+                    ret.dpiBound = scale.x > 1 || scale.y > 1;
                 }
 
                 ret.minBound = !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale"));
@@ -190,22 +189,26 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             size: function () {
                 return this.getSizeForPrintType(this.$.printType);
-            }.onChange("_dpi", "design").on("change:processedSize"),
+            }.onChange("_dpi", "design", "processedSize"),
+
+            getSizeInPx: function(options) {
+                options = options || {};
+                return options.original ? this.$.design.$.size : this.$.processedSize || this.$.design.$.size;
+            },
 
             getSizeForPrintType: function (printType, options) {
                 options = options || {};
 
                 if (this.$.design && this.$.design.$.size && printType && printType.$.dpi) {
                     var dpi = printType.$.dpi;
-                    var size = options.original ? this.$.design.$.size : this.$.processedSize || this.$.design.$.size;
+                    var size = this.getSizeInPx(options);
                     return UnitUtil.convertSizeToMm(size, dpi);
                 }
 
                 return Size.empty;
             },
 
-            // TODO: add onchange for design.restriction.allowScale
-            isScalable: function () {
+            isScalable: function() {
                 return this.get("printType.isScalable()") && this.$._allowScale;
             }.onChange("printType", "_allowScale"),
 
@@ -272,18 +275,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
             },
 
-            getMaximalSizeRespectingDPI: function (printType) {
-                printType = printType || this.$.printType;
-                var dpi = printType.$.dpi,
-                    designSize = this.get('design.size');
-
-                return {
-                    width: Math.round(designSize.$.width / dpi, 2) * 25.4,
-                    height: Math.round(designSize.$.height / dpi, 2) * 25.4
-                }
-            },
-
-            originalSize: function () {
+            originalSize: function() {
                 return this.getSizeForPrintType(this.$.printType, {original: true});
             },
 

@@ -98,6 +98,17 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                             cb();
                         }
                     })
+                    .seq(function() {
+                        var leafStyle = self.getCommonLeafStyleForWholeTextFlow(),
+                            printTypeColor;
+
+
+                        if (leafStyle) {
+                            printTypeColor = leafStyle.get('printTypeColor');
+                        }
+
+                        self.$.printColors.reset(printTypeColor ? [printTypeColor] : []);
+                    })
                     .exec(callback);
             },
 
