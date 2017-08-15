@@ -40,7 +40,11 @@ define(["sprd/util/ProductUtil", "underscore", "js/core/Base"], function(Product
 
             printArea = printArea || view.getDefaultPrintArea();
 
-            var cacheId = [design.$.id, product.$.view.$.id, printArea.$.id, product.$.appearance.$.id].join("-");
+            if (!printArea) {
+                return false;
+            }
+
+            var cacheId = [design.$.id, view.$.id, printArea.$.id, appearance.$.id].join("-");
             if (!printTypes && !designPrintTypesCache[cacheId]) {
                 designPrintTypesCache[cacheId] = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance);
             }
