@@ -26,7 +26,7 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
                 transformX: offset.$.x,
                 transformY: offset.$.y,
                 maskWidth: this.width(),
-                maskHeight: this.height(),
+                maskHeight: this.height()
             });
 
             return applier;

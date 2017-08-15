@@ -10,15 +10,24 @@ define(["js/core/Component", "flow"],
             applyMask: function (mask, design, shopId, callback) {
                 var self = this,
                     context = self.$.context,
+                    designImg = design.$.localHtmlImage,
                     maskedDesign;
+
+                if (!designImg) {
+                    return callback && callback();
+                }
                 
                 flow()
                     .seq("maskApplier", function () {
                         return mask.getApplier()
                     })
                     .seq("test", function(cb){
-                        var applier = this.vars.maskApplier;
+                        var applier = this.vars.maskApplier,
+                            scalingFactor = mask.canvasScalingFactor(design.$.localHtmlImage);
+
                         applier.set({
+                            maskWidth: applier.get('maskWidth') / scalingFactor,
+                            maskHeight: applier.get('maskHeight') / scalingFactor,
                             designId: design.$.wtfMbsId,
                             targetShopId: shopId
                         });
@@ -33,7 +42,10 @@ define(["js/core/Component", "flow"],
                         maskedDesign.fetch(null, cb);
                     })
                     .exec(function (err, result) {
-                        callback && callback(err, maskedDesign);
+                        callback && callback(err, {
+                            design: maskedDesign,
+                            size: result.test.$.size
+                        });
                     })
 
             }
