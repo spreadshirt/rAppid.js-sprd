@@ -43,8 +43,8 @@ define(["js/data/Model"], function(Model) {
             return this.get('renderLink');
         },
 
-        canvasScalingFactor: function(img) {
-            return AfterEffect.canvasScalingFactor(img);
+        canvasScalingFactor: function(design) {
+            return AfterEffect.canvasScalingFactor(design);
         }
     }, {
         maxCanvasSize: {
@@ -57,9 +57,14 @@ define(["js/data/Model"], function(Model) {
             max: 2
         },
 
-        canvasScalingFactor: function(img) {
-            var widthFactor = AfterEffect.maxCanvasSize.width / img.width;
-            var heightFactor = AfterEffect.maxCanvasSize.height / img.height;
+        canvasScalingFactor: function(design) {
+            if (!design) {
+                return;
+            }
+            
+            var size = design.$.size,
+                widthFactor = AfterEffect.maxCanvasSize.width / size.$.width;
+            var heightFactor = AfterEffect.maxCanvasSize.height / size.$.height;
 
             return Math.min(widthFactor, heightFactor, 1);
         }

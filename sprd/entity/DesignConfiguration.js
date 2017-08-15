@@ -1,6 +1,6 @@
 define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
-        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sprd/helper/AfterEffectHelper", "sprd/data/MaskService"],
-    function (DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, AfterEffectHelper, MaskService) {
+        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sprd/data/MaskService"],
+    function (DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService) {
 
         return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
@@ -69,7 +69,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 if (!afterEffect) {
                     this.set('processedImage', null);
                 } else {
-                    AfterEffectHelper.applyAfterEffect(self.$.design, afterEffect, {crossOrigin: self.$stage && self.$stage.PARAMETER().mode === "admin"}, function (err, ctx) {
+                    this.$.maskService.applyAfterEffect(self.$.design, afterEffect, {crossOrigin: self.$stage && self.$stage.PARAMETER().mode === "admin"}, function (err, ctx) {
                         if (!err) {
                             self.applyAfterEffect(ctx);
                         } else {
@@ -103,7 +103,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 var design = this.$.design;
 
                 if (afterEffect && this.$.processedImage) {
-                    this.set('processedSize', AfterEffectHelper.getProcessedSize(afterEffect, design));
+                    this.set('processedSize', this.$.maskService.getProcessedSize(afterEffect, design));
                 } else {
                     this.set('processedSize', null);
                 }
@@ -127,7 +127,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 self.synchronizeFunctionCall.call(self, function (cb) {
                     flow()
                         .seq('img', function (cb) {
-                            AfterEffectHelper.trimAndExport(ctx, self.$.afterEffect, null, cb);
+                            self.$.maskService.trimAndExport(ctx, self.$.afterEffect, null, cb);
                         })
                         .exec(function (err, result) {
                             cb(err, result.img);
@@ -191,7 +191,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return this.getSizeForPrintType(this.$.printType);
             }.onChange("_dpi", "design", "processedSize"),
 
-            getSizeInPx: function(options) {
+            getSizeInPx: function (options) {
                 options = options || {};
                 return options.original ? this.$.design.$.size : this.$.processedSize || this.$.design.$.size;
             },
@@ -208,7 +208,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return Size.empty;
             },
 
-            isScalable: function() {
+            isScalable: function () {
                 return this.get("printType.isScalable()") && this.$._allowScale;
             }.onChange("printType", "_allowScale"),
 
@@ -275,7 +275,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
             },
 
-            originalSize: function() {
+            originalSize: function () {
                 return this.getSizeForPrintType(this.$.printType, {original: true});
             },
 
@@ -301,24 +301,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     callback && callback();
                 } else {
                     flow()
-                    // .seq('ctx', function(cb) {
-                    //     AfterEffectHelper.applyAfterEffect(design, afterEffect, {fullSize: true}, cb);
-                    // })
-                    // .seq('blob', function(cb) {
-                    //     AfterEffectHelper.trimAndExport(this.vars.ctx, afterEffect, {
-                    //         blob: true,
-                    //         fullSize: true
-                    //     }, cb);
-                    // })
-                    // .seq('uploadDesign', function(cb) {
-                    //     var img = new BlobImage({
-                    //         blob: this.vars.blob,
-                    //         height: self.size().$.height,
-                    //         width: self.size().$.width
-                    //     });
-                    //
-                    //     self.$.imageUploadService.upload(img, cb);
-                    // })
                         .seq("design", function (cb) {
                             var afterEffect = self.$.afterEffect;
                             if (afterEffect) {

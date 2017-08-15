@@ -234,10 +234,10 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
 
             var img = source;
             if (source instanceof Design) {
-                if (source.get('localHtmlImage')) {
-                    img = source.get('localHtmlImage')
+                if (source.get('htmlImage')) {
+                    img = source.get('htmlImage')
                 } else {
-                    callback(new Error('No localHtmlImage'));
+                    callback(new Error('No htmlImage'));
                 }
             }
 

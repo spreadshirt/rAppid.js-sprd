@@ -1,4 +1,4 @@
-define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "sprd/config/AfterEffects", "underscore", "rAppid", "sprd/helper/AfterEffectHelper"], function(Base, UnitUtil, Design, flow, Size, AfterEffects, _, rappid, AfterEffectHelper) {
+define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "sprd/config/AfterEffects", "underscore"], function(Base, UnitUtil, Design, flow, Size, AfterEffects, _) {
 
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
         initializeConfiguration: function(configuration, options, callback) {

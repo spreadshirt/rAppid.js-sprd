@@ -61,7 +61,8 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             description: '',
             restrictions: null,
             designServiceState: null,
-            localImage: null
+            localImage: null,
+            htmlImage: null
         },
 
         schema: {
@@ -173,10 +174,6 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
 
                 this.$.translations.push(translation);
             }
-        },
-
-        supportsAfterEffect: function() {
-            return !!this.get('localImage');
         }
     });
 
