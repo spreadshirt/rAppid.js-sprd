@@ -13,7 +13,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             moveSnippingEnabled = true,
             scaleRatioThresholdForRotation = 0.2,
             moveSnippingThreshold = 7,
-            minSize = 8,
+            minSize = 16,
             maxSize = 650;
 
         return SvgElement.inherit({
