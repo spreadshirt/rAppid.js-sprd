@@ -366,16 +366,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     x: midX + (difX * cos - difY * sin),
                     y: midY + (difX * sin + difY * cos)
                 };
-
-                // var oldDistance = this.distanceFromMidPoint(x, y, midX, midY);
-                // var newDistance = this.distanceFromMidPoint(newPoint.x, newPoint.y, midX, midY);
-                //
-                // var sameDistanceFromMidPoint = oldDistance.equals(newDistance);
-                // if (!sameDistanceFromMidPoint) {
-                //     throw new Error("Rotated point does not have same distance to midpoint.")
-                // }
-                //
-                // return newPoint
             },
 
             distanceFromMidPoint: function(x, y, midX, midY) {
