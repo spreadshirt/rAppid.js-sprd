@@ -34,7 +34,7 @@ define(["js/core/Component", "flow"],
                         applier.save(null, cb)
                     })
                     .seq('design', function (cb) {
-                        if (!this.vars.test && this.vars.test.$.designId) {
+                        if (!this.vars.test || !this.vars.test.$.designId) {
                             return cb();
                         }
 
@@ -42,10 +42,7 @@ define(["js/core/Component", "flow"],
                         maskedDesign.fetch(null, cb);
                     })
                     .exec(function (err, result) {
-                        callback && callback(err, {
-                            design: maskedDesign,
-                            size: result.test.$.size
-                        });
+                        callback && callback(err, maskedDesign);
                     })
 
             }
