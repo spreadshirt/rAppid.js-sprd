@@ -53,7 +53,8 @@ define(["js/core/Component", 'sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/e
                 return imageService.designImage(design.$.wtfMbsId || design.$.id, {
                     width: !width ? height : width,
                     height: !height ? width : height,
-                    version: design.$.version
+                    version: design.$.version,
+                    sameOrigin: true
                 });
             }
 

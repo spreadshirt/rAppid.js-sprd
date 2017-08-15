@@ -80,7 +80,7 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
                 callback && callback(e);
             };
 
-            img.src = this.previewUrl();
+            img.src = this.relativePreviewUrl();
         },
 
         centerAt: function(x, y, options) {

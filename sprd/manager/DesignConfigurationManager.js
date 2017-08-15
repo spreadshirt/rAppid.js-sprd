@@ -157,51 +157,13 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     });
                 })
                 .seq(function() {
-                    if (parameter.mode == 'admin' && design && !design.get('localImage') && properties && properties.afterEffect) {
-                        var id = design.$.wtfMbsId;
-                        if (id) {
-                            design.set('localImage', parameter.imageServiceEndPoint + '/designs/' + id + '.orig');
-                        }
-                    }
-                })
-                .seq("mask", function(cb) {
-                    if (properties && properties.afterEffect && !configuration.$.afterEffect) {
-                        var mask = self.$.designerApi.createEntity(Mask, properties.afterEffect.id);
-                        mask.fetch(null, cb)
-                    } else {
-                        cb();
-                    }
-                })
-                .seq(function(cb) {
-                    if (properties && properties.afterEffect && !configuration.$.afterEffect && this.vars.mask) {
-                        var afterEffect = this.vars.mask;
-                        afterEffect.$.offset.set({
-                            'x': properties.afterEffect.offset.x,
-                            'y': properties.afterEffect.offset.y
-                        });
-
-                        afterEffect.$.scale.set({
-                            'x': properties.afterEffect.scale.x,
-                            'y': properties.afterEffect.scale.y
-                        });
-
-                        afterEffect.set('initialized', true);
-                        afterEffect.callback = cb;
-                        configuration.set('afterEffect', afterEffect);
-                    } else {
-                        cb();
-                    }
-                })
-                .seq(function() {
                     if (svg) {
                         var size = new Size({
                             width: 100,
                             height: 100
                         });
 
-                        if (configuration.$.processedSize) {
-                            size = configuration.size();
-                        } else if (!options.noDesignFetch && design) {
+                        if (!options.noDesignFetch && design) {
                             size = UnitUtil.convertSizeToMm(design.$.size, configuration.$.printType.$.dpi);
                         } else if (configuration.$.generatedWidth) {
                             // here we have a special text configuration
@@ -240,12 +202,35 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         configuration.set(ret, {preventValidation: true});
                     }
                 })
+                .seq("mask", function (cb) {
+                    if (properties && properties.afterEffect && !configuration.$.afterEffect) {
+                        var mask = self.$.designerApi.createEntity(Mask, properties.afterEffect.id);
+                        mask.fetch(null, cb)
+                    } else {
+                        cb();
+                    }
+                })
+                .seq(function (cb) {
+                    if (properties && properties.afterEffect && !configuration.$.afterEffect && this.vars.mask) {
+                        var afterEffect = this.vars.mask;
+                        afterEffect.$.offset.set({
+                            'x': properties.afterEffect.offset.x,
+                            'y': properties.afterEffect.offset.y
+                        });
+
+                        afterEffect.$.scale.set({
+                            'x': properties.afterEffect.scale.x,
+                            'y': properties.afterEffect.scale.y
+                        });
+
+                        afterEffect.set('initialized', true);
+                        afterEffect.callback = cb;
+                        configuration.set('afterEffect', afterEffect);
+                    } else {
+                        cb();
+                    }
+                })
                 .exec(callback);
-        },
-
-        getBimsUrl: function(parameter) {
-            return parameter.imageServiceEndPoint.replace('image.', 'backend.').replace('media', '').replace('image-server', 'bims')
         }
-
     });
 });

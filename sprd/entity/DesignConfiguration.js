@@ -69,7 +69,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 if (!afterEffect) {
                     this.set('processedImage', null);
                 } else {
-                    this.$.maskService.applyAfterEffect(self.$.design, afterEffect, {crossOrigin: self.$stage && self.$stage.PARAMETER().mode === "admin"}, function (err, ctx) {
+                    this.$.maskService.applyAfterEffect(self.$.design, afterEffect, null, function (err, ctx) {
                         if (!err) {
                             self.applyAfterEffect(ctx);
                         } else {
@@ -125,14 +125,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
                 var cacheId = [self.$.design.$.id, self.$.afterEffect.id()].join('#');
                 self.synchronizeFunctionCall.call(self, function (cb) {
-                    flow()
-                        .seq('img', function (cb) {
-                            self.$.maskService.trimAndExport(ctx, self.$.afterEffect, null, cb);
-                        })
-                        .exec(function (err, result) {
-                            cb(err, result.img);
-                        });
-
+                    var img = self.$.maskService.trimAndExport(ctx, self.$.afterEffect, null);
+                    cb(null, img);
                 }, cacheId, function (err, result) {
                     self.set('processedImage', result);
                 }, self);
@@ -285,9 +279,9 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this._setOriginalDesignProperties();
                 ret.properties = this.$.properties;
 
-                if (this.$.processedSize && this.$stage.PARAMETER().mode != "admin") {
-                    ret.content.svg.image.width = this.originalSize().$.width;
-                    ret.content.svg.image.height = this.originalSize().$.height;
+                if (this.$.processedSize) {
+                    ret.content.svg.image.width = this.originalSize().$.width * this.$.scale.x;
+                    ret.content.svg.image.height = this.originalSize().$.height * this.$.scale.y;
                 }
                 return ret;
             },

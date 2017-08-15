@@ -1,5 +1,5 @@
 define(["js/data/Model"], function(Model) {
-
+    var gateway = '/designer-service/v1/masks/';
     var AfterEffect = Model.inherit("sprd.model.AfterEffect", {
 
         defaults: {
@@ -39,8 +39,12 @@ define(["js/data/Model"], function(Model) {
             return this.get('contentLink');
         },
 
-        fullImageSrc: function() {
-            return this.get('renderLink');
+        relativePreviewUrl: function() {
+            if (!gateway) {
+                return;
+            }
+
+            return gateway +  this.$.id + "/content";
         },
 
         canvasScalingFactor: function(design) {
