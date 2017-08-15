@@ -1,4 +1,4 @@
-define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "sprd/config/AfterEffects", "underscore"], function(Base, UnitUtil, Design, flow, Size, AfterEffects, _) {
+define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "underscore", "sprd/model/Mask"], function(Base, UnitUtil, Design, flow, Size, _, Mask) {
 
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
         initializeConfiguration: function(configuration, options, callback) {
@@ -26,7 +26,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
             }
 
-            if (parameter.mode == "admin" && properties.type == 'afterEffect' && properties.afterEffect && properties.afterEffect.originalDesign) {
+            if (properties.type == 'afterEffect' && properties.afterEffect && properties.afterEffect.originalDesign) {
                 var originalDesign = properties.afterEffect.originalDesign;
                 designId = originalDesign.href.split("/").pop();
                 if (designId != design.$.id) {
@@ -164,18 +164,17 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         }
                     }
                 })
+                .seq("mask", function(cb) {
+                    if (properties && properties.afterEffect && !configuration.$.afterEffect) {
+                        var mask = self.$.designerApi.createEntity(Mask, properties.afterEffect.id);
+                        mask.fetch(null, cb)
+                    } else {
+                        cb();
+                    }
+                })
                 .seq(function(cb) {
-                    if (parameter.mode == "admin" && properties && properties.afterEffect && !configuration.$.afterEffect) {
-                        var baseUrl = function(url) {
-                            return self.$stage.baseUrl ? self.$stage.baseUrl.call(self, url) : url;
-                        };
-
-                        var afterEffects = AfterEffects(baseUrl);
-
-                        var afterEffect = _.find(afterEffects.masks, function(mask) {
-                            return mask.$.id == properties.afterEffect.id;
-                        });
-
+                    if (properties && properties.afterEffect && !configuration.$.afterEffect && this.vars.mask) {
+                        var afterEffect = this.vars.mask;
                         afterEffect.$.offset.set({
                             'x': properties.afterEffect.offset.x,
                             'y': properties.afterEffect.offset.y

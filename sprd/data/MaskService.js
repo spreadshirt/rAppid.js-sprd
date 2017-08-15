@@ -65,7 +65,7 @@ define(["js/core/Component", 'sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/e
                 return callback();
             }
 
-            if (!design.$.localImage) {
+            if (!design.$.htmlImage) {
                 var originalImage = new Image();
 
                 if (options.crossOrigin) {
@@ -75,11 +75,11 @@ define(["js/core/Component", 'sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/e
                 originalImage.src = this.getImageSrcForCanvas(design);
                 originalImage.onerror = callback;
                 originalImage.onload = function () {
-                    design.set('localImage', originalImage);
+                    design.set('htmlImage', originalImage);
                     callback(null, originalImage);
                 };
             } else {
-                callback(null, design.$.localImage);
+                callback(null, design.$.htmlImage);
             }
         },
 
@@ -141,7 +141,7 @@ define(["js/core/Component", 'sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/e
                     self.prepareForAfterEffect(design, afterEffect, options, cb)
                 })
                 .seq(function (cb) {
-                    var designImage = design.$.localImage;
+                    var designImage = design.$.htmlImage;
                     afterEffect.apply(this.vars.ctx, designImage, options, cb);
                 })
                 .exec(function (err, results) {
@@ -152,7 +152,7 @@ define(["js/core/Component", 'sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/e
         applyMask: function (mask, design, shopId, callback) {
             var self = this,
                 context = self.$.context,
-                designImg = design.$.localImage,
+                designImg = design.$.htmlImage,
                 maskedDesign;
 
             if (!designImg) {
@@ -176,7 +176,7 @@ define(["js/core/Component", 'sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/e
                     applier.save(null, cb)
                 })
                 .seq('design', function (cb) {
-                    if (!this.vars.test || !this.vars.test.$.designId) {
+                    if (!this.vars.applierResult || !this.vars.applierResult.$.designId) {
                         return cb();
                     }
 
