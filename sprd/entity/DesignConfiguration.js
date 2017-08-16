@@ -10,10 +10,9 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 _allowScale: "{design.restrictions.allowScale}",
 
                 afterEffect: null,
-
+                processedDesign: null,
                 processedImage: null,
-                processedSize: null,
-                originalDesign: null
+                processedSize: null
             },
 
 
@@ -21,7 +20,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.callBase();
 
                 this.bind('change:processedImage', this._setProcessedSize, this);
-                this.bind('change:originalDesign', this._setOriginalDesignProperties, this);
+                this.bind('change:processedDesign', function() {this._setOriginalDesignProperties()}, this);
             },
 
             inject: {
@@ -185,17 +184,20 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return this.getSizeForPrintType(this.$.printType);
             }.onChange("_dpi", "design", "processedSize"),
 
-            getSizeInPx: function (options) {
+            getSizeInPx: function (design, options) {
                 options = options || {};
-                return options.original ? this.$.design.$.size : this.$.processedSize || this.$.design.$.size;
+                design = design || this.$.design;
+                return options.original ? design.$.size : this.$.processedSize || design.$.size;
             },
 
-            getSizeForPrintType: function (printType, options) {
+            getSizeForPrintType: function (printType, design, options) {
                 options = options || {};
+                design = design || this.$.design;
+                printType = printType || this.$.printType;
 
-                if (this.$.design && this.$.design.$.size && printType && printType.$.dpi) {
+                if (design && design.$.size && printType && printType.$.dpi) {
                     var dpi = printType.$.dpi;
-                    var size = this.getSizeInPx(options);
+                    var size = this.getSizeInPx(design, options);
                     return UnitUtil.convertSizeToMm(size, dpi);
                 }
 
@@ -255,40 +257,47 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
             },
 
-            _setOriginalDesignProperties: function () {
+            _setOriginalDesignProperties: function (design) {
                 var properties = this.get('properties');
-                var originalDesign = this.get('originalDesign');
 
-                if (originalDesign) {
+                design = design || this.$.processedDesign;
+
+                if (design) {
                     //Mask is already applied and processedImage uploaded
                     properties.afterEffect = properties.afterEffect || {};
                     properties.afterEffect.originalDesign = {
-                        id: originalDesign.get('wtfMbsId'),
-                        href: "/" + originalDesign.get("id")
+                        id: design.get('wtfMbsId'),
+                        href: "/" + design.get("id")
                     };
                 }
             },
 
             originalSize: function () {
-                return this.getSizeForPrintType(this.$.printType, {original: true});
+                return this.getSizeForPrintType(this.$.printType, null, {original: true});
             },
 
             compose: function () {
+                var processedDesign = this.get('processedDesign'),
+                    originalDesign = this.get('design');
+
+                if (processedDesign) {
+                    this.set('design', processedDesign, {silent: true});
+                }
+
                 var ret = this.callBase();
                 this._setAfterEffectProperties();
-                this._setOriginalDesignProperties();
+                this._setOriginalDesignProperties(originalDesign);
                 ret.properties = this.$.properties;
 
-                if (this.$.processedSize) {
-                    ret.content.svg.image.width = this.originalSize().$.width * this.$.scale.x;
-                    ret.content.svg.image.height = this.originalSize().$.height * this.$.scale.y;
+                if (processedDesign && originalDesign) {
+                    this.set('design', originalDesign);
                 }
+                
                 return ret;
             },
 
             save: function (callback) {
                 var self = this,
-                    design = this.$.design,
                     afterEffect = this.$.afterEffect;
 
                 if (!afterEffect) {
@@ -302,12 +311,9 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                             }
                         })
                         .seq(function () {
-                            self.set('originalDesign', design);
-                            self._setAfterEffectProperties();
-                            self._setOriginalDesignProperties();
-                            self.set('design', this.vars.design);
-                            self.set('afterEffect', null);
-                            self.trigger('configurationChanged');
+                            if (this.vars.design) {
+                                self.set('processedDesign', this.vars.design);
+                            }
                         })
                         .exec(callback);
                 }
