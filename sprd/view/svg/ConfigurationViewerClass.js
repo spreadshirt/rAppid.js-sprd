@@ -12,9 +12,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             scaleSnippingEnabled = true,
             moveSnippingEnabled = true,
             scaleRatioThresholdForRotation = 0.2,
-            moveSnippingThreshold = 7,
-            minSize = 16,
-            maxSize = 650;
+            moveSnippingThreshold = 7;
 
         return SvgElement.inherit({
 
@@ -1117,11 +1115,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         };
 
                         var scaleDirection = Math.sign(newScale.y - baseScale),
-                            avgDimensionSize = (configuration.width(newScale.y) + configuration.height(newScale.y)) / 2,
-                            tooSmall = avgDimensionSize <= minSize && scaleDirection < 0,
-                            tooBig = avgDimensionSize >= maxSize && scaleDirection > 0;
+                            minDimensionSize = Math.min(configuration.width(newScale.y), configuration.height(newScale.y)),
+                            maxDimensionSize = Math.max(configuration.width(newScale.y), configuration.height(newScale.y)),
+                            willBecomeTooSmall = minDimensionSize <= configuration.$.minSize && scaleDirection < 0,
+                            willBecomeTooBig = maxDimensionSize >= configuration.$.maxSize && scaleDirection > 0;
 
-                        if (!tooSmall && !tooBig) {
+                        if (!willBecomeTooSmall && !willBecomeTooBig) {
                             this.set('_scale', newScale, userInteractionOptions);
                             this.$._offset.set(this.getCenteredOffset(configuration, newScale), userInteractionOptions);
                         }
