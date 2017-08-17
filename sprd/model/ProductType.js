@@ -48,6 +48,10 @@ define(["sprd/model/ProductTypeBase", "sprd/entity/ProductTypeView", "sprd/entit
 
             getViewByConfiguration: function(configuration) {
                 return this.getViewByPrintArea(configuration.$.printArea);
+            },
+
+            singleSize: function () {
+                return this.$.sizes.length === 1;
             }
         })
     });
