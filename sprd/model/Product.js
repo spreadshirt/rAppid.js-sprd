@@ -477,12 +477,26 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 return ready;
             },
 
+            getContainedMasks: function () {
+                var configs = this.$.configurations;
+                var masks = [];
+                for (var i = 0; i < configs.length; i++) {
+                    var config = configs.$items[i];
+                    if (config.$.afterEffect) {
+                        masks.push(config.$.afterEffect);
+                    }
+                }
+
+                return masks;
+            },
+
             _commitChangedAttributes: function (attributes) {
                 this.callBase();
                 if (attributes.hasOwnProperty("appearance") || attributes.hasOwnProperty("productType")) {
                     this.trigger("productChanged");
                 }
             },
+
             sync: function () {
                 var ret = this.callBase();
                 if (ret) {
