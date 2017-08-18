@@ -5,12 +5,12 @@
         xmlns:js="js.core"
         componentClass="print-type-selector">
 
-    <ui:SelectionView items="{possiblePrintTypes}" itemKey="printType" selectedItem="{configuration.printType}">
+    <ui:SelectionView items="{possiblePrintTypes}" itemKey="printType" selectedItem="{configuration.printType}" class="print-type-selection-view">
         <js:Template name="item">
-            <div class="print-type-item print-type-{printType.id}">
-                <a onclick="_selectPrintType(printType)" enabled="{configuration.isPrintTypeAvailable(printType)}">
-                    <span class="icon"/>
+            <div class="print-type-item print-type-{printType.id}" enabled="{supportsPrintType(printType)}">
+                <a onclick="_selectPrintType(printType)">
                     <span class="label">${labelForPrintType(printType)}</span>
+                    <view:PrintColorImage printColor="{getExamplePrintColor(printType)}"/>
                 </a>
             </div>
         </js:Template>

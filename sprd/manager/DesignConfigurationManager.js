@@ -242,11 +242,6 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     }
                 })
                 .exec(callback);
-        },
-
-        getBimsUrl: function(parameter) {
-            return parameter.imageServiceEndPoint.replace('image.', 'backend.').replace('media', '').replace('image-server', 'bims')
         }
-
     });
 });
