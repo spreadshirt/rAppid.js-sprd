@@ -1,11 +1,18 @@
 define(["js/data/Model"], function(Model) {
-
-    var AfterEffect = Model.inherit("sketchomat.model.AfterEffect", {
+    var gateway = '/designer-service/v1/masks/';
+    var AfterEffect = Model.inherit("sprd.model.AfterEffect", {
 
         defaults: {
-            id: null,
-            namekey: null,
             initialized: false
+        },
+
+        schema: {
+            id: String,
+            name: String,
+            contentLink: String,
+            renderLink: String,
+            state: String,
+            href: String
         },
 
         ctor: function() {
@@ -20,10 +27,6 @@ define(["js/data/Model"], function(Model) {
             callback && callback(new Error("Not implemented."));
         },
 
-        getNamePath: function(path) {
-            return path + '.' + this.$.namekey;
-        },
-
         compose: function() {
             throw new Error("Not implemented.");
         },
@@ -33,11 +36,19 @@ define(["js/data/Model"], function(Model) {
         },
 
         previewUrl: function() {
-            throw new Error("Not implemented.");
+            return this.get('contentLink');
         },
 
-        canvasScalingFactor: function(img) {
-            return AfterEffect.canvasScalingFactor(img);
+        relativePreviewUrl: function() {
+            if (!gateway) {
+                return;
+            }
+
+            return gateway +  this.$.id + "/content";
+        },
+
+        canvasScalingFactor: function(design) {
+            return AfterEffect.canvasScalingFactor(design);
         }
     }, {
         maxCanvasSize: {
@@ -50,9 +61,14 @@ define(["js/data/Model"], function(Model) {
             max: 2
         },
 
-        canvasScalingFactor: function(img) {
-            var widthFactor = AfterEffect.maxCanvasSize.width / img.width;
-            var heightFactor = AfterEffect.maxCanvasSize.height / img.height;
+        canvasScalingFactor: function(design) {
+            if (!design) {
+                return;
+            }
+            
+            var size = design.$.size,
+                widthFactor = AfterEffect.maxCanvasSize.width / size.$.width;
+            var heightFactor = AfterEffect.maxCanvasSize.height / size.$.height;
 
             return Math.min(widthFactor, heightFactor, 1);
         }

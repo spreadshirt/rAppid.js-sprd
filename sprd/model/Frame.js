@@ -39,10 +39,10 @@ define(["sprd/model/AfterEffect", "sprd/model/Design"], function(AfterEffect, De
 
             var img = source;
             if (source instanceof Design) {
-                if (source.get('localHtmlImage')) {
-                    img = source.get('localHtmlImage')
+                if (source.get('htmlImage')) {
+                    img = source.get('htmlImage')
                 } else {
-                    callback(new Error('No localHtmlImage'));
+                    callback(new Error('No htmlImage'));
                 }
             }
 
