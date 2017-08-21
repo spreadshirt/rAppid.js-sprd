@@ -269,10 +269,11 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     configView && configView.set('preventValidation', false);
                 }
 
-                if (configView) {
+                if (configView && configView.$el) {
                     configView.removeClass('hide-configuration');
                     configView.enableMoveSnipping();
                 }
+                
                 dndObject.dndImage.set({
                     'visible': false
                 });

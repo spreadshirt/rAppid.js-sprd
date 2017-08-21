@@ -11,6 +11,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             scaleSnippingThreshold = 0.02,
             scaleSnippingEnabled = true,
             moveSnippingEnabled = true,
+            scaleRatioThresholdForRotation = 0.2,
             moveSnippingThreshold = 7;
 
         return SvgElement.inherit({
@@ -359,20 +360,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var difY = y - midY;
 
 
-                var newPoint = {
+                return {
                     x: midX + (difX * cos - difY * sin),
                     y: midY + (difX * sin + difY * cos)
                 };
-
-                var oldDistance = this.distanceFromMidPoint(x, y, midX, midY);
-                var newDistance = this.distanceFromMidPoint(newPoint.x, newPoint.y, midX, midY);
-
-                var sameDistanceFromMidPoint = oldDistance.equals(newDistance);
-                if (!sameDistanceFromMidPoint) {
-                    throw new Error("Rotated point does not have same distance to midpoint.")
-                }
-
-                return newPoint
             },
 
             distanceFromMidPoint: function(x, y, midX, midY) {
@@ -1069,7 +1060,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         y: newY
                     }, userInteractionOptions);
 
-                } else if (mode === RESIZE) {
+                }
+                else if (mode === RESIZE) {
                     var rot = this.degreeToRadian(this.$._rotation),
                         sin = Math.sin(rot),
                         cos = Math.cos(rot);
@@ -1110,7 +1102,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         scaleDifference = Math.abs(currentScale - baseScale),
                         scaleDifferenceRatio = scaleDifference / baseScale;
 
-                    if (!(this.scales() && scaleDifferenceRatio > 0.2)) {
+                    if (!(this.scales() && scaleDifferenceRatio > scaleRatioThresholdForRotation)) {
                         this._rotate(x, y, configuration, userInteractionOptions);
                     }
 
@@ -1121,8 +1113,17 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             x: scaleFactor * configuration.$.scale.x,
                             y: scaleFactor * configuration.$.scale.y
                         };
-                        this.set('_scale', newScale, userInteractionOptions);
-                        this.$._offset.set(this.getCenteredOffset(configuration, newScale), userInteractionOptions);
+
+                        var scaleDirection = Math.sign(newScale.y - baseScale),
+                            minDimensionSize = Math.min(configuration.width(newScale.y), configuration.height(newScale.y)),
+                            maxDimensionSize = Math.max(configuration.width(newScale.y), configuration.height(newScale.y)),
+                            willBecomeTooSmall = minDimensionSize <= configuration.$.minSize && scaleDirection < 0,
+                            willBecomeTooBig = maxDimensionSize >= configuration.$.maxSize && scaleDirection > 0;
+
+                        if (!willBecomeTooSmall && !willBecomeTooBig) {
+                            this.set('_scale', newScale, userInteractionOptions);
+                            this.$._offset.set(this.getCenteredOffset(configuration, newScale), userInteractionOptions);
+                        }
                     }
                 }
             },

@@ -27,6 +27,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             },
             rotation: 0,
             printColors: List,
+            minSize: 16,
+            maxSize: 650,
 
             textEditable: true,
 
@@ -51,6 +53,15 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         saveTakesTime: function() {
             return false;
+        },
+
+        _commitScale: function (newScale) {
+            var minDimensionSize = Math.min(this.width(newScale.y), this.height(newScale.y)),
+                maxDimensionSize = Math.max(this.width(newScale.y), this.height(newScale.y));
+            var tooSmall = minDimensionSize > this.$.minSize,
+                tooBig = maxDimensionSize < this.$.maxSize;
+
+            return !tooBig && !tooSmall;
         },
 
         _commitChangedAttributes: function($, options) {

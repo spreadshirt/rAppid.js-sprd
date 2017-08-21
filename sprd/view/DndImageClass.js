@@ -25,9 +25,10 @@ define(["js/ui/View", "js/core/Bus"], function(View, Bus) {
         $classAttributes: ["design", "svgElement", "svgContainer"],
 
         _renderConfigurationViewer: function(configViewer) {
+            var currentElement = this.$currentElement;
             if (this.$.svgContainer) {
-                if (this.$currentElement) {
-                    this.$.svgContainer.$el.removeChild(this.$currentElement);
+                if (currentElement && currentElement.parentNode) {
+                    currentElement.parentNode.removeChild(currentElement);
                 }
                 if (configViewer) {
                     var assetContainer = configViewer.$._assetContainer;
