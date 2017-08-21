@@ -1,8 +1,9 @@
-define(["js/ui/View", "flow", "sprd/model/PrintType", "js/core/I18n"], function (View, flow, PrintType, I18n) {
+define(["js/ui/View", "flow", "sprd/model/PrintType", "js/core/I18n", "sprd/util/ProductUtil"], function (View, flow, PrintType, I18n, ProductUtil) {
 
     var LABEL_MAPPING = {};
-    LABEL_MAPPING[PrintType.Mapping.Flock] = "velvety";
-    LABEL_MAPPING[PrintType.Mapping.Flex] = LABEL_MAPPING[PrintType.Mapping.NylonFlex] = "smooth";
+    LABEL_MAPPING[PrintType.Mapping.Flock] = "flockPrint";
+    LABEL_MAPPING[PrintType.Mapping.Flex] = LABEL_MAPPING[PrintType.Mapping.NylonFlex] = "flexPrint";
+    LABEL_MAPPING[PrintType.Mapping.DigitalTransfer] = LABEL_MAPPING[PrintType.Mapping.DigitalDirect] = "digital";
 
 
     return View.inherit('sprd.view.PrintTypePanelBase', {
@@ -38,12 +39,50 @@ define(["js/ui/View", "flow", "sprd/model/PrintType", "js/core/I18n"], function 
             i18n: I18n
         },
 
+
+        supportsNoPrintType: function () {
+            return ProductUtil.supportsNoPrintType(this.get('product'), this.get('configuration'));
+        },
+
+        supportsPrintType: function (printType) {
+            var product = this.$.product,
+                configuration = this.$.configuration;
+
+            if (!product || !configuration) {
+                return;
+            }
+
+            return ProductUtil.supportsPrintType(product, configuration, printType.$.id) || this.supportsNoPrintType();
+        }.onChange("configuration.scale", "product.appearance"),
+
+        getExamplePrintColor: function (printType) {
+            var configuration = this.$.configuration,
+                printColors = configuration.$.printColors;
+
+            if (!printType || !configuration || !printColors || !printColors.length) {
+                return;
+            }
+            
+            return printType.getClosestPrintColor(printColors.$items[0].$.fill);
+        }.onChange('configuration').on(["configuration.printColors", "*"]),
+
+        printTypeAvailable: function (printType) {
+            var configuration = this.$.configuration,
+                possiblePrintTypes = this.$.possiblePrintTypes;
+
+            if (!configuration) {
+                return false;
+            }
+
+            return possiblePrintTypes.indexOf(printType) !== -1;
+        }.onChange('configuration').on(['configuration', 'change:printType']),
+
         labelForPrintType: function (printType) {
             if (this.$.i18n) {
                 var key = LABEL_MAPPING[printType.$.id];
 
                 if (key) {
-                    return this.$.i18n.t('printColorSelector.' + key);
+                    return this.$.i18n.t('color.' + key);
                 }
             }
             return printType.$.name;
