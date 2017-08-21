@@ -58,8 +58,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         _commitScale: function (newScale) {
             var minDimensionSize = Math.min(this.width(newScale.y), this.height(newScale.y)),
                 maxDimensionSize = Math.max(this.width(newScale.y), this.height(newScale.y));
-            var tooSmall = minDimensionSize > this.$.minSize,
-                tooBig = maxDimensionSize < this.$.maxSize;
+            var tooSmall = minDimensionSize < this.$.minSize,
+                tooBig = maxDimensionSize > this.$.maxSize;
 
             return !tooBig && !tooSmall;
         },
