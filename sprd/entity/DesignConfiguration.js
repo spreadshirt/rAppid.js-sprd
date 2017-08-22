@@ -258,11 +258,12 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             _setOriginalDesignProperties: function (design) {
-                var properties = this.get('properties');
+                var properties = this.get('properties'),
+                    afterEffect = this.get('afterEffect');
 
                 design = design || this.$.processedDesign;
 
-                if (design) {
+                if (design && afterEffect) {
                     //Mask is already applied and processedImage uploaded
                     properties.afterEffect = properties.afterEffect || {};
                     properties.afterEffect.originalDesign = {
