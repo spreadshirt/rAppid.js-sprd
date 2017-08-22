@@ -16,7 +16,8 @@ define(["sprd/util/ProductUtil", "underscore", "js/core/Base"], function(Product
             return !!printArea;
         },
 
-        canBePrinted: function(design, product, printTypes, printArea) {
+        canBePrinted: function(design, product, printTypes, printArea, options) {
+            options = options || {};
             product = product || this.get("product");
 
             if (!product) {
@@ -63,7 +64,7 @@ define(["sprd/util/ProductUtil", "underscore", "js/core/Base"], function(Product
                 return true;
             }
 
-            if (printArea.hasSoftBoundary()) {
+            if (printArea.hasSoftBoundary() && options.clippingAllowed) {
                 // will be clipped, so no max bound error to expect
                 return true;
             }
@@ -85,7 +86,9 @@ define(["sprd/util/ProductUtil", "underscore", "js/core/Base"], function(Product
             return !hardBoundaryError;
         },
 
-        canBePrintedSinglePrintType: function(design, printType, printArea) {
+        canBePrintedSinglePrintType: function(design, printType, printArea, options) {
+            options = options || {};
+
             if (!design) {
                 throw new Error("No design supplied to check printability with.");
             }
@@ -99,7 +102,7 @@ define(["sprd/util/ProductUtil", "underscore", "js/core/Base"], function(Product
                 return true;
             }
 
-            if (printArea.hasSoftBoundary()) {
+            if (printArea.hasSoftBoundary() && options.clippingAllowed) {
                 // will be clipped, so no max bound error to expect
                 return true;
             }
