@@ -64,7 +64,7 @@ define(["sprd/util/ProductUtil", "underscore", "js/core/Base"], function(Product
                 return true;
             }
 
-            if (printArea.hasSoftBoundary() && options.clippingAllowed) {
+            if (printArea.hasSoftBoundary() && !options.disallowClipping) {
                 // will be clipped, so no max bound error to expect
                 return true;
             }
@@ -102,7 +102,7 @@ define(["sprd/util/ProductUtil", "underscore", "js/core/Base"], function(Product
                 return true;
             }
 
-            if (printArea.hasSoftBoundary() && options.clippingAllowed) {
+            if (printArea.hasSoftBoundary() && !options.disallowClipping) {
                 // will be clipped, so no max bound error to expect
                 return true;
             }
