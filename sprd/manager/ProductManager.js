@@ -1251,6 +1251,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     if (err) {
                         callback && callback(err);
                     } else {
+
                         params.removeConfiguration && product.$.configurations.remove(textConfiguration);
                         config.set({
                             rotation: textConfiguration.$.rotation,
