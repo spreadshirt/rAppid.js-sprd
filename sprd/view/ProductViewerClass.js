@@ -6,7 +6,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             product: null,
             width: 300,
             height: 300,
-            selectedConfiguration: "{{concreteElement.selectedConfiguration}}",
+            selectedConfiguration: null,
             editable: true,
             focused: true,
 
@@ -373,6 +373,10 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 });
                 this.callBase();
             }
-        }
+        },
+
+        deselectConfiguration: function () {
+            this.set('selectedConfiguration', null);
+        }.bus("ExternalApi.deselectConfiguration")
     });
 });
