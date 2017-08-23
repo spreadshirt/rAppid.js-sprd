@@ -1,5 +1,5 @@
-define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewViewer'],
-    function (Svg, ImageService, ProductTypeViewViewer) {
+define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewViewer', 'sprd/type/Vector'],
+    function (Svg, ImageService, ProductTypeViewViewer, Vector) {
 
         return Svg.inherit('sprd.view.ProductViewerSvg', {
             defaults: {
@@ -124,6 +124,16 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
                     width: width,
                     height: height
                 });
+            },
+
+            getViewBoxDiagonal: function() {
+                var viewBox = this.$.viewBoxObj;
+
+                if (viewBox.width && viewBox.height) {
+                    return new Vector([viewBox.width, viewBox.height]);
+                }
+
+                return new Vector();
             },
 
             _commitProduct: function (product) {

@@ -68,7 +68,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 downVector: null,
                 moveVector: null,
                 centerVector: null,
-                rotationSnap: null
+                rotationSnap: null,
+                productViewerDiagonalLength: null
             },
 
             inject: {
@@ -267,6 +268,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             _productViewerSizeChanged: function() {
                 this.set('_globalToLocalFactor', this.$.productViewer.globalToLocalFactor());
+                this.set('productViewerDiagonalLength', this.$.productViewer.getViewBoxDiagonal().distance());
             },
 
 
@@ -495,8 +497,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 var midPoint = {x: printArea.width() / 2, y: printArea.height() / 2};
-                this.addSnapLines(leftUpperCorner, 'x', printArea.width(), 3, midPoint, 0, printArea);
-                this.addSnapLines(leftUpperCorner, 'y', printArea.height(), 3, midPoint, 0, printArea);
+                this.addSnapLines(midPoint, 'x', printArea.width() / 2, 2, midPoint, 0, printArea);
+                this.addSnapLines(midPoint, 'x', -printArea.width() / 2, 2, midPoint, 0, printArea);
+                this.addSnapLines(midPoint, 'y', printArea.height() / 2, 2, midPoint, 0, printArea);
+                this.addSnapLines(midPoint, 'y', -printArea.height() / 2, 2, midPoint, 0, printArea);
             },
 
             toScreenCoords: function(vector, svg, CTMmatrix) {
@@ -988,7 +992,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         if (Math.abs(snapDistance) <= threshold) {
                             newX -= snapPosDeltaX;
                             newY -= snapPosDeltaY;
-                            snappedLines.push(snappedLine.getSvgLine(4000));
+
+                            var productViewerDiagonalLength = this.$.productViewerDiagonalLength
+                            snappedLines.push(snappedLine.getSvgLine(productViewerDiagonalLength));
                             lines = _.filter(lines, function(snapLine) {
                                 return snappedLine.isPerpendicular(snapLine.line);
                             });
