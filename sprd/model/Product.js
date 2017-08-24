@@ -316,6 +316,23 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                     this.$.productType.isDeepEqual(product.$.productType));
             },
 
+            removeDuplicateConfigurations: function () {
+                var configurations = this.$.configurations,
+                    clonedConfigurations = configurations.clone();
+
+                for(var i = 0; i < clonedConfigurations.length; i++) {
+                    var config = clonedConfigurations.at(i);
+                    for (var j = i + 1; j < clonedConfigurations.length; j++) {
+                        var otherConfig = clonedConfigurations.at(j),
+                            duplicate = config.isDeepEqual(otherConfig);
+
+                        if (duplicate) {
+                            configurations.removeAt(j);
+                        }
+                    }
+                }
+            },
+
             save: function (options, callback) {
                 if (this.$originalProduct) {
                     if (this.hasChanges()) {
@@ -340,6 +357,9 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }
 
                 flow()
+                    .seq(function(){
+                        self.removeDuplicateConfigurations();
+                    })
                     .seqEach(this.$.configurations.$items, function(configuration) {
                         if (configuration instanceof TextConfiguration) {
                             var text = configuration.$.textFlow.text(0, -1);

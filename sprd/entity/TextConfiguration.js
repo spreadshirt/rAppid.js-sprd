@@ -801,7 +801,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             isReadyForCompose: function() {
                 return !!this.$.composedTextFlow;
             },
+
             isDeepEqual: function(b) {
+                if (!b) {
+                    return false;
+                }
+
+                if (!(b instanceof TextConfiguration)) {
+                    return false;
+                }
+
                 var comparableProperties = ['offset', 'rotation', 'printType', 'scale', 'printArea'],
                     i,
                     property,
