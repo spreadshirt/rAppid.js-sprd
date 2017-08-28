@@ -12,6 +12,7 @@ define(["js/core/Component"], function (Component) {
         _trackErrorRaygun: function (err, customData) {
             var raygun = window.Raygun;
             if (err && raygun) {
+                err = err instanceof Error ? err : new Error(err);
                 raygun.send(err, customData);
             }
         },
