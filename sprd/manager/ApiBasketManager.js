@@ -205,7 +205,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 this.trigger("on:basketUpdating", this.$.basket, this);
             },
 
-            _initBasket: function (callback) {
+            _initBasket: function (options, callback) {
 
                 var api = this.$.api,
                     localStorage = this.$.localStorage,
@@ -213,6 +213,11 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     basket,
                     self = this;
 
+                if (!callback && options instanceof Function) {
+                    callback = options;
+                }
+
+                options = options || {};
                 basketId = basketId || localStorage.getItem("basketId");
 
                 basket = api.createEntity(Basket, basketId);
@@ -275,9 +280,13 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                             self.fetchBasketDiscounts(cb);
                         })
                         .seq(function (cb) {
-                            self.fetchBasketCoupons(function () {
+
+                            if (options.lazyLoad) {
+                                self.fetchBasketCoupons();
                                 cb();
-                            });
+                            } else {
+                                self.fetchBasketCoupons(cb);
+                            }
                         })
                         .exec(function (err) {
                             if (err) {

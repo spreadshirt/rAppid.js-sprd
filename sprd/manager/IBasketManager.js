@@ -21,14 +21,19 @@ define(["js/core/Component"], function (Component) {
             editBasketItemUrl: null
         },
 
-        initBasket: function (callback) {
-
+        initBasket: function (options, callback) {
             var self = this;
+
+            if (!callback && options instanceof Function) {
+                callback = options;
+            }
+
+            options = options || {};
 
             if (this.$basketInitialized) {
                 callback && callback();
             } else {
-                this._initBasket(function (err) {
+                this._initBasket(options, function (err) {
                     if (!err) {
                         self.$basketInitialized = true;
                     }
