@@ -9,14 +9,24 @@ define(["js/core/Component"], function (Component) {
             this.callBase();
         },
 
+        _trackErrorRaygun: function (err, customData) {
+            var raygun = window.Raygun;
+            if (err && raygun) {
+                err = err instanceof Error ? err : new Error(err);
+                raygun.send(err, customData);
+            }
+        },
+        
         trackUploadDesignCreationFailed: function (err) {
             var google = this.$.google;
             google && google.trackEvent("Upload", "DesignCreationFailed", this.get(err, "xhr.responses.text"));
+            this._trackErrorRaygun(err);
         },
 
         trackUploadFailed: function (err) {
             var google = this.$.google;
             google && google.trackEvent("Upload", "Failed", (err || "").toString());
+            this._trackErrorRaygun(err);
         },
 
         trackUploadSuccess: function () {

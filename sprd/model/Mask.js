@@ -1,6 +1,6 @@
-define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "js/core/Base", "sprd/entity/Scale", "flow", "rAppid"], function(AfterEffect, Design, Offset, Base, Scale, flow, rappid) {
+define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design", "sprd/entity/Offset", "js/core/Base", "sprd/entity/Scale", "flow", "rAppid"], function(AfterEffect, MaskApplier, Design, Offset, Base, Scale, flow, rappid) {
 
-    return AfterEffect.inherit("sketchomat.model.Mask", {
+    return AfterEffect.inherit("sprd.model.Mask", {
         defaults: {
             htmlImage: null,
             offset: Offset,
@@ -12,10 +12,24 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "js
             destinationHeight: null
         },
 
-        ctor: function() {
+        _initializationComplete: function () {
             this.callBase();
             this.initDefaults();
             this.initBindings();
+        },
+
+        getApplier: function (cb) {
+            var offset = this.get('offset'),
+                applier = this.createEntity(MaskApplier);
+
+            applier.set({
+                transformX: offset.$.x,
+                transformY: offset.$.y,
+                maskWidth: this.width(),
+                maskHeight: this.height()
+            });
+
+            return applier;
         },
 
         initDefaults: function() {
@@ -43,16 +57,30 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "js
             this.trigger("processingParametersChanged");
         },
 
-        previewUrl: function() {
-            throw new Error("Not implemented");
-        },
-
         clamp: function(value, min, max) {
             return Math.max(min, Math.min(max, value));
         },
 
         initImage: function(options, callback) {
-            callback && callback(new Error("Not implemented"));
+            options = options || {};
+
+            if (!options.force && this.get('htmlImage') && this.get('htmlImage').complete) {
+                return callback && callback(null, this.get('htmlImage'));
+            }
+
+            var img = new Image(),
+                self = this;
+
+            img.onload = function() {
+                self.set('htmlImage', img);
+                callback && callback(null, img);
+            };
+
+            img.onerror = function(e) {
+                callback && callback(e);
+            };
+
+            img.src = this.relativePreviewUrl();
         },
 
         centerAt: function(x, y, options) {
@@ -206,10 +234,10 @@ define(["sprd/model/AfterEffect", "sprd/model/Design", "sprd/entity/Offset", "js
 
             var img = source;
             if (source instanceof Design) {
-                if (source.get('localHtmlImage')) {
-                    img = source.get('localHtmlImage')
+                if (source.get('htmlImage')) {
+                    img = source.get('htmlImage')
                 } else {
-                    callback(new Error('No localHtmlImage'));
+                    callback(new Error('No htmlImage'));
                 }
             }
 

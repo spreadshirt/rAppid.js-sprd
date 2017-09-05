@@ -27,7 +27,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             },
             rotation: 0,
             printColors: List,
-            minSize: 16,
+            minSize: 10,
             maxSize: 650,
 
             textEditable: true,

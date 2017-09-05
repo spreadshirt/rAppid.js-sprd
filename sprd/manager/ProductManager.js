@@ -769,10 +769,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         self.positionConfiguration(configuration);
 
                         if (params.offset) {
-                            configuration.set({'offset': params.offset}, PREVENT_VALIDATION_OPTIONS);
+                            configuration.set({'offset': params.offset});
                         }
                         if (params.scale) {
-                            configuration.set('scale', params.scale, PREVENT_VALIDATION_OPTIONS);
+                            configuration.set('scale', params.scale);
                         }
                     })
                     .exec(function(err, results) {
@@ -824,7 +824,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     product.removeExampleConfiguration();
                     product._addConfiguration(configuration);
                 }
-                configuration.clearErrors();
+
                 bus.trigger('Application.productChanged', null);
             },
 
@@ -1038,10 +1038,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     if (options.keepTransforms) {
                         transform = {
                             scale: configuration.$.scale,
-                            offset: configuration.$.offset,
+                            offset: configuration.$.offset
                         }
                     }
-                    configuration.set(transform, PREVENT_VALIDATION_OPTIONS);
+                    configuration.set(transform);
                 }
             },
 
@@ -1059,7 +1059,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     configuration.bind('sizeChanged', closedFn)
                 } else {
                     var transform = options.transform || this.getConfigurationPosition(configuration, printArea, printType, options);
-                    configuration.set(transform, PREVENT_VALIDATION_OPTIONS);
+                    configuration.set(transform);
                 }
             },
 
@@ -1251,6 +1251,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     if (err) {
                         callback && callback(err);
                     } else {
+
                         params.removeConfiguration && product.$.configurations.remove(textConfiguration);
                         config.set({
                             rotation: textConfiguration.$.rotation,

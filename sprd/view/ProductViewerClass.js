@@ -1,4 +1,4 @@
-define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/ImageService", "designer/manager/FeatureManager"], function (View, Bus, ProductManager, ImageService, FeatureManager) {
+define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/ImageService", "designer/manager/FeatureManager", "sprd/entity/ConcreteElement"], function (View, Bus, ProductManager, ImageService, FeatureManager, ConcreteElement) {
     return View.inherit('sprd.view.ProductViewerClass', {
 
         defaults: {
@@ -33,7 +33,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             bus: Bus,
             productManager: ProductManager,
             imageService: ImageService,
-            featureManager: FeatureManager
+            featureManager: FeatureManager,
+            concreteElement: ConcreteElement
         },
 
         events: ['on:configurationSelect', "on:deselectConfiguration"],
@@ -43,17 +44,31 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             this.bind('productViewerSvg', 'add:configurationViewer', this._onConfigurationViewerAdded, this);
             this.bind('product.configurations', 'reset', this._onConfigurationsReset, this);
             this.bind('product', 'change:configurations', this._onConfigurationsReset, this);
-            this.bind('product.configurations', 'remove', function (e) {
-                if (e.$.item === this.$.selectedConfiguration) {
-                    this.set('selectedConfiguration', null);
-                }
-            }, this);
+            this.bind('product.configurations', 'remove', this._onConfigurationRemoved , this);
+            this.bind('product.configurations', 'add', this._onConfigurationAdded, this);
+        },
+
+        _initializationComplete: function () {
+            this.callBase();
+            var product = this.$.product;
+
+            if (!product) {
+                return;
+            }
+
+            var configurations = product.$.configurations;
+
+            if (configurations.length === 0) {
+                return;
+            }
+
+            this.set('selectedConfiguration', configurations.at(0));
         },
 
         _commitSelectedConfiguration: function (selectedConfiguration, oldSelectedConfiguration) {
             var activeElement = document.activeElement;
             selectedConfiguration && activeElement && activeElement.blur && activeElement.blur();
-            if (this.$.product && oldSelectedConfiguration && (oldSelectedConfiguration.type === "text" || oldSelectedConfiguration.type ===  "specialText")) {
+            if (this.$.product && oldSelectedConfiguration && (oldSelectedConfiguration.type === "text" || oldSelectedConfiguration.type === "specialText")) {
                 if (oldSelectedConfiguration.$.isNew && this.$.removeNewConfigurations) {
                     this.$.product.$.configurations.remove(oldSelectedConfiguration);
                 }
@@ -66,6 +81,22 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                     }
                 }
 
+            }
+        },
+
+        _onConfigurationAdded: function (e) {
+            var product = this.$.product,
+                configsOnCurrentView = product.getConfigurationsOnView(),
+                addedConfig = e.$.item;
+
+            if (addedConfig && _.indexOf(configsOnCurrentView, addedConfig) !== -1) {
+                this.set('selectedConfiguration', e.$.item);
+            }
+        },
+
+        _onConfigurationRemoved: function (e) {
+            if (e.$.item === this.$.selectedConfiguration) {
+                this.set('selectedConfiguration', null);
             }
         },
 
@@ -85,7 +116,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             var configurations = this.$.product.$.configurations,
                 selectedConfiguration = this.$.selectedConfiguration;
 
-            if(!configurations.contains(selectedConfiguration)) {
+            if (!configurations.contains(selectedConfiguration)) {
                 this.set('selectedConfiguration', null);
             }
         },
@@ -105,7 +136,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
                 var previousSelectedConfiguration = this.$.selectedConfiguration;
 
-                if (this.$.autoDeselectConfiguration)  {
+                if (this.$.autoDeselectConfiguration) {
                     this.$.bus.trigger('ProductViewer.configurationSelected', {configuration: null});
                     this.set('selectedConfiguration', null);
                 }
@@ -156,12 +187,12 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             return null;
         },
 
-        getConfigurationsOnActiveView: function(configurations) {
+        getConfigurationsOnActiveView: function (configurations) {
             var self = this,
                 printArea = null,
                 view = null;
 
-            return configurations.$items.filter(function(configuration) {
+            return configurations.$items.filter(function (configuration) {
                 printArea = configuration.$.printArea;
                 view = self.$.view;
                 return view.containsPrintArea(printArea)
@@ -192,13 +223,13 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 e.preventDefault();
                 e.stopPropagation();
 
-                this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view, {respectTransform: true}, function(err) {
-                    if(err) {
+                this.$.productManager.moveConfigurationToView(product, newConfiguration, this.$.view, {respectTransform: true}, function (err) {
+                    if (err) {
                         bus.trigger("ProductViewer.copyToViewError", err);
                         newConfiguration = null;
                     } else {
                         var configurations = self.$.product.$.configurations,
-                            configurationsOnView = self.getConfigurationsOnActiveView(configurations).filter(function(c) {
+                            configurationsOnView = self.getConfigurationsOnActiveView(configurations).filter(function (c) {
                                 return c !== newConfiguration
                             });
 
@@ -216,8 +247,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                                 var configuration = configurationsOnView[j];
 
                                 var offset = configuration.$.offset,
-                                x = Math.round(offset.$.x),
-                                y = Math.round(offset.$.y);
+                                    x = Math.round(offset.$.x),
+                                    y = Math.round(offset.$.y);
 
                                 if ((newX == x) && (newY == y)) {
                                     foundConfigurationOnSamePosition = true;
@@ -242,7 +273,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                         newConfiguration.$stage = null;
                         bus.setUp(newConfiguration);
 
-                        if(newConfiguration.type == "specialText") {
+                        if (newConfiguration.type == "specialText") {
                             newConfiguration.fetchImage();
                         }
                     }
@@ -305,7 +336,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 if (ctrlKey && (e.keyCode === 67 || e.keyCode === 88) && enableCopyPaste) {
                     this.set('copiedConfiguration', selectedConfiguration.clone());
 
-                    if(e.keyCode === 88) {
+                    if (e.keyCode === 88) {
                         product.$.configurations.remove(selectedConfiguration);
                         self.set('selectedConfiguration', null);
                     }
@@ -342,6 +373,10 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 });
                 this.callBase();
             }
-        }
+        },
+
+        deselectConfiguration: function () {
+            this.set('selectedConfiguration', null);
+        }.bus("ExternalApi.deselectConfiguration")
     });
 });
