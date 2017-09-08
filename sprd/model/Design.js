@@ -154,6 +154,10 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             return null;
         },
 
+        isUploaded: function() {
+            return this.$.href.indexOf("u") === 0;
+        },
+
         setTranslation: function (translation) {
             var locale = translation.get('locale'),
                 previousTranslation;
