@@ -140,6 +140,10 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                         var configuration = configViewer.$.configuration;
                         // Check if there is a hover with a view unequal current one
 
+                        if (dndObject.viewer === self) {
+                            return;
+                        }
+
                         var printArea = self.$printAreas[0].getPrintArea();
                         var possiblePrintTypes;
                         // Check printArea constraints
