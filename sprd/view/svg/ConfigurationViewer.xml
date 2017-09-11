@@ -3,7 +3,7 @@
                                   xmlns:sprdSvg="sprd.view.svg" class="{errorClass()}"
                                   cid="cv">
 
-    <svg:line class="rotation-line" x1="{minus(enlarge(add(cv.downVector.getX(), cv.centerVector.getX())))}" x2="{enlarge(add(cv.downVector.getX(), cv.centerVector.getX()))}"
+    <svg:line class="rotation-line" selected="{rotationSnap}" x1="{minus(enlarge(add(cv.downVector.getX(), cv.centerVector.getX())))}" x2="{enlarge(add(cv.downVector.getX(), cv.centerVector.getX()))}"
               y1="{minus(enlarge(add(cv.downVector.getY(), cv.centerVector.getY())))}" y2="{enlarge(add(cv.downVector.getY(), cv.centerVector.getY()))}"
               visible="{and(rotationSnap, isScaling())}"/>
 
