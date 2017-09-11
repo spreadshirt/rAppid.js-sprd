@@ -36,7 +36,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             _view: null,
             _productType: null,
 
-            imageService: null
+            imageService: null,
+            inverseZoom: "{getInverseZoom()}"
         },
 
         $classAttributes: ["productViewer", "product", "imageService"],
@@ -357,20 +358,47 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 return;
             }
 
-            var surroundingRect = ViewUtil.surroundingRectOfViewMapsInView(view);
-            var viewWidth = view.get('size.width');
-            var viewHeight = view.get('size.height');
-            var minScaleFactor = Math.min(viewWidth / surroundingRect.width, viewHeight / surroundingRect.height) - 1;
-            var scale = 1 + Math.min(minScaleFactor * zoomToPrintArea, maxZoom);
+            var scale = this.getScale(),
+                translationAfterScale = this.centerAfterScaling(scale);
 
             this.set({
                 scaleX: scale,
                 scaleY: scale,
-                translateX: viewWidth / 2 - scale * (surroundingRect.x + surroundingRect.width / 2),
-                translateY: viewHeight / 2 - scale * (surroundingRect.y + surroundingRect.height / 2)
+                translateX: translationAfterScale.x,
+                translateY: translationAfterScale.y
             });
-
         },
+
+        centerAfterScaling: function (scale) {
+            var view = this.get('_view');
+            var surroundingRect = ViewUtil.surroundingRectOfViewMapsInView(view);
+            var viewWidth = view.get('size.width');
+            var viewHeight = view.get('size.height');
+            return {
+                x: viewWidth / 2 - scale * (surroundingRect.x + surroundingRect.width / 2),
+                y: viewHeight / 2 - scale * (surroundingRect.y + surroundingRect.height / 2)
+            }
+        },
+
+        getScale: function () {
+            var zoomToPrintArea = this.get("productViewer.zoomToPrintArea");
+            var maxZoom = this.get("productViewer.maxZoom");
+            var view = this.get('_view');
+            var surroundingRect = ViewUtil.surroundingRectOfViewMapsInView(view);
+            var viewWidth = view.get('size.width');
+            var viewHeight = view.get('size.height');
+            var minScaleFactor = Math.min(viewWidth / surroundingRect.width, viewHeight / surroundingRect.height) - 1;
+            return 1 + Math.min(minScaleFactor * zoomToPrintArea, maxZoom);
+        },
+
+        getInverseZoom: function () {
+            var zoom = this.getScale();
+            if (zoom) {
+                return 1 / zoom;
+            }
+
+            return 1;
+        }.onChange("scaleX", "scaleY"),
 
         getViewerForConfiguration: function(configuration) {
             var viewer;

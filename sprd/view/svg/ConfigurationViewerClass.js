@@ -69,7 +69,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 moveVector: null,
                 centerVector: null,
                 rotationSnap: null,
-                productViewerDiagonalLength: null
+                productViewerDiagonalLength: null,
+                inverseZoom: "{printAreaViewer.productTypeViewViewer.inverseZoom}"
             },
 
             inject: {
