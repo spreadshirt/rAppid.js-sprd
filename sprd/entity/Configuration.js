@@ -40,7 +40,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             _isDeletable: true,
             docked: false,
             _printTypePrice: "{printType.price}",
-            properties: Object
+            properties: Object,
         },
 
         inject: {
