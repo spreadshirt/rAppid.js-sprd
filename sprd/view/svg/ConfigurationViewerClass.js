@@ -770,6 +770,29 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
+            deleteConfiguration: function(e) {
+
+                if (!this.$hasTouch && e.domEvent.which !== 1) {
+                    // not a first mouse button click
+                    return;
+                }
+
+                if (this.$.product) {
+                    var configuration = this.$.configuration,
+                        productViewer = this.$.productViewer;
+
+                    this.$.product.$.configurations.remove(configuration);
+                    e.preventDefault();
+
+                    this.$.bus.trigger('Application.productChanged', this.$.product);
+                    if (productViewer && productViewer.$.selectedConfiguration === configuration) {
+                        productViewer.set('selectedConfiguration', null);
+                    }
+
+                }
+            },
+
+
             snapAngle: function(configuration, value) {
                 if (rotateSnippingEnabled && !this.$.shiftKey) {
                     var snapStepSize = 45;
