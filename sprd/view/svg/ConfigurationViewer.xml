@@ -26,7 +26,8 @@
                   width="{_configurationWidth}" height="{_configurationHeight}"/>
 
         <svg:g class="configuration-info" visible="{and(_configurationInfo, productViewer.$parent.showConfigurationInformation)}"
-               scaleX="{inverseZoom}" scaleY="{scaleX}"  _fontSize="{pixelToViewBox(15)}" translateY="-{pixelToViewBox(add(10, mul(10, scalesAndRotates())))}">
+               scaleX="{inverseZoom}" scaleY="{scaleX}"  _fontSize="{pixelToViewBox(15)}"
+               translateX="{mul(inverseZoom, half(_configurationWidth))}" translateY="-{pixelToViewBox(mul(inverseZoom, add(10, mul(10, scalesAndRotates()))))}">
             <svg:text visible="{scales()}" font-size="{_fontSize}" x="{half(_configurationWidth)}" text-anchor="middle">
                 {getLocalizedSize(_configurationWidth,0)} x
                 {getLocalizedSize(_configurationHeight,0)}
