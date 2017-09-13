@@ -27,8 +27,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             },
             rotation: 0,
             printColors: List,
-            minSize: 10,
-            maxSize: 650,
+            minSize: 1, // in mm
 
             textEditable: true,
 
@@ -40,7 +39,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             _isDeletable: true,
             docked: false,
             _printTypePrice: "{printType.price}",
-            properties: Object,
+            properties: Object
         },
 
         inject: {
@@ -58,12 +57,12 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         _commitScale: function (newScale) {
 
             var size = this.$._size,
-                minDimensionSize = Math.min(this.width(newScale.y), this.height(newScale.y)),
-                maxDimensionSize = Math.max(this.width(newScale.y), this.height(newScale.y));
-            var tooSmall = minDimensionSize < this.$.minSize,
-                tooBig = maxDimensionSize > this.$.maxSize;
+                newWidth = this.widthInMM(newScale.y),
+                newHeight = this.heightInMM(newScale.y),
+                minDimensionSize = Math.min(newWidth, newHeight),
+                tooSmall = minDimensionSize < this.$.minSize;
 
-            return size.$.width === 0 || (!tooBig && !tooSmall);
+            return size.$.width === 0 || !tooSmall;
         },
 
         _commitChangedAttributes: function($, options) {
