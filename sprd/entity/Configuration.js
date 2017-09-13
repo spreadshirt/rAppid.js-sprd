@@ -27,7 +27,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             },
             rotation: 0,
             printColors: List,
-            minSize: 1, // in mm
+            minSize: 5, // in mm
 
             textEditable: true,
 

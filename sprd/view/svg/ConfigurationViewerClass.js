@@ -1181,12 +1181,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 var tooWideForPrintArea = newWidth / printArea.get('_size.width') > printArea.get('restrictions.maxConfigRatio'),
                     tooTallForPrintArea = newHeight / printArea.get('_size.height') > printArea.get('restrictions.maxConfigRatio'),
-                    tooBigForPrintAreaRel = tooWideForPrintArea && tooTallForPrintArea,
-                    tooThinForPrintArea = newWidth / printArea.get('_size.width') < printArea.get('restrictions.minConfigRatio'),
+                    tooBigForPrintAreaRel = tooWideForPrintArea && tooTallForPrintArea;
+
+                var tooThinForPrintArea = newWidth / printArea.get('_size.width') < printArea.get('restrictions.minConfigRatio'),
                     tooShortForPrintArea = newHeight / printArea.get('_size.height') < printArea.get('restrictions.minConfigRatio'),
                     tooSmallForPrintAreaRel = tooThinForPrintArea && tooShortForPrintArea;
 
-                return !willBecomeTooSmallAbs && !tooBigForPrintAreaRel && !tooSmallForPrintAreaRel;
+                var invalidRelSize = !configuration.get('printArea.hasSoftBoundary()') && (tooBigForPrintAreaRel || tooSmallForPrintAreaRel);
+                return !willBecomeTooSmallAbs && !invalidRelSize;
             },
 
             getCenteredOffset: function(configuration, scale) {
