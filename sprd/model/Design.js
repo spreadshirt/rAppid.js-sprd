@@ -155,7 +155,7 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
         },
 
         isUploaded: function() {
-            return this.$.href.indexOf("u") === 0;
+            return this.$.id && this.$.id.indexOf("u") === 0;
         },
 
         setTranslation: function (translation) {
