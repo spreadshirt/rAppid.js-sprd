@@ -85,7 +85,8 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
         designImage: function (designId, options) {
             options = options || {};
-            var parameter = ImageService.getImageSizeParameter(options) || {};
+            var parameter = ImageService.getImageSizeParameter(options) || {},
+                startParameter = this.PARAMETER();
 
             var printColors = options.printColors;
             if (printColors) {
@@ -103,13 +104,20 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             }
 
             var cacheId = options.cacheId || (designId || "").replace(/^.*?(\d+).*/, "$1");
-            return this.buildUrl(['designs', designId], parameter, cacheId);
+            var url = ['designs', designId];
+
+            if (startParameter.subMode == 'edit' && (options.watermark === undefined || options.watermark)) {
+                url.unshift('mp');
+            }
+
+            return this.buildUrl(url, parameter, cacheId);
         },
 
         designImageFromCache: function(designId, options) {
+            // noinspection PointlessBooleanExpressionJS
             var cache = this.get("designCache"),
                 size = options.width || options.height,
-                key = designId + "-" + options.version;
+                key = designId + "-" + options.version + "-" + (!!options.watermark);
 
             if(options.layerIndex != null) {
                 key += "-" + options.layerIndex;
