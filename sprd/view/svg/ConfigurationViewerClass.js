@@ -13,6 +13,18 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             scaleRatioThresholdForRotation = 0.2,
             moveSnippingThreshold = 7;
 
+        //Polyfill
+        if (!Math.sign) {
+            Math.sign = function (x) {
+                // If x is NaN, the result is NaN.
+                // If x is -0, the result is -0.
+                // If x is +0, the result is +0.
+                // If x is negative and not -0, the result is -1.
+                // If x is positive and not +0, the result is +1.
+                return ((x > 0) - (x < 0)) || +x;
+            };
+        }
+        
         return SvgElement.inherit({
 
             defaults: {
