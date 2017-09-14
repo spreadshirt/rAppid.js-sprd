@@ -6,7 +6,8 @@ define(['js/data/Entity', 'sprd/model/PrintType', 'sprd/entity/Size'], function 
             textAllowed: true,
             designAllowed: true,
             excludedPrintTypes: [],
-            docked: false
+            minConfigRatio: 0.05,
+            maxConfigRatio: 1.2
         },
 
         schema: {
@@ -20,6 +21,7 @@ define(['js/data/Entity', 'sprd/model/PrintType', 'sprd/entity/Size'], function 
 
         defaults: {
             restrictions: PrintAreaRestriction,
+            docked: false,
             boundary: null,
             _size: "{boundary.size}",
             _softBoundary: "{boundary.soft}",
