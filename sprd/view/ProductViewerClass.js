@@ -84,6 +84,12 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             }
         },
 
+        _commitView: function (view) {
+            if (view) {
+                this.set('selectedConfiguration', null);
+            }
+        },
+
         _onConfigurationAdded: function (e) {
             var product = this.$.product,
                 configsOnCurrentView = product.getConfigurationsOnView(),
