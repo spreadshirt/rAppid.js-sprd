@@ -193,6 +193,13 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             return null;
         },
 
+        getConfigurationByCid: function (cid) {
+            var configs = this.get('product.getConfigurationsOnView()');
+            return configs && configs.find(function (config) {
+                return config.$cid === cid;
+            })
+        },
+
         getConfigurationsOnActiveView: function (configurations) {
             var self = this,
                 printArea = null,
@@ -383,6 +390,13 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
         deselectConfiguration: function () {
             this.set('selectedConfiguration', null);
-        }.bus("ExternalApi.deselectConfiguration")
+        }.bus("ExternalApi.deselectConfiguration"),
+
+        selectConfiguration: function (event) {
+            var config = this.getConfigurationByCid(event.$);
+            if (config) {
+                this.set('selectedConfiguration', config);
+            }
+        }.bus("ExternalApi.selectConfiguration")
     });
 });
