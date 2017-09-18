@@ -193,13 +193,6 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
             return null;
         },
 
-        getConfigurationByCid: function (cid) {
-            var configs = this.get('product.getConfigurationsOnView()');
-            return configs && configs.find(function (config) {
-                return config.$cid === cid;
-            })
-        },
-
         getConfigurationsOnActiveView: function (configurations) {
             var self = this,
                 printArea = null,
@@ -391,12 +384,65 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
         deselectConfiguration: function () {
             this.set('selectedConfiguration', null);
         }.bus("ExternalApi.deselectConfiguration"),
+        
+        moveConfigurationUp: function () {
+            var product = this.$.product;
 
-        selectConfiguration: function (event) {
-            var config = this.getConfigurationByCid(event.$);
-            if (config) {
-                this.set('selectedConfiguration', config);
+            if (!product) {
+                return;
             }
-        }.bus("ExternalApi.selectConfiguration")
+
+            var configurations = product.$.configurations,
+                configuration = this.$.selectedConfiguration,
+                items = configurations.$items;
+
+            var filteredConfigurations = product.getConfigurationsOnView();
+
+            var filteredIndex = filteredConfigurations.indexOf(configuration);
+
+            if (filteredIndex === filteredConfigurations.length - 1) {
+                return;
+            }
+
+            var successor = filteredConfigurations[filteredIndex + 1];
+
+            var configurationIndex = configurations.indexOf(configuration),
+                successorIndex = configurations.indexOf(successor);
+
+            items[configurationIndex] = successor;
+            items[successorIndex] = configuration;
+
+            configurations.reset(items);
+        }.bus("ExternalApi.layerUp"),
+
+        moveConfigurationDown: function () {
+            var product = this.$.product;
+
+            if (!product) {
+                return;
+            }
+
+            var configurations = product.$.configurations,
+                configuration = this.$.selectedConfiguration,
+                items = configurations.$items;
+
+            var filteredConfigurations = product.getConfigurationsOnView();
+
+            var filteredIndex = filteredConfigurations.indexOf(configuration);
+
+            if (filteredIndex === 0) {
+                return;
+            }
+
+            var predecessor = filteredConfigurations[filteredIndex - 1];
+
+            var configurationIndex = configurations.indexOf(configuration),
+                predecessorIndex = configurations.indexOf(predecessor);
+
+            items[configurationIndex] = predecessor;
+            items[predecessorIndex] = configuration;
+
+            configurations.reset(items);
+        }.bus("ExternalApi.layerDown")
     });
 });
