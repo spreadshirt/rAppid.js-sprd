@@ -103,6 +103,10 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
                 parameter.version = options.version;
             }
 
+            if (options.sameOrigin) {
+                parameter.sameOrigin = options.sameOrigin;
+            }
+
             var cacheId = options.cacheId || (designId || "").replace(/^.*?(\d+).*/, "$1");
             var url = ['designs', designId];
 
