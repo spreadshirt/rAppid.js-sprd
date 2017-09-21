@@ -20,7 +20,7 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
 
         url: function() {
 
-            if (this.$.imageService && this.$.configuration && this.$.configuration.$.design && this.$.configuration.$.printColors) {
+            if (this.$.imageService && this.$.configuration && this.$.configuration.$.design && this.$.configuration.$.printColors && !this.$.configuration.$.design.isVectorDesign()) {
 
                 var maxSize = Math.min(this.$._width, 600),
                     options = {},
@@ -34,12 +34,12 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
 
                 options.printColors = this.$.configuration.getPrintColorsAsRGB();
                 options.version = design.$.version;
+                options.watermark = false;
 
-                if (!design.isVectorDesign()) {
-                    return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImageFromCache(design.$.wtfMbsId, options);
-                }
+                return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImageFromCache(design.$.wtfMbsId, options);
 
             }
+
             return null;
         }.onChange("design", "_width", "_height", "configuration.processedImage").on(["configuration.printColors", "reset"]),
 
@@ -68,6 +68,7 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
                 options.printColors = printColors;
                 options.version = design.$.version;
                 options.layerIndex = layerIndex;
+                options.watermark = false;
 
                 if (!design.isVectorDesign()) {
                     return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImageFromCache(design.$.wtfMbsId, options);

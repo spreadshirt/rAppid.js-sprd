@@ -1035,12 +1035,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     this.positionBendingTextConfiguration(configuration, printArea, printType, options);
                 } else {
                     var transform = options.transform || this.getConfigurationPosition(configuration, printArea, printType, options);
-                    if (options.keepTransforms) {
-                        transform = {
-                            scale: configuration.$.scale,
-                            offset: configuration.$.offset
-                        }
-                    }
                     configuration.set(transform);
                 }
             },
@@ -1101,6 +1095,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
 
                 options = options || {};
+
+                if (options.keepTransforms) {
+                    return {
+                        scale: configuration.$.scale,
+                        offset: configuration.$.offset
+                    }
+                }
+                
                 printArea = printArea || configuration.$.printArea;
                 printType = printType || configuration.$.printType;
 
@@ -1185,8 +1187,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 if (_.isNaN(scale) || _.isNaN(offset.$.y) || _.isNaN(offset.$.x)) {
                     throw Error('Part of the transform is not a number');
                 }
-
-
+                
                 return {
                     offset: offset,
                     scale: {

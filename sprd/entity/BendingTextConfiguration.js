@@ -1,5 +1,5 @@
-define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/lib/Text2Path", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", "underscore", "sprd/util/ArrayUtil", "sprd/extensions/CanvasToBlob", "xaml!sprd/data/DesignerApiDataSource", "sprd/model/Transformer", "sprd/model/AbstractShop", "sprd/entity/TextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationUploadRenderer"],
-    function(DesignConfigurationBase, Size, Font, ProductUtil, Text2Path, BlobImage, IImageUploadService, flow, _, ArrayUtil, CanvasToBlob, DesignerApiDataSource, Transformer, Shop, TextConfiguration, BendingTextConfigurationUploadRenderer) {
+define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", "underscore", "sprd/util/ArrayUtil", "sprd/extensions/CanvasToBlob", "xaml!sprd/data/DesignerApiDataSource", "sprd/model/Transformer", "sprd/model/AbstractShop", "sprd/entity/TextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationUploadRenderer"],
+    function(DesignConfigurationBase, Size, Font, ProductUtil, BlobImage, IImageUploadService, flow, _, ArrayUtil, CanvasToBlob, DesignerApiDataSource, Transformer, Shop, TextConfiguration, BendingTextConfigurationUploadRenderer) {
         var PATH_TYPE = {
             OUTER_CIRCLE: "outer_circle",
             INNER_CIRCLE: "inner_circle",

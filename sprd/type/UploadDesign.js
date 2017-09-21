@@ -40,6 +40,10 @@ define(["js/core/Bindable", "sprd/model/Design"], function (Bindable, Design) {
             }
         },
 
+        hasError: function() {
+            return this.$.state == State.ERROR;
+        }.onChange("state"),
+
         /**
          * Checks if the mime type belongs to a vector file.
          *

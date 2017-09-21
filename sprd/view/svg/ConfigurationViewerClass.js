@@ -9,11 +9,22 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             rotationSnippingThreshold = 5,
             rotateSnippingEnabled = true,
             scaleSnippingThreshold = 0.02,
-            scaleSnippingEnabled = true,
             moveSnippingEnabled = true,
             scaleRatioThresholdForRotation = 0.2,
             moveSnippingThreshold = 7;
 
+        //Polyfill
+        if (!Math.sign) {
+            Math.sign = function (x) {
+                // If x is NaN, the result is NaN.
+                // If x is -0, the result is -0.
+                // If x is +0, the result is +0.
+                // If x is negative and not -0, the result is -1.
+                // If x is positive and not +0, the result is +1.
+                return ((x > 0) - (x < 0)) || +x;
+            };
+        }
+        
         return SvgElement.inherit({
 
             defaults: {
@@ -69,7 +80,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 moveVector: null,
                 centerVector: null,
                 rotationSnap: null,
-                productViewerDiagonalLength: null
+                productViewerDiagonalLength: null,
+                inverseZoom: "{printAreaViewer.productTypeViewViewer.inverseZoom}"
             },
 
             inject: {
@@ -770,6 +782,29 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
+            deleteConfiguration: function(e) {
+
+                if (!this.$hasTouch && e.domEvent.which !== 1) {
+                    // not a first mouse button click
+                    return;
+                }
+
+                if (this.$.product) {
+                    var configuration = this.$.configuration,
+                        productViewer = this.$.productViewer;
+
+                    this.$.product.$.configurations.remove(configuration);
+                    e.preventDefault();
+
+                    this.$.bus.trigger('Application.productChanged', this.$.product);
+                    if (productViewer && productViewer.$.selectedConfiguration === configuration) {
+                        productViewer.set('selectedConfiguration', null);
+                    }
+
+                }
+            },
+
+
             snapAngle: function(configuration, value) {
                 if (rotateSnippingEnabled && !this.$.shiftKey) {
                     var snapStepSize = 45;
@@ -1120,18 +1155,52 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             y: scaleFactor * configuration.$.scale.y
                         };
 
-                        var scaleDirection = Math.sign(newScale.y - baseScale),
-                            minDimensionSize = Math.min(configuration.width(newScale.y), configuration.height(newScale.y)),
-                            maxDimensionSize = Math.max(configuration.width(newScale.y), configuration.height(newScale.y)),
-                            willBecomeTooSmall = minDimensionSize <= configuration.$.minSize && scaleDirection < 0,
-                            willBecomeTooBig = maxDimensionSize >= configuration.$.maxSize && scaleDirection > 0;
 
-                        if (!willBecomeTooSmall && !willBecomeTooBig) {
+                        if (this.validateScale(newScale.x, baseScale)) {
                             this.set('_scale', newScale, userInteractionOptions);
                             this.$._offset.set(this.getCenteredOffset(configuration, newScale), userInteractionOptions);
                         }
                     }
                 }
+            },
+
+            validateScale: function (newScale, oldScale) {
+                if (!newScale) {
+                    return false;
+                }
+
+                if (!oldScale) {
+                    return true;
+                }
+
+                var configuration = this.$.configuration;
+
+                if (!configuration) {
+                    return false;
+                }
+
+                var printArea = configuration.$.printArea;
+
+                if (!printArea) {
+                    return false;
+                }
+
+                var scaleDirection = Math.sign(newScale - oldScale),
+                    newWidth = configuration.width(newScale),
+                    newHeight = configuration.height(newScale),
+                    minDimensionSize = Math.min(newWidth, newHeight),
+                    willBecomeTooSmallAbs = minDimensionSize <= configuration.$.minSize && scaleDirection < 0;
+
+                var tooWideForPrintArea = newWidth / printArea.get('_size.width') > printArea.get('restrictions.maxConfigRatio'),
+                    tooTallForPrintArea = newHeight / printArea.get('_size.height') > printArea.get('restrictions.maxConfigRatio'),
+                    tooBigForPrintAreaRel = tooWideForPrintArea && tooTallForPrintArea;
+
+                var tooThinForPrintArea = newWidth / printArea.get('_size.width') < printArea.get('restrictions.minConfigRatio'),
+                    tooShortForPrintArea = newHeight / printArea.get('_size.height') < printArea.get('restrictions.minConfigRatio'),
+                    tooSmallForPrintAreaRel = tooThinForPrintArea && tooShortForPrintArea;
+
+                var invalidRelSize = !configuration.get('printArea.hasSoftBoundary()') && (tooBigForPrintAreaRel || tooSmallForPrintAreaRel);
+                return !willBecomeTooSmallAbs && !invalidRelSize;
             },
 
             getCenteredOffset: function(configuration, scale) {

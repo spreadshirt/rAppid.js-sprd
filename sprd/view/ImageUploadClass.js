@@ -170,7 +170,6 @@ define(["js/ui/View", "js/core/List", "flow", "xaml!sprd/data/ImageServerDataSou
                         });
                     };
                     img.src = evt.target.result;
-
                 };
 
                 reader.readAsDataURL(file);

@@ -62,7 +62,8 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             restrictions: null,
             designServiceState: null,
             localImage: null,
-            htmlImage: null
+            htmlImage: null,
+            relatedDesigns: null
         },
 
         schema: {
@@ -152,6 +153,20 @@ define(['sprd/data/SprdModel', 'sprd/model/PrintType', 'sprd/entity/Size', 'sprd
             }
 
             return null;
+        },
+
+        isUploaded: function() {
+            return this.$.id && this.$.id.indexOf("u") === 0;
+        },
+
+        getRelatedTag: function () {
+            var tags = this.$.tags;
+
+            if (!tags) {
+                return "";
+            }
+
+            return tags.split(",")[0];
         },
 
         setTranslation: function (translation) {
