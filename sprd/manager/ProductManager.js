@@ -913,16 +913,26 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     return null;
                 }
 
+
                 var self = this;
 
-                return _.find(printTypes, function(printType) {
+                for (var i = 0; i < printTypes.length; i++) {
+                    var printType = printTypes[i];
                     var validatedMove = self.validateConfigurationMove(printType, printArea, configuration, options);
 
-                    return validatedMove && _.every(validatedMove.validations, function(validation) {
+                    if (!validatedMove) {
+                        continue;
+                    }
+
+                    var allValidationsPassed = _.every(validatedMove.validations, function(validation) {
                         return !validation;
                     });
-                });
 
+                    if (allValidationsPassed) {
+                        return validatedMove;
+                    }
+                }
+                
             },
 
             validateConfigurationMove: function(printType, printArea, configuration, options) {
