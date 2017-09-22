@@ -9,13 +9,26 @@ define(['js/svg/SvgElement'], function(SvgElement) {
             focused: "{configurationViewer.focused}",
             componentClass: "configuration-renderer",
 
-            imageService: null
+            imageService: null,
+            loading: "{configuration.loading}"
         },
 
         $classAttributes: ["configuration","productViewer", "configurationViewer","textArea","showSelection","focused", "imageService"],
 
         _focus: function() {
             // hook: invoked after configuration viewer move, scale, rotate finished
-        }
+        },
+
+        loaderSize: function() {
+            return this.$.height * 0.5;
+        }.onChange("height"),
+
+        loaderPos: function() {
+            var s = this.loaderSize() * 0.5;
+            return {
+                x: this.$.width * 0.5 - s,
+                y: this.$.height * 0.5 - s
+            }
+        }.onChange("width", "height")
     })
 });

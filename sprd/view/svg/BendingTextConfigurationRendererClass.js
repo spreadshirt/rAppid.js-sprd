@@ -70,8 +70,10 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                 return;
             }
 
+            this.set("loading", true);
             svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font, extension), function() {
                 self.recalculateSize();
+                self.set("loading", false);
             });
         },
 
