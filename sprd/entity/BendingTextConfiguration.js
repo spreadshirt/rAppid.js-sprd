@@ -30,8 +30,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 textPathOffsetX: 0,
                 textPathOffsetY: 0,
                 transformer: null,
-                copyrightWordList: null,
-                alignmentMatters: false
+                copyrightWordList: null
             },
 
             type: "bendingText",

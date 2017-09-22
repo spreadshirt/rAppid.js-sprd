@@ -59,8 +59,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 copyrightWordList: null,
                 isNew: false,
                 isTemplate: false,
-                autoGrow: false,
-                alignmentMatters: "{alignmentMatters()}"
+                autoGrow: false
             },
 
             inject: {
@@ -279,27 +278,6 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 return false;
             },
-
-
-            alignmentMatters: function() {
-                var composedTextFlow = this.$.composedTextFlow;
-
-
-                if (!composedTextFlow) {
-                    return false;
-                }
-
-                var matters = composedTextFlow.alignmentMatters();
-
-                if (!matters) {
-                    var paragraphStyle = this.getParagraphStyleForWholeTextFlow();
-                    if (paragraphStyle && paragraphStyle.$.textAnchor !== 'start') {
-                        this.setStyleOnWholeFlow(null, {textAnchor: 'start'});
-                    }
-                }
-
-                return matters;
-            }.onChange('composedTextFlow'),
 
 
             getParagraphStyleForWholeTextFlow: function() {
@@ -535,6 +513,24 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                             });
                         }
                     }
+                }
+            },
+
+            save: function(callback) {
+                var composedTextFlow = this.$.composedTextFlow;
+                var matters = composedTextFlow.alignmentMatters();
+
+                if (!matters) {
+                    var paragraphStyle = this.getParagraphStyleForWholeTextFlow();
+                    if (paragraphStyle && paragraphStyle.$.textAnchor !== 'start') {
+                        this.setStyleOnWholeFlow(null, {textAnchor: 'start'});
+
+                        this._composeText(true, null, callback);
+                    } else {
+                        callback && callback();
+                    }
+                } else {
+                    callback && callback();
                 }
             },
 
