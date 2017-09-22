@@ -66,6 +66,11 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
                 this.initTransformer();
                 if (!_.isEmpty(properties)) {
+
+                    if (this.$.initialized) {
+                        callback && callback();
+                    }
+
                     flow()
                         .seq(function(cb) {
                             options = _.clone(options);
@@ -260,7 +265,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 });
 
                 return ret;
-            }.onChange("printArea"),
+            }.onChange("printArea", "font"),
 
             setColor: function(layerIndex, color) {
                 var printColors = this.$.printColors;
@@ -283,8 +288,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             },
 
             save: function(callback) {
-                var text = this.mainConfigurationRenderer.$.text,
-                    self = this,
+                var self = this,
                     digitalPrint = !this.$.printType.isPrintColorColorSpace();
 
                 var cacheId = [self.$.angle, self.$.text, self.$.font.$.id, self.$.fontSize, self.$.printType.$.id];
