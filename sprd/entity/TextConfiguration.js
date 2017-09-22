@@ -425,6 +425,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 var textFlow = this.$.textFlow,
                     printColors = [],
                     printColor;
+
                 if (textFlow) {
 
                     var useThisColor = null;
@@ -451,7 +452,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     } while ((leaf = leaf.getNextLeaf(textFlow)));
 
                     this.$.printColors.reset(printColors);
-                    this._composeText(true, options);
+                    this._composeText(true, {preventValidation: true});
                 }
 
                 this.trigger("priceChanged");
