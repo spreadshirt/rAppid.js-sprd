@@ -913,18 +913,16 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     return null;
                 }
 
-                //ArrayUtil.move(printTypes, PrintTypeEqualizer.getPreferredPrintType(product, printArea, printTypes), 0);
+                var self = this;
 
-                var validatedMove = null,
-                    self = this;
-                _.find(printTypes, function(printType) {
-                    validatedMove = self.validateConfigurationMove(printType, printArea, configuration, options);
+                return _.find(printTypes, function(printType) {
+                    var validatedMove = self.validateConfigurationMove(printType, printArea, configuration, options);
+
                     return validatedMove && _.every(validatedMove.validations, function(validation) {
-                            return !validation;
-                        });
+                        return !validation;
+                    });
                 });
 
-                return validatedMove;
             },
 
             validateConfigurationMove: function(printType, printArea, configuration, options) {
