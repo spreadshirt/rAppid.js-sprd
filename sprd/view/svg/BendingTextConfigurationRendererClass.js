@@ -25,7 +25,7 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
             this.bind("configuration", "recalculateSize", this.recalculateSize, this);
 
-            this.bind("configuration", "change:font", this.loadFont, this);
+
 
             var resetMainConfigurationViewer = function() {
                 var configuration = this.$.configuration;
@@ -53,6 +53,11 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                     }, 1000);
                 }
             }, this);
+        },
+
+        _initializationComplete: function() {
+            this.callBase();
+            this.bind("configuration", "change:font", this.loadFont, this);
         },
 
         loadFont: function() {
