@@ -293,21 +293,22 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         return printTypes;
                     })
                     .seq("designConfiguration", function() {
-                        var entity = product.createEntity(DesignConfiguration);
-                        entity.set({
+                        return product.createEntity(DesignConfiguration).set({
                             printType: printType,
                             printArea: printArea,
                             design: design,
                             designColorIds: params.designColorIds,
                             designColorRGBs: params.designColorRGBs
                         }, PREVENT_VALIDATION_OPTIONS);
-                        return entity;
                     })
                     .seq(function(cb) {
                         var designConfiguration = this.vars["designConfiguration"];
                         bus.setUp(designConfiguration);
-                        designConfiguration.init({}, cb);
+                        designConfiguration.init({
+                            ensureDesignColorContrast: true
+                        }, cb);
                     })
+
                     .seq('validatedMove', function() {
                         return self.validateMove(this.vars.printTypes, this.vars.printArea, this.vars.designConfiguration, product);
                     })

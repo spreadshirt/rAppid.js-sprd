@@ -1,5 +1,7 @@
 define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "underscore", "sprd/model/Mask"], function (Base, UnitUtil, Design, flow, Size, _, Mask) {
 
+    var COLOR_CONVERSION_THRESHOLD = 35;
+
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
         extractDesign: function (configuration) {
             var designId,
@@ -47,7 +49,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             return printArea;
         },
 
-        extractPrintColors: function (configuration) {
+        extractPrintColors: function (configuration, options) {
             var printType = configuration.$.printType,
                 design = configuration.$.design,
                 svg = configuration.$$ && configuration.$$.svg;
@@ -129,8 +131,27 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             if (!colorsSet && designColors) {
                 printColors = [];
 
+                var invertDesignColors = false;
+
+                if (designColors.$items.length === 1 && options && options.ensureDesignColorContrast && configuration.$context && configuration.$context.$contextModel) {
+                    var product = configuration.$context.$contextModel;
+                    var appearanceColor = product.get("appearance.colors.at(0).color()");
+                    var firstLayer = designColors.at(0);
+                    var designColor = (firstLayer.$["default"] || firstLayer.$["origin"]);
+
+                    if (appearanceColor && designColor && designColor.distanceTo(appearanceColor) < COLOR_CONVERSION_THRESHOLD) {
+                        invertDesignColors = true;
+                    }
+                }
+                
                 designColors.each(function (designColor) {
-                    var closestPrintColor = printType.getClosestPrintColor(designColor.$["default"] || designColor.$["origin"]);
+                    var color = (designColor.$["default"] || designColor.$["origin"]).toRGB();
+
+                    if (invertDesignColors) {
+                        color = color.invert();
+                    }
+
+                    var closestPrintColor = printType.getClosestPrintColor(color);
                     printColors.push(closestPrintColor);
                     defaultPrintColors.push(closestPrintColor);
                 });
@@ -233,9 +254,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
         },
 
         initializeConfiguration: function (configuration, options, callback) {
-            var content = configuration.$$ || {},
-                svg = content.svg,
-                printType = configuration.$.printType,
+            var printType = configuration.$.printType,
                 printArea = this.extractPrintArea(configuration),
                 self = this,
                 design = this.extractOriginalDesign(configuration)
@@ -262,7 +281,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     });
                 })
                 .seq(function () {
-                    self.extractPrintColors(configuration);
+                    self.extractPrintColors(configuration, options);
                 })
                 .seq("mask", function (cb) {
                     self.extractMask(configuration, cb);
