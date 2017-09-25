@@ -83,6 +83,10 @@ define(["sprd/data/SprdModel", "sprd/entity/Size", "sprd/entity/PrintTypeColor",
             return this.get("restrictions.colorSpace") === COLOR_SPACE.PrintColors;
         },
 
+        isDigital: function () {
+            return !this.isPrintColorColorSpace();
+        },
+
         _getDigitalPrintColorPrice: function () {
 
             if (!this.$digitalPrintColorPrice) {
