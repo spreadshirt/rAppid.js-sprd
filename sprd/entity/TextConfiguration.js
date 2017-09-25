@@ -204,12 +204,12 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 composer.compose(textFlow, textArea.$, function (err, composedTextFlow) {
 
                     var opt = _.clone(options),
-                        newMeasure = composedTextFlow && composedTextFlow.measure;
+                        newMeasure = composedTextFlow ? composedTextFlow.measure : null;
 
                     opt.force = true;
                     self.set({
                         composedTextFlow: composedTextFlow,
-                        bound: composedTextFlow ? composedTextFlow.measure : null
+                        bound: newMeasure
                     }, opt);
 
 
@@ -225,9 +225,9 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                         if (self.fontChanged()) {
                             self.resize(newMeasure, oldMeasure);
+                        } else {
+                            self.reposition(newMeasure, oldMeasure, self.textChanged(), composedTextFlow);
                         }
-
-                        self.reposition(newMeasure, oldMeasure, self.textChanged(), composedTextFlow);
                     }
 
                     callback && callback(err);
@@ -287,13 +287,30 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     return;
                 }
 
-                var widthDelta = (newWidth - oldWidth) * self.$.scale.x,
-                    heightDelta = (newHeight - oldHeight) * self.$.scale.y;
+                self.centerX(newWidth, oldWidth);
+                self.centerY(newHeight, oldHeight);
+            },
 
-                self.$.offset.set({
-                    x: Number(self.$.offset.get('x')) - widthDelta / 2,
-                    y: Number(self.$.offset.get('y')) - heightDelta / 2
-                });
+            centerX: function (newWidth, oldWidth) {
+                var self = this;
+                if (!newWidth || !oldWidth) {
+                    return;
+                }
+
+                var widthDelta = (newWidth - oldWidth) * self.$.scale.x,
+                    newX = Number(self.$.offset.get('x')) - widthDelta / 2;
+                self.$.offset.set('x', newX);
+            },
+
+            centerY: function (newHeight, oldHeight) {
+                var self = this;
+                if (!newHeight || !oldHeight) {
+                    return;
+                }
+
+                var widthDelta = (newHeight - oldHeight) * self.$.scale.y,
+                    newY = Number(self.$.offset.get('y')) - widthDelta / 2;
+                self.$.offset.set('y', newY);
             },
 
             resize: function (newWidth, newHeight, oldWidth, oldHeight) {
@@ -310,9 +327,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 var self = this,
                     factor = oldWidth / newWidth,
-                    newScale = self.$.scale.x * factor;
+                    newScaleX = self.$.scale.x * factor,
+                    newScaleY = self.$.scale.y * factor;
 
-                self.set('scale', {x: newScale, y: newScale});
+
+                self.set('scale', {x: newScaleX, y: newScaleY});
+
+                var delta = (newHeight - oldHeight),
+                    newY = Number(self.$.offset.get('y')) - (newScaleX* delta)/2;
+
+                self.$.offset.set('y', newY);
             },
 
             reposition: function (newWidth, newHeight, oldWidth, oldHeight, textChange, composedTextFlow) {
@@ -331,25 +355,29 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 if (!textChange) {
                     return this.centerConfiguration(newWidth, newHeight, oldWidth, oldHeight);
-                } else if (!this.$.autoGrow) {
-                    return this.repositionAutoGrow(newWidth, oldWidth, composedTextFlow);
+                } else if (this.$.autoGrow) {
+                    return this.repositionAutoGrow(newWidth, newHeight, oldWidth, oldHeight, composedTextFlow);
                 }
             },
 
-            repositionAutoGrow: function (newWidth, oldWidth, composedTextFlow) {
+            repositionAutoGrow: function (newWidth, newHeight, oldWidth, oldHeight, composedTextFlow) {
                 var self = this;
                 if (!self.$.autoGrow || !composedTextFlow || !newWidth || !oldWidth) {
                     return;
                 }
 
-                this.centerConfiguration();
+                this.centerConfiguration(newWidth, newHeight, oldWidth, oldHeight);
 
                 var widthDelta = (newWidth - oldWidth) * self.$.scale.x,
                     alignment = composedTextFlow.getAlignmentOfWidestSpan(),
                     alignmentFactor = composedTextFlow.alignmentToFactor(alignment) - 0.5,
-                    newX = Number(self.$.offset.get('x')) - (widthDelta * alignmentFactor);
+                    rotation = this.$.rotation / 180 * Math.PI,
+                    sin = Math.sin(rotation),
+                    cos = Math.cos(rotation),
+                    newX = Number(self.$.offset.get('x')) - (cos * widthDelta * alignmentFactor),
+                    newY = Number(self.$.offset.get('y')) - (sin * widthDelta * alignmentFactor);
 
-                self.$.offset.set('x', newX);
+                self.$.offset.set({x: newX, y: newY});
             },
 
             validateText: function () {
@@ -659,7 +687,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
             compose: function() {
-            getStyles : function (textFlow) {
+            getStyles: function (textFlow) {
                 var textFlow = textFlow || this.$.textFlow,
                     styles = [];
 
