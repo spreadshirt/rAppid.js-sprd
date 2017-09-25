@@ -1,12 +1,12 @@
 define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager", "js/core/List"],
-    function(Configuration, flow, Size, _, PrintType, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager, List) {
+    function (Configuration, flow, Size, _, PrintType, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager, List) {
 
         var copyrightWordList;
 
         if (!String.prototype.codePointAt) {
-            (function() {
+            (function () {
                 'use strict'; // needed to support `apply`/`call` with `undefined`/`null`
-                var codePointAt = function(position) {
+                var codePointAt = function (position) {
                     if (this == null) {
                         throw TypeError();
                     }
@@ -73,31 +73,31 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             type: "text",
             representationType: "text",
 
-            ctor: function() {
+            ctor: function () {
                 this.callBase();
 
-                copyrightWordList.bind("add", function() {
+                copyrightWordList.bind("add", function () {
                     this.validateText();
                 }, this);
             },
 
-            init: function(options, callback) {
+            init: function (options, callback) {
 
                 var self = this,
                     productManager = this.$.manager;
 
                 flow()
-                    .seq(function(cb) {
+                    .seq(function (cb) {
                         productManager.initializeConfiguration(self, options, cb);
                     })
-                    .seq(function(cb) {
+                    .seq(function (cb) {
                         if (self.$stageRendered || (self.$stage && self.$stage.rendered)) {
                             self._composeText(false, cb);
                         } else {
                             cb();
                         }
                     })
-                    .seq(function() {
+                    .seq(function () {
                         var leafStyle = self.getCommonLeafStyleForWholeTextFlow(),
                             printTypeColor;
 
@@ -111,21 +111,21 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     .exec(callback);
             },
 
-            _postConstruct: function() {
+            _postConstruct: function () {
                 this.bind("textFlow", "operationComplete", this._onTextFlowChange, this);
                 this._composeText();
             },
 
-            _preDestroy: function() {
+            _preDestroy: function () {
                 this.unbind("textFlow", "operationComplete", this._onTextFlowChange, this);
             },
 
-            bus_StageRendered: function() {
+            bus_StageRendered: function () {
                 this.$stageRendered = true;
                 this._composeText();
             }.bus("Stage.Rendered"),
 
-            _commitChangedAttributes: function($, options) {
+            _commitChangedAttributes: function ($, options) {
                 if ($.hasOwnProperty("bound") && !options.preventValidation && !options.printTypeEqualized) {
                     this._setError(this._validateTransform($));
                 }
@@ -133,7 +133,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.callBase();
             },
 
-            _commitTextFlow: function(textFlow) {
+            _commitTextFlow: function (textFlow) {
 
                 var rawText = null;
                 if (textFlow) {
@@ -143,13 +143,13 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.set("rawText", rawText);
             },
 
-            _onTextFlowChange: function(e) {
+            _onTextFlowChange: function (e) {
                 var self = this;
 
                 this.validateText();
 
-                this._composeText(false, function() {
-                    self._debounceFunctionCall(function() {
+                this._composeText(false, function () {
+                    self._debounceFunctionCall(function () {
                         self.$.bus && self.$.bus.trigger('Application.productChanged', null, self);
                     }, "productChanged", 300);
                 });
@@ -168,11 +168,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.set("rawText", rawText);
             },
 
-            _debouncedComposeText: function() {
+            _debouncedComposeText: function () {
                 this._debounceFunctionCall(this._composeText, "composeText", 300, this, [true])
             },
 
-            _composeText: function(skipHeight, options, callback) {
+            _composeText: function (skipHeight, options, callback) {
 
                 if (!(this.$stage && this.$stage.rendered)) {
                     return;
@@ -199,44 +199,164 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     self = this;
 
                 textArea.$.autoGrow = this.$.autoGrow;
-                var oldWidth = this.get('composedTextFlow.measure.width');
+                var oldMeasure = this.get('composedTextFlow.measure');
 
-                composer.compose(textFlow, textArea.$, function(err, composedTextFlow) {
+                composer.compose(textFlow, textArea.$, function (err, composedTextFlow) {
 
-                    if (composedTextFlow) {
-                        if (!textArea.$.autoGrow && !skipHeight) {
-                            self.$.textArea.set('height', composedTextFlow.composed.getHeight());
-                        } else if(textArea.$.autoGrow) {
-                            var alignment = composedTextFlow.getAlignmentOfWidestSpan();
-                            var alignmentFactor = composedTextFlow.alignmentToFactor(alignment);
+                    var opt = _.clone(options),
+                        newMeasure = composedTextFlow && composedTextFlow.measure;
 
-                            if (oldWidth) {
-                                var widthDelta = (composedTextFlow.measure.width - oldWidth) * self.$.scale.x;
-                                self.$.offset.set('x', Number(self.$.offset.get('x')) - (widthDelta * alignmentFactor));
-                            }
-
-                            self.$.textArea.set(composedTextFlow.measure);
-                        }
-
-                        self.trigger("sizeChanged");
-                    }
-
-                    var opt = _.clone(options);
                     opt.force = true;
                     self.set({
                         composedTextFlow: composedTextFlow,
                         bound: composedTextFlow ? composedTextFlow.measure : null
                     }, opt);
 
+
+                    if (composedTextFlow) {
+
+                        if (!textArea.$.autoGrow && !skipHeight) {
+                            self.$.textArea.set('height', composedTextFlow.composed.getHeight());
+                        } else if (textArea.$.autoGrow) {
+                            self.$.textArea.set(composedTextFlow.measure);
+                        }
+
+                        self.trigger("sizeChanged");
+
+                        if (self.fontChanged()) {
+                            self.resize(newMeasure, oldMeasure);
+                        }
+
+                        self.reposition(newMeasure, oldMeasure, self.textChanged(), composedTextFlow);
+                    }
+
                     callback && callback(err);
                 });
             },
 
-            validateText: function() {
+            fontSizeChanged: function (newTextFlow, oldTextFlow) {
+                newTextFlow = newTextFlow || this.$.textFlow;
+                oldTextFlow = oldTextFlow || this.$previousAttributes.textFlow;
+
+                if (!newTextFlow || !oldTextFlow) {
+                    return false;
+                }
+
+                var oldSizes = this.getFontSizes(oldTextFlow),
+                    newSizes = this.getFontSizes(newTextFlow);
+
+                return oldSizes.length > 0 && _.difference(newSizes, oldSizes).length > 0;
+            },
+
+            fontChanged: function (newTextFlow, oldTextFlow) {
+                newTextFlow = newTextFlow || this.$.textFlow;
+                oldTextFlow = oldTextFlow || this.$previousAttributes.textFlow;
+
+                if (!newTextFlow || !oldTextFlow) {
+                    return false;
+                }
+
+                var oldFonts = this.getFonts(oldTextFlow),
+                    newFonts = this.getFonts(newTextFlow);
+
+                return oldFonts.length > 0 && _.difference(newFonts, oldFonts).length > 0;
+            },
+
+            textChanged: function (newTextFlow, oldTextFlow) {
+                newTextFlow = newTextFlow || this.$.textFlow;
+                oldTextFlow = oldTextFlow || this.$previousAttributes.textFlow;
+
+                if (!newTextFlow || !oldTextFlow) {
+                    return false;
+                }
+
+                return newTextFlow.text() !== oldTextFlow.text();
+            },
+
+            centerConfiguration: function (newWidth, newHeight, oldWidth, oldHeight) {
+                var self = this;
+
+                if (newWidth && newWidth.width && newHeight && newHeight.width) {
+                    oldWidth = newHeight.width;
+                    oldHeight = newHeight.height;
+                    newHeight = newWidth.height;
+                    newWidth = newWidth.width;
+                }
+
+                if (!oldWidth || !oldHeight || !newWidth || !newHeight) {
+                    return;
+                }
+
+                var widthDelta = (newWidth - oldWidth) * self.$.scale.x,
+                    heightDelta = (newHeight - oldHeight) * self.$.scale.y;
+
+                self.$.offset.set({
+                    x: Number(self.$.offset.get('x')) - widthDelta / 2,
+                    y: Number(self.$.offset.get('y')) - heightDelta / 2
+                });
+            },
+
+            resize: function (newWidth, newHeight, oldWidth, oldHeight) {
+                if (newWidth && newWidth.width && newHeight && newHeight.width) {
+                    oldWidth = newHeight.width;
+                    oldHeight = newHeight.height;
+                    newHeight = newWidth.height;
+                    newWidth = newWidth.width;
+                }
+
+                if (!oldWidth || !oldHeight || !newWidth || !newHeight) {
+                    return;
+                }
+
+                var self = this,
+                    factor = oldWidth / newWidth,
+                    newScale = self.$.scale.x * factor;
+
+                self.set('scale', {x: newScale, y: newScale});
+            },
+
+            reposition: function (newWidth, newHeight, oldWidth, oldHeight, textChange, composedTextFlow) {
+                if (newWidth && newWidth.width && newHeight && newHeight.width) {
+                    textChange = oldWidth;
+                    composedTextFlow = oldHeight;
+                    oldWidth = newHeight.width;
+                    oldHeight = newHeight.height;
+                    newHeight = newWidth.height;
+                    newWidth = newWidth.width;
+                }
+
+                if (!oldWidth || !oldHeight || !newWidth || !newHeight) {
+                    return;
+                }
+
+                if (!textChange) {
+                    return this.centerConfiguration(newWidth, newHeight, oldWidth, oldHeight);
+                } else if (!this.$.autoGrow) {
+                    return this.repositionAutoGrow(newWidth, oldWidth, composedTextFlow);
+                }
+            },
+
+            repositionAutoGrow: function (newWidth, oldWidth, composedTextFlow) {
+                var self = this;
+                if (!self.$.autoGrow || !composedTextFlow || !newWidth || !oldWidth) {
+                    return;
+                }
+
+                this.centerConfiguration();
+
+                var widthDelta = (newWidth - oldWidth) * self.$.scale.x,
+                    alignment = composedTextFlow.getAlignmentOfWidestSpan(),
+                    alignmentFactor = composedTextFlow.alignmentToFactor(alignment) - 0.5,
+                    newX = Number(self.$.offset.get('x')) - (widthDelta * alignmentFactor);
+
+                self.$.offset.set('x', newX);
+            },
+
+            validateText: function () {
                 this._debounceFunctionCall(this._validateText, "validateText", 300);
             },
 
-            _validateText: function() {
+            _validateText: function () {
                 var textFlow = this.$.textFlow,
                     text = (textFlow && textFlow.text() || "").toLowerCase(),
                     badWord;
@@ -244,7 +364,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 if (text.length > 1) {
                     // check that we don't contain copyright content
                     if (copyrightWordList && copyrightWordList.size()) {
-                        badWord = copyrightWordList.find(function(word) {
+                        badWord = copyrightWordList.find(function (word) {
                             return text.indexOf(word.toLowerCase()) !== -1;
                         });
 
@@ -256,7 +376,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
             // http://stackoverflow.com/questions/30757193/find-out-if-character-in-string-is-emoji
-            isEmoji: function(charCode) {
+            isEmoji: function (charCode) {
                 var isSpecialCharacterEmoji = charCode === 0x3030 || charCode === 0x00AE || charCode === 0x00A9,
                     inEmoticonBlock = 0x1F600 <= charCode && charCode <= 0x1F64F,
                     miscSymbolsAndPictogram = 0x1F300 <= charCode && charCode <= 0x1F5FF,
@@ -269,7 +389,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return isSpecialCharacterEmoji || miscSymbolsAndPictogram || transportAndMap || inEmoticonBlock || miscSymbol || dingbat || variation;
             },
 
-            containsEmoji: function(string) {
+            containsEmoji: function (string) {
                 for (var i = 0; i < string.length; i++) {
                     if (this.isEmoji(string.codePointAt(i))) {
                         return true;
@@ -278,6 +398,9 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 return false;
             },
+
+
+
 
 
             getParagraphStyleForWholeTextFlow: function() {
@@ -293,7 +416,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return selectionClone.getCommonParagraphStyle(textFlow);
             },
 
-            getCommonLeafStyleForWholeTextFlow: function() {
+            getCommonLeafStyleForWholeTextFlow: function () {
                 var selection = this.$.selection,
                     textFlow = this.$.textFlow;
 
@@ -306,7 +429,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return selectionClone.getCommonLeafStyle(textFlow);
             },
 
-            setStyleOnWholeFlow: function(leafStyle, paragraphStyle) {
+            setStyleOnWholeFlow: function (leafStyle, paragraphStyle) {
                 var textFlow = this.$.textFlow,
                     applyOperation = this.$.ApplyStyleToElementOperation,
                     Style = this.$.Style,
@@ -332,7 +455,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
             },
 
-            _validatePrintTypeSize: function(printType, width, height, scale) {
+            _validatePrintTypeSize: function (printType, width, height, scale) {
 
                 var bound = this.$.bound;
 
@@ -348,13 +471,13 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             },
 
-            _isScaleTooSmall: function(printType, scale) {
-                return this._getMinimalScales(printType, function(minScale) {
-                        return scale.x < minScale;
-                    }).length > 0;
+            _isScaleTooSmall: function (printType, scale) {
+                return this._getMinimalScales(printType, function (minScale) {
+                    return scale.x < minScale;
+                }).length > 0;
             },
 
-            _getMinimalScales: function(printType, predicate) {
+            _getMinimalScales: function (printType, predicate) {
                 var textFlow = this.$.textFlow,
                     minimalScales = [];
 
@@ -382,11 +505,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return minimalScales;
             },
 
-            _getMinimalScale: function(printType) {
+            _getMinimalScale: function (printType) {
                 return Math.max.apply(null, this._getMinimalScales(printType));
             },
 
-            _getBoundingBox: function(offset, width, height, rotation, scale, onlyContent) {
+            _getBoundingBox: function (offset, width, height, rotation, scale, onlyContent) {
 
                 var bound = this.$.bound;
 
@@ -415,7 +538,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             },
 
-            _commitPrintType: function(printType, oldPrintType, options) {
+            _commitPrintType: function (printType, oldPrintType, options) {
                 // print type changed -> convert colors
 
                 if (!printType) {
@@ -458,7 +581,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.trigger("priceChanged");
             },
 
-            price: function() {
+            price: function () {
 
                 var usedPrintColors = [],
                     price = this.callBase();
@@ -491,7 +614,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             }.on("priceChanged").onChange("_printTypePrice"),
 
-            getUsedFonts: function() {
+            getUsedFonts: function () {
                 var fonts = [];
 
                 if (this.$.textFlow) {
@@ -500,7 +623,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 return fonts;
 
-                function addFonts (flowElement) {
+                function addFonts(flowElement) {
                     if (flowElement) {
                         var font = flowElement.get("style.font");
 
@@ -509,7 +632,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         }
 
                         if (!flowElement.isLeaf) {
-                            flowElement.$.children.each(function(child) {
+                            flowElement.$.children.each(function (child) {
                                 addFonts(child);
                             });
                         }
@@ -536,6 +659,44 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
             compose: function() {
+            getStyles : function (textFlow) {
+                var textFlow = textFlow || this.$.textFlow,
+                    styles = [];
+
+                if (textFlow) {
+                    for (var i = 0; i < textFlow.$.children.length; i++) {
+                        var paragraph = textFlow.getChildAt(i);
+
+                        for (var j = 0; j < paragraph.$.children.length; j++) {
+                            var softLine = paragraph.getChildAt(j);
+                            var style = softLine.$.style.serialize();
+                            styles.push(style);
+                        }
+                    }
+                }
+
+                return styles
+            },
+
+            getFontSizes: function (textFlow) {
+                var textFlow = textFlow || this.$.textFlow,
+                    styles = this.getStyles(textFlow);
+
+                return _.map(styles, function (style) {
+                    return style.fontSize || style.$ && style.$.fontSize;
+                });
+            },
+
+            getFonts: function (textFlow) {
+                var textFlow = textFlow || this.$.textFlow,
+                    styles = this.getStyles(textFlow);
+
+                return _.map(styles, function (style) {
+                    return style.fontId || style.$ && style.$.fontId;
+                });
+            },
+
+            compose: function () {
                 var ret = this.callBase();
 
                 ret.type = "text";
@@ -658,7 +819,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return ret;
             },
 
-            setColor: function(layerIndex, printColor) {
+            setColor: function (layerIndex, printColor) {
                 if (this.$.ApplyStyleToElementOperation && this.$.Style) {
                     var selection = this.$.selection;
                     if (selection.$.anchorIndex === selection.$.activeIndex) {
@@ -688,7 +849,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             },
 
-            getPossiblePrintTypes: function(appearance) {
+            getPossiblePrintTypes: function (appearance) {
                 var ret = [],
                     tmp,
                     printArea = this.$.printArea,
@@ -703,7 +864,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         do {
                             if (leaf.$.style && leaf.$.style.$.font) {
                                 tmp = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(leaf.$.style.$.font.getFontFamily(), printArea, appearance);
-                                _.each(tmp, function(element) {
+                                _.each(tmp, function (element) {
                                     if (ret.indexOf(element) === -1) {
                                         ret.push(element);
                                     }
@@ -717,7 +878,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return ret;
             }.onChange("printArea", "design"),
 
-            getPossiblePrintTypesForPrintArea: function(printArea, appearance) {
+            getPossiblePrintTypesForPrintArea: function (printArea, appearance) {
 
                 var fontFamilies = [],
                     printTypes = [];
@@ -744,7 +905,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             },
 
-            parse: function(data) {
+            parse: function (data) {
 
                 data = this.callBase();
 
@@ -765,15 +926,15 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             },
 
-            getSizeForPrintType: function(printType) {
+            getSizeForPrintType: function (printType) {
                 return this.size();
             },
 
-            size: function() {
+            size: function () {
                 return this.$.textArea || Size.empty;
             }.onChange("textArea").on("sizeChanged"),
 
-            clone: function(options) {
+            clone: function (options) {
                 options = options || {};
                 options.exclude = options.exclude || [];
 
@@ -786,20 +947,20 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return ret;
             },
 
-            sync: function() {
+            sync: function () {
                 this.$stage = this._$source.$stage;
                 return this.callBase();
             },
 
-            isAllowedOnPrintArea: function(printArea) {
+            isAllowedOnPrintArea: function (printArea) {
                 return printArea && printArea.get("restrictions.textAllowed") == true;
             },
 
-            isReadyForCompose: function() {
+            isReadyForCompose: function () {
                 return !!this.$.composedTextFlow;
             },
 
-            isDeepEqual: function(b) {
+            isDeepEqual: function (b) {
                 if (!b) {
                     return false;
                 }
@@ -850,7 +1011,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
         }, {
 
-            getCopyrightWordList: function() {
+            getCopyrightWordList: function () {
                 copyrightWordList = copyrightWordList || new List();
                 return copyrightWordList;
             }
