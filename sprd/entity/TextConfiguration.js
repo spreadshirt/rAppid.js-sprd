@@ -111,6 +111,21 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     .exec(callback);
             },
 
+            textChangedSinceCreation: function () {
+                var initialText = this.$.initialText,
+                    currentText = this.text();
+
+                if (!initialText) {
+                    return true;
+                }
+
+                return initialText !== currentText;
+            },
+
+            text: function () {
+                return this.get('textFlow.text()');
+            },
+
             _postConstruct: function () {
                 this.bind("textFlow", "operationComplete", this._onTextFlowChange, this);
                 this._composeText();

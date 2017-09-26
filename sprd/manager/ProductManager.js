@@ -623,6 +623,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         bus.setUp(configuration);
                         configuration.init({}, cb);
                     })
+                    .seq(function () {
+                        var configuration = this.vars["configuration"];
+                        configuration.set('initialText', configuration.text());
+                    })
                     .seq(function() {
                         finalizeFnc(this.vars.configuration, this.vars.printTypes, params);
                     })
