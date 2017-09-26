@@ -1,11 +1,12 @@
 define(['js/core/Base', 'sprd/type/Vector', "sprd/extensions/Number"], function(Base, Vector, extension) {
 
     var Line = Base.inherit('sprd.type.Line', {
-        ctor: function(x, y, angle) {
+        ctor: function(x, y, angle, length) {
             this.x = x;
             this.y = y;
             this.vector = new Vector([x, y]);
             this.angle = angle % Math.PI;
+            this.length = length;
         },
 
         project: function(x, y) {
@@ -22,7 +23,7 @@ define(['js/core/Base', 'sprd/type/Vector', "sprd/extensions/Number"], function(
         },
 
         isInfinite: function(val) {
-            return val == Number.NEGATIVE_INFINITY || val == Number.POSITIVE_INFINITY;
+            return val === Number.NEGATIVE_INFINITY || val === Number.POSITIVE_INFINITY;
         },
 
         getPointOnLine: function(scalar) {
@@ -34,6 +35,12 @@ define(['js/core/Base', 'sprd/type/Vector', "sprd/extensions/Number"], function(
         },
 
         getSvgLine: function(length) {
+            length = length || this.length;
+            
+            if (!length) {
+                throw new Error("Converting abstract line to svg line failed. No length specified.")
+            }
+
             var firstPoint = this.getPointOnLine(-length / 2);
             var secondPoint = this.getPointOnLine(length / 2);
             return {
@@ -45,7 +52,7 @@ define(['js/core/Base', 'sprd/type/Vector', "sprd/extensions/Number"], function(
         },
 
         containsPoint: function(x, y) {
-            if (x == this.x && y == this.y) {
+            if (x === this.x && y === this.y) {
                 return true;
             }
 

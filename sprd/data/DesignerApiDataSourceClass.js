@@ -15,7 +15,7 @@ define(["js/data/RestDataSource", "sprd/model/processor/TransformerProcessor", "
             var ret = this.callBase();
 
             var language = this.$.language;
-            if (language && resource.factory.prototype.constructor.name != "sprd.model.Transformer") {
+            if (language && resource.factory.prototype.constructor.name !== "sprd.model.Transformer") {
                 ret = _.defaults(ret, {
                     language: language
                 });
@@ -26,7 +26,7 @@ define(["js/data/RestDataSource", "sprd/model/processor/TransformerProcessor", "
         },
 
         getFormatProcessor: function(action, model) {
-            if (model && model.factory.prototype.constructor.name == "sprd.model.Transformer") {
+            if (model && model.factory.prototype.constructor.name === "sprd.model.Transformer") {
                 return this.svgFormatProcessor;
             }
 
@@ -43,7 +43,7 @@ define(["js/data/RestDataSource", "sprd/model/processor/TransformerProcessor", "
         },
 
         getProcessorForModel: function(model, options) {
-            if (model && model.factory.prototype.constructor.name == "sprd.model.Transformer.TransformerResult") {
+            if (model && model.factory.prototype.constructor.name === "sprd.model.Transformer.TransformerResult") {
                 return this.$processors["TransformationProcessor"];
             }
 
