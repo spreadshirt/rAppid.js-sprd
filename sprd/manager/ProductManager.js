@@ -625,7 +625,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     })
                     .seq(function () {
                         var configuration = this.vars["configuration"];
-                        configuration.set('initialText', configuration.text());
+                        configuration.set('initialText', configuration.$.rawText);
                     })
                     .seq(function() {
                         finalizeFnc(this.vars.configuration, this.vars.printTypes, params);
