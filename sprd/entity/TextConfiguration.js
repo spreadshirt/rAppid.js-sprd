@@ -328,14 +328,14 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 var self = this,
                     factor = oldWidth / newWidth,
                     newScaleX = self.$.scale.x * factor,
-                    newScaleY = self.$.scale.y * factor;
+                    oldScaleY = self.$.scale.y,
+                    newScaleY = oldScaleY * factor;
 
 
                 self.set('scale', {x: newScaleX, y: newScaleY});
 
-                var delta = (newHeight - oldHeight),
-                    newY = Number(self.$.offset.get('y')) - (newScaleX* delta)/2;
-
+                var delta = (newHeight * newScaleY - oldHeight * oldScaleY),
+                    newY = Number(self.$.offset.get('y')) - (delta)/2;
                 self.$.offset.set('y', newY);
             },
 
