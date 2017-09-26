@@ -685,8 +685,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     callback && callback();
                 }
             },
-
-            compose: function() {
+            
             getStyles: function (textFlow) {
                 var textFlow = textFlow || this.$.textFlow,
                     styles = [];
