@@ -122,6 +122,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return initialText !== currentText;
             },
 
+            isOnlyWhiteSpace: function () {
+                var text = this.$.rawText;
+                return /^[\s\n\r]*$/.test(text);
+            },
+
             _postConstruct: function () {
                 this.bind("textFlow", "operationComplete", this._onTextFlowChange, this);
                 this._composeText();

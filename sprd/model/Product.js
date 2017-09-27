@@ -115,7 +115,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }, this);
 
                 this.bind('configurations', 'item:change:offset', this._onConfigurationOffsetChanged, this);
-                this.bind('change:productType', function() {
+                this.bind('change:productType', function () {
                     this.configurationsOnViewCache = {};
                 }, this)
             },
@@ -320,7 +320,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 var configurations = this.$.configurations,
                     clonedConfigurations = configurations.clone();
 
-                for(var i = 0; i < clonedConfigurations.length; i++) {
+                for (var i = 0; i < clonedConfigurations.length; i++) {
                     var config = clonedConfigurations.at(i);
                     for (var j = i + 1; j < clonedConfigurations.length; j++) {
                         var otherConfig = clonedConfigurations.at(j),
@@ -331,6 +331,33 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                         }
                     }
                 }
+            },
+
+            clean: function () {
+                var self = this;
+                self.removeExampleConfiguration();
+                self.removeDuplicateConfigurations();
+                self.eachConfig(self.cleanText, self);
+            },
+
+            cleanText: function (configuration) {
+                var self = this;
+                var isTextConfig = configuration instanceof TextConfiguration;
+                if (!isTextConfig) {
+                    return;
+                }
+
+                if (configuration.isOnlyWhiteSpace() || !configuration.textChangedSinceCreation()) {
+                    self.$.configurations.remove(configuration);
+                }
+            },
+
+            eachConfig: function (func, scope) {
+                var self = this,
+                    configurations = this.$.configurations,
+                    tempConfigs = [].concat(configurations.$items);
+
+                _.each(tempConfigs,func, scope);
             },
 
             save: function (options, callback) {
@@ -357,16 +384,8 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }
 
                 flow()
-                    .seq(function(){
-                        self.removeDuplicateConfigurations();
-                    })
-                    .seqEach(this.$.configurations.$items, function(configuration) {
-                        if (configuration instanceof TextConfiguration) {
-                            var text = configuration.$.textFlow.text(0, -1);
-                            if (/^[\s\n\r]*$/.test(text)) {
-                                self.$.configurations.remove(configuration);
-                            }
-                        }
+                    .seq(function () {
+                        self.clean();
                     })
                     .parEach(this.$.configurations.$items, function (configuration, cb) {
                         configuration.save(cb);
@@ -444,7 +463,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                                 self._setUpConfiguration(configuration);
                                 configuration.init(options, cb);
                             })
-                            .exec(function(err) {
+                            .exec(function (err) {
                                 cb(err);
                             });
                     })
