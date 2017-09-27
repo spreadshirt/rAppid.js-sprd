@@ -2,7 +2,8 @@ define(["js/ui/View", "sprd/lib/ScrollIntoViewIfNeeded"], function(View, ScrollI
     return View.inherit({
 
         defaults: {
-            scrollDelay: 0
+            scrollDelay: 0,
+            duration: null
         },
 
         _renderSelected: function(selected) {
@@ -13,7 +14,7 @@ define(["js/ui/View", "sprd/lib/ScrollIntoViewIfNeeded"], function(View, ScrollI
                 var $el = this.$el,
                     self = this;
                 setTimeout(function() {
-                    self.$.selected && ScrollIntoViewIfNeeded($el);
+                    self.$.selected && ScrollIntoViewIfNeeded($el, null, self.$.duration);
                 }, this.$.scrollDelay)
             }
         }
