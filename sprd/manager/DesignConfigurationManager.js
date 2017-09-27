@@ -1,4 +1,4 @@
-define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "underscore", "sprd/model/Mask"], function (Base, UnitUtil, Design, flow, Size, _, Mask) {
+define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "underscore", "sprd/model/Mask", "rAppid", "js/data/Model"], function (Base, UnitUtil, Design, flow, Size, _, Mask, rappid, Model) {
 
     var COLOR_CONVERSION_THRESHOLD = 35;
 
@@ -222,13 +222,37 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
         },
 
         extractMask: function (configuration, cb) {
-            var properties = configuration.$.properties;
-            if (properties && properties.afterEffect && !configuration.$.afterEffect) {
-                var mask = this.$.designerApi.createEntity(Mask, properties.afterEffect.id);
-                mask.fetch(null, cb)
-            } else {
-                cb();
+            var properties = configuration.$.properties,
+                self = this;
+
+            if (!properties || !properties.afterEffect || configuration.$.afterEffect) {
+                cb && cb();
+                return;
             }
+
+            var mask,
+                id = properties.afterEffect.id,
+                isUUID = _.isString(id) && id.indexOf("-");
+
+            if (isUUID) {
+                mask = this.$.designerApi.createEntity(Mask,id);
+                mask.fetch(null, cb);
+            } else {
+                this.getMaskMapping(function (err, idMap) {
+                    var matchedMap = _.find(idMap.$, function (map) {
+                       return map.id == id;
+                    });
+
+                    if (matchedMap) {
+                        mask = self.$.designerApi.createEntity(Mask, matchedMap.uuid);
+                        mask.fetch(null, cb);
+                    } else {
+                        cb(new Error("Tried to map id " + id + " to a uuid. No mapping found."));
+                    }
+                })
+            }
+
+
         },
 
         extractMaskSettings: function (configuration, afterEffect, cb) {
@@ -251,6 +275,15 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             } else {
                 cb();
             }
+        },
+
+        getMaskMapping: function (cb) {
+            var idMapping = this.$.designerApi.createEntity(Model);
+            idMapping.fetch(function (err) {
+                if (!err) {
+                    cb(null, idMapping);
+                }
+            })
         },
 
         initializeConfiguration: function (configuration, options, callback) {
