@@ -56,13 +56,13 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                 return;
             }
 
-            var configurations = product.$.configurations;
+            var configurations = product.getConfigurationsOnView();
 
             if (configurations.length === 0) {
                 return;
             }
 
-            this.set('selectedConfiguration', configurations.at(0));
+            this.set('selectedConfiguration', configurations[0]);
         },
 
         _commitSelectedConfiguration: function (selectedConfiguration, oldSelectedConfiguration) {
