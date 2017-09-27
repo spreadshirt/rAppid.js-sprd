@@ -6,6 +6,7 @@
         <conf:ResourceConfiguration modelClassName="sprd.model.AbstractShop" path="shops">
             <conf:ResourceConfiguration modelClassName="sprd.model.Transformer" path="text/upload" processor="TransformationProcessor"/>
         </conf:ResourceConfiguration>
+        <conf:ResourceConfiguration modelClassName="js.data.Model" path="masks/idMapping"/>
         <conf:ResourceConfiguration modelClassName="sprd.model.Mask" path="masks">
             <conf:ResourceConfiguration modelClassName="sprd.model.MaskApplier" path="apply"/>
         </conf:ResourceConfiguration>

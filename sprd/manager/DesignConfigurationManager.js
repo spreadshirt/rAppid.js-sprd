@@ -1,4 +1,4 @@
-define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "underscore", "sprd/model/Mask"], function (Base, UnitUtil, Design, flow, Size, _, Mask) {
+define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "underscore", "sprd/model/Mask", "rAppid", "js/data/Model"], function (Base, UnitUtil, Design, flow, Size, _, Mask, rappid, Model) {
 
     var COLOR_CONVERSION_THRESHOLD = 35;
 
@@ -222,13 +222,28 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
         },
 
         extractMask: function (configuration, cb) {
-            var properties = configuration.$.properties;
-            if (properties && properties.afterEffect && !configuration.$.afterEffect) {
-                var mask = this.$.designerApi.createEntity(Mask, properties.afterEffect.id);
-                mask.fetch(null, cb)
-            } else {
-                cb();
+            var properties = configuration.$.properties,
+                uuid = false;
+            if (!properties || properties.afterEffect || configuration.$.afterEffect) {
+                cb && cb();
+                return;
             }
+
+            var mask,
+                idMapping,
+                id = properties.afterEffect.id;
+            if (uuid) {
+                mask = this.$.designerApi.createEntity(Mask,id);
+                mask.fetch(null, cb);
+            } else {
+                this.getMaskMapping(function (err, mapping) {
+                    idMapping = mapping;
+                    mask = this.$.designerApi.createEntity(Mask, idMapping[id]);
+                    mask.fetch(null, cb);
+                })
+            }
+
+
         },
 
         extractMaskSettings: function (configuration, afterEffect, cb) {
@@ -251,6 +266,15 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             } else {
                 cb();
             }
+        },
+
+        getMaskMapping: function (cb) {
+            var idMapping = this.$.designerApi.createEntity(Model);
+            idMapping.fetch(function (err) {
+                if (!err) {
+                    cb(null, idMapping);
+                }
+            })
         },
 
         initializeConfiguration: function (configuration, options, callback) {
