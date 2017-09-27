@@ -223,23 +223,32 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
         extractMask: function (configuration, cb) {
             var properties = configuration.$.properties,
-                uuid = false;
-            if (!properties || properties.afterEffect || configuration.$.afterEffect) {
+                self = this;
+
+            if (!properties || !properties.afterEffect || configuration.$.afterEffect) {
                 cb && cb();
                 return;
             }
 
             var mask,
-                idMapping,
-                id = properties.afterEffect.id;
-            if (uuid) {
+                id = properties.afterEffect.id,
+                isUUID = _.isString(id) && id.indexOf("-");
+
+            if (isUUID) {
                 mask = this.$.designerApi.createEntity(Mask,id);
                 mask.fetch(null, cb);
             } else {
-                this.getMaskMapping(function (err, mapping) {
-                    idMapping = mapping;
-                    mask = this.$.designerApi.createEntity(Mask, idMapping[id]);
-                    mask.fetch(null, cb);
+                this.getMaskMapping(function (err, idMap) {
+                    var matchedMap = _.find(idMap.$, function (map) {
+                       return map.id == id;
+                    });
+
+                    if (matchedMap) {
+                        mask = self.$.designerApi.createEntity(Mask, matchedMap.uuid);
+                        mask.fetch(null, cb);
+                    } else {
+                        cb(new Error("Tried to map id " + id + " to a uuid. No mapping found."));
+                    }
                 })
             }
 
