@@ -165,10 +165,13 @@ define(["sprd/data/SprdModel", 'js/core/List', 'js/data/Entity'],
             }.on(['stockStates', 'reset'], ['sizes', 'reset']).onChange("sizes"),
 
             isSizeAndAppearanceAvailable: function (size, appearance) {
-                if (this.$.stockStates) {
-                    return this.$.stockStates.isSizeAndAppearanceAvailable(size, appearance);
+                if (!this.containsAppearance(appearance) || !this.containsSize(size)
+                    || !this.$.stockStates) {
+                    return false;
                 }
-                return false;
+
+                return this.$.stockStates.isSizeAndAppearanceAvailable(size, appearance);
+
             }.on(['stockStates', 'reset']),
 
 
