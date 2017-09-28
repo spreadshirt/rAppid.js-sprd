@@ -25,7 +25,7 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
             this.bind("configuration", "recalculateSize", this.recalculateSize, this);
 
-            this.bind("configuration", "change:font", this.loadFont, this);
+
 
             var resetMainConfigurationViewer = function() {
                 var configuration = this.$.configuration;
@@ -55,6 +55,11 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             }, this);
         },
 
+        _initializationComplete: function() {
+            this.callBase();
+            this.bind("configuration", "change:font", this.loadFont, this);
+        },
+
         loadFont: function() {
             var svgRoot = this.getSvgRoot(),
                 font = this.get("configuration.font"),
@@ -65,8 +70,10 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                 return;
             }
 
+            this.set("loading", true);
             svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font, extension), function() {
                 self.recalculateSize();
+                self.set("loading", false);
             });
         },
 

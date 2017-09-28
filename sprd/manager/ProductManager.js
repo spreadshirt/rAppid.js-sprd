@@ -293,21 +293,22 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         return printTypes;
                     })
                     .seq("designConfiguration", function() {
-                        var entity = product.createEntity(DesignConfiguration);
-                        entity.set({
+                        return product.createEntity(DesignConfiguration).set({
                             printType: printType,
                             printArea: printArea,
                             design: design,
                             designColorIds: params.designColorIds,
                             designColorRGBs: params.designColorRGBs
                         }, PREVENT_VALIDATION_OPTIONS);
-                        return entity;
                     })
                     .seq(function(cb) {
                         var designConfiguration = this.vars["designConfiguration"];
                         bus.setUp(designConfiguration);
-                        designConfiguration.init({}, cb);
+                        designConfiguration.init({
+                            ensureDesignColorContrast: true
+                        }, cb);
                     })
+
                     .seq('validatedMove', function() {
                         return self.validateMove(this.vars.printTypes, this.vars.printArea, this.vars.designConfiguration, product);
                     })
@@ -622,6 +623,10 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         bus.setUp(configuration);
                         configuration.init({}, cb);
                     })
+                    .seq(function () {
+                        var configuration = this.vars["configuration"];
+                        configuration.set('initialText', configuration.$.rawText);
+                    })
                     .seq(function() {
                         finalizeFnc(this.vars.configuration, this.vars.printTypes, params);
                     })
@@ -913,18 +918,26 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     return null;
                 }
 
-                //ArrayUtil.move(printTypes, PrintTypeEqualizer.getPreferredPrintType(product, printArea, printTypes), 0);
 
-                var validatedMove = null,
-                    self = this;
-                _.find(printTypes, function(printType) {
-                    validatedMove = self.validateConfigurationMove(printType, printArea, configuration, options);
-                    return validatedMove && _.every(validatedMove.validations, function(validation) {
-                            return !validation;
-                        });
-                });
+                var self = this;
 
-                return validatedMove;
+                for (var i = 0; i < printTypes.length; i++) {
+                    var printType = printTypes[i];
+                    var validatedMove = self.validateConfigurationMove(printType, printArea, configuration, options);
+
+                    if (!validatedMove) {
+                        continue;
+                    }
+
+                    var allValidationsPassed = _.every(validatedMove.validations, function(validation) {
+                        return !validation;
+                    });
+
+                    if (allValidationsPassed) {
+                        return validatedMove;
+                    }
+                }
+                
             },
 
             validateConfigurationMove: function(printType, printArea, configuration, options) {

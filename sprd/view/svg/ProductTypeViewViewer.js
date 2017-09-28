@@ -374,6 +374,14 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             var surroundingRect = ViewUtil.surroundingRectOfViewMapsInView(view);
             var viewWidth = view.get('size.width');
             var viewHeight = view.get('size.height');
+
+            if (!surroundingRect || !viewWidth || !viewHeight) {
+                return {
+                    x: 0,
+                    y: 0
+                };
+            }
+
             return {
                 x: viewWidth / 2 - scale * (surroundingRect.x + surroundingRect.width / 2),
                 y: viewHeight / 2 - scale * (surroundingRect.y + surroundingRect.height / 2)
@@ -387,6 +395,11 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             var surroundingRect = ViewUtil.surroundingRectOfViewMapsInView(view);
             var viewWidth = view.get('size.width');
             var viewHeight = view.get('size.height');
+
+            if (!surroundingRect || !viewWidth || !viewHeight) {
+                return 1;
+            }
+
             var minScaleFactor = Math.min(viewWidth / surroundingRect.width, viewHeight / surroundingRect.height) - 1;
             return 1 + Math.min(minScaleFactor * zoomToPrintArea, maxZoom);
         },

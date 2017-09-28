@@ -13,6 +13,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             scaleRatioThresholdForRotation = 0.2,
             moveSnippingThreshold = 7;
 
+        var defaultLineLength = 4000;
         //Polyfill
         if (!Math.sign) {
             Math.sign = function (x) {
@@ -132,6 +133,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.callBase();
 
                 this.set("preventValidation", false);
+                this.set('productViewerDiagonalLength', this.$.productViewer.getViewBoxDiagonal().distance());
 
             },
 
@@ -306,7 +308,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             addSnapLine: function(x, y, rot, owner) {
-                var newLine = new Line(x, y, rot);
+                var newLine = new Line(x, y, rot, defaultLineLength);
                 var alreadyAdded = false;
                 for (var i = 0; i < this.$snapLines.length; i++) {
                     var owners = this.$snapLines[i].owners;
@@ -1028,7 +1030,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             newX -= snapPosDeltaX;
                             newY -= snapPosDeltaY;
 
-                            var productViewerDiagonalLength = this.$.productViewerDiagonalLength
+                            var productViewerDiagonalLength = this.$.productViewerDiagonalLength;
                             snappedLines.push(snappedLine.getSvgLine(productViewerDiagonalLength));
                             lines = _.filter(lines, function(snapLine) {
                                 return snappedLine.isPerpendicular(snapLine.line);
