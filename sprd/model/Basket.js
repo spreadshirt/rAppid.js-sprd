@@ -1,4 +1,4 @@
-define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "sprd/model/Currency", "js/data/Entity", "sprd/entity/Price", "sprd/model/DiscountScale", "sprd/model/Language"], function (SprdModel, BasketItem, Collection, Currency, Entity, Price, DiscountScale, Language) {
+define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "sprd/model/Currency", "js/data/Entity", "sprd/entity/Price", "sprd/model/DiscountScale", "sprd/model/Language", "underscore"], function (SprdModel, BasketItem, Collection, Currency, Entity, Price, DiscountScale, Language, _) {
 
     var Discount = Entity.inherit('sprd.entity.BasketDiscount', {
         schema: {
@@ -190,6 +190,15 @@ define(["sprd/data/SprdModel", "sprd/model/BasketItem", "js/data/Collection", "s
             }
             return null;
         }.onChange('priceItems', 'discounts'),
+
+        checkoutLink: function() {
+            if (this.$.links) {
+                return (_.find(this.$.links, function(link) {
+                    return link.type === "defaultCheckout";
+                }) || {}).href
+            }
+            return null;
+        }.onChange('links'),
 
 
         platformCheckoutLink: function () {
