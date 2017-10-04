@@ -1241,6 +1241,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         config.set("_size", config.$._size, {force: true});
                         config.set("isNew", textConfiguration.$.isNew);
                         config.set("isTemplate", textConfiguration.$.isTemplate);
+                        config.set("initialText", textConfiguration.$.initialText);
 
                         callback && callback(err, config);
 
@@ -1274,6 +1275,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                         config.set("isNew", textConfiguration.$.isNew);
                         config.set("isTemplate", textConfiguration.$.isTemplate);
+                        config.set("initialText", textConfiguration.$.initialText);
 
                         callback && callback(err, config);
 
@@ -1314,6 +1316,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             originalConfiguration: specialTextConfiguration
                         });
 
+                        config.set("initialText", specialTextConfiguration.$.initialText);
+
                         callback && callback(err, config);
 
                         self.$.bus.trigger('Application.productChanged', product);
@@ -1352,6 +1356,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             originalConfiguration: bendingTextConfiguration
                         });
 
+                        config.set("initialText", bendingTextConfiguration.$.initialText);
                         callback && callback(err, config);
 
                         self.$.bus.trigger('Application.productChanged', product);

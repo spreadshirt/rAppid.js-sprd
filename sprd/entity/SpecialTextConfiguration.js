@@ -18,7 +18,8 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
             renderedText: null,
             renderedFontId: null,
             renderedAlign: null,
-            isNew: false
+            isNew: false,
+            initialText: null
         },
 
         schema: {
@@ -126,6 +127,17 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
         previewImageUrl: function () {
             return this.$.loading ? null : this._previewImageUrl;
         }.onChange('loading'),
+
+        textChangedSinceCreation: function () {
+            var initialText = this.$.initialText,
+                currentText = this.$.text;
+
+            if (!initialText) {
+                return true;
+            }
+
+            return initialText !== currentText;
+        },
 
         validateChars: function () {
 

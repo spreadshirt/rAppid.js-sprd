@@ -30,7 +30,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 textPathOffsetX: 0,
                 textPathOffsetY: 0,
                 transformer: null,
-                copyrightWordList: null
+                copyrightWordList: null,
+                initialText: null
             },
 
             type: "bendingText",
@@ -54,6 +55,17 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 }, this);
 
                 this.$synchronizeCache = designCache;
+            },
+
+            textChangedSinceCreation: function () {
+                var initialText = this.$.initialText,
+                    currentText = this.$.text;
+
+                if (!initialText) {
+                    return true;
+                }
+
+                return initialText !== currentText;
             },
 
 
