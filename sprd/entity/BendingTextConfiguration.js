@@ -68,6 +68,15 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 return initialText !== currentText;
             },
 
+            isOnlyWhiteSpace: function () {
+                var text = this.$.text;
+                if (!text) {
+                    return true;
+                }
+
+                return /^[\s\n\r]*$/.test(text);
+            },
+
 
             init: function(options, callback) {
                 var properties = this.$.properties,
