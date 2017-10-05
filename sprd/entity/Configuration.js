@@ -55,7 +55,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         _commitScale: function (newScale) {
+            return this.validSize(newScale);
+        },
 
+        validSize: function (scale) {
             var size = this.$._size,
                 newWidth = this.widthInMM(newScale.y),
                 newHeight = this.heightInMM(newScale.y),
