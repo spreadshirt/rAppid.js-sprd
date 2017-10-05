@@ -124,6 +124,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             isOnlyWhiteSpace: function () {
                 var text = this.$.rawText;
+                if (!text) {
+                    return true;
+                }
+
                 return /^[\s\n\r]*$/.test(text);
             },
 
