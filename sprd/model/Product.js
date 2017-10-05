@@ -342,7 +342,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
 
             cleanText: function (configuration) {
                 var self = this;
-                var isTextConfig = configuration instanceof TextConfiguration;
+                var isTextConfig = configuration.isOnlyWhiteSpace && configuration.textChangedSinceCreation;
                 if (!isTextConfig) {
                     return;
                 }
