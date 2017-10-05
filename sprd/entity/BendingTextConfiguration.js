@@ -89,6 +89,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
                     if (this.$.initialized) {
                         callback && callback();
+                        return;
                     }
 
                     flow()
