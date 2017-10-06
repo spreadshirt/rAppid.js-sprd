@@ -321,8 +321,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             minX = maxX = point[0];
             minY = maxY = point[1];
 
-            for (var i = 1; i < points.length; i++) {
-                point = matrix.transformPoint(points[i]);
+            for (var i = 1; i < corners.length; i++) {
+                point = matrix.transformPoint(corners[i]);
 
                 minX = Math.min(point[0], minX);
                 maxX = Math.max(point[0], maxX);

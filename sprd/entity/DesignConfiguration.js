@@ -240,14 +240,28 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     .seq("rect",function () {
                         return ImageMeasurer.getRealDesignSize(this.vars.image);
                     })
-                    // .seq("rectInMM", function () {
-                    //     return UnitUtil.convertRectToMm(this.vars.rectInPx, self.$._dpi);
-                    // })
                     .exec(function (err, results) {
                         if (!err) {
                            self.set("innerRect", results.rect);
                         }
                     })
+            },
+
+            _getRotatedBoundingBox: function (offset, width, height, rotation, scale) {
+                var bbox = this.callBase(),
+                    innerRect = this.$.innerRect;
+
+                if (innerRect) {
+                    return {
+                        x: bbox.x + bbox.width * innerRect.x,
+                        y: bbox.y + bbox.width * innerRect.y,
+                        width: bbox.width * innerRect.width,
+                        height: bbox.height * innerRect.height,
+                        rotation: bbox.rotation
+                    }
+                }
+
+                return bbox;
             },
 
 
