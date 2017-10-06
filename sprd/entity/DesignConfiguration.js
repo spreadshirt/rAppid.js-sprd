@@ -247,8 +247,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     })
             },
 
-            _getRotatedBoundingBox: function (offset, width, height, rotation, scale) {
-                var bbox = this.callBase(),
+            _getRotatedInnerBoundingBox: function (offset, width, height, rotation, scale) {
+                var bbox = this._getRotatedBoundingBox(offset, width, height, rotation, scale),
                     innerRect = this.$.innerRect;
 
                 if (innerRect) {

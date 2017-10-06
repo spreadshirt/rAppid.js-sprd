@@ -271,7 +271,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 return null;
             }
 
-            var boundingBox = this._getBoundingBox(offset, width, height, rotation, scale, true);
+            var boundingBox = this._getInnerBoundingBox(offset, width, height, rotation, scale, true);
 
             return !(boundingBox.x >= -0.1 && boundingBox.y >= -0.1 &&
             (boundingBox.x + boundingBox.width - 0.1) <= printArea.get("boundary.size.width") &&
@@ -343,6 +343,17 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             var rotatedBbox= this.getBoundingBoxOfRotatedBox(bbox.x, bbox.y, bbox.width, bbox.height, bbox.rotation);
             rotatedBbox.x += xOffset || 0;
             return rotatedBbox;
+        },
+
+        _getInnerBoundingBox: function (offset, width, height, rotation, scale, onlyContent, xOffset) {
+            var bbox = this._getRotatedInnerBoundingBox(offset, width, height, rotation, scale);
+            var rotatedBbox = this.getBoundingBoxOfRotatedBox(bbox.x, bbox.y, bbox.width, bbox.height, bbox.rotation);
+            rotatedBbox.x += xOffset || 0;
+            return rotatedBbox;
+        },
+
+        _getRotatedInnerBoundingBox: function (offset, width, height, rotation, scale) {
+            return this._getRotatedBoundingBox(offset, width, height, rotation, scale);
         },
 
         _getRotatedBoundingBox: function(offset, width, height, rotation, scale) {
