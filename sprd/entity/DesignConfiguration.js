@@ -1,6 +1,8 @@
 define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
-        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sprd/data/MaskService"],
-    function (DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService) {
+        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService"
+        ,"sprd/entity/BlobImage", "sprd/data/MaskService", "sprd/data/ImageService", "sprd/manager/ImageMeasurer"],
+    function (DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow
+              , IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService, ImageService, ImageMeasurer) {
 
         return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
@@ -12,7 +14,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 afterEffect: null,
                 processedDesign: null,
                 processedImage: null,
-                processedSize: null
+                processedSize: null,
+                innerRect: null
             },
 
 
@@ -26,6 +29,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             inject: {
                 imageUploadService: IImageUploadService,
                 maskService: MaskService,
+                imageService: ImageService,
                 context: "context"
             },
 
@@ -212,6 +216,42 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return this.$._allowScale;
             },
 
+            getImageUrl: function () {
+                var design = this.$.design;
+                if (!design) {
+                    return;
+                }
+                
+                return this.$.processedImage || design.$.localImage || this.$.imageService.designImageFromCache(design.$.wtfMbsId, {width: design.$.size.$.width});
+            },
+
+            setInnerRect: function () {
+                var url = this.getImageUrl(),
+                    self = this;
+
+                if (!url) {
+                    return;
+                }
+
+                flow()
+                    .seq("image", function (cb) {
+                        ImageMeasurer.toImage(url, cb)
+                    })
+                    .seq("rect",function () {
+                        return ImageMeasurer.getRealDesignSize(this.vars.image);
+                    })
+                    // .seq("rectInMM", function () {
+                    //     return UnitUtil.convertRectToMm(this.vars.rectInPx, self.$._dpi);
+                    // })
+                    .exec(function (err, results) {
+                        if (!err) {
+                           self.set("innerRect", results.rect);
+                        }
+                    })
+            },
+
+
+
             price: function () {
 
                 var usedPrintColors = [],
@@ -349,6 +389,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             init: function (options, callback) {
                 this.$.manager.initializeConfiguration(this, options, callback);
+                this.setInnerRect();
             },
 
             isAllowedOnPrintArea: function (printArea) {
