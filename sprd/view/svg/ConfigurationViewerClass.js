@@ -16,7 +16,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
         var defaultLineLength = 4000;
         //Polyfill
         if (!Math.sign) {
-            Math.sign = function (x) {
+            Math.sign = function(x) {
                 // If x is NaN, the result is NaN.
                 // If x is -0, the result is -0.
                 // If x is +0, the result is +0.
@@ -25,7 +25,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return ((x > 0) - (x < 0)) || +x;
             };
         }
-        
+
         return SvgElement.inherit({
 
             defaults: {
@@ -689,6 +689,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var distance = self.getDistance(configuration.$.offset, self.$._offset);
                     var onlyPointed = !(distance) && mode === MOVE && !self.$moveInitiator;
 
+                    if (!onlyPointed) {
+                        self.$.bus.trigger('ConfigurationViewer.pointerUp');
+                    }
+
                     if (onlyPointed && configuration == previousSelectedConfiguration) {
                         self.$.bus.trigger('ConfigurationViewer.configurationReselected', {
                             configuration: configuration,
@@ -945,11 +949,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             broadcastSnappedLines: function(snappedLines) {
+                this.$.bus.trigger('ConfigurationViewer.snappedToLine', {
+                    configurationViewer: this,
+                    lines: snappedLines
+                });
+
                 if (snappedLines && snappedLines.length > 0) {
-                    this.$.bus.trigger('ConfigurationViewer.snappedToLine', {
-                        configurationViewer: this,
-                        lines: snappedLines
-                    });
                     var snapLinesList = this.$.printAreaViewer.$.snapLines;
                     if (snapLinesList) {
                         snapLinesList.reset(snappedLines);
@@ -1166,7 +1171,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            validateScale: function (newScale, oldScale) {
+            validateScale: function(newScale, oldScale) {
                 if (!newScale) {
                     return false;
                 }
