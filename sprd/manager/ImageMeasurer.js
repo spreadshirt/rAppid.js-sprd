@@ -1,5 +1,5 @@
 define([], function () {
-
+    var rectCache = {};
     return {
 
         toImage: function (url, callback) {
@@ -22,14 +22,20 @@ define([], function () {
         },
 
         getRealDesignSize: function (image) {
+            if (rectCache[image.src]) {
+                return rectCache[image.src];
+            }
+
             var ctx = this.getCtx(image.naturalWidth, image.naturalHeight),
-                canvas = ctx.canvas,
-                minX = canvas.width, minY = canvas.height, maxX = 0, maxY = 0;
+                canvas = ctx.canvas;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
             var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            return this.getRectFromImageData(imageData)
+
+            var rect = this.getRectFromImageData(imageData);
+            rectCache[image.src] = rect;
+            return rect;
         },
 
         getRectFromImageData: function (data) {
@@ -66,6 +72,8 @@ define([], function () {
                 width: (maxX - minX) /width,
                 height: (maxY - minY)/ height
             }
+
+
         },
 
         transformPointToIndex: function (x, y, width) {
