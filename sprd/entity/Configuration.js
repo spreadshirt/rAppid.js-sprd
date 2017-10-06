@@ -293,16 +293,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
         }.onChange('height()', 'printType.dpi'),
 
-        _getBoundingBox: function(offset, width, height, rotation, scale, onlyContent, xOffset) {
-
-            offset = offset || this.$.offset;
-            width = width || this.width(scale);
-            height = height || this.height(scale);
-            rotation = rotation || this.$.rotation;
-
-            var x = offset.$.x,
-                y = offset.$.y;
-
+        getBoundingBoxOfRotatedBox: function (x, y, width, height, rotation) {
             if (!(rotation % 360)) {
                 return {
                     x: x,
@@ -312,25 +303,21 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 };
             }
 
-            var minX,
-                maxX,
-                minY,
-                maxY,
-                matrix = new Matrix2d().rotateDeg(rotation);
+            var matrix = new Matrix2d().rotateDeg(rotation),
+                halfW = width / 2,
+                halfH = height / 2,
+                centerX = x + halfW,
+                centerY = y + halfH;
 
-            xOffset = xOffset || 0;
-
-            var halfW = width / 2,
-                halfH = height / 2;
-
-            var points = [
-                [-halfW + xOffset, -halfH],
-                [halfW + xOffset, -halfH],
-                [halfW + xOffset, halfH],
-                [-halfW + xOffset, halfH]
+            var corners = [
+                [-halfW , -halfH],
+                [halfW, -halfH],
+                [halfW , halfH],
+                [-halfW , halfH]
             ];
 
-            var point = matrix.transformPoint(points[0]);
+            var minX, minY, maxY, maxX;
+            var point = matrix.transformPoint(corners[0]);
             minX = maxX = point[0];
             minY = maxY = point[1];
 
@@ -344,16 +331,21 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
             return {
-                x: minX + halfW + x - xOffset,
-                y: minY + halfH + y,
+                x: minX + centerX,
+                y: minY + centerY,
                 width: maxX - minX,
                 height: maxY - minY
-            };
-
+            }
         },
 
-        _getRotatedBoundingBox: function(offset, width, height, rotation, scale, onlyContent, xOffset) {
+        _getBoundingBox: function(offset, width, height, rotation, scale, onlyContent, xOffset) {
+            var bbox = this._getRotatedBoundingBox(offset, width, height, rotation, scale);
+            var rotatedBbox= this.getBoundingBoxOfRotatedBox(bbox.x, bbox.y, bbox.width, bbox.height, bbox.rotation);
+            rotatedBbox.x += xOffset || 0;
+            return rotatedBbox;
+        },
 
+        _getRotatedBoundingBox: function(offset, width, height, rotation, scale) {
             offset = offset || this.$.offset;
             width = width || this.width(scale);
             height = height || this.height(scale);
