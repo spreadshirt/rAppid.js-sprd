@@ -1,6 +1,7 @@
 define([], function () {
     var rectCache = {},
         canvas;
+    
     return {
 
         toImage: function (url, callback) {
@@ -14,11 +15,8 @@ define([], function () {
             image.src = url
         },
 
-        getCtx: function (width, height, rotation) {
-            if (!canvas) {
-                canvas = document.createElement('canvas');
-                document.body.appendChild(canvas);
-            }
+        getCtx: function (width, height) {
+            canvas = canvas || document.createElement('canvas');
             var maxDim = Math.max(width, height);
             canvas.width = maxDim;
             canvas.height = maxDim;
