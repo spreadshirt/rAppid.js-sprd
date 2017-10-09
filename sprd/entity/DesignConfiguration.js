@@ -1,6 +1,8 @@
 define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
-        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sprd/data/MaskService"],
-    function(DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService) {
+        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService"
+        ,"sprd/entity/BlobImage", "sprd/data/MaskService", "sprd/data/ImageService", "sprd/manager/ImageMeasurer"],
+    function(DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow
+              , IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService, ImageService, ImageMeasurer) {
 
         return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
@@ -12,7 +14,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 afterEffect: null,
                 processedDesign: null,
                 processedImage: null,
-                processedSize: null
+                processedSize: null,
+                innerRect: null
             },
 
 
@@ -21,11 +24,13 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
                 this.bind('change:processedImage', this._setProcessedSize, this);
                 this.bind('change:processedDesign', function() {this._setOriginalDesignProperties()}, this);
+                this.bind('change:rotation', this.setInnerRect, this);
             },
 
             inject: {
                 imageUploadService: IImageUploadService,
                 maskService: MaskService,
+                imageService: ImageService,
                 context: "context"
             },
 
@@ -212,6 +217,61 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return this.$._allowScale;
             },
 
+            getImageUrl: function () {
+                var design = this.$.design;
+                if (!design) {
+                    return;
+                }
+
+                return this.$.processedImage || design.$.localImage || this.$.imageService.designImageFromCache(design.$.wtfMbsId, {width: 100});
+            },
+
+            setInnerRect: function () {
+                var self = this;
+                this.getInnerRect(this.$.rotation, function(err, results) {
+                        if (!err) {
+                            self.set("innerRect", results.rect);
+                        }
+                    });
+            },
+
+            getInnerRect: function (rotation, callback) {
+                var url = this.getImageUrl(),
+                    self = this;
+
+                if (!url) {
+                    callback && callback();
+                    return;
+                }
+
+                flow()
+                    .seq("image", function (cb) {
+                        ImageMeasurer.toImage(url, cb)
+                    })
+                    .seq("rect", function () {
+                        return ImageMeasurer.getRealDesignSize(this.vars.image, rotation);
+                    })
+                    .exec(callback)
+            },
+
+            _getInnerBoundingBox: function (offset, width, height, rotation, scale) {
+                var bbox = this._getRotatedBoundingBox(offset, width, height, rotation, scale);
+
+                var innerRect = this.$.innerRect;
+                if (innerRect) {
+                    return {
+                        x: bbox.x + bbox.width * innerRect.x,
+                        y: bbox.y + bbox.width * innerRect.y,
+                        width: bbox.width * innerRect.width,
+                        height: bbox.height * innerRect.height,
+                        rotation: bbox.rotation
+                    }
+                }
+
+                return bbox;
+            },
+
+
             price: function() {
 
                 var usedPrintColors = [],
@@ -349,6 +409,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             init: function(options, callback) {
                 this.$.manager.initializeConfiguration(this, options, callback);
+                this.setInnerRect();
             },
 
             isAllowedOnPrintArea: function(printArea) {
