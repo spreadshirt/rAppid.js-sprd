@@ -24,6 +24,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
                 this.bind('change:processedImage', this._setProcessedSize, this);
                 this.bind('change:processedDesign', function() {this._setOriginalDesignProperties()}, this);
+                this.bind('change:rotation', this.setInnerRect, this);
             },
 
             inject: {
@@ -226,31 +227,38 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             setInnerRect: function () {
+                var rotation = this.$.rotation;
+                
                 var url = this.getImageUrl(),
                     self = this;
 
                 if (!url) {
                     return;
                 }
-
+                
                 flow()
                     .seq("image", function (cb) {
                         ImageMeasurer.toImage(url, cb)
                     })
                     .seq("rect",function () {
-                        return ImageMeasurer.getRealDesignSize(this.vars.image);
+                        return ImageMeasurer.getRealDesignSize(this.vars.image, rotation);
                     })
                     .exec(function (err, results) {
                         if (!err) {
-                           self.set("innerRect", results.rect);
+                            self.set("innerRect", results.rect);
                         }
                     })
             },
 
             _getRotatedInnerBoundingBox: function (offset, width, height, rotation, scale) {
                 var bbox = this._getRotatedBoundingBox(offset, width, height, rotation, scale),
-                    innerRect = this.$.innerRect;
+                    innerRects = this.$.innerRects;
 
+                if (!innerRects) {
+                    return bbox
+                }
+
+                var innerRect = innerRects[rotation];
                 if (innerRect) {
                     return {
                         x: bbox.x + bbox.width * innerRect.x,
@@ -263,7 +271,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
                 return bbox;
             },
-
 
 
             price: function () {

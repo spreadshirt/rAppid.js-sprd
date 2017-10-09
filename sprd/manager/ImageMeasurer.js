@@ -1,5 +1,6 @@
 define([], function () {
-    var rectCache = {};
+    var rectCache = {},
+        canvas;
     return {
 
         toImage: function (url, callback) {
@@ -13,28 +14,42 @@ define([], function () {
             image.src = url
         },
 
-        getCtx: function (width, height) {
-            var canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-
+        getCtx: function (width, height, rotation) {
+            if (!canvas) {
+                canvas = document.createElement('canvas');
+                document.body.appendChild(canvas);
+            }
+            var maxDim = Math.max(width, height);
+            canvas.width = maxDim;
+            canvas.height = maxDim;
+            
             return canvas.getContext('2d');
         },
 
-        getRealDesignSize: function (image) {
-            if (rectCache[image.src]) {
-                return rectCache[image.src];
+        getRealDesignSize: function (image, rotation) {
+            if (!image) {
+                return;
+            }
+
+            var cacheKey = image.src + rotation;
+            if (rectCache[cacheKey]) {
+                return rectCache[cacheKey];
             }
 
             var ctx = this.getCtx(image.naturalWidth, image.naturalHeight),
-                canvas = ctx.canvas;
+                canvas = ctx.canvas,
+                startX = (canvas.width - image.naturalWidth)/2,
+                startY = (canvas.height - image.naturalHeight)/2;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate(rotation * Math.PI / 180);
+            ctx.drawImage(image, startX - canvas.width/ 2, startY - canvas.height / 2);
+
             var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
             var rect = this.getRectFromImageData(imageData);
-            rectCache[image.src] = rect;
+            rectCache[cacheKey] = rect;
             return rect;
         },
 
