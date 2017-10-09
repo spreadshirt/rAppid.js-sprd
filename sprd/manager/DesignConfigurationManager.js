@@ -1,6 +1,6 @@
 define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "underscore", "sprd/model/Mask", "rAppid", "js/data/Model"], function (Base, UnitUtil, Design, flow, Size, _, Mask, rappid, Model) {
 
-    var COLOR_CONVERSION_THRESHOLD = 35;
+    var COLOR_CONVERSION_THRESHOLD = 40;
 
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
         extractDesign: function (configuration) {
@@ -129,41 +129,25 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             }
 
             if (!colorsSet && designColors) {
-                printColors = [];
-
-                var invertDesignColors = false;
+                printColors = configuration.getDesignColors();
 
                 if (designColors.$items.length === 1 && options && options.ensureDesignColorContrast && configuration.$context && configuration.$context.$contextModel) {
                     var product = configuration.$context.$contextModel;
                     var appearanceColor = product.get("appearance.colors.at(0).color()");
                     var firstLayer = designColors.at(0);
                     var designColor = (firstLayer.$["default"] || firstLayer.$["origin"]);
-
+                    console.log(designColor.distanceTo(appearanceColor));
                     if (appearanceColor && designColor && designColor.distanceTo(appearanceColor) < COLOR_CONVERSION_THRESHOLD) {
-                        invertDesignColors = true;
+                        printColors = configuration.getInvertedDesignColors();
                     }
                 }
-                
-                designColors.each(function (designColor) {
-                    var color = (designColor.$["default"] || designColor.$["origin"]).toRGB();
 
-                    if (invertDesignColors) {
-                        color = color.invert();
-                    }
-
-                    var closestPrintColor = printType.getClosestPrintColor(color);
-                    printColors.push(closestPrintColor);
-                    defaultPrintColors.push(closestPrintColor);
+                configuration.$.printColors.reset(printColors);
+                configuration.set('printType', printType, {
+                    force: true,
+                    preventValidation: true
                 });
-
-                configuration.$defaultPrintColors = defaultPrintColors;
             }
-
-            configuration.$.printColors.reset(printColors);
-            configuration.set('printType', printType, {
-                force: true,
-                preventValidation: true
-            });
         },
 
         extractSize: function (configuration, options) {

@@ -1,13 +1,14 @@
-define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", "sprd/util/ArrayUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation', 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sprd/util/PrintValidator", "sprd/type/Vector", "js/type/Color"],
-    function(IProductManager, _, flow, ProductUtil, ArrayUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List, PrintValidator, Vector, Color) {
+define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", "sprd/util/ArrayUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation'
+        , 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sprd/util/PrintValidator", "sprd/type/Vector", "js/type/Color", "sprd/config/Settings"],
+    function(IProductManager, _, flow, ProductUtil, ArrayUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List, PrintValidator, Vector, Color, Settings) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
             preventValidation: true
         };
         // factor * print area height = font size
-        var INITIAL_FONT_SIZE_SCALE_FACTOR = 0.07;
-        var COLOR_CONVERSION_THRESHOLD = 35;
+        var INITIAL_FONT_SIZE_SCALE_FACTOR = Settings.INITIAL_FONT_SIZE_SCALE_FACTOR;
+        var COLOR_CONVERSION_THRESHOLD = Settings.COLOR_CONVERSION_THRESHOLD;
 
         return IProductManager.inherit("sprd.manager.ProductManager", {
 

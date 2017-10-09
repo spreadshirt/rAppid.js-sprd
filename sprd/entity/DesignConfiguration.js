@@ -1,8 +1,8 @@
 define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
         "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService"
-        ,"sprd/entity/BlobImage", "sprd/data/MaskService", "sprd/data/ImageService", "sprd/manager/ImageMeasurer"],
+        ,"sprd/entity/BlobImage", "sprd/data/MaskService", "sprd/data/ImageService", "sprd/manager/ImageMeasurer", "sprd/config/Settings"],
     function(DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow
-              , IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService, ImageService, ImageMeasurer) {
+              , IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService, ImageService, ImageMeasurer, Settings) {
 
         return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
@@ -65,6 +65,44 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 printColors.reset(colors);
                 this.trigger('configurationChanged');
                 this.trigger("priceChanged");
+            },
+
+            setInvertedColors: function () {
+                var invertedColors = this.getInvertedDesignColors();
+                this.$.printColors && this.$.printColors.reset(invertedColors);
+            },
+
+            getDesignColors: function (transformer) {
+                var design = this.$.design,
+                    printType = this.$.printType,
+                    printColors = this.$.printColors;
+
+                if (!design || !printType || !printColors || !design.isVectorDesign()) {
+                    return;
+                }
+
+                var designColors = design ? design.$.colors : null;
+
+                if (!designColors || !designColors.length) {
+                    return;
+                }
+
+                var newPrintColors = [];
+                designColors.each(function (designColor) {
+                    var color = (designColor.$["default"] || designColor.$["origin"]).toRGB();
+                    color = transformer instanceof Function ? transformer(color) : color;
+
+                    var closestPrintColor = printType.getClosestPrintColor(color);
+                    newPrintColors.push(closestPrintColor);
+                });
+
+                return newPrintColors;
+            },
+
+            getInvertedDesignColors: function () {
+                return this.getDesignColors(function (color) {
+                    return color.invert();
+                })
             },
 
             _commitAfterEffect: function(afterEffect) {
