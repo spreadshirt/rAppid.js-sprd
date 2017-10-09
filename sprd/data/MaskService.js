@@ -169,6 +169,8 @@ define(["js/core/Component", 'sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/e
                         scalingFactor = mask.canvasScalingFactor(design);
 
                     applier.set({
+                        transformX: applier.get('transformX') / scalingFactor,
+                        transformY: applier.get('transformY') / scalingFactor,
                         maskWidth: applier.get('maskWidth') / scalingFactor,
                         maskHeight: applier.get('maskHeight') / scalingFactor,
                         designId: design.$.wtfMbsId,
