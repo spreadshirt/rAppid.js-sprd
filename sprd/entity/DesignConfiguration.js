@@ -227,38 +227,37 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             setInnerRect: function () {
-                var rotation = this.$.rotation;
-                
+                var self = this;
+                this.getInnerRect(this.$.rotation, function(err, results) {
+                        if (!err) {
+                            self.set("innerRect", results.rect);
+                        }
+                    });
+            },
+
+            getInnerRect: function (rotation, callback) {
                 var url = this.getImageUrl(),
                     self = this;
 
                 if (!url) {
+                    callback && callback();
                     return;
                 }
-                
+
                 flow()
                     .seq("image", function (cb) {
                         ImageMeasurer.toImage(url, cb)
                     })
-                    .seq("rect",function () {
+                    .seq("rect", function () {
                         return ImageMeasurer.getRealDesignSize(this.vars.image, rotation);
                     })
-                    .exec(function (err, results) {
-                        if (!err) {
-                            self.set("innerRect", results.rect);
-                        }
-                    })
+                    .exec(callback)
             },
 
-            _getRotatedInnerBoundingBox: function (offset, width, height, rotation, scale) {
-                var bbox = this._getRotatedBoundingBox(offset, width, height, rotation, scale),
-                    innerRects = this.$.innerRects;
+            _getInnerBoundingBox: function (offset, width, height, rotation, scale) {
+                var bbox = this._getRotatedBoundingBox(offset, width, height, rotation, scale);
 
-                if (!innerRects) {
-                    return bbox
-                }
-
-                var innerRect = innerRects[rotation];
+                var innerRect = this.$.innerRect;
                 if (innerRect) {
                     return {
                         x: bbox.x + bbox.width * innerRect.x,
