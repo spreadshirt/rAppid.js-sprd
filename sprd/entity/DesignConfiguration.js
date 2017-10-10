@@ -278,7 +278,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     self = this;
 
                 if (!url) {
-                    callback && callback();
+                    callback && callback(new Error("Not able to get an image from current configuration."));
                     return;
                 }
 
