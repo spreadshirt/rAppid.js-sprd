@@ -1,8 +1,8 @@
 define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
         "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService"
-        ,"sprd/entity/BlobImage", "sprd/data/MaskService", "sprd/data/ImageService", "sprd/manager/ImageMeasurer", "sprd/config/Settings"],
+        ,"sprd/entity/BlobImage", "sprd/data/MaskService", "sprd/data/ImageService", "sprd/manager/ImageMeasurer"],
     function(DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow
-              , IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService, ImageService, ImageMeasurer, Settings) {
+              , IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService, ImageService, ImageMeasurer) {
 
         return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
@@ -274,8 +274,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             getInnerRect: function (rotation, callback) {
-                var url = this.getImageUrl(),
-                    self = this;
+                var url = this.getImageUrl();
 
                 if (!url) {
                     callback && callback(new Error("Not able to get an image from current configuration."));
@@ -290,23 +289,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                         return ImageMeasurer.getRealDesignSize(this.vars.image, rotation);
                     })
                     .exec(callback)
-            },
-
-            _getInnerBoundingBox: function (offset, width, height, rotation, scale) {
-                var bbox = this._getRotatedBoundingBox(offset, width, height, rotation, scale);
-
-                var innerRect = this.$.innerRect;
-                if (innerRect) {
-                    return {
-                        x: bbox.x + bbox.width * innerRect.x,
-                        y: bbox.y + bbox.width * innerRect.y,
-                        width: bbox.width * innerRect.width,
-                        height: bbox.height * innerRect.height,
-                        rotation: bbox.rotation
-                    }
-                }
-
-                return bbox;
             },
 
 

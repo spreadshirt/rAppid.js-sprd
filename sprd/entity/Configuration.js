@@ -39,7 +39,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             _isDeletable: true,
             docked: false,
             _printTypePrice: "{printType.price}",
-            properties: Object
+            properties: Object,
+            innerRect: null
         },
 
         inject: {
@@ -294,6 +295,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         }.onChange('height()', 'printType.dpi'),
 
         getBoundingBoxOfRotatedBox: function (x, y, width, height, rotation) {
+            //Get unrotated bounding box of a rotated rectangle
             if (!(rotation % 360)) {
                 return {
                     x: x,
@@ -346,14 +348,23 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         _getInnerBoundingBox: function (offset, width, height, rotation, scale, onlyContent, xOffset) {
-            var bbox = this._getRotatedInnerBoundingBox(offset, width, height, rotation, scale);
-            var rotatedBbox = this.getBoundingBoxOfRotatedBox(bbox.x, bbox.y, bbox.width, bbox.height, bbox.rotation);
-            rotatedBbox.x += xOffset || 0;
-            return rotatedBbox;
-        },
+            var innerRect = this.$.innerRect,
+                bbox = this._getRotatedBoundingBox(offset, width, height, rotation, scale);
 
-        _getRotatedInnerBoundingBox: function (offset, width, height, rotation, scale) {
-            return this._getRotatedBoundingBox(offset, width, height, rotation, scale);
+            if (innerRect) {
+                bbox =  {
+                    x: bbox.x + bbox.width * innerRect.x,
+                    y: bbox.y + bbox.width * innerRect.y,
+                    width: bbox.width * innerRect.width,
+                    height: bbox.height * innerRect.height,
+                    rotation: bbox.rotation
+                }
+            } else {
+                bbox = this.getBoundingBoxOfRotatedBox(bbox.x, bbox.y, bbox.width, bbox.height, bbox.rotation);
+                bbox.x += xOffset || 0;
+            }
+
+            return bbox;
         },
 
         _getRotatedBoundingBox: function(offset, width, height, rotation, scale) {
