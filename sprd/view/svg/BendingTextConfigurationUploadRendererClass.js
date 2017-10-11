@@ -37,7 +37,7 @@ define(['js/svg/Svg'], function(Svg) {
             }
         }.on('configuration.widthInMM()'),
 
-        getElement: function(options) {
+        getElement: function() {
             var svgNamespace = 'http://www.w3.org/2000/svg',
                 xlinkNS = 'http://www.w3.org/1999/xlink',
                 elem = this.$el;
@@ -52,8 +52,8 @@ define(['js/svg/Svg'], function(Svg) {
             return elem;
         },
 
-        getElementAsString: function(options) {
-            var elem = this.getElement(options),
+        getElementAsString: function() {
+            var elem = this.getElement(),
                 docString = '<!DOCTYPE svg [ <!ENTITY nbsp " &#160;">] >',
                 svgContent = elem.outerHTML;
 
