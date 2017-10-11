@@ -678,26 +678,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 var fonts = [];
 
                 if (this.$.textFlow) {
-                    addFonts(this.$.textFlow);
+                    fonts = this.$.textFlow.getUsedStyleValues('font');
                 }
 
                 return fonts;
-
-                function addFonts(flowElement) {
-                    if (flowElement) {
-                        var font = flowElement.get("style.font");
-
-                        if (font && _.indexOf(fonts, font) === -1) {
-                            fonts.push(font);
-                        }
-
-                        if (!flowElement.isLeaf) {
-                            flowElement.$.children.each(function (child) {
-                                addFonts(child);
-                            });
-                        }
-                    }
-                }
             },
 
             save: function(callback) {
