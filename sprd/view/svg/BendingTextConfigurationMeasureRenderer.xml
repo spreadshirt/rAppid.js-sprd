@@ -1,14 +1,14 @@
-<sprdSvg:TextConfigurationMeasureRendererClass xmlns="http://www.w3.org/2000/svg"
-                                               xmlns:sprdSvg="sprd.view.svg">
+<sprdSvg:BendingTextConfigurationMeasureRendererClass xmlns="http://www.w3.org/2000/svg"
+                                               xmlns:sprdSvg="sprd.view.svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 
-    <path cid="path" class="path" id="textPath{maskId}" fill="none"
+    <path cid="path" class="path" id="textPath" fill="none"
           _transform="translate({configuration.textPathOffsetX}, {configuration.textPathOffsetY})"
           d="{configuration.textPath}"/>
     <text cid="text" class="bending-text" font-family="{configuration.font.getUniqueFontName()}"
           font-size="{configuration.fontSize}" id="text" text-anchor="middle"
           dy="{configuration.dy}">
-        <textPath xlink:href="#textPath{maskId}" cid="textPath" startOffset="50%">
+        <textPath xlink:href="#textPath" cid="textPath" startOffset="50%">
             {configuration.text}
         </textPath>
     </text>
-</sprdSvg:TextConfigurationMeasureRendererClass>
+</sprdSvg:BendingTextConfigurationMeasureRendererClass>

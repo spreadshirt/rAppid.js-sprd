@@ -1,4 +1,4 @@
-define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageService", "rAppid"], function (Svg, ImageMeasurer, flow, ImageService, rappid) {
+define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageService", "js/core/Base"], function (Svg, ImageMeasurer, flow, ImageService, Base) {
 
     return Svg.inherit("sprd.view.svg.TextConfigurationMeasureRendererClass", {
         defaults: {
@@ -32,25 +32,6 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
             this.setViewBox(textBbox.x, textBbox.y, textBbox.width, textBbox.height);
         },
 
-        _loadFonts: function () {
-
-            var configuration = this.$.configuration;
-
-            if (!configuration) {
-                return;
-            }
-
-            var fonts = configuration.getUsedFonts(),
-                svgRoot = this.getSvgRoot(),
-                templates = svgRoot.fontManager.$svg.$templates,
-                extension = this.$stage.$browser.isIOS ? "svg#font" : "woff";
-
-            for (var i = 0; i < fonts.length; i++) {
-                var font = fonts[i];
-                svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font, extension));
-            }
-        },
-
         loadFontsAsDataURI: function (callback) {
             var configuration = this.$.configuration;
 
@@ -58,7 +39,7 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
                 return;
             }
 
-            var fonts = configuration.getUsedFonts(),
+            var fonts = configuration.getUsedFonts && configuration.getUsedFonts() || [configuration.$.font],
                 self = this;
 
             flow()
@@ -216,5 +197,4 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
                 .exec(callback)
         }
     });
-})
-;
+});

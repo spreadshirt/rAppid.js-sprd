@@ -1,6 +1,6 @@
 define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", 'js/core/Bus', "underscore", "sprd/util/ArrayUtil", "sprd/extensions/CanvasToBlob"
-        , "xaml!sprd/data/DesignerApiDataSource", "sprd/model/Transformer", "sprd/model/AbstractShop", "sprd/entity/TextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationUploadRenderer", "xaml!sprd/view/svg/TextConfigurationMeasureRenderer"],
-    function(DesignConfigurationBase, Size, Font, ProductUtil, BlobImage, IImageUploadService, flow, Bus, _, ArrayUtil, CanvasToBlob, DesignerApiDataSource, Transformer, Shop, TextConfiguration, BendingTextConfigurationUploadRenderer, TextConfigurationMeasureRenderer) {
+        , "xaml!sprd/data/DesignerApiDataSource", "sprd/model/Transformer", "sprd/model/AbstractShop", "sprd/entity/TextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationUploadRenderer", "xaml!sprd/view/svg/BendingTextConfigurationMeasureRenderer"],
+    function(DesignConfigurationBase, Size, Font, ProductUtil, BlobImage, IImageUploadService, flow, Bus, _, ArrayUtil, CanvasToBlob, DesignerApiDataSource, Transformer, Shop, TextConfiguration, BendingTextConfigurationUploadRenderer, BendingTextConfigurationMeasureRenderer) {
         var PATH_TYPE = {
             OUTER_CIRCLE: "outer_circle",
             INNER_CIRCLE: "inner_circle",
@@ -88,6 +88,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 options = options || {};
 
                 this.initTransformer();
+                // this.initMeasurer();
                 if (!_.isEmpty(properties)) {
 
                     if (this.$.initialized) {
@@ -355,8 +356,12 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             }.on("printColors"),
 
             initMeasurer: function () {
+                if (this.$.measurer) {
+                    return;
+                }
+
                 if (this.$stageRendered || (this.$stage && this.$stage.rendered)) {
-                    var measureRenderer = this.$stage.createComponent(TextConfigurationMeasureRenderer, {
+                    var measureRenderer = this.$stage.createComponent(BendingTextConfigurationMeasureRenderer, {
                         configuration: this
                     });
                     this.set('measurer', measureRenderer);
@@ -433,7 +438,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
             bus_StageRendered: function () {
                 this.$stageRendered = true;
-                this.initMeasurer();
-            }.bus("Stage.Rendered"),
+                // this.initMeasurer();
+            }.bus("Stage.Rendered")
         });
     });
