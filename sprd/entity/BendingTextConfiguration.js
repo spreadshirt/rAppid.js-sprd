@@ -1,5 +1,6 @@
-define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", "underscore", "sprd/util/ArrayUtil", "sprd/extensions/CanvasToBlob", "xaml!sprd/data/DesignerApiDataSource", "sprd/model/Transformer", "sprd/model/AbstractShop", "sprd/entity/TextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationUploadRenderer"],
-    function(DesignConfigurationBase, Size, Font, ProductUtil, BlobImage, IImageUploadService, flow, _, ArrayUtil, CanvasToBlob, DesignerApiDataSource, Transformer, Shop, TextConfiguration, BendingTextConfigurationUploadRenderer) {
+define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", 'js/core/Bus', "underscore", "sprd/util/ArrayUtil", "sprd/extensions/CanvasToBlob"
+        , "xaml!sprd/data/DesignerApiDataSource", "sprd/model/Transformer", "sprd/model/AbstractShop", "sprd/entity/TextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationUploadRenderer", "xaml!sprd/view/svg/BendingTextConfigurationMeasureRenderer"],
+    function(DesignConfigurationBase, Size, Font, ProductUtil, BlobImage, IImageUploadService, flow, Bus, _, ArrayUtil, CanvasToBlob, DesignerApiDataSource, Transformer, Shop, TextConfiguration, BendingTextConfigurationUploadRenderer, BendingTextConfigurationMeasureRenderer) {
         var PATH_TYPE = {
             OUTER_CIRCLE: "outer_circle",
             INNER_CIRCLE: "inner_circle",
@@ -31,7 +32,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 textPathOffsetY: 0,
                 transformer: null,
                 copyrightWordList: null,
-                initialText: null
+                initialText: null,
+                measurer: null
             },
 
             type: "bendingText",
@@ -44,6 +46,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             inject: {
                 imageUploadService: IImageUploadService,
                 designerApi: DesignerApiDataSource,
+                bus: Bus,
                 context: "context"
             },
 
@@ -85,6 +88,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 options = options || {};
 
                 this.initTransformer();
+                // this.initMeasurer();
                 if (!_.isEmpty(properties)) {
 
                     if (this.$.initialized) {
@@ -351,6 +355,20 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 return printColor;
             }.on("printColors"),
 
+            initMeasurer: function () {
+                if (this.$.measurer) {
+                    return;
+                }
+
+                if (this.$stageRendered || (this.$stage && this.$stage.rendered)) {
+                    var measureRenderer = this.$stage.createComponent(BendingTextConfigurationMeasureRenderer, {
+                        configuration: this
+                    });
+                    this.set('measurer', measureRenderer);
+                    this.$stage.addChild(measureRenderer);
+                }
+            },
+
             transformTextPath: function(callback) {
                 var self = this;
                 try {
@@ -400,7 +418,6 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                         validateHardBoundary: true
                     };
                 }
-
             },
 
             _validateText: function() {
@@ -417,6 +434,11 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                         this._setError("copyright", badWord);
                     }
                 }
-            }
+            },
+
+            bus_StageRendered: function () {
+                this.$stageRendered = true;
+                // this.initMeasurer();
+            }.bus("Stage.Rendered")
         });
     });

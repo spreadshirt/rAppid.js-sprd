@@ -361,7 +361,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             if (innerRect) {
                 bbox =  {
                     x: bbox.x + bbox.width * innerRect.x,
-                    y: bbox.y + bbox.width * innerRect.y,
+                    y: bbox.y + bbox.height * innerRect.y,
                     width: bbox.width * innerRect.width,
                     height: bbox.height * innerRect.height,
                     rotation: bbox.rotation
