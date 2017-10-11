@@ -56,10 +56,17 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         _commitScale: function (newScale) {
+            return this.validSize(newScale);
+        },
+
+        validSize: function (scale) {
+            if (!scale) {
+                return false;
+            }
 
             var size = this.$._size,
-                newWidth = this.widthInMM(newScale.y),
-                newHeight = this.heightInMM(newScale.y),
+                newWidth = this.widthInMM(scale.y),
+                newHeight = this.heightInMM(scale.y),
                 minDimensionSize = Math.min(newWidth, newHeight),
                 tooSmall = minDimensionSize < this.$.minSize;
 

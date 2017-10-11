@@ -113,7 +113,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 } else {
                     this.$.maskService.applyAfterEffect(self.$.design, afterEffect, null, function(err, ctx) {
                         if (!err) {
-                            self.applyAfterEffect(ctx);
+                            self.setProcessedImage(ctx);
                         } else {
                             console.error(err);
                         }
@@ -121,6 +121,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                         afterEffect.callback && afterEffect.callback(err, ctx);
                     });
                 }
+
+                this.trigger('configurationChanged');
             },
 
             _validatePrintTypeSize: function(printType, width, height, scale) {
@@ -155,7 +157,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             applyAfterEffect: function(ctx) {
                 this.setProcessedImage(ctx);
-                this.trigger('configurationChanged');
             },
 
             setProcessedImage: function(ctx) {
@@ -334,6 +335,9 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 if (afterEffect) {
                     properties.afterEffect = _.extend(properties.afterEffect || {}, afterEffect.compose());
                     properties.type = 'afterEffect';
+                } else if (properties.afterEffect || properties.type === "afterEffect") {
+                    delete properties.afterEffect;
+                    delete properties.type;
                 }
             },
 
