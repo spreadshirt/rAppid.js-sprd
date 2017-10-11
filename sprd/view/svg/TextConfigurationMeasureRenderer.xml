@@ -1,0 +1,16 @@
+<sprdSvg:TextConfigurationMeasureRendererClass xmlns="http://www.w3.org/2000/svg"
+                                               xmlns:sprdSvg="sprd.view.svg"
+                                               xmlns:textUi="text.ui" xmlns:js="js.core">
+>
+    <js:Template name="external-font-data-uri">
+        <style type="text/css">
+            @font-face{
+            font-family: "{$fontFamily}";
+            src: url("{$src}"
+            format("{$format}")
+            }
+        </style>
+    </js:Template>
+    <textUi:SvgTextAreaBase cid="textArea" composedTextFlow="{configuration.composedTextFlow}"
+                            width="{configuration.textArea.width}" height="{configuration.textArea.height}"/>
+</sprdSvg:TextConfigurationMeasureRendererClass>

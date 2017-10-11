@@ -1,5 +1,5 @@
-define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager", "js/core/List"],
-    function (Configuration, flow, Size, _, PrintType, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager, List) {
+define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager", "js/core/List", "xaml!sprd/view/svg/TextConfigurationMeasureRenderer"],
+    function (Configuration, flow, Size, _, PrintType, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager, List, TextMeasureRenderer) {
 
         var copyrightWordList;
 
@@ -59,7 +59,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 copyrightWordList: null,
                 isNew: false,
                 isTemplate: false,
-                autoGrow: false
+                autoGrow: false,
+                measurer: null
             },
 
             inject: {
@@ -111,6 +112,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     .exec(callback);
             },
 
+            initMeasurer: function () {
+                if (this.$stageRendered || (this.$stage && this.$stage.rendered)) {
+                    var measureRenderer = this.$stage.createComponent(TextMeasureRenderer, {
+                        configuration: this
+                    });
+                    this.set('measurer', measureRenderer);
+                    this.$stage.addChild(measureRenderer);
+                }
+            },
+
             textChangedSinceCreation: function () {
                 var initialText = this.$.initialText,
                     currentText = this.$.rawText;
@@ -143,6 +154,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             bus_StageRendered: function () {
                 this.$stageRendered = true;
                 this._composeText();
+                this.initMeasurer();
             }.bus("Stage.Rendered"),
 
             _commitChangedAttributes: function ($, options) {
