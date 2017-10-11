@@ -108,11 +108,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         }
 
                         self.$.printColors.reset(printTypeColor ? [printTypeColor] : []);
+                        self.initMeasurer();
                     })
                     .exec(callback);
             },
 
             initMeasurer: function () {
+                if (this.$.measurer) {
+                    return;
+                }
+                
                 if (this.$stageRendered || (this.$stage && this.$stage.rendered)) {
                     var measureRenderer = this.$stage.createComponent(TextMeasureRenderer, {
                         configuration: this
