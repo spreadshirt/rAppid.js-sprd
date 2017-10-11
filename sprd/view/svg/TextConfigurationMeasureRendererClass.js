@@ -19,10 +19,16 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
 
         _initializationComplete: function () {
             this.callBase();
-            this.bind('configuration', 'change:rotation', this.setInnerRect, this);
-            this.bind('configuration', 'sizeChanged', this.setInnerRect, this);
-            this.bind('change:configuration', this.setInnerRect, this);
+            this.bind('configuration', 'change:rotation', debouncedMeasuring);
+            this.bind('configuration', 'sizeChanged', debouncedMeasuring);
+            this.bind('change:configuration', debouncedMeasuring);
             this.set('loadedFonts', []);
+
+            var debouncer = new Base(),
+                self = this;
+            function debouncedMeasuring(){
+                debouncer._debounceFunctionCall(self.setInnerRect, "innerRect", 800, self);
+            }
         },
 
         initViewBox: function () {

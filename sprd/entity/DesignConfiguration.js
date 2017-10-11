@@ -24,7 +24,9 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
                 this.bind('change:processedImage', this._setProcessedSize, this);
                 this.bind('change:processedDesign', function() {this._setOriginalDesignProperties()}, this);
-                this.bind('change:rotation', this.setInnerRect, this);
+                this.bind('change:rotation', function () {
+                    this._debounceFunctionCall(this.setInnerRect, "innerRect", 800, this)
+                }, this);
             },
 
             inject: {
