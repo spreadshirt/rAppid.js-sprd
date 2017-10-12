@@ -986,8 +986,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 options = options || {};
                 options.exclude = options.exclude || [];
 
-                options.exclude.push("bus", "composer", "textArea", "composedTextFlow");
-
+                options.exclude.push("bus", "composer", "textArea", "composedTextFlow", "measurer");
+                
                 var ret = this.callBase(options);
                 ret.$stage = this.$stage;
                 ret.$.textArea = this.$.textArea && this.$.textArea.clone();

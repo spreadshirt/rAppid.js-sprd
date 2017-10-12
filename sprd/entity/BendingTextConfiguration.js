@@ -436,6 +436,15 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 }
             },
 
+            clone: function (options) {
+                options = options || {};
+                options.exclude = options.exclude || [];
+
+                options.exclude.push("measurer");
+
+                return this.callBase(options);
+            },
+
             bus_StageRendered: function () {
                 this.$stageRendered = true;
                 // this.initMeasurer();
