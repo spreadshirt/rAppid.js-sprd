@@ -18,7 +18,7 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             this.initBindings();
         },
 
-        getApplier: function (cb) {
+        getApplier: function () {
             var offset = this.get('offset'),
                 applier = this.createEntity(MaskApplier);
 
@@ -80,7 +80,7 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
                 callback && callback(e);
             };
 
-            img.src = this.relativePreviewUrl();
+            img.src = this.relativePreviewUrl(options.width);
         },
 
         centerAt: function(x, y, options) {

@@ -1,6 +1,8 @@
 define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
-        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService", "sprd/entity/BlobImage", "sprd/data/MaskService"],
-    function (DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow, IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService) {
+        "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService"
+        ,"sprd/entity/BlobImage", "sprd/data/MaskService", "sprd/data/ImageService", "sprd/manager/ImageMeasurer"],
+    function(DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow
+              , IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService, ImageService, ImageMeasurer) {
 
         return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
@@ -12,26 +14,31 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 afterEffect: null,
                 processedDesign: null,
                 processedImage: null,
-                processedSize: null
+                processedSize: null,
+                innerRect: null
             },
 
 
-            ctor: function () {
+            ctor: function() {
                 this.callBase();
 
                 this.bind('change:processedImage', this._setProcessedSize, this);
                 this.bind('change:processedDesign', function() {this._setOriginalDesignProperties()}, this);
+                this.bind('change:rotation', function () {
+                    this._debounceFunctionCall(this.setInnerRect, "innerRect", 800, this)
+                }, this);
             },
 
             inject: {
                 imageUploadService: IImageUploadService,
                 maskService: MaskService,
+                imageService: ImageService,
                 context: "context"
             },
 
             type: "design",
 
-            _commitPrintType: function (newPrintType, oldPrintType) {
+            _commitPrintType: function(newPrintType, oldPrintType) {
                 // print type changed -> convert colors
 
                 if (!newPrintType) {
@@ -41,7 +48,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 var colors = [],
                     printColors = this.$.printColors;
 
-                printColors.each(function (printColor) {
+                printColors.each(function(printColor) {
                     colors.push(newPrintType.getClosestPrintColor(printColor.color()));
                 });
 
@@ -62,15 +69,53 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.trigger("priceChanged");
             },
 
-            _commitAfterEffect: function (afterEffect) {
+            setInvertedColors: function () {
+                var invertedColors = this.getInvertedDesignColors();
+                this.$.printColors && this.$.printColors.reset(invertedColors);
+            },
+
+            getDesignColors: function (transformer) {
+                var design = this.$.design,
+                    printType = this.$.printType,
+                    printColors = this.$.printColors;
+
+                if (!design || !printType || !printColors || !design.isVectorDesign()) {
+                    return;
+                }
+
+                var designColors = design ? design.$.colors : null;
+
+                if (!designColors || !designColors.length) {
+                    return;
+                }
+
+                var newPrintColors = [];
+                designColors.each(function (designColor) {
+                    var color = (designColor.$["default"] || designColor.$["origin"]).toRGB();
+                    color = transformer instanceof Function ? transformer(color) : color;
+
+                    var closestPrintColor = printType.getClosestPrintColor(color);
+                    newPrintColors.push(closestPrintColor);
+                });
+
+                return newPrintColors;
+            },
+
+            getInvertedDesignColors: function () {
+                return this.getDesignColors(function (color) {
+                    return color.invert();
+                })
+            },
+
+            _commitAfterEffect: function(afterEffect) {
                 var self = this;
 
                 if (!afterEffect) {
                     this.set('processedImage', null);
                 } else {
-                    this.$.maskService.applyAfterEffect(self.$.design, afterEffect, null, function (err, ctx) {
+                    this.$.maskService.applyAfterEffect(self.$.design, afterEffect, null, function(err, ctx) {
                         if (!err) {
-                            self.applyAfterEffect(ctx);
+                            self.setProcessedImage(ctx);
                         } else {
                             console.error(err);
                         }
@@ -78,9 +123,11 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                         afterEffect.callback && afterEffect.callback(err, ctx);
                     });
                 }
+
+                this.trigger('configurationChanged');
             },
 
-            _validatePrintTypeSize: function (printType, width, height, scale) {
+            _validatePrintTypeSize: function(printType, width, height, scale) {
                 var ret = this.callBase();
                 var design = this.$.design;
 
@@ -97,7 +144,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return ret;
             },
 
-            _setProcessedSize: function () {
+            _setProcessedSize: function() {
                 var afterEffect = this.$.afterEffect;
                 var design = this.$.design;
 
@@ -110,12 +157,11 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.trigger('sizeChanged');
             },
 
-            applyAfterEffect: function (ctx) {
+            applyAfterEffect: function(ctx) {
                 this.setProcessedImage(ctx);
-                this.trigger('configurationChanged');
             },
 
-            setProcessedImage: function (ctx) {
+            setProcessedImage: function(ctx) {
                 var self = this;
 
                 if (!self.$.design || !self.$.afterEffect) {
@@ -123,15 +169,15 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
 
                 var cacheId = [self.$.design.$.id, self.$.afterEffect.id()].join('#');
-                self.synchronizeFunctionCall.call(self, function (cb) {
+                self.synchronizeFunctionCall.call(self, function(cb) {
                     var img = self.$.maskService.trimAndExport(ctx, self.$.afterEffect, null);
                     cb(null, img);
-                }, cacheId, function (err, result) {
+                }, cacheId, function(err, result) {
                     self.set('processedImage', result);
                 }, self);
             },
 
-            getPrintColorsAsRGB: function () {
+            getPrintColorsAsRGB: function() {
                 var ret = [];
 
                 if (this.$.design.$.colors.size() === this.$.printColors.size()) {
@@ -146,7 +192,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return ret;
             },
 
-            setColor: function (layerIndex, color) {
+            setColor: function(layerIndex, color) {
                 var printType = this.$.printType;
 
                 if (!(color instanceof PrintTypeColor)) {
@@ -180,17 +226,17 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.trigger("priceChanged");
             },
 
-            size: function () {
+            size: function() {
                 return this.getSizeForPrintType(this.$.printType);
             }.onChange("_dpi", "design", "processedSize"),
 
-            getSizeInPx: function (design, options) {
+            getSizeInPx: function(design, options) {
                 options = options || {};
                 design = design || this.$.design;
                 return options.original ? design.$.size : this.$.processedSize || design.$.size;
             },
 
-            getSizeForPrintType: function (printType, design, options) {
+            getSizeForPrintType: function(printType, design, options) {
                 options = options || {};
                 design = design || this.$.design;
                 printType = printType || this.$.printType;
@@ -204,20 +250,57 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return Size.empty;
             },
 
-            isScalable: function () {
+            isScalable: function() {
                 return this.get("printType.isScalable()") && this.$._allowScale;
             }.onChange("printType", "_allowScale"),
 
-            allowScale: function () {
+            allowScale: function() {
                 return this.$._allowScale;
             },
 
-            price: function () {
+            getImageUrl: function () {
+                var design = this.$.design;
+                if (!design) {
+                    return;
+                }
+
+                return this.$.processedImage || design.$.localImage || this.$.imageService.designImageFromCache(design.$.wtfMbsId, {width: 100});
+            },
+
+            setInnerRect: function () {
+                var self = this;
+                this.getInnerRect(this.$.rotation, function(err, results) {
+                        if (!err) {
+                            self.set("innerRect", results.rect);
+                        }
+                    });
+            },
+
+            getInnerRect: function (rotation, callback) {
+                var url = this.getImageUrl();
+
+                if (!url) {
+                    callback && callback(new Error("Not able to get an image from current configuration."));
+                    return;
+                }
+
+                flow()
+                    .seq("image", function (cb) {
+                        ImageMeasurer.toImage(url, cb)
+                    })
+                    .seq("rect", function () {
+                        return ImageMeasurer.getRealDesignSize(this.vars.image, rotation);
+                    })
+                    .exec(callback)
+            },
+
+
+            price: function() {
 
                 var usedPrintColors = [],
                     price = this.callBase();
 
-                this.$.printColors.each(function (printColor) {
+                this.$.printColors.each(function(printColor) {
                     if (_.indexOf(usedPrintColors, printColor) === -1) {
                         usedPrintColors.push(printColor);
                     }
@@ -235,7 +318,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
 
             }.on("priceChanged").onChange("_designCommission", "_printTypePrice"),
 
-            getPossiblePrintTypes: function (appearance) {
+            getPossiblePrintTypes: function(appearance) {
                 var ret = [],
                     printArea = this.$.printArea,
                     design = this.$.design;
@@ -247,17 +330,20 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return ret;
             }.onChange("printArea", "design"),
 
-            _setAfterEffectProperties: function () {
+            _setAfterEffectProperties: function() {
                 var afterEffect = this.get('afterEffect');
                 var properties = this.get('properties');
 
                 if (afterEffect) {
                     properties.afterEffect = _.extend(properties.afterEffect || {}, afterEffect.compose());
                     properties.type = 'afterEffect';
+                } else if (properties.afterEffect || properties.type === "afterEffect") {
+                    delete properties.afterEffect;
+                    delete properties.type;
                 }
             },
 
-            _setOriginalDesignProperties: function (design) {
+            _setOriginalDesignProperties: function(design) {
                 var properties = this.get('properties'),
                     afterEffect = this.get('afterEffect');
 
@@ -273,11 +359,11 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
             },
 
-            originalSize: function () {
+            originalSize: function() {
                 return this.getSizeForPrintType(this.$.printType, null, {original: true});
             },
 
-            compose: function () {
+            compose: function() {
                 var processedDesign = this.get('processedDesign'),
                     originalDesign = this.get('design');
 
@@ -293,11 +379,11 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 if (processedDesign && originalDesign) {
                     this.set('design', originalDesign);
                 }
-                
+
                 return ret;
             },
 
-            save: function (callback) {
+            save: function(callback) {
                 var self = this,
                     afterEffect = this.$.afterEffect;
 
@@ -305,13 +391,13 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     callback && callback();
                 } else {
                     flow()
-                        .seq("design", function (cb) {
+                        .seq("design", function(cb) {
                             var afterEffect = self.$.afterEffect;
                             if (afterEffect) {
                                 self.$.maskService.applyMask(afterEffect, self.$.design, self.$.context.$.id, cb);
                             }
                         })
-                        .seq(function () {
+                        .seq(function() {
                             if (this.vars.design) {
                                 self.set('processedDesign', this.vars.design);
                             }
@@ -320,7 +406,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
             },
 
-            parse: function (data) {
+            parse: function(data) {
                 data = this.callBase();
 
                 if (data.designs) {
@@ -343,24 +429,37 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return data;
             },
 
-            saveTakesTime: function () {
+            saveTakesTime: function() {
                 return this.get('afterEffect');
             },
 
-            init: function (options, callback) {
+            init: function(options, callback) {
                 this.$.manager.initializeConfiguration(this, options, callback);
+                this.setInnerRect();
             },
 
-            isAllowedOnPrintArea: function (printArea) {
+            isAllowedOnPrintArea: function(printArea) {
                 return printArea && printArea.get("restrictions.designAllowed") == true;
             },
 
-            getPossiblePrintTypesForPrintArea: function (printArea, appearance) {
+            getPossiblePrintTypesForPrintArea: function(printArea, appearance) {
                 return ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(this.$.design, printArea, appearance);
             },
 
-            minimumScale: function () {
+            minimumScale: function() {
                 return (this.get("design.restrictions.minimumScale") || 100 ) / 100;
+            },
+
+            clone: function() {
+                var afterEffect = this.$.afterEffect,
+                    clone = this.callBase();
+
+                if (afterEffect) {
+                    var afterEffectClone = afterEffect.clone();
+                    clone.set('afterEffect', afterEffectClone);
+                }
+
+                return clone;
             }
         });
     })
