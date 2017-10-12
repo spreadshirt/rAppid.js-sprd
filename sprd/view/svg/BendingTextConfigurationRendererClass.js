@@ -21,9 +21,10 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
         ctor: function() {
             this.callBase();
-            this.bind("dom:add", this.recalculateSize, this);
+            this.bind("dom:add", this.waitForNewRender, this);
 
-            this.bind("configuration", "recalculateSize", this.recalculateSize, this);
+            this.bind("configuration", "recalculateSize", this.waitForNewRender, this);
+            this.bind("renderingFinished", this.recalculateSize, this);
 
 
 
@@ -72,9 +73,49 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
             this.set("loading", true);
             svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font, extension), function() {
-                self.recalculateSize();
+                self.waitForNewRender();
                 self.set("loading", false);
             });
+        },
+
+        waitForNewRender: function () {
+            var textEl = this.$.text.$el,
+                config = this.$.configuration,
+                newText = config.$.text,
+                newPath = config.textPath(),
+                newFont = config.$.font,
+                newFontSize = config.$.fontSize,
+                self = this;
+
+            function checkIfRendered() {
+                var values = self.getRenderedValues.apply(self);
+
+                var textEqual = values.text === newText,
+                    pathEqual = values.path === newPath,
+                    fontEqual = values.font === newFont.getUniqueFontName(),
+                    fontSize = values.fontSize == newFontSize,
+                    isFontLoading = self.$.loading;
+
+                if (textEqual && pathEqual && fontEqual && fontSize && !isFontLoading) {
+                    self.trigger("renderingFinished");
+                } else {
+                    setTimeout(checkIfRendered, 100);
+                }
+            }
+
+            checkIfRendered()
+        },
+
+        getRenderedValues: function () {
+            var textEl = this.$.text.$el,
+                pathEl = this.$.path.$el;
+            
+            return {
+                text: textEl.textContent.trim(),
+                font: textEl.getAttribute("font-family"),
+                fontSize: textEl.getAttribute("font-size"),
+                path: pathEl.getAttribute("d")
+            }
         },
 
         recalculateSize: function() {
@@ -110,7 +151,7 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                     oldWidth = _size.$.width,
                     newHeight = textPathRect.height;
 
-                var widthScale = this.divideOrDefault(oldWidth, newWidth, 1) || 1,
+                var widthScale = this.divideOrDefault(oldWidth, newWidth, 1),
                     currentScale = configuration.$.scale;
 
                 _size.set({
