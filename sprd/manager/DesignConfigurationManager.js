@@ -254,6 +254,11 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         'y': properties.afterEffect.offset.y
                     });
 
+                    afterEffect.$.scale.set({
+                        'x': properties.afterEffect.scale.x,
+                        'y': properties.afterEffect.scale.y
+                    });
+
                     afterEffect.set('initialized', true);
                 }
                 
