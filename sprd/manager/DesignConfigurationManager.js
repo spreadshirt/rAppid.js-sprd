@@ -56,7 +56,6 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
             // set print colors
             var printColors = [],
-                defaultPrintColors = [],
                 designColorsRGBs = configuration.$.designColorRGBs,
                 designColorIds = configuration.$.designColorIds,
                 designColors = design ? design.$.colors : null,
@@ -141,13 +140,14 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                         printColors = configuration.getInvertedDesignColors();
                     }
                 }
-
-                configuration.$.printColors.reset(printColors);
-                configuration.set('printType', printType, {
-                    force: true,
-                    preventValidation: true
-                });
             }
+
+            configuration.$.printColors.reset(printColors);
+            configuration.set('printType', printType, {
+                force: true,
+                preventValidation: true
+            });
+
         },
 
         extractSize: function (configuration, options) {
