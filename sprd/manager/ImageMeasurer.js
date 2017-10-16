@@ -17,9 +17,9 @@ define([], function () {
 
         getCtx: function (width, height) {
             canvas = document.createElement('canvas');
-            var maxDim = Math.max(width, height);
-            canvas.width = maxDim;
-            canvas.height = maxDim;
+            var canvasSize = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
+            canvas.width = canvasSize;
+            canvas.height = canvasSize;
 
             return canvas.getContext('2d');
         },
