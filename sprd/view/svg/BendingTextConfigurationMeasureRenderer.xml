@@ -1,5 +1,6 @@
 <sprdSvg:BendingTextConfigurationMeasureRendererClass xmlns="http://www.w3.org/2000/svg"
-                                               xmlns:sprdSvg="sprd.view.svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                               xmlns:sprdSvg="sprd.view.svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                      class="measurer">
 
     <path cid="path" class="path" id="textPath" fill="none"
           _transform="translate({configuration.textPathOffsetX}, {configuration.textPathOffsetY})"

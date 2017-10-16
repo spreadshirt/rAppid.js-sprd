@@ -1,7 +1,6 @@
 <sprdSvg:TextConfigurationMeasureRendererClass xmlns="http://www.w3.org/2000/svg"
                                                xmlns:sprdSvg="sprd.view.svg"
-                                               xmlns:textUi="text.ui" xmlns:js="js.core">
->
+                                               xmlns:textUi="text.ui" xmlns:js="js.core" class="measurer">
     <js:Template name="external-font-data-uri">
         <style type="text/css">
             @font-face{
