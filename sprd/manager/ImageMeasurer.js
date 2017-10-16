@@ -16,12 +16,14 @@ define([], function () {
         },
 
         getCtx: function (width, height) {
-            canvas = document.createElement('canvas');
+            canvas = canvas || document.createElement('canvas');
             var canvasSize = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
             canvas.width = canvasSize;
             canvas.height = canvasSize;
 
-            return canvas.getContext('2d');
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            return ctx;
         },
 
         getRealDesignSize: function (image, rotation, width, height) {
