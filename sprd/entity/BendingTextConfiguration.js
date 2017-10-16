@@ -88,7 +88,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 options = options || {};
 
                 this.initTransformer();
-                // this.initMeasurer();
+                this.initMeasurer();
                 if (!_.isEmpty(properties)) {
 
                     if (this.$.initialized) {
@@ -447,7 +447,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
             bus_StageRendered: function () {
                 this.$stageRendered = true;
-                // this.initMeasurer();
+                this.initMeasurer();
             }.bus("Stage.Rendered")
         });
     });
