@@ -24,12 +24,14 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
         _initializationComplete: function () {
             this.callBase();
             this.bind("configuration", "change:font", this.loadFont, this);
-            this.bind("dom:add", this.waitForNewRender, this);
-            this.bind("configuration", "recalculateSize", this.waitForNewRender, this);
-            this.bind("renderingFinished", this.recalculateSize, this);
             this.bind("productViewer.product", ["configurations", "reset"], this.resetMainConfigurationViewer, this);
             this.bind("configuration", "change:printArea", this.resetMainConfigurationViewer, this);
             this.bind("configuration", "change:angle", this.changeAngle, this);
+
+            this.bind("configuration", "change:text", this.recalculateSize, this);
+            this.bind("configuration", "change:angle", this.recalculateSize, this);
+            this.bind("configuration", "change:font", this.recalculateSize, this);
+            this.bind("configuration", "change:fontSize", this.recalculateSize, this);
         },
 
         resetMainConfigurationViewer: function () {
@@ -71,46 +73,6 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                 self.waitForNewRender();
                 self.set("loading", false);
             });
-        },
-
-        waitForNewRender: function () {
-            var textEl = this.$.text.$el,
-                config = this.$.configuration,
-                newText = config.$.text,
-                newPath = config.textPath(),
-                newFont = config.$.font,
-                newFontSize = config.$.fontSize,
-                self = this;
-
-            function checkIfRendered() {
-                var values = self.getRenderedValues.apply(self);
-
-                var textEqual = values.text === newText,
-                    pathEqual = values.path === newPath,
-                    fontEqual = values.font === newFont.getUniqueFontName(),
-                    fontSize = values.fontSize == newFontSize,
-                    isFontLoading = self.$.loading;
-
-                if (textEqual && pathEqual && fontEqual && fontSize && !isFontLoading) {
-                    self.trigger("renderingFinished");
-                } else {
-                    setTimeout(checkIfRendered, 100);
-                }
-            }
-
-            checkIfRendered()
-        },
-
-        getRenderedValues: function () {
-            var textEl = this.$.text.$el,
-                pathEl = this.$.path.$el;
-
-            return {
-                text: textEl.textContent.trim(),
-                font: textEl.getAttribute("font-family"),
-                fontSize: textEl.getAttribute("font-size"),
-                path: pathEl.getAttribute("d")
-            }
         },
 
         recalculateSize: function () {
@@ -176,31 +138,6 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
         divideOrDefault: function (a, b, defaultArgument) {
             return b !== 0 ? a / b : defaultArgument;
-        },
-
-        balanceConfiguration: function (oldWidth, newWidth) {
-            var configuration = this.$.configuration;
-            if (configuration && oldWidth && newWidth) {
-                var offset = configuration.$.offset;
-                configuration.$.offset.set({
-                    x: offset.$.x + ((oldWidth - newWidth) || 0) / 2
-                });
-            }
-        },
-
-        removeElementsBlackListTags: function (node, tagList) {
-            var children = node.childNodes,
-                toBeRemovedChildren = [];
-            for (var i = 0; i < children.length; i++) {
-                var child = children.item(i);
-                if (tagList.indexOf(child.localName) === -1) {
-                    toBeRemovedChildren.push(child);
-                }
-            }
-
-            _.each(toBeRemovedChildren, function (child) {
-                child.parentNode.removeChild(child);
-            })
         },
 
         removeAttributesOnDescendants: function (node, attributeNames) {

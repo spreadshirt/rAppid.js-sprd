@@ -201,7 +201,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 return ret;
             },
 
-            _initializeBindingsBeforeComplete: function() {
+            _initializationComplete: function() {
                 this.callBase();
 
                 var recalculateSize = function() {
