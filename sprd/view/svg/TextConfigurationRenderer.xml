@@ -1,6 +1,5 @@
 <sprdSvg:TextConfigurationRendererClass xmlns="http://www.w3.org/2000/svg" xmlns:sprdSvg="sprd.view.svg" xmlns:textUi="text.ui">
     <rect class="text-configuration-background" width="{width}" height="{height}"/>
-    <!--<rect stroke="blue" x="{configuration.bound.x}" y="{configuration.bound.y}" width="{configuration.bound.width}" height="{configuration.bound.height}"/>-->
     <textUi:SvgTextAreaBase cid="textArea" composedTextFlow="{configuration.composedTextFlow}"
                             width="{configuration.textArea.width}" height="{configuration.textArea.height}" style="{getFill()}"/>
 </sprdSvg:TextConfigurationRendererClass>

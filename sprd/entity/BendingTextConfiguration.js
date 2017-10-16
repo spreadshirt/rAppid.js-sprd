@@ -1,5 +1,6 @@
-define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", "underscore", "sprd/util/ArrayUtil", "sprd/extensions/CanvasToBlob", "xaml!sprd/data/DesignerApiDataSource", "sprd/model/Transformer", "sprd/model/AbstractShop", "sprd/entity/TextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationUploadRenderer"],
-    function(DesignConfigurationBase, Size, Font, ProductUtil, BlobImage, IImageUploadService, flow, _, ArrayUtil, CanvasToBlob, DesignerApiDataSource, Transformer, Shop, TextConfiguration, BendingTextConfigurationUploadRenderer) {
+define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/Font", "sprd/util/ProductUtil", "sprd/entity/BlobImage", "sprd/data/IImageUploadService", "flow", 'js/core/Bus', "underscore", "sprd/util/ArrayUtil", "sprd/extensions/CanvasToBlob"
+        , "xaml!sprd/data/DesignerApiDataSource", "sprd/model/Transformer", "sprd/model/AbstractShop", "sprd/entity/TextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationUploadRenderer", "xaml!sprd/view/svg/BendingTextConfigurationMeasureRenderer"],
+    function(DesignConfigurationBase, Size, Font, ProductUtil, BlobImage, IImageUploadService, flow, Bus, _, ArrayUtil, CanvasToBlob, DesignerApiDataSource, Transformer, Shop, TextConfiguration, BendingTextConfigurationUploadRenderer, BendingTextConfigurationMeasureRenderer) {
         var PATH_TYPE = {
             OUTER_CIRCLE: "outer_circle",
             INNER_CIRCLE: "inner_circle",
@@ -30,7 +31,9 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 textPathOffsetX: 0,
                 textPathOffsetY: 0,
                 transformer: null,
-                copyrightWordList: null
+                copyrightWordList: null,
+                initialText: null,
+                measurer: null
             },
 
             type: "bendingText",
@@ -43,6 +46,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             inject: {
                 imageUploadService: IImageUploadService,
                 designerApi: DesignerApiDataSource,
+                bus: Bus,
                 context: "context"
             },
 
@@ -56,6 +60,26 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 this.$synchronizeCache = designCache;
             },
 
+            textChangedSinceCreation: function () {
+                var initialText = this.$.initialText,
+                    currentText = this.$.text;
+
+                if (!initialText) {
+                    return true;
+                }
+
+                return initialText !== currentText;
+            },
+
+            isOnlyWhiteSpace: function () {
+                var text = this.$.text;
+                if (!text) {
+                    return true;
+                }
+
+                return /^[\s\n\r]*$/.test(text);
+            },
+
 
             init: function(options, callback) {
                 var properties = this.$.properties,
@@ -64,10 +88,12 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 options = options || {};
 
                 this.initTransformer();
+                this.initMeasurer();
                 if (!_.isEmpty(properties)) {
 
                     if (this.$.initialized) {
                         callback && callback();
+                        return;
                     }
 
                     flow()
@@ -175,7 +201,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 return ret;
             },
 
-            _initializeBindingsBeforeComplete: function() {
+            _initializationComplete: function() {
                 this.callBase();
 
                 var recalculateSize = function() {
@@ -329,6 +355,20 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 return printColor;
             }.on("printColors"),
 
+            initMeasurer: function () {
+                if (this.$.measurer) {
+                    return;
+                }
+
+                if (this.$stageRendered || (this.$stage && this.$stage.rendered)) {
+                    var measureRenderer = this.$stage.createComponent(BendingTextConfigurationMeasureRenderer, {
+                        configuration: this
+                    });
+                    this.set('measurer', measureRenderer);
+                    this.$stage.addChild(measureRenderer);
+                }
+            },
+
             transformTextPath: function(callback) {
                 var self = this;
                 try {
@@ -378,7 +418,6 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                         validateHardBoundary: true
                     };
                 }
-
             },
 
             _validateText: function() {
@@ -395,6 +434,20 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                         this._setError("copyright", badWord);
                     }
                 }
-            }
+            },
+
+            clone: function (options) {
+                options = options || {};
+                options.exclude = options.exclude || [];
+
+                options.exclude.push("measurer");
+
+                return this.callBase(options);
+            },
+
+            bus_StageRendered: function () {
+                this.$stageRendered = true;
+                this.initMeasurer();
+            }.bus("Stage.Rendered")
         });
     });

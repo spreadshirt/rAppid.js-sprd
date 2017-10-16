@@ -176,8 +176,14 @@ define(["sprd/data/SprdModel", 'js/core/List', 'js/data/Entity'],
 
 
             getMeasures: function () {
-                if (this.$.sizes && this.$.sizes.size() > 0) {
-                    return this.$.sizes.at(0).$.measures;
+                var sizes = this.$.sizes;
+                if (sizes && sizes.size() > 0) {
+
+                    for (var i = 0; i < sizes.$items.length; i++) {
+                        if (sizes.$items[i].$.measures.size() > 0) {
+                            return sizes.$items[i].$.measures;
+                        }
+                    }
                 }
                 return [];
             }.onChange('sizes'),

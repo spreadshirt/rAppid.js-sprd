@@ -261,7 +261,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 var configView = dndObject.configurationViewer;
                 var product = dndObject.viewer.$.product;
 
-                if (viewer && dndObject.viewer !== viewer) {
+                if (configView && viewer && dndObject.viewer !== viewer) {
                     e.stopPropagation && e.stopPropagation();
                     configView.$moving = false;
                     dndObject.dndImage.set('hoverState', DROP_HOVERED.NO);

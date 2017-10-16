@@ -333,16 +333,38 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }
             },
 
+            removeTooSmallConfigurations: function (configuration) {
+                if (!configuration) {
+                    return;
+                }
+
+                var self = this,
+                    size = configuration.size(),
+                    minSize = configuration.$.minSize;
+
+                if (!size) {
+                    return;
+                }
+
+                var width = size.$.width,
+                    height = size.$.height;
+
+                if (!width || !height || width < minSize || height < minSize ) {
+                    self.$.configurations.remove(configuration);
+                }
+            },
+
             clean: function () {
                 var self = this;
                 self.removeExampleConfiguration();
                 self.removeDuplicateConfigurations();
                 self.eachConfig(self.cleanText, self);
+                self.eachConfig(self.removeTooSmallConfigurations, self);
             },
 
             cleanText: function (configuration) {
                 var self = this;
-                var isTextConfig = configuration instanceof TextConfiguration;
+                var isTextConfig = configuration.isOnlyWhiteSpace && configuration.textChangedSinceCreation;
                 if (!isTextConfig) {
                     return;
                 }

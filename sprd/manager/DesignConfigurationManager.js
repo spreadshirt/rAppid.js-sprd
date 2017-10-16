@@ -1,6 +1,6 @@
 define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "underscore", "sprd/model/Mask", "rAppid", "js/data/Model"], function (Base, UnitUtil, Design, flow, Size, _, Mask, rappid, Model) {
 
-    var COLOR_CONVERSION_THRESHOLD = 35;
+    var COLOR_CONVERSION_THRESHOLD = 40;
 
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
         extractDesign: function (configuration) {
@@ -56,7 +56,6 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
             // set print colors
             var printColors = [],
-                defaultPrintColors = [],
                 designColorsRGBs = configuration.$.designColorRGBs,
                 designColorIds = configuration.$.designColorIds,
                 designColors = design ? design.$.colors : null,
@@ -129,34 +128,18 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             }
 
             if (!colorsSet && designColors) {
-                printColors = [];
-
-                var invertDesignColors = false;
+                printColors = configuration.getDesignColors();
 
                 if (designColors.$items.length === 1 && options && options.ensureDesignColorContrast && configuration.$context && configuration.$context.$contextModel) {
                     var product = configuration.$context.$contextModel;
                     var appearanceColor = product.get("appearance.colors.at(0).color()");
                     var firstLayer = designColors.at(0);
                     var designColor = (firstLayer.$["default"] || firstLayer.$["origin"]);
-
+                    console.log(designColor.distanceTo(appearanceColor));
                     if (appearanceColor && designColor && designColor.distanceTo(appearanceColor) < COLOR_CONVERSION_THRESHOLD) {
-                        invertDesignColors = true;
+                        printColors = configuration.getInvertedDesignColors();
                     }
                 }
-                
-                designColors.each(function (designColor) {
-                    var color = (designColor.$["default"] || designColor.$["origin"]).toRGB();
-
-                    if (invertDesignColors) {
-                        color = color.invert();
-                    }
-
-                    var closestPrintColor = printType.getClosestPrintColor(color);
-                    printColors.push(closestPrintColor);
-                    defaultPrintColors.push(closestPrintColor);
-                });
-
-                configuration.$defaultPrintColors = defaultPrintColors;
             }
 
             configuration.$.printColors.reset(printColors);
@@ -164,6 +147,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 force: true,
                 preventValidation: true
             });
+
         },
 
         extractSize: function (configuration, options) {
@@ -221,12 +205,12 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             }
         },
 
-        extractMask: function (configuration, cb) {
+        extractMask: function (configuration, callback) {
             var properties = configuration.$.properties,
                 self = this;
 
             if (!properties || !properties.afterEffect || configuration.$.afterEffect) {
-                cb && cb();
+                callback && callback();
                 return;
             }
 
@@ -236,8 +220,11 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
             if (isUUID) {
                 mask = this.$.designerApi.createEntity(Mask,id);
-                mask.fetch(null, cb);
+                mask.fetch(null, callback);
             } else {
+                delete properties.afterEffect.offset;
+                delete properties.afterEffect.scale;
+                
                 this.getMaskMapping(function (err, idMap) {
                     var matchedMap = _.find(idMap.$, function (map) {
                        return map.id == id;
@@ -245,9 +232,9 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
                     if (matchedMap) {
                         mask = self.$.designerApi.createEntity(Mask, matchedMap.uuid);
-                        mask.fetch(null, cb);
+                        mask.fetch(null, callback);
                     } else {
-                        cb(new Error("Tried to map id " + id + " to a uuid. No mapping found."));
+                        callback(new Error("Tried to map id " + id + " to a uuid. No mapping found."));
                     }
                 })
             }
@@ -259,17 +246,22 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             var properties = configuration.$.properties;
 
             if (properties && properties.afterEffect && afterEffect) {
-                afterEffect.$.offset.set({
-                    'x': properties.afterEffect.offset.x,
-                    'y': properties.afterEffect.offset.y
-                });
 
-                afterEffect.$.scale.set({
-                    'x': properties.afterEffect.scale.x,
-                    'y': properties.afterEffect.scale.y
-                });
 
-                afterEffect.set('initialized', true);
+                if (properties.afterEffect.offset && properties.afterEffect.scale) {
+                    afterEffect.$.offset.set({
+                        'x': properties.afterEffect.offset.x,
+                        'y': properties.afterEffect.offset.y
+                    });
+
+                    afterEffect.$.scale.set({
+                        'x': properties.afterEffect.scale.x,
+                        'y': properties.afterEffect.scale.y
+                    });
+
+                    afterEffect.set('initialized', true);
+                }
+                
                 afterEffect.callback = cb;
                 configuration.set('afterEffect', afterEffect);
             } else {

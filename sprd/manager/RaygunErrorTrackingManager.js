@@ -41,6 +41,9 @@ define(["sprd/manager/IErrorTrackingManager", "require"], function (IErrorTracki
                         var scope = self.getScopeForFncName(self.$.beforeSendFnc);
                         if(scope && scope[self.$.beforeSendFnc] instanceof Function){
                             Raygun.onBeforeSend(function(payload){
+                                if (payload && payload.Details && payload.Details.User) {
+                                    localStorage.setItem("RayGunUser", JSON.stringify(payload.Details.User));
+                                }
                                 return scope[self.$.beforeSendFnc].call(scope, payload);
                             });
                         }

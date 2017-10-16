@@ -1,5 +1,7 @@
-define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus', 'underscore'], function(PatternRenderer, Size, Bus, _) {
+define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus', 'underscore'], function (PatternRenderer, Size, Bus, _) {
 
+    var timer;
+    
     return PatternRenderer.inherit("sprd.view.svg.BendingTextConfigurationRendererClass", {
 
         defaults: {
@@ -13,54 +15,50 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             path: null
         },
 
-        $classAttributes: ['textPath', 'path', 'text', 'oldSize'],
+        $classAttributes: ['textPath', 'path', 'text'],
 
         inject: {
             bus: Bus
         },
 
-        ctor: function() {
-            this.callBase();
-            this.bind("dom:add", this.recalculateSize, this);
-
-            this.bind("configuration", "recalculateSize", this.recalculateSize, this);
-
-
-
-            var resetMainConfigurationViewer = function() {
-                var configuration = this.$.configuration;
-                if (configuration) {
-                    configuration.mainConfigurationRenderer = null;
-                }
-            };
-
-            this.bind("productViewer.product", ["configurations", "reset"], resetMainConfigurationViewer, this);
-            this.bind("configuration", "change:printArea", resetMainConfigurationViewer, this);
-
-            var timer = null;
-            this.bind("configuration", "change:angle", function() {
-                var path = this.$.path;
-
-                if (timer) {
-                    clearTimeout(timer);
-                }
-
-                if (path) {
-                    path.set("selected", true);
-
-                    timer = setTimeout(function() {
-                        path.set("selected", false);
-                    }, 1000);
-                }
-            }, this);
-        },
-
-        _initializationComplete: function() {
+        _initializationComplete: function () {
             this.callBase();
             this.bind("configuration", "change:font", this.loadFont, this);
+            this.bind("productViewer.product", ["configurations", "reset"], this.resetMainConfigurationViewer, this);
+            this.bind("configuration", "change:printArea", this.resetMainConfigurationViewer, this);
+            this.bind("configuration", "change:angle", this.changeAngle, this);
+
+            this.bind("configuration", "change:text", this.recalculateSize, this);
+            this.bind("configuration", "change:angle", this.recalculateSize, this);
+            this.bind("configuration", "change:font", this.recalculateSize, this);
+            this.bind("configuration", "change:fontSize", this.recalculateSize, this);
         },
 
-        loadFont: function() {
+        resetMainConfigurationViewer: function () {
+            var configuration = this.$.configuration;
+            if (configuration) {
+                configuration.mainConfigurationRenderer = null;
+            }
+        },
+
+        changeAngle: function () {
+
+            var path = this.$.path;
+
+            if (timer) {
+                clearTimeout(timer);
+            }
+
+            if (path) {
+                path.set("selected", true);
+
+                timer = setTimeout(function () {
+                    path.set("selected", false);
+                }, 1000);
+            }
+        },
+
+        loadFont: function () {
             var svgRoot = this.getSvgRoot(),
                 font = this.get("configuration.font"),
                 extension = this.$stage.$browser.isIOS ? "svg#font" : "woff",
@@ -71,13 +69,13 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             }
 
             this.set("loading", true);
-            svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font, extension), function() {
-                self.recalculateSize();
+            svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font, extension), function () {
+                self.waitForNewRender();
                 self.set("loading", false);
             });
         },
 
-        recalculateSize: function() {
+        recalculateSize: function () {
             var textPath = this.$.textPath,
                 path = this.$.path,
                 text = this.$.text;
@@ -110,7 +108,7 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                     oldWidth = _size.$.width,
                     newHeight = textPathRect.height;
 
-                var widthScale = this.divideOrDefault(oldWidth, newWidth, 1) || 1,
+                var widthScale = this.divideOrDefault(oldWidth, newWidth, 1),
                     currentScale = configuration.$.scale;
 
                 _size.set({
@@ -138,38 +136,13 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
         },
 
 
-        divideOrDefault: function(a, b, defaultArgument) {
+        divideOrDefault: function (a, b, defaultArgument) {
             return b !== 0 ? a / b : defaultArgument;
         },
 
-        balanceConfiguration: function(oldWidth, newWidth) {
-            var configuration = this.$.configuration;
-            if (configuration && oldWidth && newWidth) {
-                var offset = configuration.$.offset;
-                configuration.$.offset.set({
-                    x: offset.$.x + ((oldWidth - newWidth) || 0) / 2
-                });
-            }
-        },
-
-        removeElementsBlackListTags: function(node, tagList) {
-            var children = node.childNodes,
-                toBeRemovedChildren = [];
-            for (var i = 0; i < children.length; i++) {
-                var child = children.item(i);
-                if (tagList.indexOf(child.localName) === -1) {
-                    toBeRemovedChildren.push(child);
-                }
-            }
-
-            _.each(toBeRemovedChildren, function(child) {
-                child.parentNode.removeChild(child);
-            })
-        },
-
-        removeAttributesOnDescendants: function(node, attributeNames) {
+        removeAttributesOnDescendants: function (node, attributeNames) {
             if (node.nodeType === 1) {
-                _.each(attributeNames, function(attributeName) {
+                _.each(attributeNames, function (attributeName) {
                     node.removeAttribute(attributeName);
                 });
             }
@@ -180,7 +153,7 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             }
         },
 
-        bus_StageRendered: function() {
+        bus_StageRendered: function () {
             this.loadFont();
         }.bus("Stage.Rendered")
     });

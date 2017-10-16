@@ -1,5 +1,7 @@
 define(["js/data/Model"], function(Model) {
     var gateway = '/designer-service/v1/masks/';
+    var SVG = "image/svg+xml";
+
     var AfterEffect = Model.inherit("sprd.model.AfterEffect", {
 
         defaults: {
@@ -35,16 +37,31 @@ define(["js/data/Model"], function(Model) {
             return this.$.id;
         },
 
-        previewUrl: function() {
-            return this.get('contentLink');
+        previewUrl: function(width) {
+            var renderLink = this.get('renderLink');
+
+            if(width) {
+                renderLink = renderLink + "?width=" + width;
+            }
+
+            return renderLink;
         },
 
-        relativePreviewUrl: function() {
+        relativePreviewUrl: function(width) {
             if (!gateway) {
                 return;
             }
 
-            return gateway +  this.$.id + "/content";
+            width = width || 500;
+            var url;
+
+            if(this.get("contentType") === SVG) {
+                url = gateway + this.$.id + "/content";
+            } else {
+                url = gateway + this.$.id + "/render?width=" + width;
+            }
+
+            return url;
         },
 
         canvasScalingFactor: function(design) {
