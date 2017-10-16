@@ -27,7 +27,7 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
             var debouncer = new Base(),
                 self = this;
             function debouncedMeasuring(){
-                debouncer._debounceFunctionCall(self.setInnerRect, "innerRect", 800, self);
+                debouncer._debounceFunctionCall(self.setInnerRect, "innerRect", 300, self);
             }
         },
 
