@@ -28,10 +28,16 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             this.bind("configuration", "change:printArea", this.resetMainConfigurationViewer, this);
             this.bind("configuration", "change:angle", this.changeAngle, this);
 
-            this.bind("configuration", "change:text", this.recalculateSize, this);
-            this.bind("configuration", "change:angle", this.recalculateSize, this);
-            this.bind("configuration", "change:font", this.recalculateSize, this);
-            this.bind("configuration", "change:fontSize", this.recalculateSize, this);
+            this.bind("configuration", "change:text", recalculateSize, this);
+            this.bind("configuration", "change:angle", recalculateSize, this);
+            this.bind("configuration", "change:font", recalculateSize, this);
+            this.bind("configuration", "change:fontSize", function() {
+                this.recalculateSize(false)
+            }, this);
+
+            function recalculateSize() {
+                this.recalculateSize(true);
+            }
         },
 
         resetMainConfigurationViewer: function () {
@@ -75,7 +81,22 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             });
         },
 
-        recalculateSize: function () {
+        balanceConfiguration: function(oldWidth, newWidth) {
+            var configuration = this.$.configuration;
+            if (configuration && oldWidth && newWidth) {
+                var offset = configuration.$.offset;
+                configuration.$.offset.set({
+                    x: offset.$.x + ((oldWidth - newWidth) || 0) / 2
+                });
+            }
+        },
+
+        recalculateSize: function (scaleToKeepSize) {
+
+            if (scaleToKeepSize == null) {
+                scaleToKeepSize = true;
+            }
+
             var textPath = this.$.textPath,
                 path = this.$.path,
                 text = this.$.text;
@@ -117,10 +138,14 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                 });
 
 
-                configuration.set('scale', {
-                    x: currentScale.x * widthScale,
-                    y: currentScale.y * widthScale
-                });
+                if (scaleToKeepSize) {
+                    configuration.set('scale', {
+                        x: currentScale.x * widthScale,
+                        y: currentScale.y * widthScale
+                    });
+                } else {
+                    this.balanceConfiguration(oldWidth, newWidth);
+                }
 
                 configuration.set({
                     textPathOffsetX: (textPathRect.width - pathRect.width) * 0.5,
