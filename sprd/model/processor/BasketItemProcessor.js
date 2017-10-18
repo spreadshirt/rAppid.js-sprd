@@ -126,7 +126,10 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
 
             var ret = {
                 element: elementPayload,
-                quantity: payload.quantity
+                quantity: payload.quantity,
+                price: payload.price,
+                discountRelativeReduction: payload.discountRelativeReduction,
+                couponRelativeReduction: payload.couponRelativeReduction
             };
 
 
