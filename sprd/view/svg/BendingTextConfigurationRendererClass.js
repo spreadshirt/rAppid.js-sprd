@@ -23,6 +23,7 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
         _initializationComplete: function () {
             this.callBase();
+            this.bind("dom:add", recalculateSize, this);
             this.bind("configuration", "change:font", this.loadFont, this);
             this.bind("productViewer.product", ["configurations", "reset"], this.resetMainConfigurationViewer, this);
             this.bind("configuration", "change:printArea", this.resetMainConfigurationViewer, this);
@@ -38,6 +39,8 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             function recalculateSize() {
                 this.recalculateSize(true);
             }
+            
+            this.$.configuration.clearErrors();
         },
 
         resetMainConfigurationViewer: function () {
@@ -109,7 +112,6 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                 path = this.$.path,
                 text = this.$.text;
             if (textPath && textPath.$el && path && path.$el && text && text.$el) {
-
                 var configuration = this.$.configuration;
                 if (configuration && configuration.mainConfigurationRenderer && configuration.mainConfigurationRenderer != this) {
                     return;
@@ -123,7 +125,7 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
                 var textPathRect = textPath.$parent.$el.getBBox();
                 var pathRect = path.$el.getBBox();
-
+                
                 configuration.set({
                     textPathOffsetX: 0,
                     textPathOffsetY: 0
