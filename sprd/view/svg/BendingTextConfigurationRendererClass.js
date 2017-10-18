@@ -33,7 +33,7 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
             this.bind("configuration", "change:angle", recalculateSize, this);
             this.bind("configuration", "change:font", recalculateSize, this);
             this.bind("configuration", "change:fontSize", function() {
-                this.recalculateSize(false)
+                this.recalculateSize(false);
             }, this);
 
             function recalculateSize() {
@@ -51,14 +51,22 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
         },
 
         changeAngle: function () {
-
             var path = this.$.path;
 
-            if (timer) {
-                clearTimeout(timer);
+            if (!path) {
+                return;
             }
 
-            if (path) {
+            var pathIsSelected = path.$.selected;
+
+            if (pathIsSelected) {
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    path.set("selected", false);
+                }, 1000);
+            }
+
+            if (path && !pathIsSelected) {
                 path.set("selected", true);
 
                 timer = setTimeout(function () {
