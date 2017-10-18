@@ -15,6 +15,14 @@ define(['sprd/data/SprdModel', 'sprd/entity/Price', 'sprd/entity/ConcreteElement
             origin: {
                 type: Object,
                 required: false
+            },
+            discountRelativeReduction: {
+                type: Object,
+                required: false
+            },
+            couponRelativeReduction: {
+                type: Object,
+                required: false
             }
         },
 
