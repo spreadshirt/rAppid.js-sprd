@@ -4,8 +4,8 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
         defaults: {
             configuration: null,
             textArea: null,
-            width: "{configuration.width()}",
-            height: "{configuration.height()}",
+            width: null,
+            height: null,
             preserveAspectRatio: "none",
             bbox: null,
             loadedFonts: null
@@ -35,7 +35,17 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
 
             var textBbox = this.$.textArea.$el.getBBox();
             this.set('bbox', textBbox);
-            this.setViewBox(textBbox.x, textBbox.y, textBbox.width, textBbox.height);
+
+            var x = Math.min(textBbox.x, 0),
+                y = Math.min(textBbox.y, 0),
+                widthDelta = Math.max(textBbox.x, 0),
+                heightDelta = Math.max(textBbox.y, 0);
+
+            this.setViewBox(x, y, textBbox.width + widthDelta, textBbox.height + heightDelta);
+            this.set({
+                "width": textBbox.x + textBbox.width,
+                "height": textBbox.height + textBbox.y
+            })
         },
 
         loadFontsAsDataURI: function (callback) {
@@ -175,6 +185,7 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
             var s = new XMLSerializer(),
                 svgText = s.serializeToString(el);
 
+            svgText.replace("&nbsp;", " ");
             return "data:image/svg+xml;base64," + btoa(svgText);
         },
 
@@ -198,7 +209,7 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
                     ImageMeasurer.toImage(this.vars.dataURI, cb)
                 })
                 .seq("rect", function () {
-                    return ImageMeasurer.getRealDesignSize(this.vars.image, configuration.$.rotation, configuration.$.width, configuration.$.height);
+                    return ImageMeasurer.getRealDesignSize(this.vars.image, configuration.$.rotation);
                 })
                 .exec(callback)
         }
