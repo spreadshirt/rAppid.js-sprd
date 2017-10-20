@@ -55,11 +55,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return false;
         },
 
-        _commitScale: function (newScale) {
+        _commitScale: function(newScale) {
             return this.validSize(newScale);
         },
 
-        validSize: function (scale) {
+        validSize: function(scale) {
             if (!scale) {
                 return false;
             }
@@ -301,7 +301,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
         }.onChange('height()', 'printType.dpi'),
 
-        getBoundingBoxOfRotatedBox: function (x, y, width, height, rotation) {
+        getBoundingBoxOfRotatedBox: function(x, y, width, height, rotation) {
             //Get unrotated bounding box of a rotated rectangle
             if (!(rotation % 360)) {
                 return {
@@ -319,10 +319,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 centerY = y + halfH;
 
             var corners = [
-                [-halfW , -halfH],
+                [-halfW, -halfH],
                 [halfW, -halfH],
-                [halfW , halfH],
-                [-halfW , halfH]
+                [halfW, halfH],
+                [-halfW, halfH]
             ];
 
             var minX, minY, maxY, maxX;
@@ -349,17 +349,17 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         _getBoundingBox: function(offset, width, height, rotation, scale, onlyContent, xOffset) {
             var bbox = this._getRotatedBoundingBox(offset, width, height, rotation, scale);
-            var rotatedBbox= this.getBoundingBoxOfRotatedBox(bbox.x, bbox.y, bbox.width, bbox.height, bbox.rotation);
+            var rotatedBbox = this.getBoundingBoxOfRotatedBox(bbox.x, bbox.y, bbox.width, bbox.height, bbox.rotation);
             rotatedBbox.x += xOffset || 0;
             return rotatedBbox;
         },
 
-        _getInnerBoundingBox: function (offset, width, height, rotation, scale, onlyContent, xOffset) {
+        _getInnerBoundingBox: function(offset, width, height, rotation, scale, onlyContent, xOffset) {
             var innerRect = this.$.innerRect,
                 bbox = this._getRotatedBoundingBox(offset, width, height, rotation, scale);
 
             if (innerRect) {
-                bbox =  {
+                bbox = {
                     x: bbox.x + bbox.width * innerRect.x,
                     y: bbox.y + bbox.height * innerRect.y,
                     width: bbox.width * innerRect.width,
@@ -483,6 +483,33 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         isReadyForCompose: function() {
             return true;
+        },
+
+        isDuplicate: function(configuration, keys) {
+            if (!configuration) {
+                return false;
+            }
+
+            var roundedEqual = function(a, b, decimalDigits) {
+                var decimals = Math.pow(10, decimalDigits || 0);
+                return _.isEqual(Math.round(a * decimals), Math.round(b * decimals));
+            };
+
+            keys = keys || [];
+
+            var selfSize = this.get("_size"),
+                selfOffset = this.get("offset"),
+                selfScale = this.get("scale"),
+                size = configuration.get("_size"),
+                offset = configuration.get("offset"),
+                scale = configuration.get("scale");
+
+            return roundedEqual(selfSize.$.height, size.$.height) &&
+                roundedEqual(selfSize.$.width, size.$.width) &&
+                roundedEqual(selfOffset.$.x, offset.$.x, 1) &&
+                roundedEqual(selfOffset.$.y, offset.$.y, 1) &&
+                roundedEqual(selfScale.x, scale.x, 1) &&
+                this.isDeepEqual(configuration, keys);
         }
     });
 });

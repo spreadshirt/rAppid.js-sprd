@@ -324,8 +324,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                     var config = clonedConfigurations.at(i);
                     for (var j = i + 1; j < clonedConfigurations.length; j++) {
                         var otherConfig = clonedConfigurations.at(j),
-                            keys = ["text", "font", "_size", "align", "type", "design", "printArea", "offset", "scale", "rotation"],
-                            duplicate = config.isDeepEqual(otherConfig, keys);
+                            duplicate = config.isDuplicate(otherConfig, ["text", "font", "align", "type", "design", "printArea", "rotation"]);
 
                         if (duplicate) {
                             configurations.removeAt(j);
