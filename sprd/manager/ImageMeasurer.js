@@ -12,7 +12,7 @@ define([], function () {
             image.onerror = function (err) {
                 callback && callback(err);
             };
-            image.src = url
+            image.src = url;
         },
 
         getCtx: function (width, height) {

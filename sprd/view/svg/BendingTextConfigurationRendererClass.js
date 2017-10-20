@@ -23,15 +23,24 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
         _initializationComplete: function () {
             this.callBase();
+            this.bind("dom:add", recalculateSize, this);
             this.bind("configuration", "change:font", this.loadFont, this);
             this.bind("productViewer.product", ["configurations", "reset"], this.resetMainConfigurationViewer, this);
             this.bind("configuration", "change:printArea", this.resetMainConfigurationViewer, this);
             this.bind("configuration", "change:angle", this.changeAngle, this);
 
-            this.bind("configuration", "change:text", this.recalculateSize, this);
-            this.bind("configuration", "change:angle", this.recalculateSize, this);
-            this.bind("configuration", "change:font", this.recalculateSize, this);
-            this.bind("configuration", "change:fontSize", this.recalculateSize, this);
+            this.bind("configuration", "change:text", recalculateSize, this);
+            this.bind("configuration", "change:angle", recalculateSize, this);
+            this.bind("configuration", "change:font", recalculateSize, this);
+            this.bind("configuration", "change:fontSize", function() {
+                this.recalculateSize(false);
+            }, this);
+
+            function recalculateSize() {
+                this.recalculateSize(true);
+            }
+            
+            this.$.configuration.clearErrors();
         },
 
         resetMainConfigurationViewer: function () {
@@ -42,14 +51,22 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
         },
 
         changeAngle: function () {
-
             var path = this.$.path;
 
-            if (timer) {
-                clearTimeout(timer);
+            if (!path) {
+                return;
             }
 
-            if (path) {
+            var pathIsSelected = path.$.selected;
+
+            if (pathIsSelected) {
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    path.set("selected", false);
+                }, 1000);
+            }
+
+            if (path && !pathIsSelected) {
                 path.set("selected", true);
 
                 timer = setTimeout(function () {
@@ -68,19 +85,41 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                 return;
             }
 
+
             this.set("loading", true);
-            svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font, extension), function () {
-                self.waitForNewRender();
+
+            var uniqueFontName = font.getUniqueFontName();
+            this.synchronizeFunctionCall(function(callback) {
+                svgRoot.fontManager.loadExternalFont(uniqueFontName, this.$.imageService.fontUrl(font, extension), function() {
+                    callback && callback();
+                });
+            }, uniqueFontName, function() {
+                self.recalculateSize(true);
                 self.set("loading", false);
-            });
+            }, this);
+
         },
 
-        recalculateSize: function () {
+        balanceConfiguration: function(oldWidth, newWidth) {
+            var configuration = this.$.configuration;
+            if (configuration && oldWidth && newWidth) {
+                var offset = configuration.$.offset;
+                configuration.$.offset.set({
+                    x: offset.$.x + ((oldWidth - newWidth) || 0) / 2
+                });
+            }
+        },
+
+        recalculateSize: function (scaleToKeepSize) {
+
+            if (scaleToKeepSize == null) {
+                scaleToKeepSize = true;
+            }
+
             var textPath = this.$.textPath,
                 path = this.$.path,
                 text = this.$.text;
             if (textPath && textPath.$el && path && path.$el && text && text.$el) {
-
                 var configuration = this.$.configuration;
                 if (configuration && configuration.mainConfigurationRenderer && configuration.mainConfigurationRenderer != this) {
                     return;
@@ -94,7 +133,7 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
 
                 var textPathRect = textPath.$parent.$el.getBBox();
                 var pathRect = path.$el.getBBox();
-
+                
                 configuration.set({
                     textPathOffsetX: 0,
                     textPathOffsetY: 0
@@ -117,10 +156,14 @@ define(['xaml!sprd/view/svg/PatternRenderer', "sprd/entity/Size", 'js/core/Bus',
                 });
 
 
-                configuration.set('scale', {
-                    x: currentScale.x * widthScale,
-                    y: currentScale.y * widthScale
-                });
+                if (scaleToKeepSize) {
+                    configuration.set('scale', {
+                        x: currentScale.x * widthScale,
+                        y: currentScale.y * widthScale
+                    });
+                } else {
+                    this.balanceConfiguration(oldWidth, newWidth);
+                }
 
                 configuration.set({
                     textPathOffsetX: (textPathRect.width - pathRect.width) * 0.5,
