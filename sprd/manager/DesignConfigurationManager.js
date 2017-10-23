@@ -135,7 +135,6 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     var appearanceColor = product.get("appearance.colors.at(0).color()");
                     var firstLayer = designColors.at(0);
                     var designColor = (firstLayer.$["default"] || firstLayer.$["origin"]);
-                    console.log(designColor.distanceTo(appearanceColor));
                     if (appearanceColor && designColor && designColor.distanceTo(appearanceColor) < COLOR_CONVERSION_THRESHOLD) {
                         printColors = configuration.getInvertedDesignColors();
                     }
