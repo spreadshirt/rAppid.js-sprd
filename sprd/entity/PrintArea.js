@@ -25,7 +25,8 @@ define(['js/data/Entity', 'sprd/model/PrintType', 'sprd/entity/Size'], function 
             boundary: null,
             _size: "{boundary.size}",
             _softBoundary: "{boundary.soft}",
-            defaultBox: null
+            defaultBox: null,
+            appearanceColorIndex: null
         },
 
         schema: {
