@@ -136,11 +136,16 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                     if (sizeMap.hasOwnProperty(sizeName)) {
                         ret.push({
                             name: sizeName,
+                            sizeWeight: sizeMap[sizeName].sizeWeight,
                             departmentName: departmentName,
                             productTypes: sizeMap[sizeName].productTypes
                         });
                     }
                 }
+
+                ret.sort(function(a, b) {
+                    return (a.sizeWeight || 0) - (b.sizeWeight || 0)
+                });
 
                 return ret;
             }
@@ -166,7 +171,8 @@ define(["underscore", "js/core/List", "js/type/Color"], function (_, List, Color
                                 productType.$.sizes.each(function (size) {
                                     if (!departmentHash[size.$.name]) {
                                         departmentHash[size.$.name] = {
-                                            productTypes: []
+                                            productTypes: [],
+                                            sizeWeight: size.$.weight
                                         };
                                     }
                                     departmentHash[size.$.name].productTypes.push(productType);
