@@ -180,7 +180,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         options.transform = validatedMove.transform;
                         self._addConfiguration(product, configuration, validatedMove.printType, targetPrintArea, options);
                         configuration.$.printColors.each(function(printColor, index) {
-                            configuration.setColor(index, validatedMove.printType.getClosestPrintColor(self.convertColor(appearance, printColor.color())));
+                            if (!options.convertColors) {
+                                return;
+                            }
+
+                            var convertedColor = self.convertColor(appearance, printColor.color()),
+                                convertedPrintColor = validatedMove.printType.getClosestPrintColor(convertedColor);
+                            configuration.setColor(index, convertedPrintColor);
                         });
                         return true;
                     }
