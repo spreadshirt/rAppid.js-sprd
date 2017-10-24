@@ -52,7 +52,7 @@ define(["sprd/model/AfterEffect", "sprd/model/Design"], function(AfterEffect, De
             } else if (!frame) {
                 callback(new Error('frame image not loaded yet'));
             } else {
-                self.combine(ctx, frame, img, ctx.canvas.width, ctx.canvas.height, options);
+                self.combine(ctx, frame, img, ctx.canvas.width, ctx.canvas.height);
                 callback(null);
             }
 
