@@ -1240,7 +1240,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     minScale = configuration.getMinScale(),
                     scaleDirection = Math.sign(newScale - oldScale) > 0, // positive means increasing
                     scaleTooBig = scaleDirection && newScale > maxScale && this.getMaxScaleRect().strict,
-                    scaleTooSmall = !scaleDirection && newScale < minScale && this.getMaxScaleRect().strict;
+                    scaleTooSmall = !scaleDirection && newScale < minScale && this.getMinScaleRect().strict;
 
                 return !scaleTooBig && !scaleTooSmall;
             },
