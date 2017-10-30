@@ -422,7 +422,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
             return Math.min(printType.get("size.width") / width ,  printType.get("size.height") / height );
-        }.onChange("printType", "size()"),
+        }.onChange("printType", "size()").on("sizeChanged"),
 
         size: function() {
             this.log("size() not implemented", "debug");

@@ -1195,10 +1195,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return false;
                 }
 
-                var scaleDirection = Math.sign(newScale - oldScale),
+                var scaleDirection = Math.sign(newScale - oldScale), // positive means increasing
                     newWidth = configuration.width(newScale),
                     newHeight = configuration.height(newScale),
                     minDimensionSize = Math.min(newWidth, newHeight),
+                    maxScale = configuration.getMaxScale(),
+                    minScale = configuration.getMinScale(),
                     willBecomeTooSmallAbs = minDimensionSize <= configuration.$.minSize && scaleDirection < 0;
 
                 var tooWideForPrintArea = newWidth / printArea.get('_size.width') > printArea.get('restrictions.maxConfigRatio'),
@@ -1209,8 +1211,38 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     tooShortForPrintArea = newHeight / printArea.get('_size.height') < printArea.get('restrictions.minConfigRatio'),
                     tooSmallForPrintAreaRel = tooThinForPrintArea && tooShortForPrintArea;
 
-                var invalidRelSize = !configuration.get('printArea.hasSoftBoundary()') && (tooBigForPrintAreaRel || tooSmallForPrintAreaRel);
-                return !willBecomeTooSmallAbs && !invalidRelSize;
+                var hasSoftBoundary = configuration.get('printArea.hasSoftBoundary()'),
+                    invalidRelSize = !hasSoftBoundary && (tooBigForPrintAreaRel || tooSmallForPrintAreaRel),
+                    scaleThresholdValid = this.scaleThresholdValid(newScale, oldScale);
+                return scaleThresholdValid && !willBecomeTooSmallAbs && !invalidRelSize;
+            },
+
+            scaleThresholdValid: function (newScale, oldScale) {
+                if (!newScale) {
+                    return true;
+                }
+
+                if (!oldScale) {
+                    return true;
+                }
+
+                var configuration = this.$.configuration;
+
+                if (!configuration) {
+                    return false;
+                }
+
+                if (newScale === oldScale) {
+                    return true;
+                }
+
+                var maxScale = configuration.getMaxScale(),
+                    minScale = configuration.getMinScale(),
+                    scaleDirection = Math.sign(newScale - oldScale) > 0, // positive means increasing
+                    scaleTooBig = scaleDirection && newScale > maxScale && this.getMaxScaleRect().strict,
+                    scaleTooSmall = !scaleDirection && newScale < minScale && this.getMaxScaleRect().strict;
+
+                return !scaleTooBig && !scaleTooSmall;
             },
 
             getCenteredOffset: function(configuration, scale) {
