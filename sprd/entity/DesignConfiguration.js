@@ -164,7 +164,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
 
                 return maxScale;
-            }.onChange('design'),
+            }.onChange("printType", "size()", "design"),
 
 
             _setProcessedSize: function () {

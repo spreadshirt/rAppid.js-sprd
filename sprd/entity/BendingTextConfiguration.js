@@ -234,7 +234,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 }
 
                 return minScale;
-            },
+            }.onChange('printType', 'font', 'fontSize'),
 
 
             textPath: function() {

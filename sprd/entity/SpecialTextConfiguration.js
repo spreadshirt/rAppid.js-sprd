@@ -441,7 +441,7 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
         getMaxScale: function () {
             var maxScale = this.callBase() || Number.MAX_VALUE;
             return Math.min(1, maxScale);
-        }
+        }.onChange("printType", "size()")
     });
 })
 ;
