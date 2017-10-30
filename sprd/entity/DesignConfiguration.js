@@ -23,6 +23,9 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.callBase();
 
                 this.bind('change:processedImage', this._setProcessedSize, this);
+                this.bind('afterEffect', "processingParametersChanged", function () {
+                    this.trigger("configurationChanged");
+                }, this);
                 this.bind('change:processedDesign', function () {
                     this._setOriginalDesignProperties()
                 }, this);
