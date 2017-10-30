@@ -413,36 +413,30 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
         },
 
         minimumScale: function () {
-            return this.callBase();
-        },
+            var minScale = this.callBase() || Number.MIN_VALUE,
+                printType = this.$.printType;
+
+            if (printType && !printType.isShrinkable()) {
+                minScale = Math.max(minScale, Number(!printType.isShrinkable()));
+            }
+
+            return minScale;
+        }.onChange("printType"),
+        
         _validatePrintTypeSize: function (printType, width, height, scale) {
-            var ret = {};
-            var design = this.$.design;
+            var ret = {},
+                design = this.$.design;
 
             if (!printType || !scale) {
                 return ret;
             }
 
-            if (design) {
-                return this.callBase();
+            if (design && !design.isVectorDesign()) {
+                ret.dpiBound = scale.x > 1 || scale.y > 1;
             }
-
-            ret.minBound = !printType.isShrinkable();
-            ret.dpiBound = printType.isShrinkable() && Math.max(Math.abs(scale.x), Math.abs(scale.y)) > 1;
 
             return ret;
         },
-
-        getMinScale: function () {
-            var minScale = this.callBase() || Number.MIN_VALUE,
-                printType = this.$.printType;
-
-            if (printType && !printType.isShrinkable()) {
-                minScale = Math.max(minScale,  Number(!printType.isShrinkable()));
-            }
-
-            return minScale;
-        }.onChange("printType"),
 
         getMaxScale: function () {
             var maxScale = this.callBase() || Number.MAX_VALUE;

@@ -141,8 +141,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     ret.dpiBound = scale.x > 1 || scale.y > 1;
                 }
 
-                ret.minBound = !printType.isShrinkable() && Math.min(Math.abs(scale.x), Math.abs(scale.y)) * 100 < (this.get("design.restrictions.minimumScale"));
-
                 return ret;
             },
 
