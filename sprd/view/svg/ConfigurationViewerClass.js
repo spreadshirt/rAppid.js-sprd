@@ -1424,7 +1424,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return null;
                 }
 
-                var minScale = config.get("minScale"),
+                var minScale = config.getMinScale(),
                     printType = config.get('printType');
 
                 var rect = this.getScaleRect(minScale);
@@ -1448,7 +1448,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return null;
                 }
 
-                var maxScale = config.get("maxScale"),
+                var maxScale = config.getMaxScale(),
                     printType = config.get('printType');
 
                 var rect = this.getScaleRect(maxScale);
