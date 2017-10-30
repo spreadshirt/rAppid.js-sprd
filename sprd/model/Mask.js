@@ -247,19 +247,17 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
                     self.initImage(null, cb);
                 })
                 .seq(function() {
-                    self.combine(ctx, this.vars.maskimg, img, ctx.canvas.width, ctx.canvas.height, options);
+                    self.combine(ctx, this.vars.maskimg, img, ctx.canvas.width, ctx.canvas.height);
                 })
                 .exec(callback);
 
         },
 
-        combine: function(ctx, mask, img, width, height, options) {
-
+        combine: function(ctx, mask, img, width, height) {
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             var oldCompositionOperation = ctx.globalCompositeOperation;
 
-            var factor = options.fullSize ? 1 / this.canvasScalingFactor(img) : 1;
-            ctx.drawImage(mask, this.$.offset.$.x * factor, this.$.offset.$.y * factor, this.width() * factor, this.height() * factor);
+            ctx.drawImage(mask, this.$.offset.$.x, this.$.offset.$.y , this.width() , this.height());
             ctx.globalCompositeOperation = 'source-in';
             ctx.drawImage(img, 0, 0, width, height);
 

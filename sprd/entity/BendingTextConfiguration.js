@@ -193,7 +193,11 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 ret.properties.fontSize = this.$.fontSize;
                 if (!this.$.printColors.isEmpty()) {
                     ret.properties.fill = this.$.printColors.at(0).toHexString();
+                    var printColor = this.$.printColors.at(0);
+                    var convertedPrintColor = this.$.printType.getClosestPrintColor(printColor.color());
+                    ret.content.svg.image.printColorIds = ret.content.svg.image.printColorIds || "" + convertedPrintColor.$.id;
                 }
+                
                 ret.properties.path = this.$.path;
                 ret.properties.scale = this.$.scale.x;
                 ret.properties.size = this.$._size.$;

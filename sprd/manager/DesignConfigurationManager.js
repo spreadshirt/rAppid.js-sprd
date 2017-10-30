@@ -1,6 +1,5 @@
-define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "underscore", "sprd/model/Mask", "rAppid", "js/data/Model"], function (Base, UnitUtil, Design, flow, Size, _, Mask, rappid, Model) {
+define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/model/Design", "flow", "sprd/entity/Size", "underscore", "sprd/model/Mask", "rAppid", "js/data/Model", "sprd/config/Settings"], function (Base, UnitUtil, Design, flow, Size, _, Mask, rappid, Model, Settings) {
 
-    var COLOR_CONVERSION_THRESHOLD = 40;
 
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
         extractDesign: function (configuration) {
@@ -130,12 +129,17 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             if (!colorsSet && designColors) {
                 printColors = configuration.getDesignColors();
 
+
                 if (designColors.$items.length === 1 && options && options.ensureDesignColorContrast && configuration.$context && configuration.$context.$contextModel) {
-                    var product = configuration.$context.$contextModel;
-                    var appearanceColor = product.get("appearance.colors.at(0).color()");
+                    var product = configuration.$context.$contextModel,
+                        printArea = configuration.$.printArea || product.$.view.getDefaultPrintArea(),
+                        appearanceColorIndex = printArea && printArea.$.appearanceColorIndex || 0,
+                        appearanceColors = product.get("appearance.colors"),
+                        appearanceColor = appearanceColors.at(appearanceColorIndex).color();
+
                     var firstLayer = designColors.at(0);
                     var designColor = (firstLayer.$["default"] || firstLayer.$["origin"]);
-                    if (appearanceColor && designColor && designColor.distanceTo(appearanceColor) < COLOR_CONVERSION_THRESHOLD) {
+                    if (appearanceColor && designColor && designColor.distanceTo(appearanceColor) < Settings.COLOR_CONVERSION_THRESHOLD) {
                         printColors = configuration.getInvertedDesignColors();
                     }
                 }
@@ -248,15 +252,8 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
 
                 if (properties.afterEffect.offset && properties.afterEffect.scale) {
-                    afterEffect.$.offset.set({
-                        'x': properties.afterEffect.offset.x,
-                        'y': properties.afterEffect.offset.y
-                    });
-
-                    afterEffect.$.scale.set({
-                        'x': properties.afterEffect.scale.x,
-                        'y': properties.afterEffect.scale.y
-                    });
+                    afterEffect.$.offset.set(properties.afterEffect.offset);
+                    afterEffect.$.scale.set(properties.afterEffect.scale);
 
                     afterEffect.set('initialized', true);
                 }
