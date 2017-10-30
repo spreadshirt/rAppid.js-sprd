@@ -149,11 +149,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                         var possiblePrintTypes;
                         // Check printArea constraints
                         var appearance = this.get('_appearance');
-                        if (configuration.$.design) {
-                            possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, printArea, appearance);
-                        } else {
                             possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, appearance);
-                        }
+
                         if (possiblePrintTypes.length) {
                             var product = dndObject.viewer.$.product;
                             var validatedMove = productManager.validateMove(possiblePrintTypes, printArea, configuration, product);
