@@ -85,7 +85,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 inverseZoom: "{printAreaViewer.productTypeViewViewer.inverseZoom}",
 
                 minScaleRect: "{getMinScaleRect()}",
-                maxScaleRect: "{getMaxScaleRect()}"
+                maxScaleRect: "{getMaxScaleRect()}",
+                nearToThresholdMax: "{nearToThresholdMax()}",
+                nearToThresholdMin: "{nearToThresholdMin()}"
             },
 
             inject: {
@@ -1244,6 +1246,26 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 return !scaleTooBig && !scaleTooSmall;
             },
+
+            nearToThresholdMax: function (scale) {
+                scale = scale || this.$._scale;
+
+                var configuration = this.$.configuration,
+                    maxScale = configuration.getMaxScale(),
+                    maxDelta = Math.abs(scale.x - maxScale),
+                    closenessThreshold = 0.1 * scale.x;
+                return maxDelta < closenessThreshold;
+            }.onChange('_scale'),
+
+            nearToThresholdMin: function (scale) {
+                scale = scale || this.$._scale;
+
+                var configuration = this.$.configuration,
+                    minScale = configuration.getMinScale(),
+                    minDelta = Math.abs(scale.x - minScale),
+                    closenessThreshold = 0.1 * scale.x;
+                return minDelta < closenessThreshold;
+            }.onChange('_scale'),
 
             getCenteredOffset: function(configuration, scale) {
                 var offsetX = configuration.$.offset.$.x;
