@@ -271,6 +271,10 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                     return ret;
                 }
 
+                if (this.$context) {
+                    appearance = appearance || this.$context.$contextModel.get('appearance');
+                }
+
                 tmp = this.getPossiblePrintTypesForPrintArea(printArea, appearance);
                 _.each(tmp, function(element) {
                     if (ret.indexOf(element) === -1) {

@@ -387,6 +387,10 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
             var ret = [],
                 printArea = this.$.printArea;
 
+            if (this.$context) {
+                appearance = appearance || this.$context.$contextModel.get('appearance');
+            }
+            
             if (printArea && appearance) {
                 ret = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance);
             }

@@ -349,6 +349,10 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     printArea = this.$.printArea,
                     design = this.$.design;
 
+                if (this.$context) {
+                    appearance = appearance || this.$context.$contextModel.get('appearance');
+                }
+                
                 if (printArea && appearance && design) {
                     ret = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance);
                 }

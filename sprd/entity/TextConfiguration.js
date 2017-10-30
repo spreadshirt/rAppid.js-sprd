@@ -891,6 +891,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     textFlow = this.$.textFlow,
                     selection = this.$.selection;
 
+                if (this.$context) {
+                    appearance = appearance || this.$context.$contextModel.get('appearance');
+                }
+
                 if (printArea && appearance && textFlow && selection) {
                     var leaf = textFlow.findLeaf(selection.$.absoluteStart),
                         lastLeaf = textFlow.findLeaf(selection.$.absoluteEnd);

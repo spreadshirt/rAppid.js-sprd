@@ -485,6 +485,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         getPossiblePrintTypes: function(appearance) {
             var printArea = this.$.printArea;
+
+            if (this.$context) {
+                appearance = appearance || this.$context.$contextModel.get('appearance');
+            }
+                
             return this.getPossiblePrintTypesForPrintArea(printArea, appearance);
         }.onChange("printArea"),
 
