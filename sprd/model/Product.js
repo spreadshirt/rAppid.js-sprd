@@ -358,8 +358,8 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 var self = this;
                 self.removeExampleConfiguration();
                 self.removeDuplicateConfigurations();
-                self.eachConfig(self.cleanText, self);
-                self.eachConfig(self.removeTooSmallConfigurations, self);
+                self.eachConfig(self.cleanText);
+                self.eachConfig(self.removeTooSmallConfigurations);
             },
 
             cleanText: function(configuration) {
@@ -374,12 +374,12 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }
             },
 
-            eachConfig: function(func, scope) {
+            eachConfig: function(func) {
                 var self = this,
                     configurations = this.$.configurations,
                     tempConfigs = [].concat(configurations.$items);
 
-                _.each(tempConfigs, func, scope);
+                _.each(tempConfigs, func, self);
             },
 
             save: function(options, callback) {

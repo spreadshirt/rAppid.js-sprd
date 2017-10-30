@@ -82,7 +82,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 centerVector: null,
                 rotationSnap: null,
                 productViewerDiagonalLength: null,
-                inverseZoom: "{printAreaViewer.productTypeViewViewer.inverseZoom}"
+                inverseZoom: "{printAreaViewer.productTypeViewViewer.inverseZoom}",
+
+                minScaleRect: "{getMinScaleRect()}",
+                maxScaleRect: "{getMaxScaleRect()}"
             },
 
             inject: {
@@ -1192,10 +1195,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return false;
                 }
 
-                var scaleDirection = Math.sign(newScale - oldScale),
+                var scaleDirection = Math.sign(newScale - oldScale), // positive means increasing
                     newWidth = configuration.width(newScale),
                     newHeight = configuration.height(newScale),
                     minDimensionSize = Math.min(newWidth, newHeight),
+                    maxScale = configuration.getMaxScale(),
+                    minScale = configuration.getMinScale(),
                     willBecomeTooSmallAbs = minDimensionSize <= configuration.$.minSize && scaleDirection < 0;
 
                 var tooWideForPrintArea = newWidth / printArea.get('_size.width') > printArea.get('restrictions.maxConfigRatio'),
@@ -1206,8 +1211,38 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     tooShortForPrintArea = newHeight / printArea.get('_size.height') < printArea.get('restrictions.minConfigRatio'),
                     tooSmallForPrintAreaRel = tooThinForPrintArea && tooShortForPrintArea;
 
-                var invalidRelSize = !configuration.get('printArea.hasSoftBoundary()') && (tooBigForPrintAreaRel || tooSmallForPrintAreaRel);
-                return !willBecomeTooSmallAbs && !invalidRelSize;
+                var hasSoftBoundary = configuration.get('printArea.hasSoftBoundary()'),
+                    invalidRelSize = !hasSoftBoundary && (tooBigForPrintAreaRel || tooSmallForPrintAreaRel),
+                    scaleThresholdValid = this.scaleThresholdValid(newScale, oldScale);
+                return scaleThresholdValid && !willBecomeTooSmallAbs && !invalidRelSize;
+            },
+
+            scaleThresholdValid: function (newScale, oldScale) {
+                if (!newScale) {
+                    return true;
+                }
+
+                if (!oldScale) {
+                    return true;
+                }
+
+                var configuration = this.$.configuration;
+
+                if (!configuration) {
+                    return false;
+                }
+
+                if (newScale === oldScale) {
+                    return true;
+                }
+
+                var maxScale = configuration.getMaxScale(),
+                    minScale = configuration.getMinScale(),
+                    scaleDirection = Math.sign(newScale - oldScale) > 0, // positive means increasing
+                    scaleTooBig = scaleDirection && newScale > maxScale && this.getMaxScaleRect().strict,
+                    scaleTooSmall = !scaleDirection && newScale < minScale && this.getMaxScaleRect().strict;
+
+                return !scaleTooBig && !scaleTooSmall;
             },
 
             getCenteredOffset: function(configuration, scale) {
@@ -1356,11 +1391,71 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             _cancelTransformation: function() {
-
                 this._resetTransformation();
                 this._stopTransformation();
-
             },
+
+            getMinScaleRect: function () {
+                var config = this.get('configuration');
+
+                if (!config) {
+                    return null;
+                }
+
+                var minScale = config.get("minScale"),
+                    printType = config.get('printType');
+
+                var rect = this.getScaleRect(minScale);
+                
+                if (printType && !printType.isShrinkable()) {
+                    var printTypes = config.getPossiblePrintTypes(),
+                        shrinkingPrintTypePossible = _.some(printTypes, function (printType) {
+                            return printType && printType.isShrinkable();
+                        });
+
+                    rect.strict = !shrinkingPrintTypePossible;
+                }
+
+                return rect;
+            }.onChange("configuration.minScale", "getScaleRect()"),
+
+            getMaxScaleRect: function () {
+                var config = this.get('configuration');
+
+                if (!config) {
+                    return null;
+                }
+
+                var maxScale = config.get("maxScale"),
+                    printType = config.get('printType');
+
+                var rect = this.getScaleRect(maxScale);
+                rect.strict = true;
+                return rect;
+            }.onChange("configuration.maxScale", "getScaleRect()", "configuration.printArea"),
+
+            getScaleRect: function (newScale) {
+                var config = this.get('configuration');
+
+                if (!newScale) {
+                    return null;
+                }
+
+                var width = this.get('_configurationWidth'),
+                    height = this.get('_configurationHeight'),
+                    scale = config.get('scale');
+
+                if (!width || !height || !scale || !scale.x) {
+                    return null;
+                }
+
+                return {
+                    x: (width - config.width(newScale)) /2,
+                    y: (height - config.height(newScale)) / 2,
+                    width: config.width(newScale),
+                    height: config.height(newScale)
+                }
+            }.onChange('_configurationWidth', '_configurationHeight'),
 
             getButtonSize: function(size) {
                 var globalToLocalFactor = this.globalToLocalFactor();
@@ -1385,6 +1480,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             mul: function(value, multiplicator) {
                 return value * multiplicator;
+            },
+
+            div: function (value, divider) {
+                return value / divider;
             },
 
             half: function(value) {
@@ -1578,6 +1677,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             handleY: function() {
                 return this.handleOffset().y;
-            }.onChange('handleOffset()')
+            }.onChange('handleOffset()'),
+
+            className: function (a, className) {
+                return a ? className : "";
+            }
         });
     });

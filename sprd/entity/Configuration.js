@@ -28,7 +28,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             rotation: 0,
             printColors: List,
             minSize: 5, // in mm
-
+            minScale: "{getMinScale()}",
+            maxScale: "{getMaxScale()}",
             textEditable: true,
 
             // bind this
@@ -176,7 +177,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
 
-            // when configuration is too small for print type or it is a DD print type try to find another print type that fits better
+            // when configuration is too small for print type try to find another print type that fits better
             if (printType && (printTypeTooSmall || printTypeWasScaled) && this.$context && this.$context.$contextModel && !printTypeChanged && sizeChanged) {
                 var product = this.$context.$contextModel,
                     appearance = this.$context.$contextModel.get('appearance'),
@@ -259,10 +260,19 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return {
                 printTypeScaling: !printType.isScalable() && (scale.x != 1 || scale.y != 1),
                 maxBound: width > printType.get("size.width") || height > printType.get("size.height"),
-                minBound: false
+                minBound: !printType.isShrinkable() && this.minimumScale() > this.getScaleMinimalComponent(scale)
             };
-
         },
+
+        getScaleMinimalComponent: function (scale) {
+            scale = this.$.scale || scale;
+
+            if (!scale) {
+                return null;
+            }
+            
+            return Math.min(Math.abs(scale.x), Math.abs(scale.y));
+        }.onChange("scale"),
 
         isPrintTypeAvailable: function(printType) {
 
@@ -392,6 +402,28 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             };
         },
 
+        getMinScale: function () {
+            var printType = this.$.printType;
+
+            if (printType && !printType.isShrinkable()) {
+                return this.minimumScale();
+            }
+
+            return null;
+        }.onChange("minimumScale()", "printType"),
+
+        getMaxScale: function () {
+            var width = this.width(1),
+                height = this.height(1),
+                printType = this.$.printType;
+
+            if (!width || !height || !printType) {
+                return null;
+            }
+
+            return Math.min(printType.get("size.width") / width ,  printType.get("size.height") / height );
+        }.onChange("printType", "size()").on("sizeChanged"),
+
         size: function() {
             this.log("size() not implemented", "debug");
             return Size.empty;
@@ -453,6 +485,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         getPossiblePrintTypes: function(appearance) {
             var printArea = this.$.printArea;
+
+            if (this.$context) {
+                appearance = appearance || this.$context.$contextModel.get('appearance');
+            }
+                
             return this.getPossiblePrintTypesForPrintArea(printArea, appearance);
         }.onChange("printArea"),
 
@@ -478,8 +515,14 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         minimumScale: function() {
-            return 0;
-        },
+            var printType = this.$.printType;
+
+            if (printType && !printType.isShrinkable()) {
+                return 1;
+            }
+
+            return Number.MIN_VALUE;
+        }.onChange('printType'),
 
         isReadyForCompose: function() {
             return true;
