@@ -394,8 +394,14 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         getMinScale: function () {
+            var printType = this.$.printType;
+
+            if (printType && !printType.isShrinkable()) {
+                return this.minimumScale();
+            }
+
             return null;
-        },
+        }.onChange("minimumScale()", "printType"),
 
         getMaxScale: function () {
             var width = this.width(1),
