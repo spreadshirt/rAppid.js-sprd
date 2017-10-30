@@ -22,18 +22,23 @@
     <svg:circle class="rotation-center" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{pixelToViewBox(2)}"
                 visible="{isRotating()}"/>
 
+    <svg:rect class="configuration-inner-rect rotation-line" visible="{maxScaleRect}"
+              x="{maxScaleRect.x}"
+              y="{maxScaleRect.y}"
+              width="{maxScaleRect.width}"
+              height="{maxScaleRect.height}"/>
+
+    <svg:rect class="configuration-inner-rect rotation-line" visible="{minScaleRect}"
+              x="{minScaleRect.x}"
+              y="{minScaleRect.y}"
+              width="{minScaleRect.width}"
+              height="{minScaleRect.height}"/>
+    
     <svg:g translateX="{flipOffsetX()}" translateY="{flipOffsetY()}">
         <svg:rect class="configuration-boundary"
                   selected="{isSelectedConfigurationOrConfigurationHasError()}"
                   x="0" y="0"
                   width="{_configurationWidth}" height="{_configurationHeight}"/>
-
-        <!--<svg:rect class="configuration-inner-rect rotation-line" visible="{configuration.innerRect}"-->
-                  <!--rotation="{invert(cv.rotation)}" rotationX="{cv.rotationX}" rotationY="{cv.rotationY}"-->
-                  <!--x="{mul(_configurationWidth, configuration.innerRect.x)}"-->
-                  <!--y="{mul(_configurationHeight, configuration.innerRect.y)}"-->
-                  <!--width="{mul(_configurationWidth, configuration.innerRect.width)}"-->
-                  <!--height="{mul(_configurationHeight, configuration.innerRect.height)}"/>-->
 
 
         <svg:g class="configuration-info"

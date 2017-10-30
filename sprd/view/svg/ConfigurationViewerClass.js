@@ -82,7 +82,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 centerVector: null,
                 rotationSnap: null,
                 productViewerDiagonalLength: null,
-                inverseZoom: "{printAreaViewer.productTypeViewViewer.inverseZoom}"
+                inverseZoom: "{printAreaViewer.productTypeViewViewer.inverseZoom}",
+
+                minScaleRect: "{getMinScaleRect()}",
+                maxScaleRect: "{getMaxScaleRect()}"
             },
 
             inject: {
@@ -1356,11 +1359,56 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             _cancelTransformation: function() {
-
                 this._resetTransformation();
                 this._stopTransformation();
-
             },
+
+            getMinScaleRect: function () {
+                var config = this.get('configuration');
+
+                if (!config) {
+                    return null;
+                }
+
+                var minScale = config.get("minScale");
+
+                return this.getScaleRect(minScale)
+            }.onChange("configuration.minScale", "getScaleRect()"),
+
+            getMaxScaleRect: function () {
+                var config = this.get('configuration');
+
+                if (!config) {
+                    return null;
+                }
+
+                var maxScale = config.get("maxScale");
+
+                return this.getScaleRect(maxScale)
+            }.onChange("configuration.maxScale", "getScaleRect()"),
+
+            getScaleRect: function (newScale) {
+                var config = this.get('configuration');
+
+                if (!newScale) {
+                    return null;
+                }
+
+                var width = this.get('_configurationWidth'),
+                    height = this.get('_configurationHeight'),
+                    scale = config.get('scale');
+
+                if (!width || !height || !scale || !scale.x) {
+                    return null;
+                }
+
+                return {
+                    x: (width - config.width(newScale)) /2,
+                    y: (height - config.height(newScale)) / 2,
+                    width: config.width(newScale),
+                    height: config.height(newScale)
+                }
+            }.onChange('_configurationWidth', '_configurationHeight'),
 
             getButtonSize: function(size) {
                 var globalToLocalFactor = this.globalToLocalFactor();
@@ -1385,6 +1433,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             mul: function(value, multiplicator) {
                 return value * multiplicator;
+            },
+
+            div: function (value, divider) {
+                return value / divider;
             },
 
             half: function(value) {

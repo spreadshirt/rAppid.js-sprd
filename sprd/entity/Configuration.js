@@ -28,7 +28,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             rotation: 0,
             printColors: List,
             minSize: 5, // in mm
-
+            minScale: "{getMinScale()}",
+            maxScale: "{getMaxScale()}",
             textEditable: true,
 
             // bind this
@@ -176,7 +177,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
 
-            // when configuration is too small for print type or it is a DD print type try to find another print type that fits better
+            // when configuration is too small for print type try to find another print type that fits better
             if (printType && (printTypeTooSmall || printTypeWasScaled) && this.$context && this.$context.$contextModel && !printTypeChanged && sizeChanged) {
                 var product = this.$context.$contextModel,
                     appearance = this.$context.$contextModel.get('appearance'),
@@ -391,6 +392,22 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 width: width
             };
         },
+
+        getMinScale: function () {
+            return null;
+        },
+
+        getMaxScale: function () {
+            var width = this.width(1),
+                height = this.height(1),
+                printType = this.$.printType;
+
+            if (!width || !height || !printType) {
+                return null;
+            }
+
+            return Math.min(printType.get("size.width") / width ,  printType.get("size.height") / height );
+        }.onChange("printType"),
 
         size: function() {
             this.log("size() not implemented", "debug");
