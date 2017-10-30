@@ -22,13 +22,13 @@
     <svg:circle class="rotation-center" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{pixelToViewBox(2)}"
                 visible="{isRotating()}"/>
 
-    <svg:rect class="configuration-inner-rect rotation-line" visible="{maxScaleRect}"
+    <svg:rect class="threshold-rect max {className(maxScaleRect.strict, 'strict')}" visible="{maxScaleRect}"
               x="{maxScaleRect.x}"
               y="{maxScaleRect.y}"
               width="{maxScaleRect.width}"
               height="{maxScaleRect.height}"/>
 
-    <svg:rect class="configuration-inner-rect rotation-line" visible="{minScaleRect}"
+    <svg:rect class="threshold-rect min {className(minScaleRect.strict, 'strict')}" visible="{minScaleRect}"
               x="{minScaleRect.x}"
               y="{minScaleRect.y}"
               width="{minScaleRect.width}"

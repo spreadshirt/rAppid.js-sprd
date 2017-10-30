@@ -1370,9 +1370,21 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return null;
                 }
 
-                var minScale = config.get("minScale");
+                var minScale = config.get("minScale"),
+                    printType = config.get('printType');
 
-                return this.getScaleRect(minScale)
+                var rect = this.getScaleRect(minScale);
+                
+                if (printType && !printType.isShrinkable()) {
+                    var printTypes = config.getPossiblePrintTypes(),
+                        shrinkingPrintTypePossible = _.some(printTypes, function (printType) {
+                            return printType && printType.isShrinkable();
+                        });
+
+                    rect.strict = !shrinkingPrintTypePossible;
+                }
+
+                return rect;
             }.onChange("configuration.minScale", "getScaleRect()"),
 
             getMaxScaleRect: function () {
@@ -1382,10 +1394,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return null;
                 }
 
-                var maxScale = config.get("maxScale");
+                var maxScale = config.get("maxScale"),
+                    printType = config.get('printType');
 
-                return this.getScaleRect(maxScale)
-            }.onChange("configuration.maxScale", "getScaleRect()"),
+                var rect = this.getScaleRect(maxScale);
+                rect.strict = true;
+                return rect;
+            }.onChange("configuration.maxScale", "getScaleRect()", "configuration.printArea"),
 
             getScaleRect: function (newScale) {
                 var config = this.get('configuration');
@@ -1630,6 +1645,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             handleY: function() {
                 return this.handleOffset().y;
-            }.onChange('handleOffset()')
+            }.onChange('handleOffset()'),
+
+            className: function (a, className) {
+                return a ? className : "";
+            }
         });
     });
