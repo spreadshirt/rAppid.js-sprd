@@ -5,12 +5,18 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
         defaults: {
             design: null,
             // if null use default view
-            view: null
+            view: null,
+
+            componentClass: "{grayClass()}"
         },
 
         inject: {
             imageService: ImageService
         },
+
+        grayClass: function() {
+            return this.get("design.hasBackgroundColor()") ? "grey" : "";
+        }.onChange("design.hasBackgroundColor()"),
 
         _commitChangedAttributes: function (attributes) {
             this.callBase();
