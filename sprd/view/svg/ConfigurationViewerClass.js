@@ -87,7 +87,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 minScaleRect: "{getMinScaleRect()}",
                 maxScaleRect: "{getMaxScaleRect()}",
                 nearToThresholdMax: "{nearToThresholdMax()}",
-                nearToThresholdMin: "{nearToThresholdMin()}"
+                nearToThresholdMin: "{nearToThresholdMin()}",
+                containedInMax: "{isSmallerThanMax()}",
+                containedInMin: "{isSmallerThanMin()}"
             },
 
             inject: {
@@ -1450,9 +1452,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
 
                 var maxScale = config.getMaxScale(),
-                    printType = config.get('printType');
+                    rect = this.getScaleRect(maxScale);
 
-                var rect = this.getScaleRect(maxScale);
                 if (rect) rect.strict = true;
                 return rect;
             }.onChange("configuration.maxScale", "getScaleRect()", "configuration.printArea"),
@@ -1479,6 +1480,32 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     height: config.height(newScale)
                 }
             }.onChange('_configurationWidth', '_configurationHeight'),
+
+            isSmallerThanMin: function () {
+                var config = this.get('configuration');
+
+                if (!config) {
+                    return null;
+                }
+
+                var minScale = config.getMinScale(),
+                    tmpScale = this.$._scale.x;
+
+                return tmpScale && tmpScale < minScale;
+            }.onChange('configuration.minScale', "_scale"),
+
+            isSmallerThanMax: function () {
+                var config = this.get('configuration');
+
+                if (!config) {
+                    return null;
+                }
+
+                var maxScale = config.getMaxScale(),
+                    tmpScale = this.$._scale.x;
+
+                return tmpScale && tmpScale < maxScale;
+            }.onChange('configuration.maxScale', "_scale"),
 
             getButtonSize: function (size) {
                 var globalToLocalFactor = this.globalToLocalFactor();
