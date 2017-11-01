@@ -1,8 +1,8 @@
 define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
         "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService"
-        , "sprd/entity/BlobImage", "sprd/data/MaskService", "sprd/data/ImageService", "sprd/manager/ImageMeasurer"],
+        , "sprd/entity/BlobImage", "sprd/data/MaskService", "sprd/data/ImageService", "sprd/manager/ImageMeasurer", "js/type/Color"],
     function (DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow
-        , IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService, ImageService, ImageMeasurer) {
+        , IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService, ImageService, ImageMeasurer, Color) {
 
         return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
@@ -79,6 +79,11 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.$.printColors && this.$.printColors.reset(invertedColors);
             },
 
+            set1EtoWhiteColors: function () {
+                var convertedColors = this.get1EtoWhiteDesignColors();
+                this.$.printColors && this.$.printColors.reset(convertedColors);
+            },
+
             getDesignColors: function (transformer) {
                 var design = this.$.design,
                     printType = this.$.printType,
@@ -109,6 +114,12 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             getInvertedDesignColors: function () {
                 return this.getDesignColors(function (color) {
                     return color.invert();
+                })
+            },
+
+            get1EtoWhiteDesignColors: function () {
+                return this.getDesignColors(function (color) {
+                    return color.r === 225 && color.g === 225 && color.b === 225 ? new Color.RGB(255, 255, 255) : color;
                 })
             },
 

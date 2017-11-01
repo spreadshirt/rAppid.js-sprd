@@ -145,12 +145,23 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
             }
 
+            if (printColors && design.isVectorDesign() && options.switch1EtoWhite) {
+                printColors = configuration.get1EtoWhiteDesignColors();
+            }
+
             configuration.$.printColors.reset(printColors);
             configuration.set('printType', printType, {
                 force: true,
                 preventValidation: true
             });
+        },
 
+        switch1EtoWhite: function (printColors) {
+            if (!printColors || !printColor.length) {
+                return [];
+            }
+
+            return printColors.each
         },
 
         extractSize: function (configuration, options) {

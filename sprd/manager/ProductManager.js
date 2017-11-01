@@ -312,7 +312,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         var designConfiguration = this.vars["designConfiguration"];
                         bus.setUp(designConfiguration);
                         designConfiguration.init({
-                            ensureDesignColorContrast: true
+                            ensureDesignColorContrast: true,
+                            switch1EtoWhite: true
                         }, cb);
                     })
 
