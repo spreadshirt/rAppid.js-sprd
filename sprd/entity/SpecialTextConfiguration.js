@@ -128,26 +128,6 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
             return this.$.loading ? null : this._previewImageUrl;
         }.onChange('loading'),
 
-        isOnlyWhiteSpace: function () {
-            var text = this.$.text;
-            if (!text) {
-                return true;
-            }
-
-            return /^[\s\n\r]*$/.test(text);
-        },
-
-        textChangedSinceCreation: function () {
-            var initialText = this.$.initialText,
-                currentText = this.$.text;
-
-            if (!initialText) {
-                return true;
-            }
-
-            return initialText !== currentText;
-        },
-
         validateChars: function () {
 
             var font = this.$.font,
