@@ -1,12 +1,16 @@
-define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/ProductType", "flow", "sprd/entity/Price", "sprd/model/PrintType", "sprd/config/NeonFlexColors", "sprd/config/RealisticFlexColors"], function(_, ArrayUtil, List, ProductType, flow, Price, PrintType, NeonFlexColors, RealisticFlexColors) {
+define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/ProductType", "flow", "sprd/entity/Price", "sprd/model/PrintType", "sprd/config/NeonFlexColors", "sprd/config/RealisticFlexColors"], function (_, ArrayUtil, List, ProductType, flow, Price, PrintType, NeonFlexColors, RealisticFlexColors) {
 
+    var ALLOW_SPECIAL_FOILS = true;
     return {
-
-        sortPrintTypeByWeight: function(a, b) {
+        sortPrintTypeByWeight: function (a, b) {
             return a.$.weight - b.$.weight;
         },
 
-        getPossiblePrintTypesForDesignOnPrintArea: function(design, printArea, appearance) {
+        setAllowSpecialFoils: function (val) {
+            ALLOW_SPECIAL_FOILS = !!val;
+        },
+
+        getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearance) {
 
             if (!(design && design.$.printTypes)) {
                 return [];
@@ -17,7 +21,7 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                 .sort(this.sortPrintTypeByWeight);
         },
 
-        getPossiblePrintTypesForDesignOnProduct: function(design, product) {
+        getPossiblePrintTypesForDesignOnProduct: function (design, product) {
             var defaultPrintArea = product.$.view.getDefaultPrintArea();
 
             if (!defaultPrintArea) {
@@ -28,17 +32,17 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
         },
 
-        getPossiblePrintTypesForConfiguration: function(configuration, appearance, skipValidation) {
+        getPossiblePrintTypesForConfiguration: function (configuration, appearance, skipValidation) {
             if (!configuration) {
                 return null;
             }
 
             var possiblePrintTypes = configuration.getPossiblePrintTypes(appearance);
 
-            if(!skipValidation) {
-                return _.filter(possiblePrintTypes, function(printType) {
+            if (!skipValidation) {
+                return _.filter(possiblePrintTypes, function (printType) {
                     var validations = configuration._validatePrintTypeSize(printType, configuration.width(), configuration.height(), configuration.$.scale);
-                    return _.every(validations, function(validation) {
+                    return _.every(validations, function (validation) {
                         return !validation;
                     })
                 });
@@ -47,42 +51,58 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             return possiblePrintTypes;
         },
 
-        getPossiblePrintTypesForTextOnPrintArea: function(fontFamily, printArea, appearance) {
+        getPossiblePrintTypesForTextOnPrintArea: function (fontFamily, printArea, appearance) {
             return ArrayUtil.average(fontFamily.$.printTypes.$items,
                 this.getPossiblePrintTypesForPrintAreas([printArea], appearance))
                 .sort(this.sortPrintTypeByWeight);
         },
 
-        getPossiblePrintTypesForPrintAreas: function(printAreas, appearance) {
+        getPossiblePrintTypesForPrintAreas: function (printAreas, appearance) {
             var ret = [];
 
+            if (!appearance) {
+                return ret;
+            }
+
             printAreas = ArrayUtil.getAsArray(printAreas);
+            var printTypesBlacklist = _.each(printAreas, function (printArea) {
+                    return printArea.$.restrictions.$.excludedPrintTypes.$items;
+                }),
+                printTypesWhitelist = appearance.$.printTypes.$items;
+            printTypesBlacklist = _.flatten(printTypesBlacklist, true);
 
-            _.each(printAreas, function(printArea) {
+            ret = _.difference(printTypesWhitelist, printTypesBlacklist);
 
-                if (appearance) {
-                    _.each(appearance.$.printTypes.$items, function(printType) {
-                        if (!_.contains(printArea.$.restrictions.$.excludedPrintTypes.$items, printType) && !_.contains(ret, printType)) {
-                            ret.push(printType);
-                        }
-                    });
-                }
-            });
+            if (!ALLOW_SPECIAL_FOILS) {
+                var negativePredicates = [this.isFlock, this.isSpecialFlex];
+                ret = _.filter(ret, function (printType) {
+                    return _.every(negativePredicates, function (predicate) {
+                        return !predicate(printType);
+                    })
+                });
+            }
 
             ret.sort(this.sortPrintTypeByWeight);
-
             return ret;
         },
 
-        getPossiblePrintTypesForSpecialText: function(printArea, appearance) {
+        isFlock: function (printType) {
+            return printType && printType.$.id === PrintType.Mapping.Flock;
+        },
+
+        isSpecialFlex: function (printType) {
+            return printType && printType.$.id === PrintType.Mapping.SpecialFlex;
+        },
+
+        getPossiblePrintTypesForSpecialText: function (printArea, appearance) {
             return _.filter(this.getPossiblePrintTypesForPrintAreas([printArea], appearance) || [],
-                function(printType) {
+                function (printType) {
                     // just digital print types
                     return !printType.isPrintColorColorSpace() && printType.isScalable();
                 });
         },
 
-        getCheapestPriceForDesignOnProduct: function(design, product) {
+        getCheapestPriceForDesignOnProduct: function (design, product) {
             var possiblePrintTypes = this.getPossiblePrintTypesForDesignOnProduct(design, product),
                 cheapestPrintTypePrice = null;
             if (possiblePrintTypes.length) {
@@ -109,19 +129,19 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             return cheapestPrintTypePrice;
         },
 
-        fetchColorsForProductTypes: function(productTypes, minDistance, callback) {
+        fetchColorsForProductTypes: function (productTypes, minDistance, callback) {
             minDistance = minDistance || 2;
 
             var colors = new List();
 
             flow()
-                .parEach(productTypes, function(item, cb) {
+                .parEach(productTypes, function (item, cb) {
                     item.fetch(null, cb);
                 })
-                .seqEach(productTypes, function(productType, cb) {
-                    productType.$.appearances.each(function(appearance) {
+                .seqEach(productTypes, function (productType, cb) {
+                    productType.$.appearances.each(function (appearance) {
                         var merge = false;
-                        colors.each(function(color) {
+                        colors.each(function (color) {
                             merge = appearance.$.color.distanceTo(color) < minDistance;
                         });
                         if (!merge) {
@@ -129,18 +149,18 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                         }
                     });
                 })
-                .exec(function(err) {
+                .exec(function (err) {
                     callback(err, colors);
                 });
         },
 
-        supportsPrintType: function(product, configuration, printTypeId, skipValidation) {
-            return this.hasPrintType(product, configuration, function(printType) {
+        supportsPrintType: function (product, configuration, printTypeId, skipValidation) {
+            return this.hasPrintType(product, configuration, function (printType) {
                 return printType.$.id === printTypeId;
             }, skipValidation)
         },
 
-        supportsNoPrintType: function(product, configuration) {
+        supportsNoPrintType: function (product, configuration) {
             if (!configuration || !product) {
                 return false;
             }
@@ -156,49 +176,49 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             return false;
         },
 
-        findPrintType: function(product, configuration, predicate, skipValidation) {
+        findPrintType: function (product, configuration, predicate, skipValidation) {
             var possiblePrintTypes = this.getPossiblePrintTypesForConfiguration(configuration, product.$.appearance, skipValidation);
-            return _.find(possiblePrintTypes, function(printType) {
+            return _.find(possiblePrintTypes, function (printType) {
                 return predicate(printType);
             });
         },
 
-        hasPrintType: function(product, configuration, predicate, skipValidation) {
+        hasPrintType: function (product, configuration, predicate, skipValidation) {
             return !!this.findPrintType(product, configuration, predicate, skipValidation);
         },
 
-        supportsDigital: function(product, configuration, skipValidation) {
-            return this.hasPrintType(product, configuration, function(printType) {
+        supportsDigital: function (product, configuration, skipValidation) {
+            return this.hasPrintType(product, configuration, function (printType) {
                 return !printType.isPrintColorColorSpace();
             }, skipValidation)
         },
 
-        supportsNonDigital: function(product, configuration, skipValidation) {
-            return this.hasPrintType(product, configuration, function(printType) {
+        supportsNonDigital: function (product, configuration, skipValidation) {
+            return this.hasPrintType(product, configuration, function (printType) {
                 return printType.isPrintColorColorSpace();
             }, skipValidation)
         },
 
-        isSpecial: function(configuration) {
+        isSpecial: function (configuration) {
             if (!configuration.$stage) {
                 return false;
             }
 
             var platform = configuration.$stage.PARAMETER().platform;
             return configuration.$.printType && configuration.$.printType.$.id === PrintType.Mapping.SpecialFlex
-                || _.some(configuration.$.printColors.$items, function(printColor) {
+                || _.some(configuration.$.printColors.$items, function (printColor) {
                     return NeonFlexColors[platform].indexOf(printColor.$.id) !== -1;
                 });
         },
 
-        isRealisticFlex: function(configuration) {
+        isRealisticFlex: function (configuration) {
             if (!configuration.$stage) {
                 return false;
             }
 
             var platform = configuration.$stage.PARAMETER().platform;
             return configuration.$.printType && configuration.$.printType.$.id === PrintType.Mapping.SpecialFlex
-                || _.some(configuration.$.printColors.$items, function(printColor) {
+                || _.some(configuration.$.printColors.$items, function (printColor) {
                     return RealisticFlexColors[platform].hasOwnProperty(printColor.$.id);
                 });
         }
