@@ -112,7 +112,27 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return data;
-            }
+            },
+
+            textChangedSinceCreation: function () {
+                var initialText = this.$.initialText,
+                    currentText = this.$.text;
+
+                if (!initialText) {
+                    return true;
+                }
+
+                return initialText !== currentText;
+            },
+
+            isOnlyWhiteSpace: function () {
+                var text = this.$.text;
+                if (!text) {
+                    return true;
+                }
+
+                return /^[\s\n\r]*$/.test(text);
+            },
         });
 
     }

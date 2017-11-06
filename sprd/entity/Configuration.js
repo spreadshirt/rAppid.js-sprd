@@ -87,7 +87,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                     // manually changed print type
                     this.$.printTypeWasScaled = false;
                 }
-                if ($.printType && !options.printTypeEqualized && !options.noEqualize) {
+                if ($.printType && !options.printTypeEqualized) {
                     this.trigger('printTypeSwitched', {
                         printType: $.printType,
                         scaledDown: !!options.scaledDown

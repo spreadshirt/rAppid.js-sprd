@@ -280,8 +280,10 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             getImageUrl: function () {
-                var design = this.$.design;
-                if (!design) {
+                var design = this.$.design,
+                    imageService = this.$.imageService;
+
+                if (!design || !imageService) {
                     return;
                 }
 

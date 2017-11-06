@@ -60,27 +60,6 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 this.$synchronizeCache = designCache;
             },
 
-            textChangedSinceCreation: function () {
-                var initialText = this.$.initialText,
-                    currentText = this.$.text;
-
-                if (!initialText) {
-                    return true;
-                }
-
-                return initialText !== currentText;
-            },
-
-            isOnlyWhiteSpace: function () {
-                var text = this.$.text;
-                if (!text) {
-                    return true;
-                }
-
-                return /^[\s\n\r]*$/.test(text);
-            },
-
-
             init: function(options, callback) {
                 var properties = this.$.properties,
                     context = this.$.context,
