@@ -74,16 +74,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.trigger("priceChanged");
             },
 
-            setInvertedColors: function () {
-                var invertedColors = this.getInvertedDesignColors();
-                this.$.printColors && this.$.printColors.reset(invertedColors);
-            },
-
-            set1EtoWhiteColors: function () {
-                var convertedColors = this.get1EtoWhiteDesignColors();
-                this.$.printColors && this.$.printColors.reset(convertedColors);
-            },
-
             getDesignColors: function (transformer) {
                 var design = this.$.design,
                     printType = this.$.printType,
@@ -114,12 +104,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             getInvertedDesignColors: function () {
                 return this.getDesignColors(function (color) {
                     return color.invert();
-                })
-            },
-
-            get1EtoWhiteDesignColors: function () {
-                return this.getDesignColors(function (color) {
-                    return color.r === 225 && color.g === 225 && color.b === 225 ? new Color.RGB(255, 255, 255) : color;
                 })
             },
 

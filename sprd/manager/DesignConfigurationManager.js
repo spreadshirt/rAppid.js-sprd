@@ -146,7 +146,9 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             }
 
             if (printColors && design.isVectorDesign() && options.switch1EtoWhite) {
-                printColors = configuration.get1EtoWhiteDesignColors();
+                _.map(printColors, function(color) {
+                    return color.r === 225 && color.g === 225 && color.b === 225 ? new Color.RGB(255, 255, 255) : color;
+                });
             }
 
             configuration.$.printColors.reset(printColors);
