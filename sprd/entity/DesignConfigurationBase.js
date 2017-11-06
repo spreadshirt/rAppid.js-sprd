@@ -128,7 +128,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
             isOnlyWhiteSpace: function () {
                 var text = this.$.text;
                 if (!text) {
-                    return true;
+                    return false;
                 }
 
                 return /^[\s\n\r]*$/.test(text);
