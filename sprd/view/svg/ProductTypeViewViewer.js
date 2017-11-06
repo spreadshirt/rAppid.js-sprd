@@ -78,17 +78,6 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
         },
 
-        /**
-         * Returns true if point is inside element (hover)
-         * @param x
-         * @param y
-         * @returns {Boolean}
-         */
-        checkForDropHover: function(x, y) {
-            return this.isPointInElement(x, y);
-        },
-
-
         _initializeRenderer: function() {
 
             var width = this.get("_view.size.width");
@@ -128,7 +117,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             this.$printAreas = [];
         },
 
-        _handleIn: function(e) {
+        _handleIn: function() {
             var self = this;
             if (dndObject) {
                 var configViewer = dndObject.configurationViewer,
@@ -149,11 +138,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                         var possiblePrintTypes;
                         // Check printArea constraints
                         var appearance = this.get('_appearance');
-                        if (configuration.$.design) {
-                            possiblePrintTypes = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(configuration.$.design, printArea, appearance);
-                        } else {
                             possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, appearance);
-                        }
+
                         if (possiblePrintTypes.length) {
                             var product = dndObject.viewer.$.product;
                             var validatedMove = productManager.validateMove(possiblePrintTypes, printArea, configuration, product);
@@ -172,7 +158,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             }
         },
 
-        _handleOut: function(e) {
+        _handleOut: function() {
             if (dndObject) {
                 dndObject.dndImage.set('hoverState', DROP_HOVERED.NO);
             }
@@ -249,8 +235,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             var domEvent = e.domEvent;
             if (dndObject) {
                 var viewer = this,
-                    productManager = dndObject.viewer.get('product.manager'),
-                    hoverState = dndObject.dndImage.get('hoverState');
+                    productManager = dndObject.viewer.get('product.manager');
 
                 dndObject.viewer.unbindMoveEvent();
 
@@ -344,9 +329,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
 
         zoomToPrintArea: function() {
 
-            var zoomToPrintArea = this.get("productViewer.zoomToPrintArea");
-            var maxZoom = this.get("productViewer.maxZoom");
-            var view = this.get('_view');
+            var zoomToPrintArea = this.get("productViewer.zoomToPrintArea"),
+                view = this.get('_view');
 
             if (!(zoomToPrintArea && view)) {
                 this.set({

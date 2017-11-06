@@ -1,5 +1,5 @@
 define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeResolver', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'sprd/entity/Price', 'js/data/TypeResolver', 'js/data/Entity', "underscore", "flow", "sprd/manager/IProductManager", "sprd/error/ProductCreationError", 'sprd/model/ProductType', 'sprd/entity/Appearance', 'sprd/entity/BendingTextConfiguration'],
-    function (ProductBase, List, ConfigurationTypeResolver, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType, Appearance, BendingTextConfiguration) {
+    function(ProductBase, List, ConfigurationTypeResolver, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, Price, TypeResolver, Entity, _, flow, IProductManager, ProductCreationError, ProductType, Appearance, BendingTextConfiguration) {
 
         var undefined;
 
@@ -41,20 +41,20 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 manager: IProductManager
             },
 
-            ctor: function () {
+            ctor: function() {
                 this.configurationsOnViewCache = {};
 
                 this.callBase();
 
-                var priceChangeHandler = function () {
+                var priceChangeHandler = function() {
                     this.trigger("priceChanged");
                 };
 
-                var productChangeHandler = function () {
+                var productChangeHandler = function() {
                     this.trigger("productChanged");
                 };
 
-                var configurationAdd = function (e) {
+                var configurationAdd = function(e) {
                     var configuration = e.$.item,
                         viewId = configuration.get("printArea.getDefaultView().id");
 
@@ -74,7 +74,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
 
                 };
 
-                var configurationRemove = function (e) {
+                var configurationRemove = function(e) {
                     var configuration = e.$.item,
                         viewId = configuration.get("printArea.getDefaultView().id");
 
@@ -92,7 +92,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
 
                 this.bind("configurations", "add", configurationAdd, this);
                 this.bind("configurations", "remove", configurationRemove, this);
-                this.bind("configurations", "reset", function () {
+                this.bind("configurations", "reset", function() {
                     this.configurationsOnViewCache = {};
                     this.trigger("configurationValidChanged");
 
@@ -103,24 +103,24 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 this.bind("configurations", "item:priceChanged", priceChangeHandler, this);
                 this.bind('configurations', 'item:configurationChanged', productChangeHandler, this);
                 this.bind('change:configurations', productChangeHandler, this);
-                this.bind('configurations', 'item:change:printArea', function () {
+                this.bind('configurations', 'item:change:printArea', function() {
                     this.configurationsOnViewCache = {};
                     this.trigger("configurationValidChanged");
 
                     productChangeHandler.call(this);
                 }, this);
 
-                this.bind('configurations', 'item:isValidChanged', function () {
+                this.bind('configurations', 'item:isValidChanged', function() {
                     this.trigger("configurationValidChanged");
                 }, this);
 
                 this.bind('configurations', 'item:change:offset', this._onConfigurationOffsetChanged, this);
-                this.bind('change:productType', function () {
+                this.bind('change:productType', function() {
                     this.configurationsOnViewCache = {};
                 }, this)
             },
 
-            getDefaultAppearance: function () {
+            getDefaultAppearance: function() {
                 var productType = this.$.productType;
 
                 if (productType) {
@@ -131,7 +131,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
             }.onChange('appearance', 'productType'),
 
 
-            _onConfigurationOffsetChanged: function (e) {
+            _onConfigurationOffsetChanged: function(e) {
 
                 var manager = this.$.manager,
                     configuration = e.$.item;
@@ -141,7 +141,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }
             },
 
-            configurationsOnViewError: function (view) {
+            configurationsOnViewError: function(view) {
 
                 var errorValue = null,
                     configurations;
@@ -186,7 +186,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
 
             }.on("configurationValidChanged"),
 
-            _setUpConfiguration: function (configuration) {
+            _setUpConfiguration: function(configuration) {
 
                 if (!this.$stage) {
                     return;
@@ -195,7 +195,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 this.$stage.$bus.setUp(configuration);
             },
 
-            _tearDownConfiguration: function (configuration) {
+            _tearDownConfiguration: function(configuration) {
 
                 if (!this.$stage) {
                     return;
@@ -204,37 +204,37 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 this.$stage.$bus.tearDown(configuration);
             },
 
-            _postConstruct: function () {
+            _postConstruct: function() {
 
                 var configurations = this.$.configurations,
                     self = this;
 
                 if (configurations) {
-                    configurations.each(function (configuration) {
+                    configurations.each(function(configuration) {
                         self._setUpConfiguration(configuration);
                     });
                 }
             },
 
-            _preDestroy: function () {
+            _preDestroy: function() {
                 var configurations = this.$.configurations,
                     self = this;
 
                 if (configurations) {
-                    configurations.each(function (configuration) {
+                    configurations.each(function(configuration) {
                         self._tearDownConfiguration(configuration);
                     });
                 }
             },
 
-            price: function () {
+            price: function() {
 
                 // calculate price
                 var price = new Price({
                     vatIncluded: this.get("productType.price.vatIncluded"),
                     currency: this.get('productType.price.currency')
                 });
-                this.$.configurations.each(function (configuration) {
+                this.$.configurations.each(function(configuration) {
                     price.add(configuration.price());
                 });
 
@@ -242,18 +242,18 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
 
             }.on("priceChanged", ["productType", 'change:price']).onChange('productType'),
 
-            _addConfiguration: function (configuration) {
+            _addConfiguration: function(configuration) {
                 this.$.configurations.add(configuration);
             },
 
-            removeExampleConfiguration: function () {
+            removeExampleConfiguration: function() {
                 if (this.get('restrictions.example') === true && this.$.configurations.size()) {
                     this.$.restrictions.example = false;
                     this.$.configurations.removeAt(0);
                 }
             },
 
-            getConfigurationsOnView: function (view) {
+            getConfigurationsOnView: function(view) {
 
                 view = view || this.$.view;
 
@@ -273,7 +273,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
 
             },
 
-            getConfigurationsOnPrintAreas: function (printAreas) {
+            getConfigurationsOnPrintAreas: function(printAreas) {
                 printAreas = printAreas || [];
 
                 if (!(printAreas instanceof Array)) {
@@ -294,11 +294,11 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
 
             },
 
-            fetch: function (options, callback) {
+            fetch: function(options, callback) {
                 var self = this,
                     fetchState = this._fetch.state;
 
-                this.callBase(options, function (err) {
+                this.callBase(options, function(err) {
                     if (!err && fetchState !== 2) {
                         self.$originalProduct = self.clone();
                     }
@@ -306,17 +306,17 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 });
             },
 
-            hasChanges: function () {
+            hasChanges: function() {
                 return !this.equals(this.$originalProduct);
             },
 
-            equals: function (product) {
+            equals: function(product) {
                 return (this.$.configurations.isDeepEqual(product.$.configurations) &&
-                    this.$.appearance.isDeepEqual(product.$.appearance) &&
-                    this.$.productType.isDeepEqual(product.$.productType));
+                this.$.appearance.isDeepEqual(product.$.appearance) &&
+                this.$.productType.isDeepEqual(product.$.productType));
             },
 
-            removeDuplicateConfigurations: function () {
+            removeDuplicateConfigurations: function() {
                 var configurations = this.$.configurations,
                     clonedConfigurations = configurations.clone();
 
@@ -324,7 +324,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                     var config = clonedConfigurations.at(i);
                     for (var j = i + 1; j < clonedConfigurations.length; j++) {
                         var otherConfig = clonedConfigurations.at(j),
-                            duplicate = config.isDeepEqual(otherConfig);
+                            duplicate = config.isDuplicate(otherConfig, ["text", "font", "align", "type", "design", "printArea", "rotation"]);
 
                         if (duplicate) {
                             configurations.removeAt(j);
@@ -333,7 +333,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }
             },
 
-            removeTooSmallConfigurations: function (configuration) {
+            removeTooSmallConfigurations: function(configuration) {
                 if (!configuration) {
                     return;
                 }
@@ -349,20 +349,20 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 var width = size.$.width,
                     height = size.$.height;
 
-                if (!width || !height || width < minSize || height < minSize ) {
+                if (!width || !height || width < minSize || height < minSize) {
                     self.$.configurations.remove(configuration);
                 }
             },
 
-            clean: function () {
+            clean: function() {
                 var self = this;
                 self.removeExampleConfiguration();
                 self.removeDuplicateConfigurations();
-                self.eachConfig(self.cleanText, self);
-                self.eachConfig(self.removeTooSmallConfigurations, self);
+                self.eachConfig(self.cleanText);
+                self.eachConfig(self.removeTooSmallConfigurations);
             },
 
-            cleanText: function (configuration) {
+            cleanText: function(configuration) {
                 var self = this;
                 var isTextConfig = configuration.isOnlyWhiteSpace && configuration.textChangedSinceCreation;
                 if (!isTextConfig) {
@@ -374,15 +374,15 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }
             },
 
-            eachConfig: function (func, scope) {
+            eachConfig: function(func) {
                 var self = this,
                     configurations = this.$.configurations,
                     tempConfigs = [].concat(configurations.$items);
 
-                _.each(tempConfigs,func, scope);
+                _.each(tempConfigs, func, self);
             },
 
-            save: function (options, callback) {
+            save: function(options, callback) {
                 if (this.$originalProduct) {
                     if (this.hasChanges()) {
                         this.set('id', undefined);
@@ -406,16 +406,16 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }
 
                 flow()
-                    .seq(function () {
+                    .seq(function() {
                         self.clean();
                     })
-                    .parEach(this.$.configurations.$items, function (configuration, cb) {
+                    .parEach(this.$.configurations.$items, function(configuration, cb) {
                         configuration.save(cb);
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         ProductBase.prototype.save.call(self, options, cb);
                     })
-                    .exec(function (err) {
+                    .exec(function(err) {
                         if (!err) {
                             var clone = self.clone();
                             // change original product against the clone in the entity
@@ -438,7 +438,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
              * @param [options]
              * @param callback
              */
-            init: function (options, callback) {
+            init: function(options, callback) {
 
                 if (options instanceof Function) {
                     callback = options;
@@ -452,18 +452,18 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 var self = this;
 
                 flow()
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         if (self.isNew()) {
                             cb();
                         } else {
                             self.fetch(null, cb);
                         }
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         var productType = self.$.productType;
                         productType.fetch(null, cb);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         var productType = self.$.productType;
 
                         var appearance;
@@ -479,17 +479,17 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                             view: self.$.view || productType.getViewById(self.get("defaultValues.defaultView.id")) || productType.getDefaultView()
                         });
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         flow()
-                            .parEach(self.$.configurations.$items, function (configuration, cb) {
+                            .parEach(self.$.configurations.$items, function(configuration, cb) {
                                 self._setUpConfiguration(configuration);
                                 configuration.init(options, cb);
                             })
-                            .exec(function (err) {
+                            .exec(function(err) {
                                 cb(err);
                             });
                     })
-                    .exec(function (err) {
+                    .exec(function(err) {
                         self.trigger("productInitialized");
                         self.trigger("priceChanged");
 
@@ -502,15 +502,15 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                     });
             },
 
-            getAvailableAppearances: function () {
+            getAvailableAppearances: function() {
                 var productType = this.$.productType;
                 if (productType) {
                     var appearances = productType.getAvailableAppearances(),
                         configurations = this.$.configurations;
                     if (configurations) {
                         var ret = new List(appearances.toArray());
-                        configurations.each(function (config) {
-                            appearances.each(function (appearance) {
+                        configurations.each(function(config) {
+                            appearances.each(function(appearance) {
                                 if (ret.contains(appearance)) {
                                     var printTypes = config.getPossiblePrintTypes(appearance);
                                     if (!printTypes || !printTypes.length) {
@@ -526,11 +526,11 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 return null;
             }.onChange('productType.stockStates'),
 
-            isReadyForCompose: function () {
+            isReadyForCompose: function() {
                 var ready = true;
 
                 if (this.$.configurations) {
-                    this.$.configurations.each(function (configuration) {
+                    this.$.configurations.each(function(configuration) {
                         ready = ready && configuration.isReadyForCompose();
                     });
                 }
@@ -538,7 +538,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 return ready;
             },
 
-            getContainedMasks: function () {
+            getContainedMasks: function() {
                 var configs = this.$.configurations;
                 var masks = [];
                 for (var i = 0; i < configs.length; i++) {
@@ -551,14 +551,14 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 return masks;
             },
 
-            _commitChangedAttributes: function (attributes) {
+            _commitChangedAttributes: function(attributes) {
                 this.callBase();
                 if (attributes.hasOwnProperty("appearance") || attributes.hasOwnProperty("productType")) {
                     this.trigger("productChanged");
                 }
             },
 
-            sync: function () {
+            sync: function() {
                 var ret = this.callBase();
                 if (ret) {
                     this._$source.initialized = false;

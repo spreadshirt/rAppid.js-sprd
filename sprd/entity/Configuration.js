@@ -28,7 +28,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             rotation: 0,
             printColors: List,
             minSize: 5, // in mm
-
+            minScale: "{getMinScale()}",
+            maxScale: "{getMaxScale()}",
             textEditable: true,
 
             // bind this
@@ -55,11 +56,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return false;
         },
 
-        _commitScale: function (newScale) {
+        _commitScale: function(newScale) {
             return this.validSize(newScale);
         },
 
-        validSize: function (scale) {
+        validSize: function(scale) {
             if (!scale) {
                 return false;
             }
@@ -176,7 +177,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
 
 
-            // when configuration is too small for print type or it is a DD print type try to find another print type that fits better
+            // when configuration is too small for print type try to find another print type that fits better
             if (printType && (printTypeTooSmall || printTypeWasScaled) && this.$context && this.$context.$contextModel && !printTypeChanged && sizeChanged) {
                 var product = this.$context.$contextModel,
                     appearance = this.$context.$contextModel.get('appearance'),
@@ -259,10 +260,19 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return {
                 printTypeScaling: !printType.isScalable() && (scale.x != 1 || scale.y != 1),
                 maxBound: width > printType.get("size.width") || height > printType.get("size.height"),
-                minBound: false
+                minBound: !printType.isShrinkable() && this.minimumScale() > this.getScaleMinimalComponent(scale)
             };
-
         },
+
+        getScaleMinimalComponent: function (scale) {
+            scale = this.$.scale || scale;
+
+            if (!scale) {
+                return null;
+            }
+            
+            return Math.min(Math.abs(scale.x), Math.abs(scale.y));
+        }.onChange("scale"),
 
         isPrintTypeAvailable: function(printType) {
 
@@ -301,7 +311,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             }
         }.onChange('height()', 'printType.dpi'),
 
-        getBoundingBoxOfRotatedBox: function (x, y, width, height, rotation) {
+        getBoundingBoxOfRotatedBox: function(x, y, width, height, rotation) {
             //Get unrotated bounding box of a rotated rectangle
             if (!(rotation % 360)) {
                 return {
@@ -319,10 +329,10 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 centerY = y + halfH;
 
             var corners = [
-                [-halfW , -halfH],
+                [-halfW, -halfH],
                 [halfW, -halfH],
-                [halfW , halfH],
-                [-halfW , halfH]
+                [halfW, halfH],
+                [-halfW, halfH]
             ];
 
             var minX, minY, maxY, maxX;
@@ -349,17 +359,17 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         _getBoundingBox: function(offset, width, height, rotation, scale, onlyContent, xOffset) {
             var bbox = this._getRotatedBoundingBox(offset, width, height, rotation, scale);
-            var rotatedBbox= this.getBoundingBoxOfRotatedBox(bbox.x, bbox.y, bbox.width, bbox.height, bbox.rotation);
+            var rotatedBbox = this.getBoundingBoxOfRotatedBox(bbox.x, bbox.y, bbox.width, bbox.height, bbox.rotation);
             rotatedBbox.x += xOffset || 0;
             return rotatedBbox;
         },
 
-        _getInnerBoundingBox: function (offset, width, height, rotation, scale, onlyContent, xOffset) {
+        _getInnerBoundingBox: function(offset, width, height, rotation, scale, onlyContent, xOffset) {
             var innerRect = this.$.innerRect,
                 bbox = this._getRotatedBoundingBox(offset, width, height, rotation, scale);
 
             if (innerRect) {
-                bbox =  {
+                bbox = {
                     x: bbox.x + bbox.width * innerRect.x,
                     y: bbox.y + bbox.height * innerRect.y,
                     width: bbox.width * innerRect.width,
@@ -391,6 +401,28 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 width: width
             };
         },
+
+        getMinScale: function () {
+            var printType = this.$.printType;
+
+            if (printType && !printType.isShrinkable()) {
+                return this.minimumScale();
+            }
+
+            return null;
+        }.onChange("minimumScale()", "printType"),
+
+        getMaxScale: function () {
+            var width = this.width(1),
+                height = this.height(1),
+                printType = this.$.printType;
+
+            if (!width || !height || !printType) {
+                return null;
+            }
+
+            return Math.min(printType.get("size.width") / width ,  printType.get("size.height") / height );
+        }.onChange("printType", "size()").on("sizeChanged"),
 
         size: function() {
             this.log("size() not implemented", "debug");
@@ -453,6 +485,11 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         getPossiblePrintTypes: function(appearance) {
             var printArea = this.$.printArea;
+
+            if (this.$context) {
+                appearance = appearance || this.$context.$contextModel.get('appearance');
+            }
+                
             return this.getPossiblePrintTypesForPrintArea(printArea, appearance);
         }.onChange("printArea"),
 
@@ -478,11 +515,44 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         minimumScale: function() {
-            return 0;
-        },
+            var printType = this.$.printType;
+
+            if (printType && !printType.isShrinkable()) {
+                return 1;
+            }
+
+            return Number.MIN_VALUE;
+        }.onChange('printType'),
 
         isReadyForCompose: function() {
             return true;
+        },
+
+        isDuplicate: function(configuration, keys) {
+            if (!configuration) {
+                return false;
+            }
+
+            var roundedEqual = function(a, b, decimalDigits) {
+                var decimals = Math.pow(10, decimalDigits || 0);
+                return _.isEqual(Math.round(a * decimals), Math.round(b * decimals));
+            };
+
+            keys = keys || [];
+
+            var selfSize = this.get("_size"),
+                selfOffset = this.get("offset"),
+                selfScale = this.get("scale"),
+                size = configuration.get("_size"),
+                offset = configuration.get("offset"),
+                scale = configuration.get("scale");
+
+            return roundedEqual(selfSize.$.height, size.$.height) &&
+                roundedEqual(selfSize.$.width, size.$.width) &&
+                roundedEqual(selfOffset.$.x, offset.$.x, 1) &&
+                roundedEqual(selfOffset.$.y, offset.$.y, 1) &&
+                roundedEqual(selfScale.x, scale.x, 1) &&
+                this.isDeepEqual(configuration, keys);
         }
     });
 });

@@ -8,7 +8,8 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             return false;
         }
         var printType = configuration.get('printType');
-        return printType.$.id !== PrintType.Mapping.Flock;
+
+        return printType && printType.$.id !== PrintType.Mapping.Flock;
     }, function(configuration) {
         return !ProductUtil.isRealisticFlex(configuration);
     }];

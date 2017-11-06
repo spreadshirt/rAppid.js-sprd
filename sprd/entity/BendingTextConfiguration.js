@@ -193,7 +193,11 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 ret.properties.fontSize = this.$.fontSize;
                 if (!this.$.printColors.isEmpty()) {
                     ret.properties.fill = this.$.printColors.at(0).toHexString();
+                    var printColor = this.$.printColors.at(0);
+                    var convertedPrintColor = this.$.printType.getClosestPrintColor(printColor.color());
+                    ret.content.svg.image.printColorIds = ret.content.svg.image.printColorIds || "" + convertedPrintColor.$.id;
                 }
+                
                 ret.properties.path = this.$.path;
                 ret.properties.scale = this.$.scale.x;
                 ret.properties.size = this.$._size.$;
@@ -220,32 +224,17 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 }, this)
             },
 
-            _validatePrintTypeSize: function(printType, width, height, scale) {
-                var ret = this.callBase();
-
-                if (!printType || !scale) {
-                    return ret;
-                }
-
-                ret.minBound = this._isScaleTooSmall(printType, scale);
-
-                return ret;
-            },
-
-            _isScaleTooSmall: function(printType, scale) {
+            minimumScale: function () {
+                var minScale = this.callBase() || Number.MIN_VALUE;
                 var font = this.$.font,
                     fontSize = this.$.fontSize;
 
-                if (printType.isShrinkable()) {
-                    return false;
+                if (font && font.$.minimalSize && fontSize) {
+                    minScale = Math.max(font.$.minimalSize / fontSize, minScale);
                 }
 
-                if (font && fontSize) {
-                    return Math.min(Math.abs(scale.x), Math.abs(scale.y)) < font.$.minimalSize / fontSize;
-                }
-
-                return false;
-            },
+                return minScale;
+            }.onChange('printType', 'font', 'fontSize'),
 
 
             textPath: function() {
@@ -280,6 +269,10 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
                 if (!printArea || !font) {
                     return ret;
+                }
+
+                if (this.$context) {
+                    appearance = appearance || this.$context.$contextModel.get('appearance');
                 }
 
                 tmp = this.getPossiblePrintTypesForPrintArea(printArea, appearance);

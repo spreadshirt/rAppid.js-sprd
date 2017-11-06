@@ -521,25 +521,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
             _validatePrintTypeSize: function (printType, width, height, scale) {
-
                 var bound = this.$.bound;
-
-                var ret = this.callBase(printType, bound ? bound.width * scale.x : width, bound ? bound.height * scale.y : height, scale);
-
-                if (!printType || !scale) {
-                    return ret;
-                }
-
-                ret.minBound = this._isScaleTooSmall(printType, scale);
-
-                return ret;
-
-            },
-
-            _isScaleTooSmall: function (printType, scale) {
-                return this._getMinimalScales(printType, function (minScale) {
-                    return scale.x < minScale;
-                }).length > 0;
+                return this.callBase(printType, bound ? bound.width * scale.x : width, bound ? bound.height * scale.y : height, scale);
             },
 
             _getMinimalScales: function (printType, predicate) {
@@ -569,6 +552,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 return minimalScales;
             },
+
+            minimumScale: function () {
+                return this._getMinimalScale(this.$.printType);
+            }.onChange('printType'),
 
             _getMinimalScale: function (printType) {
                 return Math.max.apply(null, this._getMinimalScales(printType));
@@ -903,6 +890,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     printArea = this.$.printArea,
                     textFlow = this.$.textFlow,
                     selection = this.$.selection;
+
+                if (this.$context) {
+                    appearance = appearance || this.$context.$contextModel.get('appearance');
+                }
 
                 if (printArea && appearance && textFlow && selection) {
                     var leaf = textFlow.findLeaf(selection.$.absoluteStart),
