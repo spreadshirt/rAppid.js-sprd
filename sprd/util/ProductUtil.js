@@ -74,16 +74,17 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             ret = _.difference(printTypesWhitelist, printTypesBlacklist);
 
             if (!ALLOW_SPECIAL_FOILS) {
-                var negativePredicates = [this.isFlock, this.isSpecialFlex];
                 ret = _.filter(ret, function (printType) {
-                    return _.every(negativePredicates, function (predicate) {
-                        return !predicate(printType);
-                    })
-                });
+                    return !this.isSpecialFoil(printType);
+                }, this);
             }
 
             ret.sort(this.sortPrintTypeByWeight);
             return ret;
+        },
+
+        isSpecialFoil: function (printType) {
+            return this.isFlock(printType) || this.isSpecialFlex(printType);
         },
 
         isFlock: function (printType) {
