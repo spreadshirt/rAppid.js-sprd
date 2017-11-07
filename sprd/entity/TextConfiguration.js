@@ -60,7 +60,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 isNew: false,
                 isTemplate: false,
                 autoGrow: false,
-                measurer: null
+                measurer: null,
+                textChanged: null
             },
 
             inject: {
@@ -129,13 +130,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             textChangedSinceCreation: function () {
                 var initialText = this.$.initialText,
-                    currentText = this.$.rawText;
+                    currentText = this.$.rawText,
+                    textChanged = this.$.textChanged;
 
                 if (!initialText) {
                     return true;
                 }
 
-                return initialText !== currentText;
+                var result = textChanged || initialText !== currentText;
+                this.set('textChanged', result);
+                return result;
             },
 
             isOnlyWhiteSpace: function () {
