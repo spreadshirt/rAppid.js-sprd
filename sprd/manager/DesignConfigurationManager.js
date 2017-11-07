@@ -145,7 +145,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
             }
 
-            if (printColors && design && design.isVectorDesign() && options.switch1EtoWhite) {
+            if (printColors && design && design.isVectorDesign() && options.switchImageServerGreyToWhite) {
                 _.map(printColors, function(color) {
                     return color.r === 225 && color.g === 225 && color.b === 225 ? new Color.RGB(255, 255, 255) : color;
                 });
@@ -156,14 +156,6 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 force: true,
                 preventValidation: true
             });
-        },
-
-        switch1EtoWhite: function (printColors) {
-            if (!printColors || !printColor.length) {
-                return [];
-            }
-
-            return printColors.each
         },
 
         extractSize: function (configuration, options) {
