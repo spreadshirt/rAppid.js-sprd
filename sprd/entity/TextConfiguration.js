@@ -267,7 +267,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         if (self.fontChanged()) {
                             self.resize(newMeasure, oldMeasure);
                         } else {
-                            self.reposition(newMeasure, oldMeasure, self.textChanged(), composedTextFlow);
+                            self.reposition(newMeasure, oldMeasure || self.$previousAttributes.textArea.$, self.textChanged(), composedTextFlow);
                         }
                     }
 

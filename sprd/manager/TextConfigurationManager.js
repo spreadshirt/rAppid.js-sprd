@@ -1,7 +1,8 @@
 define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "text/entity/TextFlow", "text/entity/ParagraphElement", "text/entity/SpanElement", "sprd/type/Style", "text/entity/TextRange", "underscore"], function (Base, flow, Size, TextFlow, ParagraphElement, SpanElement, Style, TextRange, _) {
     return Base.inherit("sprd.manager.TextConfigurationManager", {
         initializeConfiguration: function (configuration, options, callback) {
-
+            options = options || {};
+            
             var content = configuration.$$ || {},
                 svg = content.svg,
                 printType = configuration.$.printType,
@@ -10,8 +11,8 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 fontFamilies = product.$context.$contextModel.getCollection("fontFamilies"),
                 properties = configuration.$.properties;
 
-            if (properties && properties.autoGrow) {
-                configuration.set('autoGrow', properties.autoGrow)
+            if (properties && properties.autoGrow || options.isExample) {
+                configuration.set('autoGrow', properties.autoGrow || options.isExample)
             }
 
             flow()
