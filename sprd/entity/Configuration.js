@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List', "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore", "js/core/Bus"], function(Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _, Bus) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List', "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore", "js/core/Bus", "designer/manager/FeatureManager"], function(Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _, Bus, FeatureManager) {
 
     return Entity.inherit('sprd.entity.Configuration', {
 
@@ -45,7 +45,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         inject: {
-            bus: Bus
+            bus: Bus,
+            featureManager: FeatureManager
         },
 
         save: function(callback) {
@@ -499,6 +500,31 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         getPossiblePrintTypesForPrintArea: function() {
             return [];
+        },
+
+        lockPrintType: function (possiblePrintTypes) {
+            if (!possiblePrintTypes || !possiblePrintTypes.length) {
+                return possiblePrintTypes;
+            }
+
+            var tempPrintTypes = possiblePrintTypes,
+                featureManager = this.$.featureManager,
+                self = this,
+                currentPrintType = self.$.printType;
+
+            if (!currentPrintType) {
+                return possiblePrintTypes;
+            }
+
+            var currentIsSpecial = ProductUtil.isSpecialFoil(currentPrintType);
+
+            if (!currentIsSpecial && featureManager && featureManager.getFeatureState("lockPrintType")) {
+                tempPrintTypes = _.filter(tempPrintTypes, function (printType) {
+                    return ProductUtil.isSpecialFoil(printType) || currentPrintType.$.id == printType.$.id;
+                })
+            }
+
+            return tempPrintTypes;
         },
 
         getPreferredPrintArea: function(printAreas, appearance) {

@@ -32,14 +32,20 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
         },
 
-        getPossiblePrintTypesForConfiguration: function (configuration, appearance, skipValidation) {
+        getPossiblePrintTypesForConfiguration: function (configuration, appearance, options) {
             if (!configuration) {
                 return null;
             }
 
+            options = options || {};
+
             var possiblePrintTypes = configuration.getPossiblePrintTypes(appearance);
 
-            if (!skipValidation) {
+            if (options.lockPrintType) {
+                possiblePrintTypes = configuration.lockPrintType(possiblePrintTypes);
+            }
+
+            if (!options.skipValidation) {
                 return _.filter(possiblePrintTypes, function (printType) {
                     var validations = configuration._validatePrintTypeSize(printType, configuration.width(), configuration.height(), configuration.$.scale);
                     return _.every(validations, function (validation) {
@@ -130,35 +136,10 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             return cheapestPrintTypePrice;
         },
 
-        fetchColorsForProductTypes: function (productTypes, minDistance, callback) {
-            minDistance = minDistance || 2;
-
-            var colors = new List();
-
-            flow()
-                .parEach(productTypes, function (item, cb) {
-                    item.fetch(null, cb);
-                })
-                .seqEach(productTypes, function (productType, cb) {
-                    productType.$.appearances.each(function (appearance) {
-                        var merge = false;
-                        colors.each(function (color) {
-                            merge = appearance.$.color.distanceTo(color) < minDistance;
-                        });
-                        if (!merge) {
-                            colors.add(appearance.$.color);
-                        }
-                    });
-                })
-                .exec(function (err) {
-                    callback(err, colors);
-                });
-        },
-
-        supportsPrintType: function (product, configuration, printTypeId, skipValidation) {
+        supportsPrintType: function (product, configuration, printTypeId, options) {
             return this.hasPrintType(product, configuration, function (printType) {
                 return printType.$.id === printTypeId;
-            }, skipValidation)
+            }, options)
         },
 
         supportsNoPrintType: function (product, configuration) {
@@ -177,27 +158,27 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             return false;
         },
 
-        findPrintType: function (product, configuration, predicate, skipValidation) {
-            var possiblePrintTypes = this.getPossiblePrintTypesForConfiguration(configuration, product.$.appearance, skipValidation);
+        findPrintType: function (product, configuration, predicate, options) {
+            var possiblePrintTypes = this.getPossiblePrintTypesForConfiguration(configuration, product.$.appearance, options);
             return _.find(possiblePrintTypes, function (printType) {
                 return predicate(printType);
             });
         },
 
-        hasPrintType: function (product, configuration, predicate, skipValidation) {
-            return !!this.findPrintType(product, configuration, predicate, skipValidation);
+        hasPrintType: function (product, configuration, predicate, options) {
+            return !!this.findPrintType(product, configuration, predicate, options);
         },
 
-        supportsDigital: function (product, configuration, skipValidation) {
+        supportsDigital: function (product, configuration, options) {
             return this.hasPrintType(product, configuration, function (printType) {
                 return !printType.isPrintColorColorSpace();
-            }, skipValidation)
+            }, options)
         },
 
-        supportsNonDigital: function (product, configuration, skipValidation) {
+        supportsNonDigital: function (product, configuration, options) {
             return this.hasPrintType(product, configuration, function (printType) {
                 return printType.isPrintColorColorSpace();
-            }, skipValidation)
+            }, options)
         },
 
         isSpecial: function (configuration) {
