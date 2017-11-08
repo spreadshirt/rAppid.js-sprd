@@ -1,13 +1,8 @@
 define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/ProductType", "flow", "sprd/entity/Price", "sprd/model/PrintType", "sprd/config/NeonFlexColors", "sprd/config/RealisticFlexColors"], function (_, ArrayUtil, List, ProductType, flow, Price, PrintType, NeonFlexColors, RealisticFlexColors) {
 
-    var ALLOW_SPECIAL_FOILS = true;
     return {
         sortPrintTypeByWeight: function (a, b) {
             return a.$.weight - b.$.weight;
-        },
-
-        setAllowSpecialFoils: function (val) {
-            ALLOW_SPECIAL_FOILS = !!val;
         },
 
         getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearance) {
@@ -43,6 +38,10 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
             if (options.lockPrintType) {
                 possiblePrintTypes = configuration.lockPrintType(possiblePrintTypes);
+            } else if (options.allowSpecialFoils) {
+                possiblePrintTypes = _.filter(possiblePrintTypes, function (printType) {
+                    return !this.isSpecialFoil(printType);
+                }, this);
             }
 
             if (!options.skipValidation) {
@@ -78,13 +77,6 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             printTypesBlacklist = _.flatten(printTypesBlacklist, true);
 
             ret = _.difference(printTypesWhitelist, printTypesBlacklist);
-
-            if (!ALLOW_SPECIAL_FOILS) {
-                ret = _.filter(ret, function (printType) {
-                    return !this.isSpecialFoil(printType);
-                }, this);
-            }
-
             ret.sort(this.sortPrintTypeByWeight);
             return ret;
         },
