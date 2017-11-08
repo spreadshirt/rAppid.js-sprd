@@ -35,15 +35,6 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             options = options || {};
 
             var possiblePrintTypes = configuration.getPossiblePrintTypes(appearance);
-
-            if (options.lockPrintType) {
-                possiblePrintTypes = configuration.lockPrintType(possiblePrintTypes);
-            } else if (options.allowSpecialFoils) {
-                possiblePrintTypes = _.filter(possiblePrintTypes, function (printType) {
-                    return !this.isSpecialFoil(printType);
-                }, this);
-            }
-
             if (!options.skipValidation) {
                 return _.filter(possiblePrintTypes, function (printType) {
                     var validations = configuration._validatePrintTypeSize(printType, configuration.width(), configuration.height(), configuration.$.scale);
