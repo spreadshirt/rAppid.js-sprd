@@ -134,7 +134,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             }
 
                             if (!lastTSpan || tspan.hasOwnProperty("y")) {
-                                self.addParagraph(paragraph, tspan, text, textFlow)
+                                paragraph = self.addParagraph(paragraph, tspan, text, textFlow)
                             }
 
                             maxLineWidth = Math.max(maxLineWidth, tspan.lineWidth || 0);
