@@ -1542,7 +1542,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             flipOffsetX: function () {
                 if (this.$._scale.x < 0) {
-                    return -this.$.configuration.width();
+                    return this.$._configurationWidth;
                 }
 
                 return 0;
@@ -1550,7 +1550,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             flipOffsetY: function () {
                 if (this.$._scale.y < 0) {
-                    return -this.$.configuration.height();
+                    return this.$._configurationHeight;
                 }
 
                 return 0;
@@ -1731,6 +1731,37 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             className: function (a, className) {
                 return a ? className : "";
-            }
+            },
+
+            flipConfiguration: function () {
+                this.flipConfigurationX();
+                this.flipConfigurationY();
+            },
+
+            flipConfigurationX: function () {
+                var config = this.$.configuration;
+                if (!config) {
+                    return;
+                }
+
+                var currentScale = this.$._scale;
+                this.set("_scale", {
+                    x: -1 * currentScale.x,
+                    y: currentScale.y
+                });
+            },
+
+            flipConfigurationY: function () {
+                var config = this.$.configuration;
+                if (!config) {
+                    return;
+                }
+
+                var currentScale = this.$._scale;
+                this.set("_scale", {
+                    x: currentScale.x,
+                    y: -1 * currentScale.y
+                });
+            },
         });
     });

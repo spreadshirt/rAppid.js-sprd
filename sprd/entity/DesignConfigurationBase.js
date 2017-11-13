@@ -65,8 +65,6 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                     href: "/" + this.get("design.id")
                 }];
 
-                delete ret.design;
-
                 if (design && design.isVectorDesign()) {
                     var printColorIds = [],
                         printColorRGBs = [];
@@ -83,7 +81,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                     }
                 }
 
-                ret.printColors = undefined;
+                delete ret.printColors;
+                delete ret.design;
 
                 ret.restrictions = {
                     changeable: true
