@@ -43,7 +43,16 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 if (scale && (scale.x < 0 || scale.y < 0)) {
+                    ret.offset = ret.offset.clone();
                     transform.push("scale(" + (scale.x < 0 ? -1 : 1) + "," + (scale.y < 0 ? -1 : 1) + ")");
+                }
+
+                if (scale && scale.x < 0) {
+                    ret.offset.set("x", ret.offset.$.x + width)
+                }
+
+                if (scale && scale.y < 0) {
+                    ret.offset.set("y", ret.offset.$.y + height);
                 }
 
                 var designId = this.get('design.wtfMbsId') || "";
@@ -110,6 +119,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 if (data.content) {
                     this.$$.svg = data.content.svg;
                 }
+
 
                 return data;
             },

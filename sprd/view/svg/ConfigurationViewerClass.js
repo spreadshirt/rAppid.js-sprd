@@ -1749,6 +1749,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     x: -1 * currentScale.x,
                     y: currentScale.y
                 });
+                this.applyScale();
             },
 
             flipConfigurationY: function () {
@@ -1762,6 +1763,18 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     x: currentScale.x,
                     y: -1 * currentScale.y
                 });
+                this.applyScale();
             },
+
+            applyScale: function () {
+                var config = this.$.configuration;
+                if (!config) {
+                    return;
+                }
+
+                var currentScale = this.$._scale;
+                config.set('scale', currentScale);
+
+            }
         });
     });
