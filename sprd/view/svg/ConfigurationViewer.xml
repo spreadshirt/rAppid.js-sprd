@@ -71,16 +71,8 @@
                         pointer-events="visible"
                         selected="{isRemovable()}"
                         onpointerdown="flipConfiguration"
-                        cx="{substract(mul(1.5, _configurationWidth), handleX())}"
+                        cx="{substract( _configurationWidth, handleX())}"
                         cy="{substract(_configurationHeight, handleY())}"
-                        r="{mul(inverseZoom, half(pixelToViewBox(_handleWidth)))}"/>
-
-            <svg:circle class="configuration-handle delete"
-                        pointer-events="visible"
-                        selected="{isRemovable()}"
-                        onpointerdown="flipConfiguration"
-                        cx="{substract(_configurationWidth, handleX())}"
-                        cy="{substract(mul(1.5, _configurationHeight), handleY())}"
                         r="{mul(inverseZoom, half(pixelToViewBox(_handleWidth)))}"/>
 
             <svg:circle cid="_bigScaleHandle" class="big-configuration-handle scale"
