@@ -63,7 +63,7 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             }
 
             printAreas = ArrayUtil.getAsArray(printAreas);
-            var printTypesBlacklist = _.each(printAreas, function(printArea) {
+            var printTypesBlacklist = _.map(printAreas, function(printArea) {
                     return printArea.$.restrictions.$.excludedPrintTypes.$items;
                 }),
                 printTypesWhitelist = appearance.$.printTypes.$items;
