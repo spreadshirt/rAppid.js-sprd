@@ -512,19 +512,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 self = this,
                 currentPrintType = self.$.printType;
 
-            if (!currentPrintType) {
-                return possiblePrintTypes;
-            }
-
-            var currentIsSpecial = ProductUtil.isSpecialFoil(currentPrintType);
-
-            if (!currentIsSpecial && featureManager && featureManager.getFeatureState("lockPrintType")) {
-                tempPrintTypes = _.filter(tempPrintTypes, function (printType) {
-                    return ProductUtil.isSpecialFoil(printType) || currentPrintType.$.id == printType.$.id;
-                })
-            }
-
-            return tempPrintTypes;
+            return !currentPrintType ? possiblePrintTypes : [currentPrintType]
         },
 
         getPreferredPrintArea: function(printAreas, appearance) {

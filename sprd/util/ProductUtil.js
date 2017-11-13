@@ -1,6 +1,5 @@
 define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/ProductType", "flow", "sprd/entity/Price", "sprd/model/PrintType", "sprd/config/NeonFlexColors", "sprd/config/RealisticFlexColors", "sprd/config/Settings", 'js/type/Color'], function(_, ArrayUtil, List, ProductType, flow, Price, PrintType, NeonFlexColors, RealisticFlexColors, Settings, Color) {
 
-    var ALLOW_SPECIAL_FOILS = true;
     var colorDistanceCache = {};
     var appearanceConfigurationCache = {};
     return {
@@ -8,11 +7,7 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             return a.$.weight - b.$.weight;
         },
 
-        setAllowSpecialFoils: function(val) {
-            ALLOW_SPECIAL_FOILS = !!val;
-        },
-
-        getPossiblePrintTypesForDesignOnPrintArea: function(design, printArea, appearance) {
+        getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearance) {
 
             if (!(design && design.$.printTypes)) {
                 return [];
@@ -42,11 +37,6 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             options = options || {};
 
             var possiblePrintTypes = configuration.getPossiblePrintTypes(appearance);
-
-            if (options.lockPrintType) {
-                possiblePrintTypes = configuration.lockPrintType(possiblePrintTypes);
-            }
-
             if (!options.skipValidation) {
                 return _.filter(possiblePrintTypes, function(printType) {
                     var validations = configuration._validatePrintTypeSize(printType, configuration.width(), configuration.height(), configuration.$.scale);
@@ -80,13 +70,6 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             printTypesBlacklist = _.flatten(printTypesBlacklist, true);
 
             ret = _.difference(printTypesWhitelist, printTypesBlacklist);
-
-            if (!ALLOW_SPECIAL_FOILS) {
-                ret = _.filter(ret, function(printType) {
-                    return !this.isSpecialFoil(printType);
-                }, this);
-            }
-
             ret.sort(this.sortPrintTypeByWeight);
             return ret;
         },

@@ -1,9 +1,72 @@
 define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "text/entity/TextFlow", "text/entity/ParagraphElement", "text/entity/SpanElement", "sprd/type/Style", "text/entity/TextRange", "underscore"], function (Base, flow, Size, TextFlow, ParagraphElement, SpanElement, Style, TextRange, _) {
+    var NON_BREAKABLE_WHITESPACE = 160;
     return Base.inherit("sprd.manager.TextConfigurationManager", {
+        addParagraph: function (previousParagraph, tspan, text, textFlow) {
+            if (!tspan || !text || !textFlow) {
+                return;
+            }
+
+            if (previousParagraph) {
+                previousParagraph.mergeElements();
+            }
+
+            // new paragraph
+            var paragraph = new ParagraphElement({
+                style: new Style({
+                    textAnchor: tspan.textAnchor || text.textAnchor
+                })
+            });
+
+            textFlow.addChild(paragraph);
+            return paragraph;
+        },
+
+        generateWhiteSpaceTspans: function (tspansAmount, startY, yDelta) {
+            var tspans = [], tempTSpan;
+            for (var i = 0 ;  i < tspansAmount; i++) {
+                tempTSpan = {
+                    content: [String.fromCharCode(NON_BREAKABLE_WHITESPACE)],
+                    y: startY + i * yDelta,
+                    textAnchor: "middle"
+                };
+                tspans.push(tempTSpan);
+            }
+
+            return tspans;
+        },
+
+        addEmptyTspans: function (tspans) {
+            if (!tspans || tspans.length < 2) {
+                return tspans;
+            }
+
+            var tspan, successorTspan, retArray = [];
+
+            for (var i = 0; i < tspans.length - 1; i++) {
+                tspan = tspans[i];
+                successorTspan = tspans[i + 1];
+
+                var y = tspan.y,
+                    lineHeight = 1.2 * tspan.fontSize,
+                    yDiff = successorTspan.y - y;
+
+                var whiteSpaceParagraphsAmount = Math.round(yDiff / lineHeight) - 1,
+                    startY = y + lineHeight,
+                    whiteSpaceTspans = this.generateWhiteSpaceTspans(whiteSpaceParagraphsAmount, startY, lineHeight);
+
+                retArray.push(tspan);
+                retArray = retArray.concat(whiteSpaceTspans);
+                retArray.push(successorTspan);
+            }
+
+            return retArray;
+        },
+
         initializeConfiguration: function (configuration, options, callback) {
             options = options || {};
-            
-            var content = configuration.$$ || {},
+
+            var self = this,
+                content = configuration.$$ || {},
                 svg = content.svg,
                 printType = configuration.$.printType,
                 product = configuration.$context.$contextModel,
@@ -59,6 +122,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             maxLineWidth = parseFloat(text.width),
                             printTypeColor;
 
+                        content = self.addEmptyTspans(content);
                         for (var i = 0; i < content.length; i++) {
                             var tspan = content[i];
 
@@ -70,19 +134,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             }
 
                             if (!lastTSpan || tspan.hasOwnProperty("y")) {
-                                if (paragraph) {
-                                    paragraph.mergeElements();
-                                }
-
-                                // new paragraph
-                                paragraph = new ParagraphElement({
-                                    style: new Style({
-                                        textAnchor: tspan.textAnchor || text.textAnchor
-                                    })
-                                });
-
-                                textFlow.addChild(paragraph);
-
+                                self.addParagraph(paragraph, tspan, text, textFlow)
                             }
 
                             maxLineWidth = Math.max(maxLineWidth, tspan.lineWidth || 0);

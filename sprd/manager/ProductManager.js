@@ -313,7 +313,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         bus.setUp(designConfiguration);
                         designConfiguration.init({
                             ensureDesignColorContrast: true,
-                            switch1EtoWhite: true
+                            switchImageServerGreyToWhite: true
                         }, cb);
                     })
 
