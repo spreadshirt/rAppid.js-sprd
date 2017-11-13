@@ -209,7 +209,7 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
                     ImageMeasurer.toImage(this.vars.dataURI, cb)
                 })
                 .seq("rect", function () {
-                    return ImageMeasurer.getRealDesignSize(this.vars.image, configuration.$.rotation);
+                    return ImageMeasurer.getRealDesignSize(this.vars.image, configuration.$.rotation, configuration.width(1), configuration.height(1));
                 })
                 .exec(callback)
         }
