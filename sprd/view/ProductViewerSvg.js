@@ -25,6 +25,7 @@ define(['js/svg/Svg', 'sprd/data/ImageService', 'sprd/view/svg/ProductTypeViewVi
 
                 editable: true,
                 zoomToPrintArea: 0,
+                zoomToConfiguration: null,
                 maxZoom: 1
             },
 

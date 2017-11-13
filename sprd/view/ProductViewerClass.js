@@ -26,6 +26,7 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
 
             copiedConfiguration: null,
             zoomToPrintArea: 0,
+            zoomToConfiguration: null,
             maxZoom: 1
         },
 
