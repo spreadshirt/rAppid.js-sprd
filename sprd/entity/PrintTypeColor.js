@@ -32,6 +32,25 @@ define(['js/data/Entity', 'sprd/entity/Price', 'js/type/Color'], function (Entit
             }
 
             return null;
+        },
+
+        equals: function (otherPrintColor) {
+            if (!otherPrintColor) {
+                return false;
+            }
+
+            var otherPrintType = otherPrintColor.$parent,
+                ownPrintType = this.$parent;
+
+            if (!otherPrintType || !ownPrintType) {
+                return false;
+            }
+
+            if (otherPrintType !== ownPrintType) {
+                return false;
+            }
+
+            return this.toHexString() === otherPrintColor.toHexString();
         }
     });
 });
