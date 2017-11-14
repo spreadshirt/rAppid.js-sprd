@@ -23,7 +23,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
 
         generateWhiteSpaceTspans: function (tspansAmount, startY, yDelta) {
             var tspans = [], tempTSpan;
-            for (var i = 0 ;  i < tspansAmount; i++) {
+            for (var i = 0; i < tspansAmount; i++) {
                 tempTSpan = {
                     content: [String.fromCharCode(NON_BREAKABLE_WHITESPACE)],
                     y: startY + i * yDelta,
@@ -42,6 +42,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
 
             var tspan, successorTspan, retArray = [];
 
+            retArray.push(tspans[0]);
             for (var i = 0; i < tspans.length - 1; i++) {
                 tspan = tspans[i];
                 successorTspan = tspans[i + 1];
@@ -54,7 +55,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                     startY = y + lineHeight,
                     whiteSpaceTspans = this.generateWhiteSpaceTspans(whiteSpaceParagraphsAmount, startY, lineHeight);
 
-                retArray.push(tspan);
+
                 retArray = retArray.concat(whiteSpaceTspans);
                 retArray.push(successorTspan);
             }
@@ -108,9 +109,11 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                     if (svg) {
 
                         var text = svg.text,
+                            viewBox = svg.viewBox,
                             textFlow = new TextFlow(),
                             content = text.content,
                             configurationObject = {};
+
 
                         var regExp = /^(\w+)\(([^(]+)\)/ig,
                             match;
@@ -174,8 +177,19 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             });
 
                             paragraph.addChild(span);
+                        }
+
+                        //Method A
+                        if (viewBox) {
+                            var viewBoxValues = viewBox.split(" "),
+                                oldOffset = configuration.$.offset;
 
 
+                            var newX = oldOffset.$.x + Number(viewBoxValues[0]),
+                                newY = oldOffset.$.y + Number(viewBoxValues[1]),
+                                offset = {x: newX, y: newY};
+
+                            oldOffset.set(offset);
                         }
 
                         configurationObject.textFlow = textFlow;
