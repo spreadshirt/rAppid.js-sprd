@@ -178,9 +178,6 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             paragraph.addChild(span);
                         }
 
-
-                        }
-
                         configurationObject.textFlow = textFlow;
                         configurationObject.selection = TextRange.createTextRange(0, 0);
                         configurationObject.textArea = new Size({
