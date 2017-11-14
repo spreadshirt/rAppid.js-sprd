@@ -17,7 +17,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             },
 
             events: [
-                "on:removedConfigurations"
+                "on:removedConfigurations",
+                "on:changedConfigurationColor"
             ],
 
             /***
@@ -116,14 +117,25 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             convertConfigurations: function(product, productType, appearance, options) {
                 options = options || {};
 
-                var self = this;
+                var self = this,
+                    changedColorConfigurations = [];
+
                 var removedConfigurations = _.filter(_.clone(product.$.configurations.$items), function(configuration) {
-                    return !self.convertConfiguration(product, configuration, productType, appearance, options);
+                    var convertConfiguration = self.convertConfiguration(product, configuration, productType, appearance, options);
+                    if(convertConfiguration && convertConfiguration.changedColors) {
+                        changedColorConfigurations.push(configuration);
+                    }
+
+                    return !convertConfiguration;
                 });
 
                 if (removedConfigurations && removedConfigurations.length) {
                     self.trigger('on:removedConfigurations', {configurations: removedConfigurations}, self);
                     product.$.configurations.remove(removedConfigurations);
+                }
+
+                if (changedColorConfigurations.length) {
+                    self.trigger('on:changedConfigurationColor', changedColorConfigurations);
                 }
 
                 return removedConfigurations;
@@ -136,7 +148,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             },
 
             addConfiguration: function(product, configuration, options) {
-                return this.convertConfiguration(product, configuration, product.$.productType, product.$.appearance, options);
+                return !!this.convertConfiguration(product, configuration, product.$.productType, product.$.appearance, options);
             },
 
             /***
@@ -179,16 +191,24 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     if (validatedMove) {
                         options.transform = validatedMove.transform;
                         self._addConfiguration(product, configuration, validatedMove.printType, targetPrintArea, options);
+                        var colorChanged = false;
                         configuration.$.printColors.each(function(printColor, index) {
                             if (!options.convertColors) {
                                 return;
                             }
 
-                            var convertedColor = self.convertColor(appearance, printColor.color()),
+                            var color = printColor.color();
+                            var convertedColor = self.convertColor(appearance, color),
                                 convertedPrintColor = validatedMove.printType.getClosestPrintColor(convertedColor);
                             configuration.setColor(index, convertedPrintColor);
+
+                            if(color.distanceTo(convertedColor) > 1) {
+                                colorChanged = true;
+                            }
                         });
-                        return true;
+                        return {
+                            changedColors: colorChanged
+                        };
                     }
                 }
 

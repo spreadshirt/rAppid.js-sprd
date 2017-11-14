@@ -2,6 +2,10 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
 
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
+        events: [
+            "on:changedConfigurationColor"
+        ],
+
         extractDesign: function (configuration) {
             var designId,
                 content = configuration.$$ || {},
@@ -126,6 +130,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
             }
 
+            var configurationColorChanged = false;
             if (!colorsSet && designColors) {
                 printColors = configuration.getDesignColors();
 
@@ -141,6 +146,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     var designColor = (firstLayer.$["default"] || firstLayer.$["origin"]);
                     if (appearanceColor && designColor && designColor.distanceTo(appearanceColor) < Settings.COLOR_CONVERSION_THRESHOLD) {
                         printColors = configuration.getInvertedDesignColors();
+                        configurationColorChanged = true;
                     }
                 }
             }
@@ -156,6 +162,10 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 force: true,
                 preventValidation: true
             });
+
+            if(configurationColorChanged) {
+                this.trigger("on:changedConfigurationColor", [configuration]);
+            }
         },
 
         extractSize: function (configuration, options) {
