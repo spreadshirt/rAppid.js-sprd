@@ -228,16 +228,9 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             var tooDark = false,
                 color = null,
                 design = configuration.$.design,
-                designColors = design ? design.$.colors : null,
                 printColors = configuration.$.printColors;
 
-            if (designColors && designColors.length) {
-                var firstLayer = designColors.at(0);
-                color = (firstLayer.$["default"] || firstLayer.$["origin"]);
-
-                tooDark = color != null && color.distanceTo(appearanceColor) < Settings.COLOR_CONVERSION_THRESHOLD;
-                callback(null, tooDark);
-            } else if (printColors && printColors.length) {
+            if (printColors && printColors.length) {
                 var firstColor = printColors.at(0);
                 color = firstColor.$["fill"];
 
