@@ -356,23 +356,22 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 self.$.offset.set('y', newY);
             },
 
-            resize: function (newWidth, newHeight, oldWidth, oldHeight) {
-                if (newWidth && newWidth.width && newHeight && newHeight.width) {
-                    oldWidth = newHeight.width;
-                    oldHeight = newHeight.height;
-                    newHeight = newWidth.height;
-                    newWidth = newWidth.width;
-                }
+            resize: function (newMeasure, oldMeasure, options) {
+                var oldWidth = oldMeasure.width,
+                    oldHeight = oldMeasure.height,
+                    newHeight = newMeasure.height,
+                    newWidth = newMeasure.width;
 
-                if (!oldWidth || !oldHeight || !newWidth || !newHeight) {
+                if (!oldWidth || !oldHeight || !newHeight || !newWidth) {
                     return;
                 }
 
                 var self = this,
-                    factor = oldWidth / newWidth,
-                    newScaleX = self.$.scale.x * factor,
+                    widthFactor = oldWidth / newWidth,
+                    heightFactor = oldHeight / newHeight,
+                    newScaleX = self.$.scale.x * widthFactor,
                     oldScaleY = self.$.scale.y,
-                    newScaleY = oldScaleY * factor;
+                    newScaleY = oldScaleY * widthFactor;
 
 
                 self.set('scale', {x: newScaleX, y: newScaleY});
