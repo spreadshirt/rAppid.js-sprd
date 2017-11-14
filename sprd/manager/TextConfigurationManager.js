@@ -109,7 +109,6 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                     if (svg) {
 
                         var text = svg.text,
-                            viewBox = svg.viewBox,
                             textFlow = new TextFlow(),
                             content = text.content,
                             configurationObject = {};
@@ -179,17 +178,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             paragraph.addChild(span);
                         }
 
-                        //Method A
-                        if (viewBox) {
-                            var viewBoxValues = viewBox.split(" "),
-                                oldOffset = configuration.$.offset;
 
-
-                            var newX = oldOffset.$.x + Number(viewBoxValues[0]),
-                                newY = oldOffset.$.y + Number(viewBoxValues[1]),
-                                offset = {x: newX, y: newY};
-
-                            oldOffset.set(offset);
                         }
 
                         configurationObject.textFlow = textFlow;
