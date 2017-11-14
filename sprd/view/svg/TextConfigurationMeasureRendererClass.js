@@ -145,7 +145,18 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
 
             this.getInnerRect(function (err, results) {
                 if (!err) {
+                    var oldInnerRect = configuration.$.innerRect;
                     configuration.set("innerRect", results.rect);
+
+                    var deltaX = results.rect.x * configuration.width(),
+                        deltaY = results.rect.y * configuration.height();
+                    
+                    if (!oldInnerRect) {
+                        configuration.$.offset.set({
+                            x: -deltaX + configuration.$.offset.$.x,
+                            y: -deltaY + configuration.$.offset.$.y
+                        })
+                    }
                 }
             });
         },
