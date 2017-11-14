@@ -78,6 +78,11 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 configuration.set('autoGrow', properties.autoGrow || options.isExample)
             }
 
+            if (configuration.$initializedByManager) {
+                callback && callback(null);
+                return;
+            }
+
             flow()
                 .par(function (cb) {
                     printType.fetch(null, cb);
@@ -134,7 +139,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             }
 
                             if (!lastTSpan || tspan.hasOwnProperty("y")) {
-                                self.addParagraph(paragraph, tspan, text, textFlow)
+                                paragraph = self.addParagraph(paragraph, tspan, text, textFlow)
                             }
 
                             maxLineWidth = Math.max(maxLineWidth, tspan.lineWidth || 0);
@@ -194,6 +199,9 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                         }
                     }
 
+                })
+                .seq(function () {
+                    configuration.$initializedByManager = true;
                 })
                 .exec(callback);
         }

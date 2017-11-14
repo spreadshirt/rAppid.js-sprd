@@ -167,7 +167,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             }.bus("Stage.Rendered"),
 
             _commitChangedAttributes: function ($, options) {
-                if ($.hasOwnProperty("bound") && !options.preventValidation && !options.printTypeEqualized) {
+                var relevantChange = !!$.innerRect;
+                if (relevantChange && !options.preventValidation && !options.printTypeEqualized) {
                     this._setError(this._validateTransform($));
                 }
 
@@ -528,6 +529,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             _validatePrintTypeSize: function (printType, width, height, scale) {
                 var bound = this.$.bound;
                 return this.callBase(printType, bound ? bound.width * scale.x : width, bound ? bound.height * scale.y : height, scale);
+            },
+
+            getBound: function () {
+                //TODO use innerRect and fallback to bound when innerRect is not there
             },
 
             _getMinimalScales: function (printType, predicate) {
