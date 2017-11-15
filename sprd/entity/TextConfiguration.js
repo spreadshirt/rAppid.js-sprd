@@ -61,7 +61,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 isTemplate: false,
                 autoGrow: false,
                 measurer: null,
-                textChanged: null
+                textChanged: null,
+                alignmentMatters: null
             },
 
             inject: {
@@ -251,6 +252,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     opt.force = true;
                     self.set({
                         composedTextFlow: composedTextFlow,
+                        alignmentMatters: composedTextFlow.alignmentMatters(),
                         bound: newMeasure
                     }, opt);
 
