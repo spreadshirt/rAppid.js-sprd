@@ -68,9 +68,9 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
 
                 for (var i = 0; i < configurations.length; i++) {
                     var config = configurations[i];
-                    var originalPrintType = config.$.originalPrintType;
-                    if (originalPrintType) {
-                        config.set('printType', originalPrintType);
+                    var originalEqPrintType = config.$.originalEqPrintType;
+                    if (originalEqPrintType) {
+                        config.set('printType', originalEqPrintType);
                         needsEqualization = true;
                     }
                 }
@@ -135,7 +135,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                         config = configurations[i];
 
                         if (possiblePrintType !== config.$.printType) {
-                            config.set('originalPrintType', config.$.printType, {silent: true});
+                            config.set('originalEqPrintType', config.$.printType, {silent: true});
                         }
                         config.set('printType', possiblePrintType, {
                             printTypeEqualized: true,
