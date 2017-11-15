@@ -67,9 +67,10 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 var needsEqualization = false;
 
                 for (var i = 0; i < configurations.length; i++) {
-                    var config = configurations[i];
-                    var originalEqPrintType = config.$.originalEqPrintType;
-                    if (originalEqPrintType) {
+                    var config = configurations[i],
+                        originalEqPrintType = config.$.originalEqPrintType;
+
+                    if (originalEqPrintType && config.isPrintTypeAvailable(originalEqPrintType)) {
                         config.set('printType', originalEqPrintType);
                         needsEqualization = true;
                     }
