@@ -89,6 +89,10 @@ define(["js/core/Error"], function(Error) {
         {
             test: /not\sallowed\sabove\scolor/,
             type: "COLOR_OVERLAP"
+        },
+        {
+            test: /unsupported\sunicode\scharacter/,
+            type: "UNSUPPORTED_UNICODE"
         }
     ];
 
