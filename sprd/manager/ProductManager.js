@@ -1203,8 +1203,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 //TODO: (fix) bending -> scale gets NaN
                 var scale = this.clamp(desiredScale, minimumDesignScale || 0, maxPrintTypeScale);
-                boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
-                desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
+                boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
+                var rotatedBoundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
+                desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), rotatedBoundingBox);
                 offset.set("x", desiredOffset.x);
 
 
