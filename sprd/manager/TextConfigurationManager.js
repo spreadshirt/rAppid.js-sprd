@@ -47,10 +47,17 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 tspan = tspans[i];
                 successorTspan = tspans[i + 1];
 
-                var y = tspan.y,
-                    lineHeight = 1.2 * tspan.fontSize,
-                    yDiff = successorTspan.y - y;
+                var y = Number(tspan.y),
+                    nextY = Number(successorTspan.y),
+                    lineHeight = 1.2 * tspan.fontSize;
 
+
+                if (y !== y  || nextY !== nextY) {
+                    retArray.push(successorTspan);
+                    continue;
+                }
+
+                var yDiff = nextY - y;
                 var whiteSpaceParagraphsAmount = Math.round(yDiff / lineHeight) - 1,
                     startY = y + lineHeight,
                     whiteSpaceTspans = this.generateWhiteSpaceTspans(whiteSpaceParagraphsAmount, startY, lineHeight);
@@ -74,7 +81,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 printArea,
                 fontFamilies = product.$context.$contextModel.getCollection("fontFamilies"),
                 properties = configuration.$.properties;
-            
+
             var autogrow = properties && properties.autoGrow || options.isExample || options.admin;
             configuration.set('autoGrow', configuration.$.autoGrow || autogrow);
 
@@ -171,7 +178,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                                     fontSize: tspan.fontSize,
                                     printTypeColor: printTypeColor
                                 }),
-                                text: tspan.content[0] || ""
+                                text: tspan.content[0] || String.fromCharCode(NON_BREAKABLE_WHITESPACE)
                             });
 
                             paragraph.addChild(span);
