@@ -75,9 +75,8 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 fontFamilies = product.$context.$contextModel.getCollection("fontFamilies"),
                 properties = configuration.$.properties;
 
-            if (properties && properties.autoGrow || options.isExample) {
-                configuration.set('autoGrow', properties.autoGrow || options.isExample)
-            }
+            var autogrow = properties && properties.autoGrow || options.isExample || options.admin;
+            configuration.set('autoGrow', autogrow);
 
             if (configuration.$initializedByManager) {
                 callback && callback(null);
