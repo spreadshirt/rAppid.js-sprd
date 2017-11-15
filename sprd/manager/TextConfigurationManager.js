@@ -175,24 +175,14 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                                 text: tspan.content[0] || ""
                             });
 
+                            span.set('y', tspan.y);
+
                             paragraph.addChild(span);
-                        }
-
-                        //Method A
-                        if (viewBox) {
-                            var viewBoxValues = viewBox.split(" "),
-                                oldOffset = configuration.$.offset;
-
-
-                            var newX = oldOffset.$.x + Number(viewBoxValues[0]),
-                                newY = oldOffset.$.y + Number(viewBoxValues[1]),
-                                offset = {x: newX, y: newY};
-
-                            oldOffset.set(offset);
                         }
 
                         configurationObject.textFlow = textFlow;
                         configurationObject.selection = TextRange.createTextRange(0, 0);
+                        configurationObject.viewBox = viewBox;
                         configurationObject.textArea = new Size({
                             width: maxLineWidth,
                             height: text.height

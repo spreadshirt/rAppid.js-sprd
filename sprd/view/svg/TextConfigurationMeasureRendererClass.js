@@ -145,16 +145,29 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
 
             this.getInnerRect(function (err, results) {
                 if (!err) {
+                    var viewBox = configuration.$.viewBox,
+                        offset = configuration.$.offset.$;
+
+                    if (viewBox) {
+                        var viewBoxValues = viewBox.split(" "),
+                            oldOffset = configuration.$.offset;
+
+                        var newX = oldOffset.$.x + Number(viewBoxValues[0]),
+                            newY = oldOffset.$.y + Number(viewBoxValues[1]);
+
+                        offset = {x: newX, y: newY};
+                    }
+
                     var oldInnerRect = configuration.$.innerRect;
                     configuration.set("innerRect", results.rect);
 
                     var deltaX = results.rect.x * configuration.width(),
                         deltaY = results.rect.y * configuration.height();
-                    
+
                     if (!oldInnerRect) {
                         configuration.$.offset.set({
-                            x: -deltaX + configuration.$.offset.$.x,
-                            y: -deltaY + configuration.$.offset.$.y
+                            x: -deltaX + offset.x,
+                            y: -deltaY + offset.y
                         })
                     }
                 }
@@ -197,7 +210,7 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
                 svgText = s.serializeToString(el);
 
             svgText.replace("&nbsp;", " ");
-            return "data:image/svg+xml;base64," + btoa(svgText);
+            return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgText)));
         },
 
         getInnerRect: function (callback) {
