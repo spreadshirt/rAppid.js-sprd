@@ -13,7 +13,8 @@ define(["js/ui/View", "sprd/data/ImageService"], function (View, ImageService) {
             appearance: null,
             componentClass: "appearance-color appearance-{appearance.id} {whiteClass()}",
             title: "{appearance.name}",
-            showTitle: true
+            showTitle: true,
+            useTexture: true
         },
 
         inject: {
@@ -66,7 +67,11 @@ define(["js/ui/View", "sprd/data/ImageService"], function (View, ImageService) {
 
         whiteClass: function() {
             return /#f{6}/i.test(this.get("appearance.colors[0].color().toString()") || "") ? "white" : "";
-        }.onChange("appearance")
+        }.onChange("appearance"),
+
+        and: function(a, b) {
+            return a && b;
+        }
 
     });
 
