@@ -48,7 +48,11 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             this.callBase();
 
             this.bind("productViewer", "change:zoomToPrintArea", function() {
-                this.zoomToPrintArea();
+                this.zoom();
+            }, this);
+
+            this.bind("productViewer", "change:zoomToConfiguration", function() {
+                this.zoom();
             }, this);
 
             productTypeViewViewer.push(this);
@@ -138,7 +142,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                         var possiblePrintTypes;
                         // Check printArea constraints
                         var appearance = this.get('_appearance');
-                            possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, appearance);
+                        possiblePrintTypes = configuration.getPossiblePrintTypesForPrintArea(printArea, appearance);
 
                         if (possiblePrintTypes.length) {
                             var product = dndObject.viewer.$.product;
@@ -263,7 +267,7 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                     configView.removeClass('hide-configuration');
                     configView.enableMoveSnipping();
                 }
-                
+
                 dndObject.dndImage.set({
                     'visible': false
                 });
@@ -324,7 +328,45 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 }
 
                 this.zoomToPrintArea();
+
+                var productViewer = this.get("productViewer");
+                if (productViewer && productViewer.get("zoomToConfiguration")) {
+                    this.zoom();
+                }
             }
+        },
+
+        zoom: function() {
+            var zoomToConfiguration = this.get("productViewer.zoomToConfiguration");
+            if (zoomToConfiguration) {
+                this.zoomToConfiguration(zoomToConfiguration);
+            } else {
+                this.zoomToPrintArea();
+            }
+        },
+
+        zoomToRect: function(scale, surroundingRect) {
+            var translationAfterScale = this.centerAfterScaling(surroundingRect, scale);
+
+            this.set({
+                scaleX: scale,
+                scaleY: scale,
+                translateX: translationAfterScale.x,
+                translateY: translationAfterScale.y
+            });
+        },
+
+        zoomToConfiguration: function(zoomToConfiguration) {
+            var surroundingRect = zoomToConfiguration._getBoundingBox(),
+                scale = this.getConfigurationScale();
+
+            var view = this.get('_view'),
+                viewRect = ViewUtil.surroundingRectOfViewMapsInView(view);
+
+            surroundingRect.x = surroundingRect.x + viewRect.x;
+            surroundingRect.y = surroundingRect.y + viewRect.y;
+
+            this.zoomToRect(scale, surroundingRect);
         },
 
         zoomToPrintArea: function() {
@@ -342,20 +384,14 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 return;
             }
 
-            var scale = this.getScale(),
-                translationAfterScale = this.centerAfterScaling(scale);
+            var scale = this.getPrintAreaScale(),
+                surroundingRect = ViewUtil.surroundingRectOfViewMapsInView(view);
 
-            this.set({
-                scaleX: scale,
-                scaleY: scale,
-                translateX: translationAfterScale.x,
-                translateY: translationAfterScale.y
-            });
+            this.zoomToRect(scale, surroundingRect);
         },
 
-        centerAfterScaling: function (scale) {
+        centerAfterScaling: function(surroundingRect, scale) {
             var view = this.get('_view');
-            var surroundingRect = ViewUtil.surroundingRectOfViewMapsInView(view);
             var viewWidth = view.get('size.width');
             var viewHeight = view.get('size.height');
 
@@ -372,11 +408,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             }
         },
 
-        getScale: function () {
-            var zoomToPrintArea = this.get("productViewer.zoomToPrintArea");
-            var maxZoom = this.get("productViewer.maxZoom");
+        _getScale: function(surroundingRect, factor, maxZoom) {
             var view = this.get('_view');
-            var surroundingRect = ViewUtil.surroundingRectOfViewMapsInView(view);
             var viewWidth = view.get('size.width');
             var viewHeight = view.get('size.height');
 
@@ -385,11 +418,25 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
             }
 
             var minScaleFactor = Math.min(viewWidth / surroundingRect.width, viewHeight / surroundingRect.height) - 1;
-            return 1 + Math.min(minScaleFactor * zoomToPrintArea, maxZoom);
+            return 1 + Math.min(minScaleFactor * factor, maxZoom);
         },
 
-        getInverseZoom: function () {
-            var zoom = this.getScale();
+        getPrintAreaScale: function() {
+            var zoomToPrintArea = this.get("productViewer.zoomToPrintArea"),
+                view = this.get('_view'),
+                surroundingRect = ViewUtil.surroundingRectOfViewMapsInView(view);
+            return this._getScale(surroundingRect, zoomToPrintArea, this.get("productViewer.maxZoom"));
+        },
+
+        getConfigurationScale: function() {
+            var zoomToConfiguration = this.get("productViewer.zoomToConfiguration"),
+                surroundingRect = zoomToConfiguration._getBoundingBox();
+
+            return this._getScale(surroundingRect, 0.8, Number.MAX_VALUE);
+        },
+
+        getInverseZoom: function() {
+            var zoom = this.getPrintAreaScale();
             if (zoom) {
                 return 1 / zoom;
             }

@@ -11,7 +11,8 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
             defaults: {
                 type: 'design',
-                design: null
+                design: null,
+                textChanged: null
             },
 
             ctor: function() {
@@ -112,6 +113,29 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                 }
 
                 return data;
+            },
+
+            textChangedSinceCreation: function () {
+                var initialText = this.$.initialText,
+                    currentText = this.$.text,
+                    textChanged = this.$.textChanged;
+
+                if (!initialText) {
+                    return true;
+                }
+
+                var result = textChanged || initialText !== currentText;
+                this.set('textChanged', result);
+                return result;
+            },
+
+            isOnlyWhiteSpace: function () {
+                var text = this.$.text;
+                if (!text) {
+                    return false;
+                }
+
+                return /^[\s\n\r]*$/.test(text);
             }
         });
 

@@ -6,7 +6,7 @@
                                tagName="ul"
                                componentClass="product-view-selector">
     <js:Template name="item">
-        <li class="{hasErrorClass(product.configurationsOnViewError(view))} view-{view.perspective}" onmouseout="mouse(event, false)" onmouseover="mouse(event, true)">
+        <li class="{hasErrorClass(product.configurationsOnViewError(view))} view-{view.perspective} {hasWarning(view)}" onmouseout="mouse(event, false)" onmouseover="mouse(event, true)">
             <view:ProductViewer view="{view}" product="{product}" width="{viewWidth}" height="{viewHeight}" editable="false" />
             <div visible="{showViewNames}" class="view-name">{view.name}</div>
         </li>

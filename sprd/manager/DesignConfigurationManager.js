@@ -2,6 +2,10 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
 
 
     return Base.inherit("sprd.manager.DesignConfigurationManager", {
+        events: [
+            "on:changedConfigurationColor"
+        ],
+
         extractDesign: function (configuration) {
             var designId,
                 content = configuration.$$ || {},
@@ -126,6 +130,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
             }
 
+            var configurationColorChanged = false;
             if (!colorsSet && designColors) {
                 printColors = configuration.getDesignColors();
 
@@ -141,12 +146,15 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     var designColor = (firstLayer.$["default"] || firstLayer.$["origin"]);
                     if (appearanceColor && designColor && designColor.distanceTo(appearanceColor) < Settings.COLOR_CONVERSION_THRESHOLD) {
                         printColors = configuration.getInvertedDesignColors();
+                        configurationColorChanged = true;
                     }
                 }
             }
 
-            if (printColors && design.isVectorDesign() && options.switch1EtoWhite) {
-                printColors = configuration.get1EtoWhiteDesignColors();
+            if (printColors && design && design.isVectorDesign() && options.switchImageServerGreyToWhite) {
+                _.map(printColors, function(color) {
+                    return color.r === 225 && color.g === 225 && color.b === 225 ? new Color.RGB(255, 255, 255) : color;
+                });
             }
 
             configuration.$.printColors.reset(printColors);
@@ -154,14 +162,10 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 force: true,
                 preventValidation: true
             });
-        },
 
-        switch1EtoWhite: function (printColors) {
-            if (!printColors || !printColor.length) {
-                return [];
+            if(configurationColorChanged) {
+                this.trigger("on:changedConfigurationColor", [configuration]);
             }
-
-            return printColors.each
         },
 
         extractSize: function (configuration, options) {

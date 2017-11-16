@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List', "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore", "js/core/Bus"], function(Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _, Bus) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List', "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore", "js/core/Bus", "designer/manager/FeatureManager"], function(Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _, Bus, FeatureManager) {
 
     return Entity.inherit('sprd.entity.Configuration', {
 
@@ -45,7 +45,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         inject: {
-            bus: Bus
+            bus: Bus,
+            featureManager: FeatureManager
         },
 
         save: function(callback) {
@@ -87,7 +88,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                     // manually changed print type
                     this.$.printTypeWasScaled = false;
                 }
-                if ($.printType && !options.printTypeEqualized && !options.noEqualize) {
+                if ($.printType && !options.printTypeEqualized) {
                     this.trigger('printTypeSwitched', {
                         printType: $.printType,
                         scaledDown: !!options.scaledDown
@@ -130,7 +131,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         _validateTransform: function($) {
 
             var rotationChanged = this._hasSome($, ["rotation"]),
-                sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale", "offset", "bound"]),
+                sizeChanged = this._hasSome($, ["_size", "_x", "_y", "scale", "offset", "bound", "innerRect"]),
                 printTypeChanged = this._hasSome($, ["printType"]),
                 width, height,
                 printType = $.printType || this.$.printType,
@@ -499,6 +500,19 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         getPossiblePrintTypesForPrintArea: function() {
             return [];
+        },
+
+        lockPrintType: function (possiblePrintTypes) {
+            if (!possiblePrintTypes || !possiblePrintTypes.length) {
+                return possiblePrintTypes;
+            }
+
+            var tempPrintTypes = possiblePrintTypes,
+                featureManager = this.$.featureManager,
+                self = this,
+                currentPrintType = self.$.printType;
+
+            return !currentPrintType ? possiblePrintTypes : [currentPrintType]
         },
 
         getPreferredPrintArea: function(printAreas, appearance) {

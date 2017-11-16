@@ -1,8 +1,8 @@
 define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/UnitUtil', 'sprd/model/Design', "sprd/entity/PrintTypeColor", "underscore",
         "sprd/model/PrintType", "sprd/util/ProductUtil", "js/core/List", "flow", "sprd/manager/IDesignConfigurationManager", "sprd/data/IImageUploadService"
-        , "sprd/entity/BlobImage", "sprd/data/MaskService", "sprd/data/ImageService", "sprd/manager/ImageMeasurer", "js/type/Color"],
+        , "sprd/entity/BlobImage", "sprd/data/MaskService", "sprd/data/ImageService", "sprd/manager/ImageMeasurer", "designer/manager/FeatureManager"],
     function (DesignConfigurationBase, Size, UnitUtil, Design, PrintTypeColor, _, PrintType, ProductUtil, List, flow
-        , IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService, ImageService, ImageMeasurer, Color) {
+        , IDesignConfigurationManager, IImageUploadService, BlobImage, MaskService, ImageService, ImageMeasurer, FeatureManager) {
 
         return DesignConfigurationBase.inherit('sprd.model.DesignConfiguration', {
             defaults: {
@@ -74,16 +74,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.trigger("priceChanged");
             },
 
-            setInvertedColors: function () {
-                var invertedColors = this.getInvertedDesignColors();
-                this.$.printColors && this.$.printColors.reset(invertedColors);
-            },
-
-            set1EtoWhiteColors: function () {
-                var convertedColors = this.get1EtoWhiteDesignColors();
-                this.$.printColors && this.$.printColors.reset(convertedColors);
-            },
-
             getDesignColors: function (transformer) {
                 var design = this.$.design,
                     printType = this.$.printType,
@@ -114,12 +104,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             getInvertedDesignColors: function () {
                 return this.getDesignColors(function (color) {
                     return color.invert();
-                })
-            },
-
-            get1EtoWhiteDesignColors: function () {
-                return this.getDesignColors(function (color) {
-                    return color.r === 225 && color.g === 225 && color.b === 225 ? new Color.RGB(255, 255, 255) : color;
                 })
             },
 
@@ -296,8 +280,10 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             getImageUrl: function () {
-                var design = this.$.design;
-                if (!design) {
+                var design = this.$.design,
+                    imageService = this.$.imageService;
+
+                if (!design || !imageService) {
                     return;
                 }
 
@@ -368,7 +354,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 }
                 
                 if (printArea && appearance && design) {
-                    ret = ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(design, printArea, appearance);
+                    ret = this.getPossiblePrintTypesForPrintArea(printArea, appearance)
                 }
 
                 return ret;

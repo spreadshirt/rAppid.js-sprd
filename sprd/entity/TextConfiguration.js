@@ -60,7 +60,9 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 isNew: false,
                 isTemplate: false,
                 autoGrow: false,
-                measurer: null
+                measurer: null,
+                textChanged: null,
+                alignmentMatters: null
             },
 
             inject: {
@@ -129,13 +131,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             textChangedSinceCreation: function () {
                 var initialText = this.$.initialText,
-                    currentText = this.$.rawText;
+                    currentText = this.$.rawText,
+                    textChanged = this.$.textChanged;
 
                 if (!initialText) {
                     return true;
                 }
 
-                return initialText !== currentText;
+                var result = textChanged || initialText !== currentText;
+                this.set('textChanged', result);
+                return result;
             },
 
             isOnlyWhiteSpace: function () {
@@ -163,7 +168,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             }.bus("Stage.Rendered"),
 
             _commitChangedAttributes: function ($, options) {
-                if ($.hasOwnProperty("bound") && !options.preventValidation && !options.printTypeEqualized) {
+                var relevantChange = !!$.innerRect;
+                if (relevantChange && !options.preventValidation && !options.printTypeEqualized) {
                     this._setError(this._validateTransform($));
                 }
 
@@ -246,6 +252,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     opt.force = true;
                     self.set({
                         composedTextFlow: composedTextFlow,
+                        alignmentMatters: composedTextFlow.alignmentMatters(),
                         bound: newMeasure
                     }, opt);
 
@@ -263,7 +270,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         if (self.fontChanged()) {
                             self.resize(newMeasure, oldMeasure);
                         } else {
-                            self.reposition(newMeasure, oldMeasure, self.textChanged(), composedTextFlow);
+                            var oldTextArea = self.$previousAttributes.textArea && self.$previousAttributes.textArea.$;
+                            self.reposition(newMeasure, oldMeasure || oldTextArea, self.textChanged(), composedTextFlow);
                         }
                     }
 
@@ -523,6 +531,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             _validatePrintTypeSize: function (printType, width, height, scale) {
                 var bound = this.$.bound;
                 return this.callBase(printType, bound ? bound.width * scale.x : width, bound ? bound.height * scale.y : height, scale);
+            },
+
+            getBound: function () {
+                //TODO use innerRect and fallback to bound when innerRect is not there
             },
 
             _getMinimalScales: function (printType, predicate) {

@@ -247,7 +247,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
             },
 
             removeExampleConfiguration: function() {
-                if (this.get('restrictions.example') === true && this.$.configurations.size()) {
+                if (this.get('restrictions.example') && this.$.configurations.size()) {
                     this.$.restrictions.example = false;
                     this.$.configurations.removeAt(0);
                 }
@@ -483,6 +483,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                         flow()
                             .parEach(self.$.configurations.$items, function(configuration, cb) {
                                 self._setUpConfiguration(configuration);
+                                options.isExample = self.get('restrictions.example');
                                 configuration.init(options, cb);
                             })
                             .exec(function(err) {

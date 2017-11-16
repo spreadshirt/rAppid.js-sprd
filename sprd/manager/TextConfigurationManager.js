@@ -1,8 +1,80 @@
 define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "text/entity/TextFlow", "text/entity/ParagraphElement", "text/entity/SpanElement", "sprd/type/Style", "text/entity/TextRange", "underscore"], function (Base, flow, Size, TextFlow, ParagraphElement, SpanElement, Style, TextRange, _) {
+    var NON_BREAKABLE_WHITESPACE = 160;
     return Base.inherit("sprd.manager.TextConfigurationManager", {
-        initializeConfiguration: function (configuration, options, callback) {
+        addParagraph: function (previousParagraph, tspan, text, textFlow) {
+            if (!tspan || !text || !textFlow) {
+                return;
+            }
 
-            var content = configuration.$$ || {},
+            if (previousParagraph) {
+                previousParagraph.mergeElements();
+            }
+
+            // new paragraph
+            var paragraph = new ParagraphElement({
+                style: new Style({
+                    textAnchor: tspan.textAnchor || text.textAnchor
+                })
+            });
+
+            textFlow.addChild(paragraph);
+            return paragraph;
+        },
+
+        generateWhiteSpaceTspans: function (tspansAmount, startY, yDelta) {
+            var tspans = [], tempTSpan;
+            for (var i = 0; i < tspansAmount; i++) {
+                tempTSpan = {
+                    content: [String.fromCharCode(NON_BREAKABLE_WHITESPACE)],
+                    y: startY + i * yDelta,
+                    textAnchor: "middle"
+                };
+                tspans.push(tempTSpan);
+            }
+
+            return tspans;
+        },
+
+        addEmptyTspans: function (tspans) {
+            if (!tspans || tspans.length < 2) {
+                return tspans;
+            }
+
+            var tspan, successorTspan, retArray = [];
+
+            retArray.push(tspans[0]);
+            for (var i = 0; i < tspans.length - 1; i++) {
+                tspan = tspans[i];
+                successorTspan = tspans[i + 1];
+
+                var y = Number(tspan.y),
+                    nextY = Number(successorTspan.y),
+                    lineHeight = 1.2 * tspan.fontSize;
+
+
+                if (y !== y  || nextY !== nextY) {
+                    retArray.push(successorTspan);
+                    continue;
+                }
+
+                var yDiff = nextY - y;
+                var whiteSpaceParagraphsAmount = Math.round(yDiff / lineHeight) - 1,
+                    startY = y + lineHeight,
+                    whiteSpaceTspans = this.generateWhiteSpaceTspans(whiteSpaceParagraphsAmount, startY, lineHeight);
+
+
+                retArray = retArray.concat(whiteSpaceTspans);
+                retArray.push(successorTspan);
+            }
+
+            return retArray;
+        },
+
+        initializeConfiguration: function (configuration, options, callback) {
+            options = options || {};
+
+            var self = this,
+                content = configuration.$$ || {},
                 svg = content.svg,
                 printType = configuration.$.printType,
                 product = configuration.$context.$contextModel,
@@ -10,8 +82,12 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 fontFamilies = product.$context.$contextModel.getCollection("fontFamilies"),
                 properties = configuration.$.properties;
 
-            if (properties && properties.autoGrow) {
-                configuration.set('autoGrow', properties.autoGrow)
+            var autogrow = properties && properties.autoGrow || options.isExample || options.admin;
+            configuration.set('autoGrow', configuration.$.autoGrow || autogrow);
+
+            if (configuration.$initializedByManager) {
+                callback && callback(null);
+                return;
             }
 
             flow()
@@ -43,6 +119,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             content = text.content,
                             configurationObject = {};
 
+
                         var regExp = /^(\w+)\(([^(]+)\)/ig,
                             match;
                         if ((match = regExp.exec(text.transform))) {
@@ -58,6 +135,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             maxLineWidth = parseFloat(text.width),
                             printTypeColor;
 
+                        content = self.addEmptyTspans(content);
                         for (var i = 0; i < content.length; i++) {
                             var tspan = content[i];
 
@@ -69,19 +147,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             }
 
                             if (!lastTSpan || tspan.hasOwnProperty("y")) {
-                                if (paragraph) {
-                                    paragraph.mergeElements();
-                                }
-
-                                // new paragraph
-                                paragraph = new ParagraphElement({
-                                    style: new Style({
-                                        textAnchor: tspan.textAnchor || text.textAnchor
-                                    })
-                                });
-
-                                textFlow.addChild(paragraph);
-
+                                paragraph = self.addParagraph(paragraph, tspan, text, textFlow)
                             }
 
                             maxLineWidth = Math.max(maxLineWidth, tspan.lineWidth || 0);
@@ -112,12 +178,10 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                                     fontSize: tspan.fontSize,
                                     printTypeColor: printTypeColor
                                 }),
-                                text: tspan.content[0] || ""
+                                text: tspan.content[0] || String.fromCharCode(NON_BREAKABLE_WHITESPACE)
                             });
 
                             paragraph.addChild(span);
-
-
                         }
 
                         configurationObject.textFlow = textFlow;
@@ -141,6 +205,9 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                         }
                     }
 
+                })
+                .seq(function () {
+                    configuration.$initializedByManager = true;
                 })
                 .exec(callback);
         }
