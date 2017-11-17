@@ -8,8 +8,7 @@ define(["js/ui/View", "js/core/I18n"], function (View, I18n) {
             appearance: null,
             showTitle: true,
             productType: null,
-            product: null,
-            useAppearanceTextures: true
+            product: null
         },
 
         events: ["on:appearanceSelect"],
