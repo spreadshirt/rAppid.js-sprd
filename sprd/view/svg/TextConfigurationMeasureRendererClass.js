@@ -1,4 +1,4 @@
-define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageService", "js/core/Base"], function (Svg, ImageMeasurer, flow, ImageService, Base) {
+define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageService", "js/core/Base", 'sprd/manager/FeatureManager'], function (Svg, ImageMeasurer, flow, ImageService, Base, FeatureManager) {
 
     return Svg.inherit("sprd.view.svg.TextConfigurationMeasureRendererClass", {
         defaults: {
@@ -8,11 +8,13 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
             height: null,
             preserveAspectRatio: "none",
             bbox: null,
-            loadedFonts: null
+            loadedFonts: null,
+            defaultInnerRect: null
         },
 
         inject: {
-            imageService: ImageService
+            imageService: ImageService,
+            featureManager: FeatureManager
         },
 
         $classAttributes: ['configuration', 'textArea', 'bbox'],
@@ -23,6 +25,12 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
             this.bind('configuration', 'sizeChanged', debouncedMeasuring);
             this.bind('change:configuration', debouncedMeasuring);
             this.set('loadedFonts', []);
+            this.set('defaultInnerRect', {
+                x: 0,
+                y: 0,
+                width: 1,
+                height: 1
+            });
 
             var debouncer = new Base(),
                 self = this;
@@ -115,7 +123,7 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
 
                     xhr.responseType = "arraybuffer";
 
-                    xhr.onreadystatechange = function (e) {
+                    xhr.onreadystatechange = function () {
                         if (xhr.readyState === 4) {
                             cb(null, xhr)
                         }
@@ -140,14 +148,22 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
         },
 
         setInnerRect: function () {
-            var self = this,
-                configuration = this.$.configuration;
+            var configuration = this.$.configuration,
+                measuringEnabled = this.isMeasuringEnabled();
+
+            if (!measuringEnabled) {
+                return;
+            }
 
             this.getInnerRect(function (err, results) {
                 if (!err) {
                     configuration.set("innerRect", results.rect);
                 }
             });
+        },
+
+        isMeasuringEnabled: function () {
+            return this.$.featureManager && this.$.featureManager.getFeatureState("calcInnerRects");
         },
 
         width: function () {
@@ -167,6 +183,7 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
             if (!elem) {
                 return null;
             }
+
             this.initViewBox();
             elem.setAttribute("xmlns", svgNamespace);
             elem.setAttribute("xmlns:xlink", xlinkNS);
