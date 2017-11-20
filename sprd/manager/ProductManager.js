@@ -533,7 +533,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     isTemplate: false,
                     fontSize: 25,
                     printColor: null,
-                    autoGrow: true
+                    autoGrow: true,
+                    activeIndex: null
                 });
 
                 var self = this,
