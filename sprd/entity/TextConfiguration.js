@@ -465,7 +465,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             containsEmoji: function (string) {
                 for (var i = 0; i < string.length; i++) {
                     if (this.isEmoji(string.codePointAt(i))) {
-                        return true;
+                        return {emoji: string.substring(i, i + 2)};
                     }
                 }
 
