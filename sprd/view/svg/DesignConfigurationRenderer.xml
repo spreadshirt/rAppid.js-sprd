@@ -2,7 +2,7 @@
 
     <js:Repeat items="{configuration.printColors}">
         <js:Template name="item">
-            <mask id="{maskId}-{index}">
+            <mask id="{maskId(maskId, index)}">
                 <sprdSvg:Image href="{maskUrl(index)}" onimageLoaded="handleLoad(index)" width="{width}" height="{height}"/>
             </mask>
         </js:Template>
@@ -10,8 +10,8 @@
 
     <js:Repeat items="{configuration.printColors}" itemKey="printColor">
         <js:Template name="item">
-            <rect mask="url(#{maskId}-{index})" fill="{fillUrl(index)}" width="{width}" height="{height}"
-                  visible="{allLayersLoaded}" data-fill="{fillColor(index)}"/>
+            <rect mask="{maskIdURL(maskId, index)}" fill="{fillUrl(index)}" width="{width}" height="{height}"
+            visible="{allLayersLoaded}" data-fill="{fillColor(index)}"/>
         </js:Template>
     </js:Repeat>
 
