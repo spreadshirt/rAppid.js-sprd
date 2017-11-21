@@ -377,7 +377,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     var activeIndex = (configuration.$.textFlow.textLength() - 1);
 
-                    if(params.activeIndex != null) {
+                    if (params.activeIndex != null) {
                         activeIndex = params.activeIndex;
                     }
 
@@ -1216,9 +1216,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), rotatedBoundingBox);
                 offset.set("x", desiredOffset.x);
 
+                var hasSoftBoundary = printArea.hasSoftBoundary();
+
                 if (innerBoundingBox.width > printAreaWidth) {
                     var scaleToFitWidth = printAreaWidth / innerBoundingBox.width;
-                    scale = scale * scaleToFitWidth;
+                    if (!hasSoftBoundary) {
+                        scale = scale * scaleToFitWidth;
+                    }
                     boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     offset.set("x", desiredOffset.x);
@@ -1226,7 +1230,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (innerBoundingBox.height > printAreaHeight) {
                     var scaleToFitHeight = printAreaHeight / innerBoundingBox.height;
-                    scale = scale * scaleToFitHeight;
+                    if (!hasSoftBoundary) {
+                        scale = scale * scaleToFitHeight;
+                    }
                     boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     offset.set("x", desiredOffset.x);
