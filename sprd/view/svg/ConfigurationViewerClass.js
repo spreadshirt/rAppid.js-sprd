@@ -1200,26 +1200,21 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return false;
                 }
 
-                var scaleDirection = Math.sign(newScale - oldScale), // positive means increasing
-                    newWidth = configuration.width(newScale),
-                    newHeight = configuration.height(newScale),
-                    minDimensionSize = Math.min(newWidth, newHeight),
-                    maxScale = configuration.getMaxScale(),
-                    minScale = configuration.getMinScale(),
-                    willBecomeTooSmallAbs = minDimensionSize <= configuration.$.minSize && scaleDirection < 0;
+                var newWidth = configuration.width(newScale),
+                    newHeight = configuration.height(newScale);
 
                 var tooWideForPrintArea = newWidth / printArea.get('_size.width') > printArea.get('restrictions.maxConfigRatio'),
                     tooTallForPrintArea = newHeight / printArea.get('_size.height') > printArea.get('restrictions.maxConfigRatio'),
-                    tooBigForPrintAreaRel = tooWideForPrintArea && tooTallForPrintArea;
+                    tooBigForPrintAreaRel = tooWideForPrintArea || tooTallForPrintArea;
 
                 var tooThinForPrintArea = newWidth / printArea.get('_size.width') < printArea.get('restrictions.minConfigRatio'),
                     tooShortForPrintArea = newHeight / printArea.get('_size.height') < printArea.get('restrictions.minConfigRatio'),
-                    tooSmallForPrintAreaRel = tooThinForPrintArea && tooShortForPrintArea;
+                    tooSmallForPrintAreaRel = tooThinForPrintArea || tooShortForPrintArea;
 
                 var hasSoftBoundary = configuration.get('printArea.hasSoftBoundary()'),
-                    invalidRelSize = !hasSoftBoundary && (tooBigForPrintAreaRel || tooSmallForPrintAreaRel),
+                    invalidRelSize = (!hasSoftBoundary && tooBigForPrintAreaRel) || tooSmallForPrintAreaRel,
                     scaleThresholdValid = this.scaleThresholdValid(newScale, oldScale);
-                return scaleThresholdValid && !willBecomeTooSmallAbs && !invalidRelSize;
+                return scaleThresholdValid && !invalidRelSize;
             },
 
             scaleThresholdValid: function (newScale, oldScale) {

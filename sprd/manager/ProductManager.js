@@ -41,7 +41,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var self = this,
                     view;
 
-                if(product.get("productType.id") != productType.get("id")) {
+                if (product.get("productType.id") != productType.get("id")) {
                     product.removeExampleConfiguration();
                 }
 
@@ -122,7 +122,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 var removedConfigurations = _.filter(_.clone(product.$.configurations.$items), function(configuration) {
                     var convertConfiguration = self.convertConfiguration(product, configuration, productType, appearance, options);
-                    if(convertConfiguration && convertConfiguration.changedColors) {
+                    if (convertConfiguration && convertConfiguration.changedColors) {
                         changedColorConfigurations.push(configuration);
                     }
 
@@ -202,7 +202,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                                 convertedPrintColor = validatedMove.printType.getClosestPrintColor(convertedColor);
                             configuration.setColor(index, convertedPrintColor);
 
-                            if(color.distanceTo(convertedColor) > 1) {
+                            if (color.distanceTo(convertedColor) > 1) {
                                 colorChanged = true;
                             }
                         });
@@ -375,8 +375,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 var finalizeFnc = function(configuration, printTypes, params) {
 
+                    var activeIndex = (configuration.$.textFlow.textLength() - 1);
+
+                    if (params.activeIndex != null) {
+                        activeIndex = params.activeIndex;
+                    }
+
                     configuration.$.selection.set({
-                        activeIndex: configuration.$.textFlow.textLength() - 1,
+                        activeIndex: activeIndex,
                         anchorIndex: 0
                     });
 
@@ -527,7 +533,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     isTemplate: false,
                     fontSize: 25,
                     printColor: null,
-                    autoGrow: true
+                    autoGrow: true,
+                    activeIndex: null
                 });
 
                 var self = this,
@@ -651,7 +658,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         bus.setUp(configuration);
                         configuration.init({}, cb);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         var configuration = this.vars["configuration"];
                         configuration.set('initialText', configuration.$.rawText);
                     })
@@ -965,7 +972,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         return validatedMove;
                     }
                 }
-                
+
             },
 
             validateConfigurationMove: function(printType, printArea, configuration, options) {
@@ -1143,7 +1150,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         offset: configuration.$.offset
                     }
                 }
-                
+
                 printArea = printArea || configuration.$.printArea;
                 printType = printType || configuration.$.printType;
 
@@ -1209,9 +1216,13 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), rotatedBoundingBox);
                 offset.set("x", desiredOffset.x);
 
+                var hasSoftBoundary = printArea.hasSoftBoundary();
+
                 if (innerBoundingBox.width > printAreaWidth) {
                     var scaleToFitWidth = printAreaWidth / innerBoundingBox.width;
-                    scale = scale * scaleToFitWidth;
+                    if (!hasSoftBoundary) {
+                        scale = scale * scaleToFitWidth;
+                    }
                     boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     offset.set("x", desiredOffset.x);
@@ -1219,7 +1230,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 if (innerBoundingBox.height > printAreaHeight) {
                     var scaleToFitHeight = printAreaHeight / innerBoundingBox.height;
-                    scale = scale * scaleToFitHeight;
+                    if (!hasSoftBoundary) {
+                        scale = scale * scaleToFitHeight;
+                    }
                     boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     offset.set("x", desiredOffset.x);
@@ -1229,7 +1242,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 if (_.isNaN(scale) || _.isNaN(offset.$.y) || _.isNaN(offset.$.x)) {
                     throw Error('Part of the transform is not a number');
                 }
-                
+
                 return {
                     offset: offset,
                     scale: {

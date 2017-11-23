@@ -15,7 +15,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 processedDesign: null,
                 processedImage: null,
                 processedSize: null,
-                innerRect: null
+                innerRect: null,
+                defaultInnerRect: null
             },
 
 
@@ -32,13 +33,21 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 this.bind('change:rotation', function () {
                     this._debounceFunctionCall(this.setInnerRect, "innerRect", 800, this)
                 }, this);
+
+                this.set('defaultInnerRect', {
+                    x: 0,
+                    y: 0,
+                    width: 1,
+                    height: 1
+                });
             },
 
             inject: {
                 imageUploadService: IImageUploadService,
                 maskService: MaskService,
                 imageService: ImageService,
-                context: "context"
+                context: "context",
+                featureManager: FeatureManager
             },
 
             type: "design",
@@ -83,7 +92,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     return;
                 }
 
-                var designColors = design ? design.$.colors : null;
+                var designColors = design.$.colors;
 
                 if (!designColors || !designColors.length) {
                     return;
@@ -294,12 +303,22 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             setInnerRect: function () {
-                var self = this;
-                this.getInnerRect(this.$.rotation, function (err, results) {
+                var self = this,
+                    isMeasuringEnabled = this.isMeasuringEnabled();
+
+                if (!isMeasuringEnabled) {
+                    return;
+                }
+
+                this.getInnerRect(this.$.rotation, function (err, rect) {
                     if (!err) {
-                        self.set("innerRect", results.rect);
+                        self.set("innerRect", rect);
                     }
                 });
+            },
+
+            isMeasuringEnabled: function () {
+                return this.$.featureManager && this.$.featureManager.getFeatureState("calcInnerRects");
             },
 
             getInnerRect: function (rotation, callback) {
@@ -317,7 +336,9 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     .seq("rect", function () {
                         return ImageMeasurer.getRealDesignSize(this.vars.image, rotation);
                     })
-                    .exec(callback)
+                    .exec(function (err, results) {
+                        callback && callback(err, results && results.rect)
+                    })
             },
 
 
@@ -387,10 +408,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                         href: "/" + design.get("id")
                     };
                 }
-            },
-
-            originalSize: function () {
-                return this.getSizeForPrintType(this.$.printType, null, {original: true});
             },
 
             compose: function () {
@@ -469,7 +486,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             isAllowedOnPrintArea: function (printArea) {
-                return printArea && printArea.get("restrictions.designAllowed") == true;
+                return printArea && printArea.get("restrictions.designAllowed");
             },
 
             getPossiblePrintTypesForPrintArea: function (printArea, appearance) {

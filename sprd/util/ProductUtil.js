@@ -308,7 +308,7 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             maskContext.drawImage(img, halfSpace, halfSpace, size, size);
 
             var dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1], // offset array
-                s = 2,  // thickness scale
+                s = 1,  // thickness scale
                 xPos = 0,  // final position
                 yPos = 0;  // final position
 

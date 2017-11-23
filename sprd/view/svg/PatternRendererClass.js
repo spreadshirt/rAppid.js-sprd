@@ -18,7 +18,8 @@ define(['sprd/view/svg/ConfigurationRenderer', 'sprd/config/RealisticFlexColors'
 
         filter: function() {
             var colorId = this.get("configuration.printColors[0].id");
-            return colorId == 90 ? "url(#g" + this.$.maskId + ")" : "";
+            //IE fix (do not return empty strings)
+            return colorId == 90 ? "url(#g" + this.$.maskId + ")" : null;
         }.on(["configuration.printColors", "reset"]),
 
         isSpecialColor: function(layerIndex) {
