@@ -7,7 +7,7 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             return a.$.weight - b.$.weight;
         },
 
-        getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearance) {
+        getPossiblePrintTypesForDesignOnPrintArea: function(design, printArea, appearance) {
 
             if (!(design && design.$.printTypes)) {
                 return [];
@@ -245,7 +245,7 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
                 var cachedCheck = appearanceConfigurationCache[key];
 
-                if(cachedCheck) {
+                if (cachedCheck) {
                     callback(null, cachedCheck.tooDark);
                 } else {
                     img.onload = function() {
@@ -330,10 +330,11 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
             var colorAdjusting = 10,
                 totalPixel = 0,
-                borderDistance = new Array(101).fill(0),
+                //IE 11 does not support Array.fill()
+                borderDistance = new Array(101),
                 borderDistanceTotal = 0,
                 borderPixelAmount = 0,
-                innerDistance = new Array(101).fill(0),
+                innerDistance = new Array(101),
                 innerDistanceTotal = 0,
                 innerPixelAmount = 0;
 
@@ -352,9 +353,11 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
                     var color = new Color.RGB(adjustedR, adjustedG, adjustedB),
                         distance = this.colorDistance(appearanceColor, color);
+                    var currentDistance;
 
                     if (borderPixelOpacity > 0) {
-                        borderDistance[parseInt(distance)] += imgPixelOpacityPercentage;
+                        currentDistance = (borderDistance[parseInt(distance)] || 0);
+                        borderDistance[parseInt(distance)] = currentDistance + imgPixelOpacityPercentage;
                         borderDistanceTotal += imgPixelOpacityPercentage;
 
                         if (imgPixelOpacity) {
@@ -362,7 +365,8 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                             totalPixel++;
                         }
                     } else {
-                        innerDistance[parseInt(distance)] += imgPixelOpacityPercentage;
+                        currentDistance = (innerDistance[parseInt(distance)] || 0);
+                        innerDistance[parseInt(distance)] = imgPixelOpacityPercentage;
                         innerDistanceTotal += imgPixelOpacityPercentage;
 
                         if (imgPixelOpacity) {
@@ -377,8 +381,8 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                 invisibleInnerPixelTotal = 0;
 
             for (i = 0; i <= threshValue; i++) {
-                invisibleBorderPixelTotal += borderDistance[i];
-                invisibleInnerPixelTotal += innerDistance[i];
+                invisibleBorderPixelTotal += (borderDistance[i] || 0);
+                invisibleInnerPixelTotal += (innerDistance[i] || 0);
             }
 
             return {
