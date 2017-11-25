@@ -366,7 +366,7 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                         }
                     } else {
                         currentDistance = (innerDistance[parseInt(distance)] || 0);
-                        innerDistance[parseInt(distance)] = imgPixelOpacityPercentage;
+                        innerDistance[parseInt(distance)] = currentDistance + imgPixelOpacityPercentage;
                         innerDistanceTotal += imgPixelOpacityPercentage;
 
                         if (imgPixelOpacity) {
