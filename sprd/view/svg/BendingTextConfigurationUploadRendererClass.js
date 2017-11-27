@@ -26,19 +26,16 @@ define(['js/svg/Svg'], function(Svg) {
             }
         },
 
-        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text', 'viewBox'],
+        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text'],
 
         width: function() {
             var config = this.$.configuration;
-            if (config) {
-                return Math.round(config.widthInMM() + 50);
-            } else {
-                return 50;
-            }
+            return config ? Math.round(config.widthInMM()) : 0;
         }.on('configuration.widthInMM()'),
 
         getElement: function() {
-            var svgNamespace = 'http://www.w3.org/2000/svg',
+            var textBbox = this.$.text.$el.getBBox(),
+                svgNamespace = 'http://www.w3.org/2000/svg',
                 xlinkNS = 'http://www.w3.org/1999/xlink',
                 elem = this.$el;
 
@@ -49,6 +46,7 @@ define(['js/svg/Svg'], function(Svg) {
             elem.setAttribute("xmlns", svgNamespace);
             elem.setAttribute("xmlns:xlink", xlinkNS);
 
+            this.setViewBox(textBbox.x, textBbox.y, textBbox.width, textBbox.height);
             return elem;
         },
 
