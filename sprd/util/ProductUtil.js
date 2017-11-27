@@ -285,27 +285,27 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                 space = 10,
                 halfSpace = space / 2;
 
-            var maskCanvas = document.createElement("canvas"),
+            var alphaCanvas = document.createElement("canvas"),
                 borderCanvas = document.createElement("canvas"),
                 imgCanvas = document.createElement("canvas");
 
-            maskCanvas.width = size + space;
-            maskCanvas.height = size + space;
+            alphaCanvas.width = size + space;
+            alphaCanvas.height = size + space;
             borderCanvas.width = size + space;
             borderCanvas.height = size + space;
             imgCanvas.width = size;
             imgCanvas.height = size;
 
-            var maskContext = maskCanvas.getContext("2d"),
+            var alphaContext = alphaCanvas.getContext("2d"),
                 borderContext = borderCanvas.getContext("2d"),
                 imgContext = imgCanvas.getContext("2d");
 
-            maskContext.fillStyle = "black";
-            maskContext.fillRect(0, 0, size + space, size + space);
-            maskContext.globalCompositeOperation = "destination-out";
+            alphaContext.fillStyle = "black";
+            alphaContext.fillRect(0, 0, size + space, size + space);
+            alphaContext.globalCompositeOperation = "destination-out";
 
             // cut-out image to create alpha-mask
-            maskContext.drawImage(img, halfSpace, halfSpace, size, size);
+            alphaContext.drawImage(img, halfSpace, halfSpace, size, size);
 
             var dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1], // offset array
                 s = 1,  // thickness scale
@@ -316,12 +316,12 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
 
             // blur mask to create a outline of the mask
             for (var i = 0; i < dArr.length; i += 2) {
-                borderContext.drawImage(maskCanvas, xPos + dArr[i] * s, yPos + dArr[i + 1] * s, size + space, size + space);
+                borderContext.drawImage(alphaCanvas, xPos + dArr[i] * s, yPos + dArr[i + 1] * s, size + space, size + space);
             }
 
             // cut out the mask to get only the outline (= border of the image)
             borderContext.globalCompositeOperation = "destination-out";
-            borderContext.drawImage(maskCanvas, 0, 0);
+            borderContext.drawImage(alphaCanvas, 0, 0);
 
             borderContext.globalCompositeOperation = "source-in";
             borderContext.drawImage(img, halfSpace, halfSpace, size, size);
