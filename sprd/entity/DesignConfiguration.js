@@ -484,7 +484,8 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             saveTakesTime: function () {
-                return this.get('afterEffect');
+                var designColors = this.get("design.colors");
+                return this.get('afterEffect') || !designColors || designColors.length != 1;
             },
 
             init: function (options, callback) {
