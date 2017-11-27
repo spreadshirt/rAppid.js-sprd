@@ -3,8 +3,8 @@ define(['sprd/view/svg/TextConfigurationMeasureRendererClass'], function (TextCo
     return TextConfigurationMeasureRendererClass.inherit("sprd.view.svg.BendingTextConfigurationMeasureRendererClass", {
         defaults: {
             configuration: null,
-            width: "{configuration.width()}",
-            height: "{configuration.height()}",
+            width: "{configuration.width(1)}",
+            height: "{configuration.height(1)}",
             preserveAspectRatio: "none",
             bbox: null,
             loadedFonts: null
