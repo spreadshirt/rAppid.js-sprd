@@ -283,10 +283,11 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 var target = this.$printAreas[0],
                     configViewer = this.getViewerForConfiguration(selectedConfiguration);
 
-                if (selectedConfiguration.$.design) {
+                var design = selectedConfiguration.$.design;
+                if (design && design.$.id) {
                     flow()
                         .seq(function(cb) {
-                            selectedConfiguration.$.design.fetch(null, cb);
+                            design.fetch(null, cb);
                         })
                         .exec();
                 }
