@@ -5,10 +5,9 @@ define(['sprd/view/svg/TextConfigurationMeasureRendererClass'], function (TextCo
             configuration: null,
             width: "{configuration.width(1)}",
             height: "{configuration.height(1)}",
-            preserveAspectRatio: "none",
-            bbox: null,
-            loadedFonts: null
         },
+
+        $classAttributes: ['configuration', 'textArea', 'bbox', 'loadedFonts', 'defaultInnerRect', 'text', 'textPath', 'path'],
 
         initViewBox: function () {
             var textBbox = this.$.text.$el.getBBox();
