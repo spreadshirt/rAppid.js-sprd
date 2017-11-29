@@ -50,12 +50,16 @@ define(["js/core/Component", 'sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/e
                 height = design.get('size.height') * factor;
 
             if (design && imageService && (height || width)) {
-                return imageService.designImage(design.$.wtfMbsId || design.$.id, {
-                    width: !width ? height : width,
-                    height: !height ? width : height,
-                    version: design.$.version,
-                    sameOrigin: true
-                });
+                var options = {};
+
+                if (width) {
+                    options.width = width
+                } else {
+                    options.height = height;
+                }
+                options.version = design.$.version;
+                options.sameOrigin = true;
+                return imageService.designImage(design.$.wtfMbsId || design.$.id, options);
             }
 
             return url;
