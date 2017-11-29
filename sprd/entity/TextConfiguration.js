@@ -136,6 +136,21 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
             },
 
+            removeMeasurer: function () {
+                if (!this.$.measurer) {
+                    return;
+                }
+                var measurer = this.$.measurer,
+                    el = measurer.$el,
+                    parent = el.parentNode;
+
+                if (parent) {
+                    parent.removeChild(el);
+                }
+
+                this.set('measurer', null);
+            },
+
             textChangedSinceCreation: function() {
                 var initialText = this.$.initialText,
                     currentText = this.$.rawText,
@@ -166,6 +181,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             _preDestroy: function() {
                 this.unbind("textFlow", "operationComplete", this._onTextFlowChange, this);
+                this.removeMeasurer();
             },
 
             bus_StageRendered: function() {

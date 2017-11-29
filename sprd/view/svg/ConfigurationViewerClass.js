@@ -1204,16 +1204,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var newWidth = configuration.width(newScale),
                     newHeight = configuration.height(newScale);
 
-                var tooWideForPrintArea = newWidth / printArea.get('_size.width') > printArea.get('restrictions.maxConfigRatio'),
-                    tooTallForPrintArea = newHeight / printArea.get('_size.height') > printArea.get('restrictions.maxConfigRatio'),
-                    tooBigForPrintAreaRel = tooWideForPrintArea && tooTallForPrintArea;
-
                 var tooThinForPrintArea = newWidth / printArea.get('_size.width') < printArea.get('restrictions.minConfigRatio'),
                     tooShortForPrintArea = newHeight / printArea.get('_size.height') < printArea.get('restrictions.minConfigRatio'),
                     tooSmallForPrintAreaRel = tooThinForPrintArea && tooShortForPrintArea;
 
                 var hasSoftBoundary = configuration.get('printArea.hasSoftBoundary()'),
-                    invalidRelSize = (!hasSoftBoundary && tooBigForPrintAreaRel) || tooSmallForPrintAreaRel,
+                    invalidRelSize = tooSmallForPrintAreaRel,
                     scaleThresholdValid = this.scaleThresholdValid(newScale, oldScale);
                 return scaleThresholdValid && !invalidRelSize;
             },
