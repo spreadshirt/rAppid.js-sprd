@@ -18,15 +18,18 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             this.initBindings();
         },
 
-        getApplier: function () {
+        getApplier: function (design, shopId) {
             var offset = this.get('offset'),
-                applier = this.createEntity(MaskApplier);
+                applier = this.createEntity(MaskApplier),
+                scalingFactor = 1 / ( this.canvasScalingFactor(design) || 1);
 
             applier.set({
-                transformX: offset.$.x,
-                transformY: offset.$.y,
-                maskWidth: this.width(),
-                maskHeight: this.height()
+                transformX: offset.$.x * scalingFactor,
+                transformY: offset.$.y * scalingFactor,
+                maskWidth: this.width() * scalingFactor,
+                maskHeight: this.height() * scalingFactor,
+                designId: design.$.wtfMbsId,
+                targetShopId: shopId
             });
 
             return applier;
