@@ -4,7 +4,7 @@ define(['sprd/view/svg/TextConfigurationMeasureRendererClass'], function (TextCo
         defaults: {
             configuration: null,
             width: "{configuration.width(1)}",
-            height: "{configuration.height(1)}",
+            height: "{configuration.height(1)}"
         },
 
         $classAttributes: ['configuration', 'textArea', 'bbox', 'loadedFonts', 'defaultInnerRect', 'text', 'textPath', 'path'],
