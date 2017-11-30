@@ -45,7 +45,6 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
                 cachedCheck = key ? appearanceConfigurationCache[key] : "";
 
             if (cachedCheck) {
-                console.log("cached");
                 callback(null, cachedCheck.tooDark);
                 return;
             }
@@ -155,7 +154,6 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
                     var img = new Image();
 
                     img.onload = function() {
-                        console.log(img.src);
                         cb(null, img);
                     };
 
@@ -227,7 +225,6 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
             var layerInformation = layerInformationCache[key] || [];
 
             if (layerInformation.length) {
-                console.log("cached");
                 callback && callback(null, layerInformation);
                 return;
             }
@@ -373,7 +370,6 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
                     layerInformation.separatedLayers.push(i);
                 }
             }
-            console.log(layerInformation);
             return layerInformation;
         },
 
