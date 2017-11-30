@@ -7,6 +7,8 @@ define([], function() {
         STRICT_PIXEL_COLOR_THRESHOLD: 45,
         INVISIBLE_COLOR_PERCENTAGE: 42,
 
+        OVERLAPPING_LAYER_PERCENTAGE: 20,
+
         INITIAL_FONT_SIZE_SCALE_FACTOR: 0.07
     };
 });
