@@ -159,6 +159,8 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                     allConfigurations = _.filter(allConfigurations, filter);
                 });
 
+                allConfigurations = _.without(allConfigurations, excludedConfiguration);
+
                 this.equalizeConfigurations(product, allConfigurations, targetPrintType)
             }
         },

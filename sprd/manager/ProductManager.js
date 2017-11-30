@@ -316,7 +316,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     })
                     .seq("printTypes", function() {
                         var printTypes = self.getPrintTypesForDesign(product, design, this.vars.printArea, printType);
-                        printType = printTypes[0];
+                        var nonDigitalPrintType = null;
+                        if (params.designColorIds) {
+                            nonDigitalPrintType = _.find(printTypes, function(printType) {
+                                return !printType.isDigital();
+                            });
+                        }
+
+                        printType = nonDigitalPrintType || printTypes[0];
+                        ArrayUtil.move(printTypes, printType, 0);
                         return printTypes;
                     })
                     .seq("designConfiguration", function() {

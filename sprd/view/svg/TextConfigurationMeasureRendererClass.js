@@ -17,7 +17,7 @@ define(['js/svg/Svg', "sprd/manager/ImageMeasurer", "flow", "sprd/data/ImageServ
             featureManager: FeatureManager
         },
 
-        $classAttributes: ['configuration', 'textArea', 'bbox'],
+        $classAttributes: ['configuration', 'textArea', 'bbox', 'loadedFonts', 'defaultInnerRect'],
 
         _initializationComplete: function () {
             this.callBase();

@@ -1,12 +1,12 @@
 define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', 'sprd/model/PrintType', "sprd/util/ProductUtil", 'js/core/Bus', 'sprd/util/UnitUtil', 'sprd/util/ArrayUtil', "sprd/manager/ITextConfigurationManager", "js/core/List", "xaml!sprd/view/svg/TextConfigurationMeasureRenderer"],
-    function (Configuration, flow, Size, _, PrintType, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager, List, TextMeasureRenderer) {
+    function(Configuration, flow, Size, _, PrintType, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager, List, TextMeasureRenderer) {
 
         var copyrightWordList;
 
         if (!String.prototype.codePointAt) {
-            (function () {
+            (function() {
                 'use strict'; // needed to support `apply`/`call` with `undefined`/`null`
-                var codePointAt = function (position) {
+                var codePointAt = function(position) {
                     if (this == null) {
                         throw TypeError();
                     }
@@ -77,15 +77,15 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             type: "text",
             representationType: "text",
 
-            ctor: function () {
+            ctor: function() {
                 this.callBase();
 
-                copyrightWordList.bind("add", function () {
+                copyrightWordList.bind("add", function() {
                     this.validateText();
                 }, this);
             },
 
-            init: function (options, callback) {
+            init: function(options, callback) {
 
                 var self = this,
                     productManager = this.$.manager,
@@ -98,13 +98,13 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
 
                 flow()
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         productManager.initializeConfiguration(self, options, cb);
                     })
-                    .seq(function (cb) {
+                    .seq(function(cb) {
                         self._composeText(false, cb);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         var leafStyle = self.getCommonLeafStyleForWholeTextFlow(),
                             printTypeColor;
 
@@ -116,13 +116,13 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         self.$.printColors.reset(printTypeColor ? [printTypeColor] : []);
                         self.initMeasurer();
                     })
-                    .seq(function () {
+                    .seq(function() {
                         self.set('initialized', true);
                     })
                     .exec(callback);
             },
 
-            initMeasurer: function () {
+            initMeasurer: function() {
                 if (this.$.measurer) {
                     return;
                 }
@@ -136,7 +136,22 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
             },
 
-            textChangedSinceCreation: function () {
+            removeMeasurer: function () {
+                if (!this.$.measurer) {
+                    return;
+                }
+                var measurer = this.$.measurer,
+                    el = measurer.$el,
+                    parent = el.parentNode;
+
+                if (parent) {
+                    parent.removeChild(el);
+                }
+
+                this.set('measurer', null);
+            },
+
+            textChangedSinceCreation: function() {
                 var initialText = this.$.initialText,
                     currentText = this.$.rawText,
                     textChanged = this.$.textChanged;
@@ -150,7 +165,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return result;
             },
 
-            isOnlyWhiteSpace: function () {
+            isOnlyWhiteSpace: function() {
                 var text = this.$.rawText;
                 if (!text) {
                     return true;
@@ -159,20 +174,21 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return /^[\s\n\r]*$/.test(text);
             },
 
-            _postConstruct: function () {
+            _postConstruct: function() {
                 this.bind("textFlow", "operationComplete", this._onTextFlowChange, this);
                 this._composeText();
             },
 
-            _preDestroy: function () {
+            _preDestroy: function() {
                 this.unbind("textFlow", "operationComplete", this._onTextFlowChange, this);
+                this.removeMeasurer();
             },
 
-            bus_StageRendered: function () {
+            bus_StageRendered: function() {
                 this.init();
             }.bus("Stage.Rendered"),
 
-            _commitChangedAttributes: function ($, options) {
+            _commitChangedAttributes: function($, options) {
                 var relevantChange = !!$.innerRect;
                 if (relevantChange && !options.preventValidation && !options.printTypeEqualized) {
                     this._setError(this._validateTransform($));
@@ -181,7 +197,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.callBase();
             },
 
-            _commitTextFlow: function (textFlow) {
+            _commitTextFlow: function(textFlow) {
 
                 var rawText = null;
                 if (textFlow) {
@@ -191,13 +207,13 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.set("rawText", rawText);
             },
 
-            _onTextFlowChange: function (e) {
+            _onTextFlowChange: function(e) {
                 var self = this;
 
                 this.validateText();
 
-                this._composeText(false, function () {
-                    self._debounceFunctionCall(function () {
+                this._composeText(false, function() {
+                    self._debounceFunctionCall(function() {
                         self.$.bus && self.$.bus.trigger('Application.productChanged', null, self);
                     }, "productChanged", 300);
                 });
@@ -216,11 +232,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.set("rawText", rawText);
             },
 
-            _debouncedComposeText: function () {
+            _debouncedComposeText: function() {
                 this._debounceFunctionCall(this._composeText, "composeText", 300, this, [true])
             },
 
-            _composeText: function (skipHeight, options, callback) {
+            _composeText: function(skipHeight, options, callback) {
 
                 if (!(this.$stage && this.$stage.rendered)) {
                     return;
@@ -249,7 +265,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 textArea.$.autoGrow = this.$.autoGrow;
                 var oldMeasure = this.get('composedTextFlow.measure');
 
-                composer.compose(textFlow, textArea.$, function (err, composedTextFlow) {
+                composer.compose(textFlow, textArea.$, function(err, composedTextFlow) {
 
                     var opt = _.clone(options),
                         newMeasure = composedTextFlow ? composedTextFlow.measure : null;
@@ -284,7 +300,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 });
             },
 
-            fontSizeChanged: function (newTextFlow, oldTextFlow) {
+            fontSizeChanged: function(newTextFlow, oldTextFlow) {
                 newTextFlow = newTextFlow || this.$.textFlow;
                 oldTextFlow = oldTextFlow || this.$previousAttributes.textFlow;
 
@@ -298,7 +314,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return oldSizes.length > 0 && _.difference(newSizes, oldSizes).length > 0;
             },
 
-            fontChanged: function (newTextFlow, oldTextFlow) {
+            fontChanged: function(newTextFlow, oldTextFlow) {
                 newTextFlow = newTextFlow || this.$.textFlow;
                 oldTextFlow = oldTextFlow || this.$previousAttributes.textFlow;
 
@@ -312,7 +328,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return oldFonts.length > 0 && _.difference(newFonts, oldFonts).length > 0;
             },
 
-            textChanged: function (newTextFlow, oldTextFlow) {
+            textChanged: function(newTextFlow, oldTextFlow) {
                 newTextFlow = newTextFlow || this.$.textFlow;
                 oldTextFlow = oldTextFlow || this.$previousAttributes.textFlow;
 
@@ -323,7 +339,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return newTextFlow.text() !== oldTextFlow.text();
             },
 
-            centerConfiguration: function (newWidth, newHeight, oldWidth, oldHeight) {
+            centerConfiguration: function(newWidth, newHeight, oldWidth, oldHeight) {
                 var self = this;
 
                 if (newWidth && newWidth.width && newHeight && newHeight.width) {
@@ -341,7 +357,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 self.centerY(newHeight, oldHeight);
             },
 
-            centerX: function (newWidth, oldWidth) {
+            centerX: function(newWidth, oldWidth) {
                 var self = this;
                 if (!newWidth || !oldWidth) {
                     return;
@@ -352,7 +368,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 self.$.offset.set('x', newX);
             },
 
-            centerY: function (newHeight, oldHeight) {
+            centerY: function(newHeight, oldHeight) {
                 var self = this;
                 if (!newHeight || !oldHeight) {
                     return;
@@ -363,7 +379,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 self.$.offset.set('y', newY);
             },
 
-            resize: function (newWidth, newHeight, oldWidth, oldHeight) {
+            resize: function(newWidth, newHeight, oldWidth, oldHeight) {
                 if (newWidth && newWidth.width && newHeight && newHeight.width) {
                     oldWidth = newHeight.width;
                     oldHeight = newHeight.height;
@@ -389,7 +405,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 self.$.offset.set('y', newY);
             },
 
-            reposition: function (newWidth, newHeight, oldWidth, oldHeight, textChange, composedTextFlow) {
+            reposition: function(newWidth, newHeight, oldWidth, oldHeight, textChange, composedTextFlow) {
                 if (newWidth && newWidth.width && newHeight && newHeight.width) {
                     textChange = oldWidth;
                     composedTextFlow = oldHeight;
@@ -410,7 +426,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
             },
 
-            repositionAutoGrow: function (newWidth, newHeight, oldWidth, oldHeight, composedTextFlow) {
+            repositionAutoGrow: function(newWidth, newHeight, oldWidth, oldHeight, composedTextFlow) {
                 var self = this;
                 if (!self.$.autoGrow || !composedTextFlow || !newWidth || !oldWidth) {
                     return;
@@ -430,11 +446,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 self.$.offset.set({x: newX, y: newY});
             },
 
-            validateText: function () {
+            validateText: function() {
                 this._debounceFunctionCall(this._validateText, "validateText", 300);
             },
 
-            _validateText: function () {
+            _validateText: function() {
                 var textFlow = this.$.textFlow,
                     text = (textFlow && textFlow.text() || "").toLowerCase(),
                     badWord;
@@ -442,7 +458,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 if (text.length > 1) {
                     // check that we don't contain copyright content
                     if (copyrightWordList && copyrightWordList.size()) {
-                        badWord = copyrightWordList.find(function (word) {
+                        badWord = copyrightWordList.find(function(word) {
                             return text.indexOf(word.toLowerCase()) !== -1;
                         });
 
@@ -454,23 +470,25 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
             // http://stackoverflow.com/questions/30757193/find-out-if-character-in-string-is-emoji
-            isEmoji: function (charCode) {
+            isEmoji: function(charCode) {
                 var isSpecialCharacterEmoji = charCode === 0x3030 || charCode === 0x00AE || charCode === 0x00A9,
                     inEmoticonBlock = 0x1F600 <= charCode && charCode <= 0x1F64F,
                     miscSymbolsAndPictogram = 0x1F300 <= charCode && charCode <= 0x1F5FF,
                     transportAndMap = 0x1F680 <= charCode && charCode <= 0x1F6FF,
                     miscSymbol = 0x2600 <= charCode && charCode <= 0x26FF,
                     dingbat = 0x2700 <= charCode && charCode <= 0x27BF,
-                    variation = 0xFE00 <= charCode && charCode <= 0xFE0F;
+                    variation = 0xFE00 <= charCode && charCode <= 0xFE0F,
+                    arrow = 0x20D0 <= charCode && charCode <= 0x20FF;
 
-
-                return isSpecialCharacterEmoji || miscSymbolsAndPictogram || transportAndMap || inEmoticonBlock || miscSymbol || dingbat || variation;
+                return isSpecialCharacterEmoji || miscSymbolsAndPictogram || transportAndMap || inEmoticonBlock || miscSymbol || dingbat || variation || arrow;
             },
 
-            containsEmoji: function (string) {
+            containsEmoji: function(string) {
                 for (var i = 0; i < string.length; i++) {
                     if (this.isEmoji(string.codePointAt(i))) {
-                        return {emoji: string.substring(i, i + 2)};
+                        var foundEmoji = string.match(/[\uD83C-\uDBFF\uDC00-\uDFFF]{2}/),
+                            emoji = (foundEmoji && foundEmoji[0]) || string.substring(i, i + 1);
+                        return {emoji: emoji};
                     }
                 }
 
@@ -478,7 +496,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
 
-            getParagraphStyleForWholeTextFlow: function () {
+            getParagraphStyleForWholeTextFlow: function() {
                 var selection = this.$.selection,
                     textFlow = this.$.textFlow;
 
@@ -491,7 +509,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return selectionClone.getCommonParagraphStyle(textFlow);
             },
 
-            getCommonLeafStyleForWholeTextFlow: function () {
+            getCommonLeafStyleForWholeTextFlow: function() {
                 var selection = this.$.selection,
                     textFlow = this.$.textFlow;
 
@@ -504,7 +522,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return selectionClone.getCommonLeafStyle(textFlow);
             },
 
-            setStyleOnWholeFlow: function (leafStyle, paragraphStyle) {
+            setStyleOnWholeFlow: function(leafStyle, paragraphStyle) {
                 var textFlow = this.$.textFlow,
                     applyOperation = this.$.ApplyStyleToElementOperation,
                     Style = this.$.Style,
@@ -530,16 +548,16 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
             },
 
-            _validatePrintTypeSize: function (printType, width, height, scale) {
+            _validatePrintTypeSize: function(printType, width, height, scale) {
                 var bound = this.$.bound;
                 return this.callBase(printType, bound ? bound.width * scale.x : width, bound ? bound.height * scale.y : height, scale);
             },
 
-            getBound: function () {
+            getBound: function() {
                 //TODO use innerRect and fallback to bound when innerRect is not there
             },
 
-            _getMinimalScales: function (printType, predicate) {
+            _getMinimalScales: function(printType, predicate) {
                 var textFlow = this.$.textFlow,
                     minimalScales = [];
 
@@ -567,15 +585,15 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return minimalScales;
             },
 
-            minimumScale: function () {
+            minimumScale: function() {
                 return this._getMinimalScale(this.$.printType);
             }.onChange('printType'),
 
-            _getMinimalScale: function (printType) {
+            _getMinimalScale: function(printType) {
                 return Math.max.apply(null, this._getMinimalScales(printType));
             },
 
-            _getBoundingBox: function (offset, width, height, rotation, scale, onlyContent) {
+            _getBoundingBox: function(offset, width, height, rotation, scale, onlyContent) {
 
                 var bound = this.$.bound;
 
@@ -604,7 +622,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             },
 
-            _commitPrintType: function (printType) {
+            _commitPrintType: function(printType) {
                 // print type changed -> convert colors
 
                 if (!printType) {
@@ -647,7 +665,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 this.trigger("priceChanged");
             },
 
-            price: function () {
+            price: function() {
 
                 var usedPrintColors = [],
                     price = this.callBase();
@@ -680,7 +698,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             }.on("priceChanged").onChange("_printTypePrice"),
 
-            getUsedFonts: function () {
+            getUsedFonts: function() {
                 var fonts = [];
 
                 if (this.$.textFlow) {
@@ -690,7 +708,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return fonts;
             },
 
-            save: function (callback) {
+            save: function(callback) {
                 var composedTextFlow = this.$.composedTextFlow;
                 var matters = composedTextFlow.alignmentMatters();
 
@@ -708,7 +726,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
             },
 
-            getStyles: function (textFlow) {
+            getStyles: function(textFlow) {
                 textFlow = textFlow || this.$.textFlow;
 
                 var styles = [];
@@ -728,25 +746,25 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return styles
             },
 
-            getFontSizes: function (textFlow) {
+            getFontSizes: function(textFlow) {
                 textFlow = textFlow || this.$.textFlow;
                 var styles = this.getStyles(textFlow);
 
-                return _.map(styles, function (style) {
+                return _.map(styles, function(style) {
                     return style.fontSize || style.$ && style.$.fontSize;
                 });
             },
 
-            getFonts: function (textFlow) {
+            getFonts: function(textFlow) {
                 textFlow = textFlow || this.$.textFlow;
                 var styles = this.getStyles(textFlow);
 
-                return _.map(styles, function (style) {
+                return _.map(styles, function(style) {
                     return style.fontId || style.$ && style.$.fontId;
                 });
             },
 
-            compose: function () {
+            compose: function() {
                 var ret = this.callBase();
 
                 ret.type = "text";
@@ -869,7 +887,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return ret;
             },
 
-            setColor: function (layerIndex, printColor) {
+            setColor: function(layerIndex, printColor) {
                 if (this.$.ApplyStyleToElementOperation && this.$.Style) {
                     var selection = this.$.selection;
                     if (selection.$.anchorIndex === selection.$.activeIndex) {
@@ -899,7 +917,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             },
 
-            getPossiblePrintTypes: function (appearance) {
+            getPossiblePrintTypes: function(appearance) {
                 var ret = [],
                     tmp,
                     printArea = this.$.printArea,
@@ -918,7 +936,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                         do {
                             if (leaf.$.style && leaf.$.style.$.font) {
                                 tmp = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(leaf.$.style.$.font.getFontFamily(), printArea, appearance);
-                                _.each(tmp, function (element) {
+                                _.each(tmp, function(element) {
                                     if (ret.indexOf(element) === -1) {
                                         ret.push(element);
                                     }
@@ -932,7 +950,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return ret;
             }.onChange("printArea", "design"),
 
-            getPossiblePrintTypesForPrintArea: function (printArea, appearance) {
+            getPossiblePrintTypesForPrintArea: function(printArea, appearance) {
 
                 var fontFamilies = [],
                     printTypes = [];
@@ -959,7 +977,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             },
 
-            parse: function (data) {
+            parse: function(data) {
 
                 data = this.callBase();
 
@@ -980,15 +998,15 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
             },
 
-            getSizeForPrintType: function () {
+            getSizeForPrintType: function() {
                 return this.size();
             },
 
-            size: function () {
+            size: function() {
                 return this.$.textArea || Size.empty;
             }.onChange("textArea").on("sizeChanged"),
 
-            clone: function (options) {
+            clone: function(options) {
                 options = options || {};
                 options.exclude = options.exclude || [];
 
@@ -1001,20 +1019,20 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return ret;
             },
 
-            sync: function () {
+            sync: function() {
                 this.$stage = this._$source.$stage;
                 return this.callBase();
             },
 
-            isAllowedOnPrintArea: function (printArea) {
+            isAllowedOnPrintArea: function(printArea) {
                 return printArea && printArea.get("restrictions.textAllowed");
             },
 
-            isReadyForCompose: function () {
+            isReadyForCompose: function() {
                 return !!this.$.composedTextFlow;
             },
 
-            isDeepEqual: function (b) {
+            isDeepEqual: function(b) {
                 if (!b) {
                     return false;
                 }
@@ -1069,7 +1087,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
         }, {
 
-            getCopyrightWordList: function () {
+            getCopyrightWordList: function() {
                 copyrightWordList = copyrightWordList || new List();
                 return copyrightWordList;
             }
