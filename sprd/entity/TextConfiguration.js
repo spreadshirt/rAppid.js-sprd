@@ -477,10 +477,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     transportAndMap = 0x1F680 <= charCode && charCode <= 0x1F6FF,
                     miscSymbol = 0x2600 <= charCode && charCode <= 0x26FF,
                     dingbat = 0x2700 <= charCode && charCode <= 0x27BF,
-                    variation = 0xFE00 <= charCode && charCode <= 0xFE0F;
+                    variation = 0xFE00 <= charCode && charCode <= 0xFE0F,
+                    arrow = 0x20D0 <= charCode && charCode <= 0x20FF;
 
-
-                return isSpecialCharacterEmoji || miscSymbolsAndPictogram || transportAndMap || inEmoticonBlock || miscSymbol || dingbat || variation;
+                return isSpecialCharacterEmoji || miscSymbolsAndPictogram || transportAndMap || inEmoticonBlock || miscSymbol || dingbat || variation || arrow;
             },
 
             containsEmoji: function(string) {
