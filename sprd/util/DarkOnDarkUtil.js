@@ -26,7 +26,9 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
         },
 
         _isTooDark: function(product, configuration, callback) {
-            if (!(configuration && product)) {
+            // currently we can not check dod for special text, because the image comes
+            // from a cross origin and getImageData() is not possible.
+            if (!product  || !configuration || configuration.type == "specialText") {
                 callback && callback(null, false);
                 return;
             }
