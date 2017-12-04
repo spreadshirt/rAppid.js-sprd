@@ -1541,20 +1541,22 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             flipOffsetX: function () {
-                if (this.$._scale.x < 0) {
+                var config = this.get("configuration");
+                if (config && config.$.flip.x < 0) {
                     return this.$._configurationWidth;
                 }
 
                 return 0;
-            }.onChange("_scale"),
+            }.onChange("configuration.flip", "_configurationWidth"),
 
             flipOffsetY: function () {
-                if (this.$._scale.y < 0) {
+                var config = this.get("configuration");
+                if (config && config.$.flip.y < 0) {
                     return this.$._configurationHeight;
                 }
 
                 return 0;
-            }.onChange("_scale"),
+            }.onChange("configuration.flip", "_configurationHeight"),
 
             errorClass: function () {
                 return this.$._configurationValid ? "" : "error";
@@ -1744,12 +1746,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return;
                 }
 
-                var currentScale = this.$._scale;
-                this.set("_scale", {
-                    x: -1 * currentScale.x,
-                    y: currentScale.y
-                });
-                this.applyScale();
+                var currentFlip = config.$.flip;
+                config.set('flip', {x: -currentFlip.x, y: currentFlip.y});
             },
 
             flipConfigurationY: function () {
@@ -1758,23 +1756,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return;
                 }
 
-                var currentScale = this.$._scale;
-                this.set("_scale", {
-                    x: currentScale.x,
-                    y: -1 * currentScale.y
-                });
-                this.applyScale();
-            },
-
-            applyScale: function () {
-                var config = this.$.configuration;
-                if (!config) {
-                    return;
-                }
-
-                var currentScale = this.$._scale;
-                config.set('scale', currentScale);
-
+                var currentFlip = config.$.flip;
+                config.set('flip', {x: currentFlip.x, y: -currentFlip.y});
             }
         });
     });

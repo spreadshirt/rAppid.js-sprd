@@ -41,7 +41,8 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             docked: false,
             _printTypePrice: "{printType.price}",
             properties: Object,
-            innerRect: null
+            innerRect: null,
+            flip: {x: 1, y: 1} // {x: 1: y: 1} , {x: -1 , y: 1}
         },
 
         inject: {
