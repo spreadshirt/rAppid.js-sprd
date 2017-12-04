@@ -84,6 +84,7 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
 
             var autogrow = properties && properties.autoGrow || options.isExample || options.admin;
             configuration.set('autoGrow', configuration.$.autoGrow || autogrow);
+            configuration.set('isNew', !!options.isExample);
 
             if (configuration.$initializedByManager) {
                 callback && callback(null);

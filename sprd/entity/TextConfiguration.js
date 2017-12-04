@@ -63,7 +63,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 measurer: null,
                 textChanged: null,
                 alignmentMatters: null,
-                initialized: null
+                initialized: null,
+                initOptions: null
             },
 
             inject: {
@@ -88,18 +89,21 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             init: function(options, callback) {
 
                 var self = this,
-                    productManager = this.$.manager,
+                    textConfigurationManager = this.$.manager,
                     initialized = this.$.initialized,
                     stageReady = self.$stage && self.$stage.rendered;
 
                 if (initialized || !stageReady) {
+                    this.set("initOptions", options);
                     callback && callback(null);
                     return;
                 }
 
+                options = options || this.get("initOptions");
+
                 flow()
                     .seq(function(cb) {
-                        productManager.initializeConfiguration(self, options, cb);
+                        textConfigurationManager.initializeConfiguration(self, options, cb);
                     })
                     .seq(function(cb) {
                         self._composeText(false, cb);
@@ -136,7 +140,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
             },
 
-            removeMeasurer: function () {
+            removeMeasurer: function() {
                 if (!this.$.measurer) {
                     return;
                 }
