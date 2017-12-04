@@ -17,7 +17,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             },
 
             events: [
-                "on:removedConfigurations"
+                "on:removedConfigurations",
+                "on:changedConfigurationColor"
             ],
 
             /***
@@ -40,7 +41,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var self = this,
                     view;
 
-                if(product.get("productType.id") != productType.get("id")) {
+                if (product.get("productType.id") != productType.get("id")) {
                     product.removeExampleConfiguration();
                 }
 
@@ -116,14 +117,25 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             convertConfigurations: function(product, productType, appearance, options) {
                 options = options || {};
 
-                var self = this;
+                var self = this,
+                    changedColorConfigurations = [];
+
                 var removedConfigurations = _.filter(_.clone(product.$.configurations.$items), function(configuration) {
-                    return !self.convertConfiguration(product, configuration, productType, appearance, options);
+                    var convertConfiguration = self.convertConfiguration(product, configuration, productType, appearance, options);
+                    if (convertConfiguration && convertConfiguration.changedColors) {
+                        changedColorConfigurations.push(configuration);
+                    }
+
+                    return !convertConfiguration;
                 });
 
                 if (removedConfigurations && removedConfigurations.length) {
                     self.trigger('on:removedConfigurations', {configurations: removedConfigurations}, self);
                     product.$.configurations.remove(removedConfigurations);
+                }
+
+                if (changedColorConfigurations.length) {
+                    self.trigger('on:changedConfigurationColor', changedColorConfigurations);
                 }
 
                 return removedConfigurations;
@@ -136,7 +148,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
             },
 
             addConfiguration: function(product, configuration, options) {
-                return this.convertConfiguration(product, configuration, product.$.productType, product.$.appearance, options);
+                return !!this.convertConfiguration(product, configuration, product.$.productType, product.$.appearance, options);
             },
 
             /***
@@ -179,16 +191,24 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     if (validatedMove) {
                         options.transform = validatedMove.transform;
                         self._addConfiguration(product, configuration, validatedMove.printType, targetPrintArea, options);
+                        var colorChanged = false;
                         configuration.$.printColors.each(function(printColor, index) {
                             if (!options.convertColors) {
                                 return;
                             }
 
-                            var convertedColor = self.convertColor(appearance, printColor.color()),
+                            var color = printColor.color();
+                            var convertedColor = self.convertColor(appearance, color),
                                 convertedPrintColor = validatedMove.printType.getClosestPrintColor(convertedColor);
                             configuration.setColor(index, convertedPrintColor);
+
+                            if (color.distanceTo(convertedColor) > 1) {
+                                colorChanged = true;
+                            }
                         });
-                        return true;
+                        return {
+                            changedColors: colorChanged
+                        };
                     }
                 }
 
@@ -296,7 +316,15 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     })
                     .seq("printTypes", function() {
                         var printTypes = self.getPrintTypesForDesign(product, design, this.vars.printArea, printType);
-                        printType = printTypes[0];
+                        var nonDigitalPrintType = null;
+                        if (params.designColorIds) {
+                            nonDigitalPrintType = _.find(printTypes, function(printType) {
+                                return !printType.isDigital();
+                            });
+                        }
+
+                        printType = nonDigitalPrintType || printTypes[0];
+                        ArrayUtil.move(printTypes, printType, 0);
                         return printTypes;
                     })
                     .seq("designConfiguration", function() {
@@ -355,8 +383,14 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 var finalizeFnc = function(configuration, printTypes, params) {
 
+                    var activeIndex = (configuration.$.textFlow.textLength() - 1);
+
+                    if (params.activeIndex != null) {
+                        activeIndex = params.activeIndex;
+                    }
+
                     configuration.$.selection.set({
-                        activeIndex: configuration.$.textFlow.textLength() - 1,
+                        activeIndex: activeIndex,
                         anchorIndex: 0
                     });
 
@@ -507,7 +541,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     isTemplate: false,
                     fontSize: 25,
                     printColor: null,
-                    autoGrow: true
+                    autoGrow: true,
+                    activeIndex: null
                 });
 
                 var self = this,
@@ -631,7 +666,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         bus.setUp(configuration);
                         configuration.init({}, cb);
                     })
-                    .seq(function () {
+                    .seq(function() {
                         var configuration = this.vars["configuration"];
                         configuration.set('initialText', configuration.$.rawText);
                     })
@@ -945,7 +980,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         return validatedMove;
                     }
                 }
-                
+
             },
 
             validateConfigurationMove: function(printType, printArea, configuration, options) {
@@ -1123,7 +1158,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         offset: configuration.$.offset
                     }
                 }
-                
+
                 printArea = printArea || configuration.$.printArea;
                 printType = printType || configuration.$.printType;
 
@@ -1183,22 +1218,29 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 //TODO: (fix) bending -> scale gets NaN
                 var scale = this.clamp(desiredScale, minimumDesignScale || 0, maxPrintTypeScale);
-                boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
-                desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
+                boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
+                var innerBoundingBox = configuration._getInnerBoundingBox(offset, null, null, null, scale);
+                var rotatedBoundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
+                desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), rotatedBoundingBox);
                 offset.set("x", desiredOffset.x);
 
+                var hasSoftBoundary = printArea.hasSoftBoundary();
 
-                if (boundingBox.width > printAreaWidth) {
-                    var scaleToFitWidth = printAreaWidth / boundingBox.width;
-                    scale = scale * scaleToFitWidth;
+                if (innerBoundingBox.width > printAreaWidth) {
+                    var scaleToFitWidth = printAreaWidth / innerBoundingBox.width;
+                    if (!hasSoftBoundary) {
+                        scale = scale * scaleToFitWidth;
+                    }
                     boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     offset.set("x", desiredOffset.x);
                 }
 
-                if (boundingBox.height > printAreaHeight) {
-                    var scaleToFitHeight = printAreaHeight / boundingBox.height;
-                    scale = scale * scaleToFitHeight;
+                if (innerBoundingBox.height > printAreaHeight) {
+                    var scaleToFitHeight = printAreaHeight / innerBoundingBox.height;
+                    if (!hasSoftBoundary) {
+                        scale = scale * scaleToFitHeight;
+                    }
                     boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
                     desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
                     offset.set("x", desiredOffset.x);
@@ -1208,7 +1250,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 if (_.isNaN(scale) || _.isNaN(offset.$.y) || _.isNaN(offset.$.x)) {
                     throw Error('Part of the transform is not a number');
                 }
-                
+
                 return {
                     offset: offset,
                     scale: {

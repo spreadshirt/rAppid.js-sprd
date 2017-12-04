@@ -50,12 +50,16 @@ define(["js/core/Component", 'sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/e
                 height = design.get('size.height') * factor;
 
             if (design && imageService && (height || width)) {
-                return imageService.designImage(design.$.wtfMbsId || design.$.id, {
-                    width: !width ? height : width,
-                    height: !height ? width : height,
-                    version: design.$.version,
-                    sameOrigin: true
-                });
+                var options = {};
+
+                if (width) {
+                    options.width = width
+                } else {
+                    options.height = height;
+                }
+                options.version = design.$.version;
+                options.sameOrigin = true;
+                return imageService.designImage(design.$.wtfMbsId || design.$.id, options);
             }
 
             return url;
@@ -105,9 +109,9 @@ define(["js/core/Component", 'sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/e
                     }
                 })
                 .seq(function () {
-                    var img = this.vars.designImage;
-                    var ctx = this.vars.ctx;
-                    afterEffect.set('factor', afterEffect.canvasScalingFactor(design));
+                    var img = this.vars.designImage,
+                        ctx = this.vars.ctx;
+
                     ctx.canvas.width = img.naturalWidth;
                     ctx.canvas.height = img.naturalHeight;
                 })
@@ -161,21 +165,8 @@ define(["js/core/Component", 'sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/e
             }
 
             flow()
-                .seq("maskApplier", function () {
-                    return mask.getApplier()
-                })
                 .seq("applierResult", function (cb) {
-                    var applier = this.vars.maskApplier,
-                        scalingFactor = mask.canvasScalingFactor(design);
-
-                    applier.set({
-                        transformX: applier.get('transformX') / scalingFactor,
-                        transformY: applier.get('transformY') / scalingFactor,
-                        maskWidth: applier.get('maskWidth') / scalingFactor,
-                        maskHeight: applier.get('maskHeight') / scalingFactor,
-                        designId: design.$.wtfMbsId,
-                        targetShopId: shopId
-                    });
+                    var applier = mask.getApplier(design, shopId);
                     applier.save(null, cb)
                 })
                 .seq('design', function (cb) {

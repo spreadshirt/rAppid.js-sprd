@@ -103,7 +103,7 @@ define(["js/ui/View", "sprd/data/ImageService", "sprd/model/PrintType", "sprd/co
                 return "";
             }
 
-            return "0 " + ((information.index) * -scalingFactor) + "px";
+            return "-1px " + ((information.index) * -scalingFactor -1) + "px";
         }.onChange('printColor'),
 
         getColorInformation: function() {

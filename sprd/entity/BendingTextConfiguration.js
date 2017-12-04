@@ -203,6 +203,10 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                 }, this)
             },
 
+            _preDestroy: function () {
+                this.removeMeasurer();
+            },
+
             minimumScale: function () {
                 var minScale = this.callBase() || Number.MIN_VALUE;
                 var font = this.$.font,
@@ -339,6 +343,21 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                     this.set('measurer', measureRenderer);
                     this.$stage.addChild(measureRenderer);
                 }
+            },
+
+            removeMeasurer: function () {
+                if (!this.$.measurer) {
+                    return;
+                }
+                var measurer = this.$.measurer,
+                    el = measurer.$el,
+                    parent = el.parentNode;
+
+                if (parent) {
+                    parent.removeChild(el);
+                }
+
+                this.set('measurer', null);
             },
 
             transformTextPath: function(callback) {

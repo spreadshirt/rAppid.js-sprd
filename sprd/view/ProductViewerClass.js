@@ -283,6 +283,8 @@ define(["js/ui/View", "js/core/Bus", "sprd/manager/ProductManager", "sprd/data/I
                         if (newConfiguration.type == "specialText") {
                             newConfiguration.fetchImage();
                         }
+
+                        bus.trigger("ProductViewer.copyToView", newConfiguration);
                     }
                 });
             }

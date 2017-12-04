@@ -1,5 +1,5 @@
 define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer", "xaml!sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus", "sprd/util/UnitUtil", "sprd/entity/BendingTextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationRenderer", "sprd/type/Line", "sprd/extensions/Number"],
-    function (SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus, UnitUtil, BendingTextConfiguration, BendingTextConfigurationRenderer, Line, extension) {
+    function(SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus, UnitUtil, BendingTextConfiguration, BendingTextConfigurationRenderer, Line, extension) {
 
         var MOVE = "move",
             SCALE = "scale",
@@ -16,7 +16,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
         var defaultLineLength = 4000;
         //Polyfill
         if (!Math.sign) {
-            Math.sign = function (x) {
+            Math.sign = function(x) {
                 // If x is NaN, the result is NaN.
                 // If x is -0, the result is -0.
                 // If x is +0, the result is +0.
@@ -97,9 +97,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 bus: Bus
             },
 
-            $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer", "productViewer", "clipPath", "imageService", "downVector", "moveVector", "centerVector", "rotationSnap"],
+            $classAttributes: ["configuration", "product", "printAreaViewer", "assetContainer"
+                , "productViewer", "clipPath", "imageService", "downVector", "moveVector", "centerVector", "rotationSnap"
+                , 'productViewerDiagonalLength', 'inverseZoom', 'minScaleRect', 'maxScaleRect'
+                , 'nearToThresholdMax', 'nearToThresholdMin', 'containedInMax', 'containedInMin'],
 
-            ctor: function () {
+            ctor: function() {
 
                 this.callBase();
 
@@ -118,19 +121,19 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.bind('configuration', "change:docked", this.dockedConfiguration, this);
                 this.bind('productViewer', 'change:width', this._productViewerSizeChanged, this);
                 this.bind('productViewer', 'change:viewBoxObj', this._productViewerSizeChanged, this);
-                this.bind(["productViewer", "change:selectedConfiguration"], function () {
+                this.bind(["productViewer", "change:selectedConfiguration"], function() {
                     if (this.isSelectedConfiguration()) {
                         this.focus();
                     }
                 }, this);
             },
 
-            configurationType: function () {
+            configurationType: function() {
                 var configuration = this.$.configuration;
                 return configuration ? configuration.type : "";
             }.onChange("configuration"),
 
-            _initializationComplete: function () {
+            _initializationComplete: function() {
 
                 var clipPath = this.$.clipPath;
                 var transformations = clipPath.$.transformations;
@@ -144,42 +147,42 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            id: function () {
+            id: function() {
                 return "c" + this.$cid;
             },
 
-            invert: function (value) {
+            invert: function(value) {
                 return value * -1;
             },
 
-            getLocalizedSize: function (mm, fixed) {
+            getLocalizedSize: function(mm, fixed) {
                 if (fixed != null && typeof(mm) == "number") {
                     mm = mm.toFixed(fixed);
                 }
                 return UnitUtil.getLocalizedSize(mm, this.PARAMETER().locale);
             },
 
-            and: function (a, b) {
+            and: function(a, b) {
                 return a && b
             },
 
-            dockedConfiguration: function () {
+            dockedConfiguration: function() {
                 this.get("configuration.docked") ? this.addClass("docked") : this.removeClass("docked");
             },
 
-            formatSize: function (size) {
+            formatSize: function(size) {
                 if (size != null) {
                     return parseInt(size).toFixed(0);
                 }
                 return size;
             },
 
-            _initializeCapabilities: function (window) {
+            _initializeCapabilities: function(window) {
                 var runsInBrowser = this.runsInBrowser();
                 this.$hasTouch = runsInBrowser && ('ontouchstart' in window);
             },
 
-            _renderFocused: function (focused) {
+            _renderFocused: function(focused) {
                 if (focused) {
                     this.addClass('focused');
                 } else {
@@ -188,7 +191,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _initializeRenderer: function () {
+            _initializeRenderer: function() {
 
                 var rendererFactory,
                     assetContainer = this.$._assetContainer,
@@ -241,7 +244,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.callBase();
             },
 
-            _bindDomEvents: function () {
+            _bindDomEvents: function() {
                 this.callBase();
 
                 var self = this,
@@ -251,7 +254,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return;
                 }
 
-                productViewer.bindDomEvent("contextmenu", function (e) {
+                productViewer.bindDomEvent("contextmenu", function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                 });
@@ -260,20 +263,20 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     var assetContainer = this.$._assetContainer,
                         scaleHandle = this.$._bigScaleHandle;
 
-                    assetContainer.bindDomEvent("pointerdown", function (e) {
+                    assetContainer.bindDomEvent("pointerdown", function(e) {
                         self._down(e, MOVE);
                     });
 
-                    scaleHandle && scaleHandle.bindDomEvent("pointerdown", function (e) {
+                    scaleHandle && scaleHandle.bindDomEvent("pointerdown", function(e) {
                         self._down(e, SCALE, scaleHandle);
                     });
 
-                    var preventDefault = function (e) {
+                    var preventDefault = function(e) {
                         e.preventDefault && e.preventDefault();
                         return false;
                     };
 
-                    this.bindDomEvent("click", function (e) {
+                    this.bindDomEvent("click", function(e) {
                         e.stopPropagation && e.stopPropagation();
                         return false;
                     });
@@ -283,24 +286,24 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _isGesture: function (e) {
+            _isGesture: function(e) {
                 return false;
             },
 
-            _productViewerSizeChanged: function () {
+            _productViewerSizeChanged: function() {
                 this.set('_globalToLocalFactor', this.$.productViewer.globalToLocalFactor());
                 this.set('productViewerDiagonalLength', this.$.productViewer.getViewBoxDiagonal().distance());
             },
 
 
-            _transformationChanged: function () {
+            _transformationChanged: function() {
 
                 var configuration = this.$.configuration;
                 if (configuration) {
 
                     var self = this;
 
-                    !self.$.preventValidation && this._debounceFunctionCall(function () {
+                    !self.$.preventValidation && this._debounceFunctionCall(function() {
                         configuration._setError(configuration._validateTransform({
                             offset: this.$._offset,
                             scale: this.$._scale,
@@ -310,11 +313,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _commitSelected: function () {
+            _commitSelected: function() {
                 this.$wasSelected = false;
             },
 
-            addSnapLine: function (x, y, rot, owner) {
+            addSnapLine: function(x, y, rot, owner) {
                 var newLine = new Line(x, y, rot, defaultLineLength);
                 var alreadyAdded = false;
                 for (var i = 0; i < this.$snapLines.length; i++) {
@@ -334,7 +337,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            addSnapValue: function (value, owner, list) {
+            addSnapValue: function(value, owner, list) {
                 var alreadyAdded = false;
                 for (var i = 0; i < list.length; i++) {
                     var owners = list[i].owners;
@@ -353,12 +356,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            addSnapLinesAtPoint: function (x, y, rot, owner) {
+            addSnapLinesAtPoint: function(x, y, rot, owner) {
                 this.addSnapLine(x, y, rot, owner);
                 this.addSnapLine(x, y, rot + Math.PI / 2, owner);
             },
 
-            addSnapLines: function (point, dimension, length, pointAmounts, midPoint, rot, owner) {
+            addSnapLines: function(point, dimension, length, pointAmounts, midPoint, rot, owner) {
                 var stepSize = length / (pointAmounts - 1),
                     currentPoint = _.clone(point),
                     rotatedPoint;
@@ -370,7 +373,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            rotatePoint: function (x, y, rot, midX, midY) {
+            rotatePoint: function(x, y, rot, midX, midY) {
 
                 if (midX instanceof Object) {
                     midY = midX.y;
@@ -389,11 +392,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 };
             },
 
-            distanceFromMidPoint: function (x, y, midX, midY) {
+            distanceFromMidPoint: function(x, y, midX, midY) {
                 return Math.sqrt(Math.pow(x - midX, 2) + Math.pow(y - midY, 2));
             },
 
-            addSnapLinesOfRect: function (startPoint, width, height, rot, owner) {
+            addSnapLinesOfRect: function(startPoint, width, height, rot, owner) {
                 var midPoint = {
                     x: startPoint.x + width / 2,
                     y: startPoint.y + height / 2
@@ -402,7 +405,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.addSnapLines(startPoint, 'y', height, 3, midPoint, rot, owner);
             },
 
-            getRectFromTextConfiguration: function (configuration, x, y) {
+            getRectFromTextConfiguration: function(configuration, x, y) {
                 if (!configuration) {
                     return null;
                 }
@@ -428,7 +431,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return {topLeft: corner, height: height, width: width};
             },
 
-            getRectFromConfiguration: function (configuration, x, y) {
+            getRectFromConfiguration: function(configuration, x, y) {
                 if (!configuration) {
                     return null;
                 }
@@ -461,7 +464,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 };
             },
 
-            addSnapLinesOfConfiguration: function (otherConfiguration) {
+            addSnapLinesOfConfiguration: function(otherConfiguration) {
                 var rect = this.getRectFromConfiguration(otherConfiguration);
                 var rot = this.degreeToRadian(otherConfiguration.$.rotation);
 
@@ -472,12 +475,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.addSnapLinesOfRect(rect.topLeft, rect.width, rect.height, rot, otherConfiguration);
             },
 
-            addSnapAnglesOfConfiguration: function (otherConfiguration) {
+            addSnapAnglesOfConfiguration: function(otherConfiguration) {
                 this.addSnapValue(otherConfiguration.$.rotation, otherConfiguration, this.$snapAngles);
                 this.addSnapValue(otherConfiguration.$.rotation + 180, otherConfiguration, this.$snapAngles);
             },
 
-            addSnapLinesOfOtherConfigurations: function (productViewer, configuration) {
+            addSnapLinesOfOtherConfigurations: function(productViewer, configuration) {
                 if (productViewer && productViewer.$.product) {
                     var configurationsOnPrintArea = productViewer.$.product.getConfigurationsOnPrintAreas([configuration.$.printArea]) || [],
                         myIndex = _.indexOf(configurationsOnPrintArea, configuration);
@@ -493,7 +496,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            addSnapAnglesOfOtherConfigurations: function (productViewer, configuration) {
+            addSnapAnglesOfOtherConfigurations: function(productViewer, configuration) {
                 if (productViewer && productViewer.$.product) {
                     var configurationsOnPrintArea = productViewer.$.product.getConfigurationsOnPrintAreas([configuration.$.printArea]) || [],
                         myIndex = _.indexOf(configurationsOnPrintArea, configuration);
@@ -509,9 +512,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            addSnapLinesOfPrintArea: function (configuration) {
-                var leftUpperCorner = {x: 0, y: 0},
-                    printArea = configuration.$.printArea;
+            addSnapLinesOfPrintArea: function(configuration) {
+                var printArea = configuration.$.printArea;
 
                 if (!printArea) {
                     return;
@@ -524,38 +526,38 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.addSnapLines(midPoint, 'y', -printArea.height() / 2, 2, midPoint, 0, printArea);
             },
 
-            toScreenCoords: function (vector, svg, CTMmatrix) {
+            toScreenCoords: function(vector, svg, CTMmatrix) {
                 svg = svg || this.getSvgRoot().$el;
                 CTMmatrix = CTMmatrix || svg.getScreenCTM();
                 var svgPoint = this.toSvgPoint(vector, svg);
                 return Vector.createFromPoint(svgPoint.matrixTransform(CTMmatrix));
             },
 
-            toSvgCoords: function (vector, svg, CTMmatrix) {
+            toSvgCoords: function(vector, svg, CTMmatrix) {
                 svg = svg || this.getSvgRoot().$el;
                 CTMmatrix = CTMmatrix || svg.getScreenCTM();
                 var svgPoint = this.toSvgPoint(vector, svg);
                 return Vector.createFromPoint(svgPoint.matrixTransform(CTMmatrix.inverse()));
             },
 
-            toSvgPoint: function (vector, svg) {
+            toSvgPoint: function(vector, svg) {
                 var svgPoint = svg.createSVGPoint();
                 svgPoint.x = vector.getX();
                 svgPoint.y = vector.getY();
                 return svgPoint;
             },
 
-            localToGlobalFactor: function () {
+            localToGlobalFactor: function() {
                 var matrix = this.$.printAreaViewer.$.productTypeViewViewer.$el.getScreenCTM();
                 return {x: matrix.a, y: matrix.d};
             },
 
-            globalToLocalFactor: function () {
+            globalToLocalFactor: function() {
                 var matrix = this.$.printAreaViewer.$.productTypeViewViewer.$el.getScreenCTM().inverse();
                 return {x: matrix.a, y: matrix.d};
             },
 
-            _down: function (e, mode, initiator) {
+            _down: function(e, mode, initiator) {
 
                 var self = this,
                     configuration = this.$.configuration,
@@ -659,20 +661,20 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 var window = this.$window;
 
                 // shim layer with setTimeout fallback
-                $w.requestAnimFrame = $w.$requestAnimFrame || (function () {
+                $w.requestAnimFrame = $w.$requestAnimFrame || (function() {
                     return $w.requestAnimationFrame ||
                         $w.webkitRequestAnimationFrame ||
                         $w.mozRequestAnimationFrame ||
-                        function (callback) {
+                        function(callback) {
                             $w.setTimeout(callback, 1000 / 60);
                         };
                 })();
 
-                this.$requestAnimCallback = this.$requestAnimCallback || function () {
+                this.$requestAnimCallback = this.$requestAnimCallback || function() {
                     self._callMove();
                 };
 
-                this.$moveHandler = function (e) {
+                this.$moveHandler = function(e) {
                     e.preventDefault();
 
                     window.unbindDomEvent("pointermove", self.$moveHandler);
@@ -692,7 +694,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
                 };
 
-                this.$upHandler = function (e) {
+                this.$upHandler = function(e) {
                     var distance = self.getDistance(configuration.$.offset, self.$._offset);
                     var onlyPointed = !(distance) && mode === MOVE && !self.$moveInitiator;
 
@@ -720,11 +722,11 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     self._stopTransformation();
                 };
 
-                this.$keyDownHandler = function (e) {
+                this.$keyDownHandler = function(e) {
                     self._keyDown(e, mode);
                 };
 
-                this.$keyUpHandler = function (e) {
+                this.$keyUpHandler = function(e) {
                     self._keyUp(e, mode);
                 };
 
@@ -739,7 +741,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            removeDocking: function () {
+            removeDocking: function() {
                 var configuration = this.$.configuration;
                 if (!configuration) {
                     return;
@@ -757,19 +759,19 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 if (product) {
                     var configurationsOnPrintArea = product.getConfigurationsOnPrintAreas([printArea]) || [];
-                    _.each(configurationsOnPrintArea, function (config) {
+                    _.each(configurationsOnPrintArea, function(config) {
                         config.set('docked', false);
                     })
                 }
             },
 
-            _removeSnapLines: function () {
+            _removeSnapLines: function() {
                 var snapLines = this.$.printAreaViewer.$.snapLines;
                 snapLines && snapLines.clear();
                 this.removeDocking();
             },
 
-            _beforeDestroy: function () {
+            _beforeDestroy: function() {
                 this.callBase();
 
                 this._removeSnapLines();
@@ -784,7 +786,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             },
 
-            _callMove: function () {
+            _callMove: function() {
 
                 if (this.$moveState && this.$moveState.active) {
                     this.$moveState.active = false;
@@ -795,7 +797,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            deleteConfiguration: function (e) {
+            deleteConfiguration: function(e) {
 
                 if (!this.$hasTouch && e.domEvent.which !== 1) {
                     // not a first mouse button click
@@ -818,7 +820,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
 
-            snapAngle: function (configuration, value) {
+            snapAngle: function(configuration, value) {
                 if (rotateSnippingEnabled && !this.$.shiftKey) {
                     var snapStepSize = 45;
                     var snapPoints = _.range(0, 360 + snapStepSize, snapStepSize);
@@ -828,7 +830,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     }
 
                     value = this.snapOneDimension(value, this.$snapAngles, rotationSnippingThreshold);
-                    var snapped = _.find(this.$snapAngles, function (ownedPoint) {
+                    var snapped = _.find(this.$snapAngles, function(ownedPoint) {
                         return ownedPoint.value == value;
                     });
 
@@ -839,7 +841,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return value;
             },
 
-            snapScale: function (configuration, scale) {
+            snapScale: function(configuration, scale) {
                 if (rotateSnippingEnabled && !this.$.shiftKey) {
                     scale = this.snapOneDimension(scale, [1], scaleSnippingThreshold);
                 }
@@ -847,7 +849,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return scale;
             },
 
-            snapOneDimension: function (value, snapValues, threshold) {
+            snapOneDimension: function(value, snapValues, threshold) {
                 for (var i = 0; i < snapValues.length; i++) {
                     var snapPoint = snapValues[i],
                         difference = snapPoint.value - value,
@@ -864,7 +866,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 if (snapDifference) {
                     value += snapDifference;
-                    _.each(snappedPoint.owners, function (owner) {
+                    _.each(snappedPoint.owners, function(owner) {
                         owner.set('docked', true);
                     });
                 }
@@ -872,7 +874,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return value;
             },
 
-            _rotate: function (x, y, configuration, userInteractionOptions) {
+            _rotate: function(x, y, configuration, userInteractionOptions) {
                 var startVector = this.$startRotateVector;
 
                 var currentVector = Vector.subtract([x, y], this.$centerVector);
@@ -904,7 +906,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.set("_rotation", rotateAngle, userInteractionOptions);
             },
 
-            rotateRect: function (configuration, newX, newY, rot) {
+            rotateRect: function(configuration, newX, newY, rot) {
                 var rect = this.getRectFromConfiguration(configuration, newX, newY);
 
                 if (!rect) {
@@ -932,7 +934,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 };
             },
 
-            getSnapPoints: function (configuration, newX, newY, rot) {
+            getSnapPoints: function(configuration, newX, newY, rot) {
                 var rect = this.rotateRect(configuration, newX, newY, rot);
                 if (!rect) {
                     return null;
@@ -941,7 +943,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return [rect.topLeftCorner, rect.topRightCorner, rect.midPoint, rect.bottomLeftCorner, rect.bottomRightCorner];
             },
 
-            getSides: function (configuration, newX, newY, rot) {
+            getSides: function(configuration, newX, newY, rot) {
                 var rect = this.rotateRect(configuration, newX, newY, rot);
 
                 if (!rect) {
@@ -955,7 +957,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return [upperHorizontal, lowerHorizontal, leftVertical, rightVertical];
             },
 
-            broadcastSnappedLines: function (snappedLines) {
+            broadcastSnappedLines: function(snappedLines) {
                 this.$.bus.trigger('ConfigurationViewer.snappedToLine', {
                     configurationViewer: this,
                     lines: snappedLines
@@ -969,7 +971,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            snapMove: function (configuration, deltaX, deltaY) {
+            snapMove: function(configuration, deltaX, deltaY) {
                 var self = this,
                     snappedLines = [],
                     factor = this.globalToLocalFactor(),
@@ -977,7 +979,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 var newX = configuration.$.offset.$.x - deltaX * factor.x,
                     newY = configuration.$.offset.$.y - deltaY * factor.y,
-                    potentialPosition, snapDistance = Math.max(), snappedLine, snapPosDeltaX, snapPosDeltaY,
+                    potentialPosition, snapDistance = Math.max(), snappedLine,
+                    snapPosDeltaX, snapPosDeltaY,
                     snappedOwners,
                     rot = self.degreeToRadian(this.$._rotation), owners, snapLine;
 
@@ -1039,16 +1042,16 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             }
                         }
 
-                        if (Math.abs(snapDistance) <= threshold) {
+                        if (Math.abs(snapDistance) <= threshold && snappedLine) {
                             newX -= snapPosDeltaX;
                             newY -= snapPosDeltaY;
 
                             var productViewerDiagonalLength = this.$.productViewerDiagonalLength;
                             snappedLines.push(snappedLine.getSvgLine(productViewerDiagonalLength));
-                            lines = _.filter(lines, function (snapLine) {
+                            lines = _.filter(lines, function(snapLine) {
                                 return snappedLine.isPerpendicular(snapLine.line);
                             });
-                            _.each(snappedOwners, function (owner) {
+                            _.each(snappedOwners, function(owner) {
                                 owner.set('docked', true);
                             });
 
@@ -1061,7 +1064,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return {x: newX, y: newY};
             },
 
-            _move: function (e, mode) {
+            _move: function(e, mode) {
 
                 if (!this.$moving) {
                     return;
@@ -1088,8 +1091,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     downVector,
                     currentDistance,
                     currentVector,
-                    newConfigurationWidth,
-                    newConfigurationHeight,
                     svgRoot = this.getSvgRoot(),
                     matrix = this.$el.getScreenCTM();
 
@@ -1179,7 +1180,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            validateScale: function (newScale, oldScale) {
+            validateScale: function(newScale, oldScale) {
                 if (!newScale) {
                     return false;
                 }
@@ -1200,29 +1201,20 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return false;
                 }
 
-                var scaleDirection = Math.sign(newScale - oldScale), // positive means increasing
-                    newWidth = configuration.width(newScale),
-                    newHeight = configuration.height(newScale),
-                    minDimensionSize = Math.min(newWidth, newHeight),
-                    maxScale = configuration.getMaxScale(),
-                    minScale = configuration.getMinScale(),
-                    willBecomeTooSmallAbs = minDimensionSize <= configuration.$.minSize && scaleDirection < 0;
-
-                var tooWideForPrintArea = newWidth / printArea.get('_size.width') > printArea.get('restrictions.maxConfigRatio'),
-                    tooTallForPrintArea = newHeight / printArea.get('_size.height') > printArea.get('restrictions.maxConfigRatio'),
-                    tooBigForPrintAreaRel = tooWideForPrintArea && tooTallForPrintArea;
+                var newWidth = configuration.width(newScale),
+                    newHeight = configuration.height(newScale);
 
                 var tooThinForPrintArea = newWidth / printArea.get('_size.width') < printArea.get('restrictions.minConfigRatio'),
                     tooShortForPrintArea = newHeight / printArea.get('_size.height') < printArea.get('restrictions.minConfigRatio'),
                     tooSmallForPrintAreaRel = tooThinForPrintArea && tooShortForPrintArea;
 
                 var hasSoftBoundary = configuration.get('printArea.hasSoftBoundary()'),
-                    invalidRelSize = !hasSoftBoundary && (tooBigForPrintAreaRel || tooSmallForPrintAreaRel),
+                    invalidRelSize = tooSmallForPrintAreaRel,
                     scaleThresholdValid = this.scaleThresholdValid(newScale, oldScale);
-                return scaleThresholdValid && !willBecomeTooSmallAbs && !invalidRelSize;
+                return scaleThresholdValid && !invalidRelSize;
             },
 
-            scaleThresholdValid: function (newScale, oldScale) {
+            scaleThresholdValid: function(newScale, oldScale) {
                 if (!newScale) {
                     return true;
                 }
@@ -1250,7 +1242,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return !scaleTooBig && !scaleTooSmall;
             },
 
-            nearToThresholdMax: function (scale) {
+            nearToThresholdMax: function(scale) {
                 scale = scale || this.$._scale;
 
                 var configuration = this.$.configuration,
@@ -1260,7 +1252,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return maxDelta < closenessThreshold;
             }.onChange('_scale'),
 
-            nearToThresholdMin: function (scale) {
+            nearToThresholdMin: function(scale) {
                 scale = scale || this.$._scale;
 
                 var configuration = this.$.configuration,
@@ -1270,7 +1262,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return minDelta < closenessThreshold;
             }.onChange('_scale'),
 
-            getCenteredOffset: function (configuration, scale) {
+            getCenteredOffset: function(configuration, scale) {
                 var offsetX = configuration.$.offset.$.x;
                 var offsetY = configuration.$.offset.$.y;
 
@@ -1285,7 +1277,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _up: function (e, mode) {
+            _up: function(e, mode) {
                 if (!this.$moving) {
                     return;
                 }
@@ -1315,7 +1307,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
 
                 var window = this.dom(this.$stage.$window),
-                    f = function (e) {
+                    f = function(e) {
                         // capture phase event to prevent click
                         // which closes menus etc.
                         e.stopPropagation();
@@ -1326,7 +1318,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 // chrome does it right and dispatches a click, but
                 // the mobile devices and also ff, safari needs to unbind it time based. sucks.
-                setTimeout(function () {
+                setTimeout(function() {
                     window.unbindDomEvent("click", f, true);
                 }, 100);
 
@@ -1334,22 +1326,22 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this._stopTransformation();
             },
 
-            disableMoveSnipping: function () {
+            disableMoveSnipping: function() {
                 moveSnippingEnabled = false;
                 this._removeSnapLines();
             },
 
-            enableMoveSnipping: function () {
+            enableMoveSnipping: function() {
                 moveSnippingEnabled = true;
             },
 
-            focus: function () {
+            focus: function() {
                 if (this.$asset) {
                     this.$asset._focus();
                 }
             },
 
-            _keyDown: function (e, mode) {
+            _keyDown: function(e, mode) {
 
                 if (e.keyCode === 16) {
                     this.set("shiftKey", true);
@@ -1364,21 +1356,21 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$asset.handleKeyDown && this.$asset.handleKeyDown(e);
             },
 
-            _keyUp: function (e, mode) {
+            _keyUp: function(e, mode) {
                 if (e.keyCode === 16) {
                     this.set("shiftKey", false);
                 }
             },
 
-            _keyPress: function (e) {
+            _keyPress: function(e) {
                 this.$asset.handleKeyPress && this.$asset.handleKeyPress(e);
             },
 
-            addChar: function (c) {
+            addChar: function(c) {
                 this.$asset.addChar && this.$asset.addChar(c);
             },
 
-            _stopTransformation: function () {
+            _stopTransformation: function() {
                 this._unbindTransformationHandler();
                 this.removeClass('transforming');
                 this.$.printAreaViewer.set('selected', false);
@@ -1386,7 +1378,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$moving = false;
             },
 
-            _unbindTransformationHandler: function () {
+            _unbindTransformationHandler: function() {
                 var window = this.dom(this.$stage.$window);
                 window.unbindDomEvent("pointermove", this.$moveHandler);
                 window.unbindDomEvent("pointerup", this.$upHandler);
@@ -1396,7 +1388,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 this.$upHandler = null;
             },
 
-            _resetTransformation: function () {
+            _resetTransformation: function() {
                 var configuration = this.$.configuration;
 
                 if (configuration) {
@@ -1415,12 +1407,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            _cancelTransformation: function () {
+            _cancelTransformation: function() {
                 this._resetTransformation();
                 this._stopTransformation();
             },
 
-            getMinScaleRect: function () {
+            getMinScaleRect: function() {
                 var config = this.get('configuration');
 
                 if (!config) {
@@ -1434,7 +1426,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 if (printType && !printType.isShrinkable() && rect) {
                     var printTypes = config.getPossiblePrintTypes(),
-                        shrinkingPrintTypePossible = _.some(printTypes, function (printType) {
+                        shrinkingPrintTypePossible = _.some(printTypes, function(printType) {
                             return printType && printType.isShrinkable();
                         });
 
@@ -1444,7 +1436,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return rect;
             }.onChange("configuration.minScale", "getScaleRect()"),
 
-            getMaxScaleRect: function () {
+            getMaxScaleRect: function() {
                 var config = this.get('configuration');
 
                 if (!config) {
@@ -1458,7 +1450,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return rect;
             }.onChange("configuration.maxScale", "getScaleRect()", "configuration.printArea"),
 
-            getScaleRect: function (newScale) {
+            getScaleRect: function(newScale) {
                 var config = this.get('configuration');
 
                 if (!newScale) {
@@ -1481,7 +1473,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             }.onChange('_configurationWidth', '_configurationHeight'),
 
-            isSmallerThanMin: function () {
+            isSmallerThanMin: function() {
                 var config = this.get('configuration');
 
                 if (!config) {
@@ -1494,7 +1486,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return tmpScale && tmpScale < minScale;
             }.onChange('configuration.minScale', "_scale"),
 
-            isSmallerThanMax: function () {
+            isSmallerThanMax: function() {
                 var config = this.get('configuration');
 
                 if (!config) {
@@ -1507,7 +1499,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return tmpScale && tmpScale < maxScale;
             }.onChange('configuration.maxScale', "_scale"),
 
-            getButtonSize: function (size) {
+            getButtonSize: function(size) {
                 var globalToLocalFactor = this.globalToLocalFactor();
 
                 return {
@@ -1516,31 +1508,31 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 };
             },
 
-            pixelToViewBox: function (pixel) {
+            pixelToViewBox: function(pixel) {
                 return pixel * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
-            scaleIconToViewBox: function () {
+            scaleIconToViewBox: function() {
                 return 0.1 * this.$._globalToLocalFactor["x"];
             }.onChange("_globalToLocalFactor"),
 
-            substract: function (a, b, c) {
+            substract: function(a, b, c) {
                 return (a - (b || 0)) - (c || 0);
             },
 
-            mul: function (value, multiplicator) {
+            mul: function(value, multiplicator) {
                 return value * multiplicator;
             },
 
-            div: function (value, divider) {
+            div: function(value, divider) {
                 return value / divider;
             },
 
-            half: function (value) {
+            half: function(value) {
                 return value / 2;
             },
 
-            flipOffsetX: function () {
+            flipOffsetX: function() {
                 var config = this.get("configuration");
                 if (config && config.$.flip.x < 0) {
                     return this.$._configurationWidth;
@@ -1549,7 +1541,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return 0;
             }.onChange("configuration.flip", "_configurationWidth"),
 
-            flipOffsetY: function () {
+            flipOffsetY: function() {
                 var config = this.get("configuration");
                 if (config && config.$.flip.y < 0) {
                     return this.$._configurationHeight;
@@ -1558,71 +1550,71 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return 0;
             }.onChange("configuration.flip", "_configurationHeight"),
 
-            errorClass: function () {
+            errorClass: function() {
                 return this.$._configurationValid ? "" : "error";
             }.onChange("_configurationValid"),
 
-            isFocused: function () {
+            isFocused: function() {
                 return this.isSelectedConfiguration() && this.get('productViewer.focused');
             }.on(["productViewer", "change:selectedConfiguration"], ['productViewer', 'change:focused']),
 
-            isSelectedConfiguration: function () {
+            isSelectedConfiguration: function() {
                 return this.$.configuration !== null &&
                     this.get('productViewer.editable') === true && this.get("productViewer.selectedConfiguration") === this.$.configuration
             }.on(["productViewer", "change:selectedConfiguration"]),
 
-            isSelectedConfigurationOrConfigurationHasError: function () {
+            isSelectedConfigurationOrConfigurationHasError: function() {
                 return this.$.configuration !== null &&
                     (this.get('productViewer.editable') === true &&
                         this.get("productViewer.selectedConfiguration") === this.$.configuration) ||
                     (!this.$.configuration.isValid());
             }.on(["productViewer", "change:selectedConfiguration"], ["configuration", "isValidChanged"]),
 
-            isScalable: function () {
+            isScalable: function() {
                 return this.isSelectedConfiguration() && this.get("configuration.isScalable()");
             }.onChange("selected"),
 
-            isRotatable: function () {
+            isRotatable: function() {
                 return this.isSelectedConfiguration() && this.get("configuration.isRotatable()");
             }.onChange("selected"),
 
-            isMovable: function () {
+            isMovable: function() {
                 return this.isSelectedConfiguration();
             }.onChange("selected"),
 
-            isRemovable: function () {
+            isRemovable: function() {
                 return this.isSelectedConfiguration() && this.get("configuration.isRemovable()");
             }.onChange("selected"),
 
-            isRotating: function () {
+            isRotating: function() {
                 return this.$._mode === SCALE;
             }.onChange("_mode"),
 
-            rotates: function () {
+            rotates: function() {
                 return this.isRotating() && !this.$._rotation.equals(this.get('configuration.rotation'));
             }.onChange('_rotation', 'isRotating()'),
 
-            scales: function () {
+            scales: function() {
                 return this.isRotating() && (!this.$._scale.x.equals(this.get('configuration.scale.x')) || !this.$._scale.y.equals(this.get('configuration.scale.y')));
             }.onChange('_scale', 'isRotating()'),
 
-            scalesAndRotates: function () {
+            scalesAndRotates: function() {
                 return this.scales() && this.rotates();
             }.onChange('scales()', 'rotates()'),
 
-            isMoving: function () {
+            isMoving: function() {
                 return this.$._mode === MOVE;
             }.onChange("_mode"),
 
-            isScaling: function () {
+            isScaling: function() {
                 return this.$._mode === SCALE;
             }.onChange("_mode"),
 
-            hasError: function () {
+            hasError: function() {
                 return !this.$.configuration.isValid() && this.get('productViewer.editable') === true;
             }.on(["configuration", "isValidChanged"]),
 
-            errorDescription: function () {
+            errorDescription: function() {
 
                 var error = null,
                     configuration = this.$.configuration;
@@ -1649,12 +1641,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             }.on(["configuration", "isValidChanged"]),
 
-            getDistance: function (point1, point2) {
+            getDistance: function(point1, point2) {
                 return this.hypot(point1.$.x - point2.$.x, point1.$.y - point2.$.y);
 
             },
 
-            hypot: function () {
+            hypot: function() {
                 var y = 0;
                 var length = arguments.length;
 
@@ -1667,36 +1659,36 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return Math.sqrt(y);
             },
 
-            enlarge: function (val) {
+            enlarge: function(val) {
                 return 100 * val;
             },
 
-            minus: function (val) {
+            minus: function(val) {
                 return -val;
             },
 
-            radianToDegree: function (angle) {
+            radianToDegree: function(angle) {
                 return angle / Math.PI * 180;
             },
 
-            degreeToRadian: function (angle) {
+            degreeToRadian: function(angle) {
                 return angle / 180 * Math.PI;
             },
 
-            degreeEqual: function (a, b) {
+            degreeEqual: function(a, b) {
                 return a == (b % 360);
             },
 
-            radianEqual: function (a, b) {
+            radianEqual: function(a, b) {
                 return a == (b % (2 * Math.PI));
             },
 
-            radianDifference: function (a, b) {
+            radianDifference: function(a, b) {
                 var delta = (a - b);
                 return delta <= Math.PI ? delta : delta - 2 * Math.PI;
             },
 
-            add: function (a, b) {
+            add: function(a, b) {
                 var accumelator = 0;
                 for (var i = 0; i < arguments.length; i++) {
                     accumelator += arguments[i];
@@ -1705,15 +1697,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return accumelator;
             },
 
-            outerCircleRadius: function (configuration) {
+            outerCircleRadius: function(configuration) {
                 return Vector.distance([configuration.width() / 2, configuration.height() / 2]);
             }.onChange("configuration.scale"),
 
-            downVectorDistance: function () {
+            downVectorDistance: function() {
                 return this.$.downVector && this.$.downVector.distance() * (1 + this.$._scale.x - this.$.configuration.$.scale.x );
             }.onChange('_scale', 'downVector'),
 
-            handleOffset: function () {
+            handleOffset: function() {
 
                 var x = this.get('_configurationWidth') - this.pixelToViewBox(this.get('_handleOffset'));
                 var y = this.get('_configurationHeight') - this.pixelToViewBox(this.get('_handleOffset'));
@@ -1723,15 +1715,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             }.onChange('_configurationWidth', '_configurationHeight', '_handleOffset'),
 
-            handleX: function () {
+            handleX: function() {
                 return this.handleOffset().x;
             }.onChange('handleOffset()'),
 
-            handleY: function () {
+            handleY: function() {
                 return this.handleOffset().y;
             }.onChange('handleOffset()'),
 
-            className: function (a, className) {
+            className: function(a, className) {
                 return a ? className : "";
             },
 

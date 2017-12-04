@@ -1,13 +1,11 @@
 define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/ProductType", "flow", "sprd/entity/Price", "sprd/model/PrintType", "sprd/config/NeonFlexColors", "sprd/config/RealisticFlexColors", "sprd/config/Settings", 'js/type/Color'], function(_, ArrayUtil, List, ProductType, flow, Price, PrintType, NeonFlexColors, RealisticFlexColors, Settings, Color) {
 
-    var colorDistanceCache = {};
-    var appearanceConfigurationCache = {};
     return {
         sortPrintTypeByWeight: function(a, b) {
             return a.$.weight - b.$.weight;
         },
 
-        getPossiblePrintTypesForDesignOnPrintArea: function (design, printArea, appearance) {
+        getPossiblePrintTypesForDesignOnPrintArea: function(design, printArea, appearance) {
 
             if (!(design && design.$.printTypes)) {
                 return [];
@@ -63,7 +61,7 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
             }
 
             printAreas = ArrayUtil.getAsArray(printAreas);
-            var printTypesBlacklist = _.each(printAreas, function(printArea) {
+            var printTypesBlacklist = _.map(printAreas, function(printArea) {
                     return printArea.$.restrictions.$.excludedPrintTypes.$items;
                 }),
                 printTypesWhitelist = appearance.$.printTypes.$items;
@@ -188,222 +186,6 @@ define(["underscore", "sprd/util/ArrayUtil", "js/core/List", "sprd/model/Product
                 || _.some(configuration.$.printColors.$items, function(printColor) {
                     return RealisticFlexColors[platform].hasOwnProperty(printColor.$.id);
                 });
-        },
-
-        getTooDarkConfigurations: function(product, configurations, callback) {
-            var tooDarkConfigurations = [],
-                self = this;
-
-            flow()
-                .parEach(configurations.$items, function(configuration, cb) {
-                    self.isTooDark(product, configuration, function(err, tooDark) {
-                        if (!err && tooDark) {
-                            tooDarkConfigurations.push(configuration);
-                        }
-
-                        cb && cb(err);
-                    })
-                })
-                .exec(function(err) {
-                    callback && callback(err, tooDarkConfigurations);
-                })
-        },
-
-        isTooDark: function(product, configuration, callback) {
-            callback = callback || function() {
-                };
-
-            if (!(configuration && product)) {
-                callback(null, false);
-            }
-
-            var printArea = configuration.$.printArea || product.$.view.getDefaultPrintArea(),
-                appearanceColorIndex = printArea && printArea.$.appearanceColorIndex || 0,
-                appearanceColors = product.get("appearance.colors"),
-                appearanceColor = appearanceColors.at(appearanceColorIndex).color();
-
-            if (!appearanceColor) {
-                callback(null, false);
-            }
-            var tooDark = false,
-                color = null,
-                design = configuration.$.design,
-                designColors = design ? design.$.colors : null,
-                printColors = configuration.$.printColors;
-
-            if (designColors && designColors.length) {
-                var firstLayer = designColors.at(0);
-                color = (firstLayer.$["default"] || firstLayer.$["origin"]);
-
-                tooDark = color != null && color.distanceTo(appearanceColor) < Settings.COLOR_CONVERSION_THRESHOLD;
-                callback(null, tooDark);
-            } else if (printColors && printColors.length) {
-                var firstColor = printColors.at(0);
-                color = firstColor.$["fill"];
-
-                tooDark = color != null && color.distanceTo(appearanceColor) < Settings.COLOR_CONVERSION_THRESHOLD;
-                callback(null, tooDark);
-            } else if (design) {
-                var self = this,
-                    colorCode = appearanceColor.toString(),
-                    designId = design.get("id"),
-                    key = designId + "-" + colorCode,
-                    img = new Image;
-
-                var cachedCheck = appearanceConfigurationCache[key];
-
-                if(cachedCheck) {
-                    callback(null, cachedCheck.tooDark);
-                } else {
-                    img.onload = function() {
-                        var black = new Color.RGB(0, 0, 0);
-                        //if appearance close to black than use a stricter threshold
-                        var useStrictThreshold = appearanceColor.distanceTo(black) < Settings.APPEARANCE_THRESHOLD;
-                        var colorThreshold = useStrictThreshold ? Settings.STRICT_PIXEL_COLOR_THRESHOLD : Settings.DEFAULT_PIXEL_COLOR_THRESHOLD;
-
-                        var analyzePixels = self.analyzePixels(img, appearanceColor, colorThreshold);
-
-                        if (analyzePixels.borderSharePercentage > analyzePixels.innerSharePercentage) {
-                            tooDark = analyzePixels.invisibleBorderPercentage > Settings.INVISIBLE_COLOR_PERCENTAGE;
-                        } else {
-                            tooDark = analyzePixels.invisibleInnerPercentage > Settings.INVISIBLE_COLOR_PERCENTAGE;
-                        }
-
-                        appearanceConfigurationCache[key] = {
-                            "tooDark": tooDark
-                        };
-
-                        callback(null, tooDark);
-                    };
-
-                    img.src = configuration.$.imageService.designImage(design.$.wtfMbsId || design.$.id, {
-                        width: 100,
-                        version: design.$.version,
-                        sameOrigin: true
-                    });
-                }
-            } else {
-                callback(null, false);
-            }
-        },
-
-        analyzePixels: function(img, appearanceColor, threshValue) {
-            var size = 100,
-                space = 10,
-                halfSpace = space / 2;
-
-            var maskCanvas = document.createElement("canvas"),
-                borderCanvas = document.createElement("canvas"),
-                imgCanvas = document.createElement("canvas");
-
-            maskCanvas.width = size + space;
-            maskCanvas.height = size + space;
-            borderCanvas.width = size + space;
-            borderCanvas.height = size + space;
-            imgCanvas.width = size;
-            imgCanvas.height = size;
-
-            var maskContext = maskCanvas.getContext("2d"),
-                borderContext = borderCanvas.getContext("2d"),
-                imgContext = imgCanvas.getContext("2d");
-
-            maskContext.fillStyle = "black";
-            maskContext.fillRect(0, 0, size + space, size + space);
-            maskContext.globalCompositeOperation = "destination-out";
-
-            // cut-out image to create alpha-mask
-            maskContext.drawImage(img, halfSpace, halfSpace, size, size);
-
-            var dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1], // offset array
-                s = 2,  // thickness scale
-                xPos = 0,  // final position
-                yPos = 0;  // final position
-
-            borderContext.globalCompositeOperation = "source-over";
-
-            // blur mask to create a outline of the mask
-            for (var i = 0; i < dArr.length; i += 2) {
-                borderContext.drawImage(maskCanvas, xPos + dArr[i] * s, yPos + dArr[i + 1] * s, size + space, size + space);
-            }
-
-            // cut out the mask to get only the outline (= border of the image)
-            borderContext.globalCompositeOperation = "destination-out";
-            borderContext.drawImage(maskCanvas, 0, 0);
-
-            borderContext.globalCompositeOperation = "source-in";
-            borderContext.drawImage(img, halfSpace, halfSpace, size, size);
-
-            imgContext.drawImage(img, 0, 0, size, size);
-
-            var colorAdjusting = 10,
-                totalPixel = 0,
-                borderDistance = new Array(101).fill(0),
-                borderDistanceTotal = 0,
-                borderPixelAmount = 0,
-                innerDistance = new Array(101).fill(0),
-                innerDistanceTotal = 0,
-                innerPixelAmount = 0;
-
-            for (var y = 0; y < size; y++) {
-                for (var x = 0; x < size; x++) {
-                    var imgPixel = imgContext.getImageData(x, y, 1, 1).data,
-                        borderPixel = borderContext.getImageData(x + halfSpace, y + halfSpace, 1, 1).data;
-
-                    var adjustedR = parseInt(imgPixel[0] / colorAdjusting) * colorAdjusting,
-                        adjustedG = parseInt(imgPixel[1] / colorAdjusting) * colorAdjusting,
-                        adjustedB = parseInt(imgPixel[2] / colorAdjusting) * colorAdjusting;
-
-                    var borderPixelOpacity = borderPixel[3],
-                        imgPixelOpacity = imgPixel[3],
-                        imgPixelOpacityPercentage = imgPixelOpacity / 255;
-
-                    var color = new Color.RGB(adjustedR, adjustedG, adjustedB),
-                        distance = this.colorDistance(appearanceColor, color);
-
-                    if (borderPixelOpacity > 0) {
-                        borderDistance[parseInt(distance)] += imgPixelOpacityPercentage;
-                        borderDistanceTotal += imgPixelOpacityPercentage;
-
-                        if (imgPixelOpacity) {
-                            borderPixelAmount++;
-                            totalPixel++;
-                        }
-                    } else {
-                        innerDistance[parseInt(distance)] += imgPixelOpacityPercentage;
-                        innerDistanceTotal += imgPixelOpacityPercentage;
-
-                        if (imgPixelOpacity) {
-                            innerPixelAmount++;
-                            totalPixel++;
-                        }
-                    }
-                }
-            }
-
-            var invisibleBorderPixelTotal = 0,
-                invisibleInnerPixelTotal = 0;
-
-            for (i = 0; i <= threshValue; i++) {
-                invisibleBorderPixelTotal += borderDistance[i];
-                invisibleInnerPixelTotal += innerDistance[i];
-            }
-
-            return {
-                borderSharePercentage: borderPixelAmount / (totalPixel / 100),
-                innerSharePercentage: innerPixelAmount / (totalPixel / 100),
-                invisibleBorderPercentage: invisibleBorderPixelTotal / (borderDistanceTotal / 100),
-                invisibleInnerPercentage: invisibleInnerPixelTotal / (innerDistanceTotal / 100)
-            };
-        },
-
-        colorDistance: function(color1, color2) {
-            var cacheKey = color1.toHexString() + "," + color2.toHexString();
-
-            if (!colorDistanceCache[cacheKey]) {
-                colorDistanceCache[cacheKey] = color1.distanceTo(color2);
-            }
-
-            return colorDistanceCache[cacheKey];
         }
     };
 });

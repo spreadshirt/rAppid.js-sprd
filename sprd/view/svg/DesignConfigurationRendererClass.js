@@ -69,6 +69,7 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
                 options.version = design.$.version;
                 options.layerIndex = layerIndex;
                 options.watermark = false;
+                options.sameOrigin = true;
 
                 if (!design.isVectorDesign()) {
                     return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImageFromCache(design.$.wtfMbsId, options);
@@ -122,7 +123,15 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
                 x: this.$.width * 0.5 - s,
                 y: this.$.height * 0.5 - s
             }
-        }.onChange("width", "height")
+        }.onChange("width", "height"),
 
+        maskId: function(maskId, index) {
+            return maskId + "-" + index;
+        }.onChange("maskId"),
+
+        //MS Edge fix (do not build strings with multiple bindings in the .xml)
+        maskIdURL: function(maskId, index) {
+            return "url(#" + this.maskId(maskId, index) + ")";
+        }.onChange("maskId")
     })
 });

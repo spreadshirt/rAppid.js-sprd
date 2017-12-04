@@ -339,8 +339,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 }
 
                 var self = this,
-                    size = configuration.size(),
-                    minSize = configuration.$.minSize;
+                    size = configuration.size();
 
                 if (!size) {
                     return;
@@ -349,7 +348,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 var width = size.$.width,
                     height = size.$.height;
 
-                if (!width || !height || width < minSize || height < minSize) {
+                if (!width || !height) {
                     self.$.configurations.remove(configuration);
                 }
             },

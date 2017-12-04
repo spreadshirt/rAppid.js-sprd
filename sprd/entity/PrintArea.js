@@ -6,7 +6,7 @@ define(['js/data/Entity', 'sprd/model/PrintType', 'sprd/entity/Size'], function 
             textAllowed: true,
             designAllowed: true,
             excludedPrintTypes: [],
-            minConfigRatio: 0.05,
+            minConfigRatio: 0.03,
             maxConfigRatio: 1.2
         },
 
