@@ -33,6 +33,7 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
                 var transform = [],
                     scale = this.$.scale,
+                    flip = this.$.flip,
                     rotation = this.$.rotation,
                     design = this.$.design,
                     width = this.width(),
@@ -42,16 +43,16 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
                     transform.push("rotate(" + rotation + "," + Math.round(width / 2, 3) + "," + Math.round(height / 2, 3) + ")");
                 }
 
-                if (scale && (scale.x < 0 || scale.y < 0)) {
+                if (flip && (flip.x < 0 || flip.y < 0)) {
                     ret.offset = ret.offset.clone();
-                    transform.push("scale(" + (scale.x < 0 ? -1 : 1) + "," + (scale.y < 0 ? -1 : 1) + ")");
+                    transform.push("scale(" + (flip.x < 0 ? -1 : 1) + "," + (flip.y < 0 ? -1 : 1) + ")");
                 }
 
-                if (scale && scale.x < 0) {
+                if (flip && flip.x < 0) {
                     ret.offset.set("x", ret.offset.$.x + width)
                 }
 
-                if (scale && scale.y < 0) {
+                if (flip && flip.y < 0) {
                     ret.offset.set("y", ret.offset.$.y + height);
                 }
 
@@ -118,6 +119,26 @@ define(['sprd/entity/Configuration', 'sprd/entity/Size', 'sprd/util/UnitUtil', '
 
                 if (data.content) {
                     this.$$.svg = data.content.svg;
+                    var transform = this.$$.svg.image.transform;
+                    if (transform) {
+                        var regExp = /^scale\(([^(]+)\)/ig,
+                            match = regExp.exec(transform);
+
+                        if (match) {
+                            var value = match[1],
+                                values = value.split(',');
+
+                            if (values.length === 2) {
+                                var x = values[0].trim() || 1,
+                                    y = values[1].trim() || 1;
+
+                                data.flip = {
+                                    x: Number(x),
+                                    y: Number(y)
+                                }
+                            }
+                        }
+                    }
                 }
 
 

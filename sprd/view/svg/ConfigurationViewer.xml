@@ -67,7 +67,7 @@
                         cy="{handleY()}"
                         r="{mul(inverseZoom, half(pixelToViewBox(_handleWidth)))}"/>
 
-            <svg:circle class="configuration-handle delete"
+            <svg:circle class="configuration-handle flip"
                         pointer-events="visible"
                         selected="{isRemovable()}"
                         onpointerdown="flipConfiguration"

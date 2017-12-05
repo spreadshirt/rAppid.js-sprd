@@ -549,6 +549,22 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 roundedEqual(selfOffset.$.y, offset.$.y, 1) &&
                 roundedEqual(selfScale.x, scale.x, 1) &&
                 this.isDeepEqual(configuration, keys);
+        },
+
+        adjustOffsetForFlipped: function () {
+
+            var flip = this.$.flip,
+                offset = this.$.offset,
+                width = this.width(),
+                height = this.height();
+
+            if (flip.x == -1) {
+                offset.set('x', offset.$.x - width)
+            }
+
+            if (flip.y == -1) {
+                offset.set('y', offset.$.y - height)
+            }
         }
     });
 });

@@ -369,6 +369,9 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     self.extractOffset(configuration, options);
                 })
                 .seq(function () {
+                    // configuration.adjustOffsetForFlipped();
+                })
+                .seq(function () {
                     configuration.$initializedByManager = true;
                 })
                 .exec(callback);
