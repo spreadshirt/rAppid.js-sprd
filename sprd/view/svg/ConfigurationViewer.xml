@@ -16,8 +16,8 @@
     </svg:clipPath>
 
     <svg:g cid="_assetContainerWrapper" translateX="{flipOffsetX()}" translateY="{flipOffsetY()}">
-        <svg:g class="asset-container" cid="_assetContainer" scaleX="{mul(configuration.flip.x, _scale.x)}"
-               scaleY="{mul(configuration.flip.y, _scale.y)}"/>
+        <svg:g class="asset-container" cid="_assetContainer" scaleX="{flipScaleX()}"
+               scaleY="{flipScaleY()}"/>
     </svg:g>
 
     <svg:circle class="rotation-center" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{pixelToViewBox(2)}"

@@ -211,11 +211,6 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     values = match[2].split(",");
                     if (type === "rotate") {
                         ret.rotation = parseFloat(values.shift());
-                    } else if (type === "scale") {
-                        // only flipping
-                        var scale = values;
-                        ret.scale.x *= scale[0] < 0 ? -1 : 1;
-                        ret.scale.y *= scale[1] < 0 ? -1 : 1;
                     }
                 }
 
