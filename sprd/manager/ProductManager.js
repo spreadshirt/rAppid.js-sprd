@@ -1292,6 +1292,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         config.set("isNew", textConfiguration.$.isNew);
                         config.set("isTemplate", textConfiguration.$.isTemplate);
                         config.set("initialText", textConfiguration.$.initialText);
+                        config.set("alignmentMatters", textConfiguration.$.alignmentMatters);
 
                         callback && callback(err, config);
 
