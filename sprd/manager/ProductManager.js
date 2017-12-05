@@ -1144,6 +1144,51 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 return Math.floor(num * factor) / factor;
             },
 
+            getDesiredPositioning: function (configuration, printArea, options) {
+                if (!configuration) {
+                    throw new Error('No configuration argument.');
+                }
+
+                options = options || {};
+
+                if (options.keepTransforms) {
+                    return {
+                        scale: configuration.$.scale,
+                        offset: configuration.$.offset
+                    }
+                }
+
+                var currentPrintArea = configuration.$.printArea;
+
+                printArea = printArea || currentPrintArea;
+
+                var printAreaWidth = printArea.width(),
+                    printAreaHeight = printArea.height(),
+                    defaultBox = printArea.getDefaultBox(),
+                    defaultBoxCenterX = defaultBox.x + defaultBox.width / 2,
+                    defaultBoxCenterY = defaultBox.y + defaultBox.height / 2;
+
+
+                var boundingBox = configuration._getRotatedBoundingBox();
+
+                var printAreaRatio = currentPrintArea ? Math.min(printAreaWidth / currentPrintArea.width(), printAreaHeight / currentPrintArea.height()) : NaN;
+                var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
+                var usePrintAreaRatio = (options.respectTransform || options.respectScale) && printAreaRatio;
+                var desiredScaleFactor = usePrintAreaRatio ? printAreaRatio : scaleToFitDefaultBox;
+                var desiredScale = configuration.$.scale.x * desiredScaleFactor;
+
+                var defaultDesiredOffset = Vector.create(defaultBoxCenterX, defaultBoxCenterY);
+                var desiredRatio = options.respectTransform ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultDesiredOffset, printArea);
+
+
+                return {
+                    desiredScale: desiredScale,
+                    desiredOffsetRatio: desiredRatio
+                };
+            },
+
+            //TODO: if quotient of widths is unequal to quotient of heights, then switching between 2 print areas can make the configuration smaller and smaller
+            //example: switch between product type 812 and 1052 several times
             getConfigurationPosition: function(configuration, printArea, printType, options) {
 
                 if (!configuration) {
@@ -1164,17 +1209,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                 var printAreaWidth = printArea.get("boundary.size.width"),
                     printAreaHeight = printArea.get("boundary.size.height"),
-                    printTypeWidth = printType.get('size.width'),
-                    printTypeHeight = printType.get('size.height'),
-                    defaultBox = printArea.$.defaultBox || {
-                            x: 0,
-                            y: 0,
-                            width: printAreaWidth,
-                            height: printAreaHeight
-                        },
+                    defaultBox = printArea.getDefaultBox(),
                     boundingBox,
-                    defaultBoxCenterX = defaultBox.x + defaultBox.width / 2,
-                    defaultBoxCenterY = defaultBox.y + defaultBox.height / 2,
                     offset = configuration.$.offset.clone();
 
                 // Print type is used in configuration.size() for designConfigurations
@@ -1182,57 +1218,40 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 var oldPrintType = configuration.$.printType;
                 configuration.set('printType', printType, {silent: true});
 
-                boundingBox = configuration._getRotatedBoundingBox();
-                //TODO: if quotient of widths is unequal to quotient of heights, then switching between 2 print areas can make the configuration smaller and smaller
-                //example: between product type 812 and 1052
-                var printAreaRatio = Math.min(printAreaWidth / configuration.get('printArea.boundary.size.width'), printAreaHeight / configuration.get('printArea.boundary.size.height'));
-                var scaleToFitDefaultBox = Math.min(defaultBox.width / boundingBox.width, defaultBox.height / boundingBox.height);
-                var desiredScaleFactor = options.respectTransform || options.respectScale ? printAreaRatio : scaleToFitDefaultBox;
-                var desiredScale = configuration.$.scale.x * desiredScaleFactor;
+                var desiredPositioning = this.getDesiredPositioning(configuration, printArea, options);
+                var desiredScale = desiredPositioning.desiredScale;
+                var desiredOffsetRatio = desiredPositioning.desiredOffsetRatio;
 
-                var defaultDesiredOffset = Vector.create(defaultBoxCenterX, defaultBoxCenterY);
-                var desiredRatio = options.respectTransform ? this.getConfigurationCenterAsRatio(configuration) : this.getVectorAsRatio(defaultDesiredOffset, printArea);
                 boundingBox = configuration._getRotatedBoundingBox(null, null, null, null, desiredScale);
-                var desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
+                var desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredOffsetRatio, printArea), boundingBox);
+
                 offset.set({
                     x: desiredOffset.x,
                     y: options.respectTransform ? desiredOffset.y : defaultBox.y
                 });
 
 
-                var minimumDesignScale;
-                if (configuration instanceof DesignConfiguration && printType.isEnlargeable()) {
-                    minimumDesignScale = (configuration.get("design.restrictions.minimumScale") || 100) / 100;
-                } else if (configuration instanceof TextConfiguration && printType.isEnlargeable()) {
-                    minimumDesignScale = configuration._getMinimalScale(printType);
-                }
-
-                // flooring after 3rd digit,
-                // because configuration._getBoundingBox with maxPrintTypeScale plucked in would give width > printTypeWidth
-                // the difference being smaller than 10^-8.
-                var maxPrintTypeScale = this.floor(desiredScale * Math.min(printTypeWidth / boundingBox.width, printTypeHeight / boundingBox.height), 3);
-
-                if (configuration instanceof SpecialTextConfiguration || (configuration instanceof DesignConfiguration && !configuration.$.design.isVectorDesign())) {
-                    maxPrintTypeScale = 1;
-                }
+                var minimumScale = configuration.minimumScale(),
+                    maximumScale = configuration.maximumScale();
 
                 //TODO: (fix) bending -> scale gets NaN
-                var scale = this.clamp(desiredScale, minimumDesignScale || 0, maxPrintTypeScale);
+                var scale = this.clamp(desiredScale, minimumScale || 0, maximumScale);
                 boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                 var innerBoundingBox = configuration._getInnerBoundingBox(offset, null, null, null, scale);
                 var rotatedBoundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
-                desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), rotatedBoundingBox);
+                desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredOffsetRatio, printArea), rotatedBoundingBox);
                 offset.set("x", desiredOffset.x);
 
                 var hasSoftBoundary = printArea.hasSoftBoundary();
 
+                //Prevent hardBoundary error
                 if (innerBoundingBox.width > printAreaWidth) {
                     var scaleToFitWidth = printAreaWidth / innerBoundingBox.width;
                     if (!hasSoftBoundary) {
                         scale = scale * scaleToFitWidth;
                     }
                     boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
-                    desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
+                    desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredOffsetRatio, printArea), boundingBox);
                     offset.set("x", desiredOffset.x);
                 }
 
@@ -1242,11 +1261,12 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         scale = scale * scaleToFitHeight;
                     }
                     boundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);
-                    desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredRatio, printArea), boundingBox);
+                    desiredOffset = this.centerAtPoint(this.getRatioAsPoint(desiredOffsetRatio, printArea), boundingBox);
                     offset.set("x", desiredOffset.x);
                 }
 
                 configuration.set('printType', oldPrintType, {silent: true});
+
                 if (_.isNaN(scale) || _.isNaN(offset.$.y) || _.isNaN(offset.$.x)) {
                     throw Error('Part of the transform is not a number');
                 }

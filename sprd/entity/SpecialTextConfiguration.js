@@ -396,16 +396,10 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
             return ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance);
         },
 
-        minimumScale: function () {
-            var minScale = this.callBase() || Number.MIN_VALUE,
-                printType = this.$.printType;
-
-            if (printType && !printType.isShrinkable()) {
-                minScale = Math.max(minScale, Number(!printType.isShrinkable()));
-            }
-
-            return minScale;
-        }.onChange("printType"),
+        maximumScale: function () {
+            var maxScale = this.callBase();
+            return Math.min(1, maxScale);
+        }.onChange("printType", "size()"),
         
         _validatePrintTypeSize: function (printType, width, height, scale) {
             var ret = {},
@@ -420,12 +414,7 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
             }
 
             return ret;
-        },
-
-        getMaxScale: function () {
-            var maxScale = this.callBase() || Number.MAX_VALUE;
-            return Math.min(1, maxScale);
-        }.onChange("printType", "size()")
+        }
     });
 })
 ;

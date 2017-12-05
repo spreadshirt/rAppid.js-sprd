@@ -208,7 +208,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
             },
 
             minimumScale: function () {
-                var minScale = this.callBase() || Number.MIN_VALUE;
+                var minScale = this.callBase();
                 var font = this.$.font,
                     fontSize = this.$.fontSize;
 

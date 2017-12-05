@@ -385,28 +385,6 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             };
         },
 
-        getMinScale: function () {
-            var printType = this.$.printType;
-
-            if (printType && !printType.isShrinkable()) {
-                return this.minimumScale();
-            }
-
-            return null;
-        }.onChange("minimumScale()", "printType"),
-
-        getMaxScale: function () {
-            var width = this.width(1),
-                height = this.height(1),
-                printType = this.$.printType;
-
-            if (!width || !height || !printType) {
-                return null;
-            }
-
-            return Math.min(printType.get("size.width") / width ,  printType.get("size.height") / height );
-        }.onChange("printType", "size()").on("sizeChanged"),
-
         size: function() {
             this.log("size() not implemented", "debug");
             return Size.empty;
@@ -510,6 +488,18 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return true;
         },
 
+        // Two functions below should return a number or null
+        getMinScale: function () {
+            var minScale = this.minimumScale();
+            return minScale > 0 ? minScale : null;
+        }.onChange("minimumScale()"),
+
+        getMaxScale: function () {
+            var maxScale = this.maximumScale();
+            return maxScale !== Number.POSITIVE_INFINITY ? maxScale : null;
+        }.onChange("maximumScale()"),
+
+        // Two functions below should return Numbers
         minimumScale: function() {
             var printType = this.$.printType;
 
@@ -517,8 +507,20 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 return 1;
             }
 
-            return Number.MIN_VALUE;
+            return 0;
         }.onChange('printType'),
+
+        maximumScale: function () {
+            var width = this.width(1),
+                height = this.height(1),
+                printType = this.$.printType;
+
+            if (!width || !height || !printType) {
+                return Number.POSITIVE_INFINITY;
+            }
+
+            return Math.min(printType.get("size.width") / width, printType.get("size.height") / height);
+        }.onChange("printType", "size()").on("sizeChanged"),
 
         isReadyForCompose: function() {
             return true;

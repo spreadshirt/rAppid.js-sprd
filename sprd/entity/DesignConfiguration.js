@@ -151,29 +151,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return ret;
             },
 
-            getMinScale: function () {
-                var minScale = this.callBase() || Number.MIN_VALUE,
-                    printType = this.$.printType;
-                
-                if (printType && !printType.isShrinkable()) {
-                    minScale = Math.max(minScale, this.minimumScale());
-                }
-
-                return minScale;
-            }.onChange("minimumScale()", "printType"),
-
-            getMaxScale: function () {
-                var maxScale = this.callBase(),
-                    design = this.$.design;
-
-                if (design && !design.isVectorDesign()) {
-                    maxScale = Math.min(1, maxScale);
-                }
-
-                return maxScale;
-            }.onChange("printType", "size()", "design"),
-
-
             _setProcessedSize: function () {
                 var afterEffect = this.$.afterEffect;
                 var design = this.$.design;
@@ -502,8 +479,28 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             minimumScale: function () {
-                return (this.get("design.restrictions.minimumScale") || 100 ) / 100;
-            }.onChange("design.restrictions.minimumScale"),
+                var minScale = this.callBase(),
+                    design = this.$.design,
+                    designMinScale = (this.get("design.restrictions.minimumScale") || 100 ) / 100,
+                    printType = this.$.printType;
+
+                if (printType && !printType.isDigital() && design) {
+                    minScale = Math.max(minScale, designMinScale);
+                }
+
+                return minScale;
+            }.onChange("design.restrictions.minimumScale", "printType"),
+
+            maximumScale: function () {
+                var maxScale = this.callBase(),
+                    design = this.$.design;
+
+                if (design && !design.isVectorDesign()) {
+                    maxScale = Math.min(1, maxScale);
+                }
+
+                return maxScale;
+            }.onChange("design.restrictions.minimumScale", "printType"),
 
             clone: function () {
                 var afterEffect = this.$.afterEffect,

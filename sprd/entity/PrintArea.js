@@ -52,6 +52,24 @@ define(['js/data/Entity', 'sprd/model/PrintType', 'sprd/entity/Size'], function 
             }
         },
 
+        getDefaultBox: function () {
+            var defaultBox = this.$.defaultBox,
+                size = this.$._size;
+
+            if (!size) {
+                return;
+            }
+
+            var fallbackBox = {
+                x: 0,
+                y: 0,
+                width: size.width,
+                height: size.height
+            };
+
+            return defaultBox ? defaultBox : fallbackBox;
+        }.onChange("defaultBox", "size"),
+
         getDefaultView: function () {
 
             var productType = this.getProductType();
