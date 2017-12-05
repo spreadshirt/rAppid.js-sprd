@@ -211,11 +211,6 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                     values = match[2].split(",");
                     if (type === "rotate") {
                         ret.rotation = parseFloat(values.shift());
-                    } else if (type === "scale") {
-                        // only flipping
-                        var scale = values;
-                        ret.scale.x *= scale[0] < 0 ? -1 : 1;
-                        ret.scale.x *= scale[1] < 0 ? -1 : 1;
                     }
                 }
 
@@ -289,6 +284,38 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             })
         },
 
+        extractOffset: function (configuration, options) {
+            var content = configuration.$$ || {},
+                svg = content && content.svg;
+
+            var offset = configuration.$.offset.clone();
+
+            if (svg) {
+                var transform = svg.image.transform;
+                var regExp = /^(\w+)\(([^(]+)\)/ig,
+                    match;
+                if (match = regExp.exec(transform)) {
+                    var type = match[1];
+                    var values = match[2].split(",");
+                    if (type === "scale") {
+                        var scaleX = parseFloat(values.shift());
+                        var scaleY = parseFloat(values.shift());
+
+                        if (scaleX < 0 ) {
+                            offset.set("x", offset.$.x - svg.image.width)
+                        }
+
+                        if (scaleY < 0) {
+                            offset.set("y", offset.$.y - svg.image.height)
+                        }
+                    }
+                }
+            }
+
+
+            configuration.set("offset", offset);
+        },
+
         initializeConfiguration: function (configuration, options, callback) {
             var printType = configuration.$.printType,
                 printArea = this.extractPrintArea(configuration),
@@ -296,6 +323,11 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 design = this.extractOriginalDesign(configuration)
                     || this.extractDesign(configuration)
                     || configuration.$.design;
+
+            if (configuration.$initializedByManager) {
+                callback && callback(null);
+                return;
+            }
 
             flow()
                 .par(function (cb) {
@@ -327,6 +359,15 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 })
                 .seq(function () {
                     self.extractSize(configuration, options);
+                })
+                .seq(function () {
+                    self.extractOffset(configuration, options);
+                })
+                .seq(function () {
+                    // configuration.adjustOffsetForFlipped();
+                })
+                .seq(function () {
+                    configuration.$initializedByManager = true;
                 })
                 .exec(callback);
         }

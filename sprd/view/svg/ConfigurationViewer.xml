@@ -15,8 +15,9 @@
                   rotation="{invert(cv.rotation)}" rotationX="{cv.rotationX}" rotationY="{cv.rotationY}">
     </svg:clipPath>
 
-    <svg:g cid="_assetContainerWrapper">
-        <svg:g class="asset-container" cid="_assetContainer" scaleX="{_scale.x}" scaleY="{_scale.y}"/>
+    <svg:g cid="_assetContainerWrapper" translateX="{flipOffsetX()}" translateY="{flipOffsetY()}">
+        <svg:g class="asset-container" cid="_assetContainer" scaleX="{flipScaleX()}"
+               scaleY="{flipScaleY()}"/>
     </svg:g>
 
     <svg:circle class="rotation-center" cx="{cv.rotationX}" cy="{cv.rotationY}" r="{pixelToViewBox(2)}"
@@ -34,7 +35,7 @@
               width="{minScaleRect.width}"
               height="{minScaleRect.height}"/>
     
-    <svg:g translateX="{flipOffsetX()}" translateY="{flipOffsetY()}">
+    <svg:g>
         <svg:rect class="configuration-boundary"
                   selected="{isSelectedConfigurationOrConfigurationHasError()}"
                   x="0" y="0"
@@ -64,6 +65,14 @@
                         selected="{isScalable()}"
                         cx="{handleX()}"
                         cy="{handleY()}"
+                        r="{mul(inverseZoom, half(pixelToViewBox(_handleWidth)))}"/>
+
+            <svg:circle class="configuration-handle flip"
+                        pointer-events="visible"
+                        selected="{isRemovable()}"
+                        onpointerdown="flipConfiguration"
+                        cx="{substract( _configurationWidth, handleX())}"
+                        cy="{substract(_configurationHeight, handleY())}"
                         r="{mul(inverseZoom, half(pixelToViewBox(_handleWidth)))}"/>
 
             <svg:circle cid="_bigScaleHandle" class="big-configuration-handle scale"
