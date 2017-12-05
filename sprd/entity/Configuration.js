@@ -248,7 +248,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         getScaleMinimalComponent: function (scale) {
-            scale = this.$.scale || scale;
+            scale = scale || this.$.scale;
 
             if (!scale) {
                 return null;
