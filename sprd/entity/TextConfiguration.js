@@ -908,7 +908,6 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 var properties = ret.properties || {};
                 properties.autoGrow = this.$.autoGrow;
-                properties.alignmentMatters = this.$.alignmentMatters;
                 ret.properties = properties;
 
                 return ret;

@@ -1289,23 +1289,24 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         });
 
                         var selection = textConfiguration.$.selection;
-                        var paragraphStyle = selection.getCommonParagraphStyle(textConfiguration.$.textFlow);
-                        var textAnchor = paragraphStyle ? paragraphStyle.$.textAnchor : null;
-                        if(textAnchor) {
-                            var finalTextAnchor = {
-                                start: "left",
-                                middle: "center",
-                                end: "right",
-                                justify: "justify"
-                            } [textAnchor] || "middle";
-                            config.set("align", finalTextAnchor);
+                        if(selection) {
+                            var paragraphStyle = selection.getCommonParagraphStyle(textConfiguration.$.textFlow);
+                            var textAnchor = paragraphStyle ? paragraphStyle.$.textAnchor : null;
+                            if(textAnchor) {
+                                var finalTextAnchor = {
+                                    start: "left",
+                                    middle: "center",
+                                    end: "right",
+                                    justify: "justify"
+                                } [textAnchor] || "middle";
+                                config.set("align", finalTextAnchor);
+                            }
                         }
 
                         config.set("_size", config.$._size, {force: true});
                         config.set("isNew", textConfiguration.$.isNew);
                         config.set("isTemplate", textConfiguration.$.isTemplate);
                         config.set("initialText", textConfiguration.$.initialText);
-                        config.set("alignmentMatters", textConfiguration.$.alignmentMatters);
 
                         callback && callback(err, config);
 
@@ -1381,7 +1382,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         });
 
                         config.set("initialText", specialTextConfiguration.$.initialText);
-                        config.set("align", specialTextConfiguration.$.align);
 
                         if (config && config.$.textFlow) {
                             var textFlow = config.$.textFlow,
