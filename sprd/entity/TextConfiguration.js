@@ -101,12 +101,23 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 options = options || this.get("initOptions");
 
+                var oldTextArea = {};
+
                 flow()
                     .seq(function(cb) {
                         textConfigurationManager.initializeConfiguration(self, options, cb);
                     })
                     .seq(function(cb) {
+                        oldTextArea.width = self.get("textArea.width");
+                        oldTextArea.height = self.get("textArea.height");
                         self._composeText(false, cb);
+                    })
+                    .seq(function() {
+                        var newTextArea = self.get("textArea");
+
+                        if (oldTextArea.width && oldTextArea.height && newTextArea) {
+                            self.reposition(newTextArea.$.width, newTextArea.$.height, oldTextArea.width, oldTextArea.height);
+                        }
                     })
                     .seq(function() {
                         var leafStyle = self.getCommonLeafStyleForWholeTextFlow(),
@@ -500,7 +511,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             },
 
 
-            getParagraphStyleForWholeTextFlow: function () {
+            getParagraphStyleForWholeTextFlow: function() {
                 var selection = this.$.selection,
                     textFlow = this.$.textFlow;
 
@@ -712,7 +723,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return fonts;
             },
 
-            save: function (callback) {
+            save: function(callback) {
                 var composedTextFlow = this.$.composedTextFlow;
                 var matters = composedTextFlow.alignmentMatters();
 
