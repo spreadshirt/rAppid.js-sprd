@@ -205,7 +205,9 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                             }));
                         }
                     }
-
+                })
+                .seq(function () {
+                    configuration.adjustOffsetForFlipped()
                 })
                 .seq(function () {
                     configuration.$initializedByManager = true;

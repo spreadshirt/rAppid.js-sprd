@@ -1532,22 +1532,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return value / 2;
             },
 
-            flipOffsetX: function() {
-                if (this.$._scale.x < 0) {
-                    return -this.$.configuration.width();
-                }
-
-                return 0;
-            }.onChange("_scale"),
-
-            flipOffsetY: function() {
-                if (this.$._scale.y < 0) {
-                    return -this.$.configuration.height();
-                }
-
-                return 0;
-            }.onChange("_scale"),
-
             errorClass: function() {
                 return this.$._configurationValid ? "" : "error";
             }.onChange("_configurationValid"),
@@ -1723,6 +1707,65 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
             className: function(a, className) {
                 return a ? className : "";
-            }
+            },
+
+            flipConfiguration: function () {
+                this.flipConfigurationX();
+                this.flipConfigurationY();
+            },
+
+            flipConfigurationX: function () {
+                var config = this.$.configuration;
+                if (!config) {
+                    return;
+                }
+
+                var currentFlip = config.$.flip;
+                config.set('flip', {x: -currentFlip.x, y: currentFlip.y});
+            },
+
+            flipConfigurationY: function () {
+                var config = this.$.configuration;
+                if (!config) {
+                    return;
+                }
+
+                var currentFlip = config.$.flip;
+                config.set('flip', {x: currentFlip.x, y: -currentFlip.y});
+            },
+
+            flipOffsetX: function() {
+                var config = this.get("configuration");
+                if (config && config.$.flip.x < 0) {
+                    return this.$._configurationWidth;
+                }
+
+                return 0;
+            }.onChange("configuration.flip", "_configurationWidth"),
+
+            flipOffsetY: function() {
+                var config = this.get("configuration");
+                if (config && config.$.flip.y < 0) {
+                    return this.$._configurationHeight;
+                }
+
+                return 0;
+            }.onChange("configuration.flip", "_configurationHeight"),
+
+            flipScaleX: function() {
+                var config = this.get('configuration');
+                if (config && config.$.flip.x < 0) {
+                    return config.$.flip.x * this.$._scale.x;
+                }
+                return this.$._scale.x;
+            }.onChange("configuration.flip", "_scale"),
+
+            flipScaleY: function() {
+                var config = this.get('configuration');
+                if (config && config.$.flip.y < 0) {
+                    return config.$.flip.y * this.$._scale.y;
+                }
+                return this.$._scale.y;
+            }.onChange("configuration.flip", "_scale"),
         });
     });
