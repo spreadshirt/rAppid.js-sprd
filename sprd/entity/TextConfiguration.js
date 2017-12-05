@@ -600,8 +600,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 return minimalScales;
             },
 
-            minimumScale: function() {
-                return this._getMinimalScale(this.$.printType);
+            minimumScale: function (printType) {
+                return this._getMinimalScale(printType || this.$.printType);
             }.onChange('printType'),
 
             _getMinimalScale: function(printType) {

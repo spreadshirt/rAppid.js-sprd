@@ -243,18 +243,18 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
             return {
                 printTypeScaling: !printType.isScalable() && (scale.x != 1 || scale.y != 1),
                 maxBound: width > printType.get("size.width") || height > printType.get("size.height"),
-                minBound: !printType.isShrinkable() && this.minimumScale() > this.getScaleMinimalComponent(scale)
+                minBound: !printType.isShrinkable() && this.minimumScale(printType) > this.getScaleMinimalComponent(scale)
             };
         },
 
         getScaleMinimalComponent: function (scale) {
-            scale = this.$.scale || scale;
+            scale = scale || this.$.scale;
 
             if (!scale) {
                 return null;
             }
-            
-            return Math.min(Math.abs(scale.x), Math.abs(scale.y));
+
+            return Math.min(scale.x, scale.y);
         }.onChange("scale"),
 
         isPrintTypeAvailable: function(printType) {
@@ -501,12 +501,6 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
 
         // Two functions below should return Numbers
         minimumScale: function() {
-            var printType = this.$.printType;
-
-            if (printType && !printType.isShrinkable()) {
-                return 1;
-            }
-
             return 0;
         }.onChange('printType'),
 

@@ -478,13 +478,13 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return ProductUtil.getPossiblePrintTypesForDesignOnPrintArea(this.$.design, printArea, appearance);
             },
 
-            minimumScale: function () {
+            minimumScale: function (printType) {
                 var minScale = this.callBase(),
                     design = this.$.design,
                     designMinScale = (this.get("design.restrictions.minimumScale") || 100 ) / 100,
-                    printType = this.$.printType;
+                    printType = printType || this.$.printType;
 
-                if (printType && !printType.isDigital() && design) {
+                if (printType && !printType.isShrinkable() && design) {
                     minScale = Math.max(minScale, designMinScale);
                 }
 
