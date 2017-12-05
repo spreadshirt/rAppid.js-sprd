@@ -1391,7 +1391,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             var finalTextAnchor = {
                                 left: "start",
                                 center: "middle",
-                                right: "end"
+                                right: "end",
+                                justify: "middle"
                             }[specialTextConfiguration.$.align];
 
                             var operation = new ApplyStyleToElementOperation(textRange, clonedTextFlow, null, new Style({
