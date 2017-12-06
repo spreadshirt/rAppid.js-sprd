@@ -1288,11 +1288,25 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                             force: true
                         });
 
+                        var selection = textConfiguration.$.selection;
+                        if(selection) {
+                            var paragraphStyle = selection.getCommonParagraphStyle(textConfiguration.$.textFlow);
+                            var textAnchor = paragraphStyle ? paragraphStyle.$.textAnchor : null;
+                            if(textAnchor) {
+                                var finalTextAnchor = {
+                                    start: "left",
+                                    middle: "center",
+                                    end: "right",
+                                    justify: "justify"
+                                } [textAnchor] || "middle";
+                                config.set("align", finalTextAnchor);
+                            }
+                        }
+
                         config.set("_size", config.$._size, {force: true});
                         config.set("isNew", textConfiguration.$.isNew);
                         config.set("isTemplate", textConfiguration.$.isTemplate);
                         config.set("initialText", textConfiguration.$.initialText);
-                        config.set("alignmentMatters", textConfiguration.$.alignmentMatters);
 
                         callback && callback(err, config);
 
@@ -1368,6 +1382,24 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                         });
 
                         config.set("initialText", specialTextConfiguration.$.initialText);
+
+                        if (config && config.$.textFlow) {
+                            var textFlow = config.$.textFlow,
+                            clonedTextFlow = textFlow.shallowCopy();
+                            var textRange = TextRange.createTextRange(0, clonedTextFlow.textLength());
+
+                            var finalTextAnchor = {
+                                left: "start",
+                                center: "middle",
+                                right: "end",
+                                justify: "middle"
+                            }[specialTextConfiguration.$.align];
+
+                            var operation = new ApplyStyleToElementOperation(textRange, clonedTextFlow, null, new Style({
+                                textAnchor: finalTextAnchor}));
+                            operation.doOperation();
+                            config.set("textFlow", clonedTextFlow);
+                        }
 
                         callback && callback(err, config);
 
