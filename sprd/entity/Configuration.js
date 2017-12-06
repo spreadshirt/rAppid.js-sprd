@@ -85,6 +85,9 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                     validate($);
                 }
                 this.trigger('configurationChanged');
+            } else if ($.hasOwnProperty("innerRect")) {
+                combinedAttributes = $;
+                performValidate();
             }
 
             validate(this._additionalValidation($, options));
