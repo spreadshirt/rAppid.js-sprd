@@ -14,7 +14,6 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
             align: "center",
             initialized: false,
             commission: null,
-
             renderedText: null,
             renderedFontId: null,
             renderedAlign: null,

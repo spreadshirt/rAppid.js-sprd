@@ -63,7 +63,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 measurer: null,
                 textChanged: null,
                 alignmentMatters: null,
-                initialized: null
+                initialized: null,
+                initOptions: null
             },
 
             inject: {
@@ -88,21 +89,35 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             init: function(options, callback) {
 
                 var self = this,
-                    productManager = this.$.manager,
+                    textConfigurationManager = this.$.manager,
                     initialized = this.$.initialized,
                     stageReady = self.$stage && self.$stage.rendered;
 
                 if (initialized || !stageReady) {
+                    this.set("initOptions", options);
                     callback && callback(null);
                     return;
                 }
 
+                options = options || this.get("initOptions");
+
+                var oldTextArea = {};
+
                 flow()
                     .seq(function(cb) {
-                        productManager.initializeConfiguration(self, options, cb);
+                        textConfigurationManager.initializeConfiguration(self, options, cb);
                     })
                     .seq(function(cb) {
+                        oldTextArea.width = self.get("textArea.width");
+                        oldTextArea.height = self.get("textArea.height");
                         self._composeText(false, cb);
+                    })
+                    .seq(function() {
+                        var newTextArea = self.get("textArea");
+
+                        if (oldTextArea.width && oldTextArea.height && newTextArea) {
+                            self.reposition(newTextArea.$.width, newTextArea.$.height, oldTextArea.width, oldTextArea.height);
+                        }
                     })
                     .seq(function() {
                         var leafStyle = self.getCommonLeafStyleForWholeTextFlow(),
@@ -136,7 +151,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
             },
 
-            removeMeasurer: function () {
+            removeMeasurer: function() {
                 if (!this.$.measurer) {
                     return;
                 }
@@ -774,7 +789,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 };
 
                 var transform = [],
-                    scale = this.$.scale,
+                    flip = this.$.flip,
                     rotation = this.$.rotation,
 
                     width = this.width(),
@@ -784,8 +799,19 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     transform.push("rotate(" + rotation + "," + Math.round(width / 2, 3) + "," + Math.round(height / 2, 3) + ")");
                 }
 
-                if (scale && (scale.x < 0 || scale.y < 0)) {
-                    transform.push("scale(" + (scale.x < 0 ? -1 : 1) + "," + (scale.y < 0 ? -1 : 1) + ")");
+                if (flip) {
+                    ret.offset = ret.offset.clone();
+                    if (flip.x < 0 || flip.y < 0) {
+                        transform.push("scale(" + (flip.x < 0 ? -1 : 1) + "," + (flip.y < 0 ? -1 : 1) + ")");
+                    }
+
+                    if (flip.x < 0) {
+                        ret.offset.set("x", ret.offset.$.x + width)
+                    }
+
+                    if (flip.y < 0) {
+                        ret.offset.set("y", ret.offset.$.y + height);
+                    }
                 }
 
                 delete ret.printColors;
@@ -992,6 +1018,27 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
                 if (data.content) {
                     this.$$.svg = data.content.svg;
+
+                    if (this.$$.svg.text.transform) {
+                        var transform = this.$$.svg.text.transform;
+                        var regExp = /^scale\(([^(]+)\)/ig,
+                            match = regExp.exec(transform);
+
+                        if (match) {
+                            var value = match[1],
+                                values = value.split(',');
+
+                            if (values.length === 2) {
+                                var x = values[0].trim() || 1,
+                                    y = values[1].trim() || 1;
+
+                                data.flip = {
+                                    x: Number(x),
+                                    y: Number(y)
+                                }
+                            }
+                        }
+                    }
                 }
 
                 return data;
@@ -1097,3 +1144,4 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
 
         return TextConfiguration;
     });
+
