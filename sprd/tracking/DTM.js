@@ -111,7 +111,12 @@ define(["js/core/Component", "underscore", "flow"], function (Component, _, flow
             this._queueOrExecute(function () {
                 window.dtm = window.dtm || {};
                 window.dtm[eventName] = data;
-                this.track(eventName);
+                try {
+                    this.track(eventName);
+                } catch (e) {
+                    // ignore errors from code we do not maintain
+                    console.error(e);
+                }
             });
 
             this._debug('track: ' + [eventName, JSON.stringify(data || {})].join(', '));
