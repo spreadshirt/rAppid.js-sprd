@@ -318,14 +318,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
             },
 
             isMeasuringEnabled: function () {
-                var featureEnabled = this.$.featureManager && this.$.featureManager.getFeatureState("calcInnerRects"),
-                    design = this.$.design;
-
-                if (!design) {
-                    return false;
-                }
-
-                return featureEnabled && design.isVectorDesign();
+                return this.$.featureManager && this.$.featureManager.getFeatureState("calcInnerRects") && this.$.design;
             },
 
             getInnerRect: function (rotation, callback) {
