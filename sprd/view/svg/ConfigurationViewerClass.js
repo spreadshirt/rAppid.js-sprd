@@ -829,34 +829,31 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         this.$snapAngles.push({value: snapPoints[i], owner: null});
                     }
 
-                    value = this.snapOneDimension(value, this.$snapAngles, rotationSnippingThreshold);
-                    var snapped = _.find(this.$snapAngles, function (ownedPoint) {
-                        return ownedPoint.value == value;
-                    });
+                    var snappedAngle = this.snapOneDimension(value, this.$snapAngles, rotationSnippingThreshold),
+                        value = snappedAngle.value;
 
                     value %= 360;
-                    this.set('rotationSnap', this.$.centerVector && snapped);
+                    this.set('rotationSnap', this.$.centerVector && snappedAngle.snappedPoint);
                 }
 
                 return value;
             },
 
-            getScaleSnapValues: function (configuration) {
+            getScaleFactorSnapValues: function (configuration) {
                 var snapLines = this.$snapLines.slice(),
                     self = this;
 
                 var flatMap = _.compose(_.flatten, _.map);
                 return flatMap(snapLines, function (snapLine) {
-                    return self.getScaleSnapValueForSnapLine(configuration, snapLine)
+                    return self.getScaleFactorSnapValueForSnapLine(configuration, snapLine)
                 });
             },
 
-            getScaleSnapValueForSnapLine: function (configuration, snapLine) {
+            getScaleFactorSnapValueForSnapLine: function (configuration, snapLine) {
                 var offset = configuration.$.offset,
                     sides = this.getSides(configuration),
                     width = configuration.width(),
                     height = configuration.height(),
-                    currentScale = configuration.$.scale.x,
                     line = snapLine.line;
 
                 var parallelSides = _.filter(sides, function (side) {
@@ -876,23 +873,29 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     horizontal = angle === configuration.$.rotation,
                     scaleFactor = 1 + 2 * (distance / (horizontal ? height : width));
 
-                var snapValue = currentScale * scaleFactor;
                 return {
-                    value: snapValue,
+                    value: scaleFactor,
+                    snappedLine: snapLine,
                     owners: snapLine.owners
                 }
             },
 
             snapScale: function (configuration, scale) {
                 if (rotateSnippingEnabled && !this.$.shiftKey) {
-                    var values = this.getScaleSnapValues(configuration);
+                    var values = this.getScaleFactorSnapValues(configuration);
                     values.push({value: 1, owners: [configuration]});
-                    // values = _.unique(values);
-                    scale = this.snapOneDimension(scale, values, scaleSnippingThreshold);
-                }
+                    var snappedPoint = this.snapOneDimension(scale, values, scaleSnippingThreshold);
 
-                var sides = this.getSides(configuration);
-                self.broadcastSnappedLines(sides);
+                    if (snappedPoint.snappedPoint) {
+                        scale = snappedPoint.value;
+                    }
+
+                    if (snappedPoint.snappedPoint && snappedPoint.snappedPoint.snappedLine) {
+                        var productViewerDiagonalLength = this.$.productViewerDiagonalLength,
+                            concreteSnappedLine = snappedPoint.snappedPoint.snappedLine.line.getSvgLine(productViewerDiagonalLength);
+                        this.broadcastSnappedLines([concreteSnappedLine]);
+                    }
+                }
 
                 return scale;
             },
@@ -919,7 +922,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     });
                 }
 
-                return value;
+                return {value: value, snappedPoint: snappedPoint};
             },
 
             _rotate: function (x, y, configuration, userInteractionOptions) {
@@ -996,10 +999,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return []
                 }
 
-                var offset = configuration.$.offset;
+                var offset = configuration.$.offset,
+                    configRot = this.degreeToRadian(configuration.$.rotation);
+
                 newX = newX || offset.$.x;
-                newY = newY || offset.$.x;
-                rot = rot || configuration.$.rotation;
+                newY = newY || offset.$.y;
+                rot = rot || configRot || 0;
                 
                 var rect = this.rotateRect(configuration, newX, newY, rot);
 
