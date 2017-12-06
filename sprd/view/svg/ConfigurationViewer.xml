@@ -80,7 +80,7 @@
                         onpointerdown="flipConfigurationX"
                         cx="{substract( _configurationWidth, handleX())}"
                         cy="{div(handleY(), 2)}"
-                        r="{mul(inverseZoom, half(pixelToViewBox(_handleWidth)))}"/>
+                        r="{mul(inverseZoom, half(pixelToViewBox(_handleWidth)))}" visible="{isAdmin()}"/>
 
             <svg:circle class="configuration-handle flip"
                         pointer-events="visible"
@@ -88,7 +88,7 @@
                         onpointerdown="flipConfigurationY"
                         cx="{div(handleX(), 2)}"
                         cy="{substract(_configurationHeight, handleY())}"
-                        r="{mul(inverseZoom, half(pixelToViewBox(_handleWidth)))}"/>
+                        r="{mul(inverseZoom, half(pixelToViewBox(_handleWidth)))}" visible="{isAdmin()}"/>
 
             <svg:circle cid="_bigScaleHandle" class="big-configuration-handle scale"
                         selected="{isScalable()}" pointer-events="visible"

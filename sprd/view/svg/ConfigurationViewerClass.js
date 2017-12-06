@@ -162,6 +162,10 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 return UnitUtil.getLocalizedSize(mm, this.PARAMETER().locale);
             },
 
+            isAdmin: function () {
+                return this.PARAMETER() && this.PARAMETER().mode == "admin";
+            },
+
             and: function(a, b) {
                 return a && b
             },
