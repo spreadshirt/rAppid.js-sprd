@@ -70,8 +70,16 @@
             <svg:circle class="configuration-handle flip"
                         pointer-events="visible"
                         selected="{isRemovable()}"
-                        onpointerdown="flipConfiguration"
+                        onpointerdown="flipConfigurationX"
                         cx="{substract( _configurationWidth, handleX())}"
+                        cy="{div(handleY(), 2)}"
+                        r="{mul(inverseZoom, half(pixelToViewBox(_handleWidth)))}"/>
+
+            <svg:circle class="configuration-handle flip"
+                        pointer-events="visible"
+                        selected="{isRemovable()}"
+                        onpointerdown="flipConfigurationY"
+                        cx="{div(handleX(), 2)}"
                         cy="{substract(_configurationHeight, handleY())}"
                         r="{mul(inverseZoom, half(pixelToViewBox(_handleWidth)))}"/>
 
