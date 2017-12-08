@@ -131,7 +131,7 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
             }
 
             var configurationColorChanged = false;
-            if (!colorsSet && designColors) {
+            if (!colorsSet && designColors && configuration.getDesignColors) {
                 printColors = configuration.getDesignColors();
 
 
