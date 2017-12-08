@@ -31,7 +31,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                     this._setOriginalDesignProperties()
                 }, this);
                 this.bind('change:rotation', function () {
-                    this._debounceFunctionCall(this.setInnerRect, "innerRect", 800, this)
+                    this._debounceFunctionCall(this.setInnerRect, "innerRect", 300, this)
                 }, this);
 
                 this.set('defaultInnerRect', {

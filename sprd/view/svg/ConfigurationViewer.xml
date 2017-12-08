@@ -42,7 +42,7 @@
                   width="{_configurationWidth}" height="{_configurationHeight}"/>
 
         <svg:rect class="configuration-inner-rect configuration-boundary"
-                  visible="{and(configuration.innerRect, ENV().showInnerRect}"
+                  visible="{and(configuration.innerRect, ENV().showInnerRect)}"
                   rotation="{invert(cv.rotation)}" rotationX="{cv.rotationX}" rotationY="{cv.rotationY}"
                   x="{mul(_configurationWidth, configuration.innerRect.x)}"
                   y="{mul(_configurationHeight, configuration.innerRect.y)}"
