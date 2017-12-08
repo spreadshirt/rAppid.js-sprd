@@ -148,6 +148,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     });
                     this.set('measurer', measureRenderer);
                     this.$stage.addChild(measureRenderer);
+                    measureRenderer.setInnerRect();
                 }
             },
 

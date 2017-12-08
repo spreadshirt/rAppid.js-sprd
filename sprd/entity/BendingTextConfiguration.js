@@ -342,6 +342,7 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
                     });
                     this.set('measurer', measureRenderer);
                     this.$stage.addChild(measureRenderer);
+                    measureRenderer.setInnerRect();
                 }
             },
 
