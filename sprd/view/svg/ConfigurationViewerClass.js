@@ -1,5 +1,8 @@
-define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer", "xaml!sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus", "sprd/util/UnitUtil", "sprd/entity/BendingTextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationRenderer", "sprd/type/Line", "sprd/extensions/Number"],
-    function(SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _, Vector, I18n, Bus, UnitUtil, BendingTextConfiguration, BendingTextConfigurationRenderer, Line, extension) {
+define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/DesignConfiguration', "sprd/entity/SpecialTextConfiguration", "xaml!sprd/view/svg/TextConfigurationRenderer"
+        , "xaml!sprd/view/svg/DesignConfigurationRenderer", "xaml!sprd/view/svg/SpecialTextConfigurationRenderer", "underscore", "sprd/type/Vector", "js/core/I18n", "js/core/Bus"
+        , "sprd/util/UnitUtil", "sprd/entity/BendingTextConfiguration", "xaml!sprd/view/svg/BendingTextConfigurationRenderer", "sprd/type/Line", "sprd/extensions/Number", 'sprd/util/MathUtil'],
+    function (SvgElement, TextConfiguration, DesignConfiguration, SpecialTextConfiguration, TextConfigurationRenderer, DesignConfigurationRenderer, SpecialTextConfigurationRenderer, _
+        , Vector, I18n, Bus, UnitUtil, BendingTextConfiguration, BendingTextConfigurationRenderer, Line, extension, MathUtil) {
 
         var MOVE = "move",
             SCALE = "scale",
@@ -1176,11 +1179,31 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         };
 
 
-                        if (this.validateScale(newScale.x, baseScale)) {
-                            this.set('_scale', newScale, userInteractionOptions);
-                            this.$._offset.set(this.getCenteredOffset(configuration, newScale), userInteractionOptions);
+                        if (!this.validateScale(newScale.x, baseScale)) {
+                            newScale = this.clampScale(newScale);
                         }
+
+                        this.set('_scale', newScale, userInteractionOptions);
+                        this.$._offset.set(this.getCenteredOffset(configuration, newScale), userInteractionOptions);
                     }
+                }
+            },
+
+            clampScale: function (newScale) {
+                var configuration = this.$.configuration;
+
+                if (!newScale || !configuration) {
+                    return newScale;
+                }
+
+                var maxScale = configuration.getMaxScale(),
+                    minScale = configuration.getMinScale();
+
+                var scale = MathUtil.clamp(newScale.x, minScale, maxScale);
+                console.log(scale);
+                return {
+                    x: scale,
+                    y: scale
                 }
             },
 
