@@ -89,15 +89,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             init: function(options, callback) {
 
                 var self = this,
-                    textConfigurationManager = this.$.manager,
-                    initialized = this.$.initialized,
-                    stageReady = self.$stage && self.$stage.rendered;
-
-                if (initialized || !stageReady) {
-                    this.set("initOptions", options);
-                    callback && callback(null);
-                    return;
-                }
+                    textConfigurationManager = this.$.manager;
 
                 options = options || this.get("initOptions");
 
@@ -110,7 +102,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     .seq(function(cb) {
                         oldTextArea.width = self.get("textArea.width");
                         oldTextArea.height = self.get("textArea.height");
-                        self._composeText(false, cb);
+                        self._composeText(false, options, cb);
                     })
                     .seq(function() {
                         var newTextArea = self.get("textArea");
@@ -255,6 +247,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             _composeText: function(skipHeight, options, callback) {
 
                 if (!(this.$stage && this.$stage.rendered)) {
+                    callback && callback();
                     return;
                 }
 
