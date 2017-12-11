@@ -1266,7 +1266,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     scaleTooBig = scaleDirection && newScale > maxScale && this.getMaxScaleRect().strict,
                     scaleTooSmall = !scaleDirection && newScale < minScale && this.getMinScaleRect().strict;
 
-                return !scaleTooBig && !scaleTooSmall;
+                var validScale = !scaleTooBig && !scaleTooSmall;
+
+                if (validScale) {
+                    this.$.bus.trigger("ConfigurationViewer.InvalidScale", this);
+                }
+
+                return validScale;
             },
 
             nearToThresholdMax: function(scale) {
