@@ -1,6 +1,6 @@
 define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElement", "sprd/model/PrintType"], function(Bindable, ProductUtil, ConcreteElement, PrintType) {
 
-    var excludedPrintTypes = [PrintType.SpecialFlex, PrintType.Flock];
+    var excludedPrintTypes = [PrintType.Mapping.SpecialFlex, PrintType.Mapping.Flock];
     var filters = [function(configuration) {
         return !ProductUtil.isSpecial(configuration)
     }, function(configuration) {
