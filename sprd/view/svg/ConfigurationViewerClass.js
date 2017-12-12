@@ -830,9 +830,9 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                         this.$snapAngles.push({value: snapPoints[i], owner: null});
                     }
 
-                    var snappedAngle = this.snapOneDimension(value, this.$snapAngles, rotationSnippingThreshold),
-                        value = snappedAngle.value;
+                    var snappedAngle = this.snapOneDimension(value, this.$snapAngles, rotationSnippingThreshold);
 
+                    value = snappedAngle.value;
                     value %= 360;
                     this.set('rotationSnap', this.$.centerVector && snappedAngle.snappedPoint);
                 }
@@ -856,13 +856,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     width = configuration.width(),
                     height = configuration.height(),
                     line = snapLine.line,
-                    midPointVector = new Vector([offset.x + width / 2, offset.y + height / 2]);
+                    midPointVector = new Vector([offset.$.x + width / 2, offset.$.y + height / 2]);
 
                 var parallelSides = _.filter(sides, function (side) {
                     return line.isParallelTo(side);
                 });
 
-                if (!parallelSides.length) {
+                if (parallelSides.length === 0) {
                     return [];
                 }
 
@@ -870,14 +870,14 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return side.distanceTo(line);
                 });
 
-                var midPointToSideVector = midPointVector.subtract(closestSide.project(midPointVector.x, midPointVector.y)),
-                    difference = closestSide.difference(line),
-                    differenceDirection = midPointToSideVector.multiply(difference) < 0 ? -1 : 1,
-                    distance = difference.distance(),
-                    angle = closestSide.angle,
+                var angle = closestSide.angle,
                     horizontal = angle === configuration.$.rotation,
+                    midPointToSideVector = closestSide.distanceToVector(midPointVector),
+                    difference = line.difference(closestSide),
+                    distance = difference.distance(),
+                    differenceDirection = midPointToSideVector.multiply(difference) < 0 ? -1 : 1,
                     scaleFactor = 1 + 2 * (distance / ((horizontal ? height : width) * differenceDirection));
-
+                
                 return {
                     value: scaleFactor,
                     snappedLine: snapLine,
@@ -894,7 +894,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     if (snappedPoint.snappedPoint) {
                         scale = snappedPoint.value;
                     }
-
+                    
                     if (snappedPoint.snappedPoint && snappedPoint.snappedPoint.snappedLine) {
                         var productViewerDiagonalLength = this.$.productViewerDiagonalLength,
                             concreteSnappedLine = snappedPoint.snappedPoint.snappedLine.line.getSvgLine(productViewerDiagonalLength);
@@ -1275,10 +1275,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     tooShortForPrintArea = newHeight / printArea.get('_size.height') < printArea.get('restrictions.minConfigRatio'),
                     tooSmallForPrintAreaRel = tooThinForPrintArea && tooShortForPrintArea;
 
-                var hasSoftBoundary = configuration.get('printArea.hasSoftBoundary()'),
-                    invalidRelSize = tooSmallForPrintAreaRel,
-                    scaleThresholdValid = this.scaleThresholdValid(newScale, oldScale);
-                return scaleThresholdValid && !invalidRelSize;
+                var scaleThresholdValid = this.scaleThresholdValid(newScale, oldScale);
+                return scaleThresholdValid && !tooSmallForPrintAreaRel;
             },
 
             scaleThresholdValid: function (newScale, oldScale) {
@@ -1833,6 +1831,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return config.$.flip.y * this.$._scale.y;
                 }
                 return this.$._scale.y;
-            }.onChange("configuration.flip", "_scale"),
+            }.onChange("configuration.flip", "_scale")
         });
     });
