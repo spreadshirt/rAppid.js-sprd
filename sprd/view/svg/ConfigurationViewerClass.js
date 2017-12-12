@@ -9,6 +9,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             rotationSnippingThreshold = 5,
             rotateSnippingEnabled = true,
             scaleSnippingThreshold = 0.02,
+            scaleSnippingEnabled = true,
             moveSnippingEnabled = true,
             scaleRatioThresholdForRotation = 0.2,
             moveSnippingThreshold = 7;
@@ -854,7 +855,8 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     sides = this.getSides(configuration),
                     width = configuration.width(),
                     height = configuration.height(),
-                    line = snapLine.line;
+                    line = snapLine.line,
+                    midPointVector = new Vector([offset.x + width / 2, offset.y + height / 2]);
 
                 var parallelSides = _.filter(sides, function (side) {
                     return line.isParallelTo(side);
@@ -868,10 +870,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     return side.distanceTo(line);
                 });
 
-                var distance = closestSide.distanceTo(line),
+                var midPointToSideVector = midPointVector.subtract(closestSide.project(midPointVector.x, midPointVector.y)),
+                    difference = closestSide.difference(line),
+                    differenceDirection = midPointToSideVector.multiply(difference) < 0 ? -1 : 1,
+                    distance = difference.distance(),
                     angle = closestSide.angle,
                     horizontal = angle === configuration.$.rotation,
-                    scaleFactor = 1 + 2 * (distance / (horizontal ? height : width));
+                    scaleFactor = 1 + 2 * (distance / ((horizontal ? height : width) * differenceDirection));
 
                 return {
                     value: scaleFactor,
@@ -881,7 +886,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             snapScale: function (configuration, scale) {
-                if (rotateSnippingEnabled && !this.$.shiftKey) {
+                if (scaleSnippingEnabled && !this.$.shiftKey) {
                     var values = this.getScaleFactorSnapValues(configuration);
                     values.push({value: 1, owners: [configuration]});
                     var snappedPoint = this.snapOneDimension(scale, values, scaleSnippingThreshold);
