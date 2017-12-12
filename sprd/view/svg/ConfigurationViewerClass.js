@@ -877,7 +877,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     distance = difference.distance(),
                     differenceDirection = midPointToSideVector.multiply(difference) < 0 ? -1 : 1,
                     scaleFactor = 1 + 2 * (distance / ((horizontal ? height : width) * differenceDirection));
-
+                
                 return {
                     value: scaleFactor,
                     snappedLine: snapLine,
@@ -885,17 +885,33 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 }
             },
 
-            snapScale: function (configuration, scale) {
+            collapseScaleSnapValues: function (ownedValues) {
+                var groupedOwnedValues = _.groupBy(ownedValues, function (ownedValue) {
+                    return ownedValue.value;
+                });
 
+                var flatMap = _.compose(_.flatten, _.map);
+                return _.map(groupedOwnedValues, function (groupedOwnedValue) {
+                    var owners = flatMap(groupedOwnedValue, function (ownedValue) {
+                        return ownedValue.owners;
+                    });
+                    
+                    return { value: groupedOwnedValue[0].value, snappedLine: groupedOwnedValue[0].snappedLine, owners: owners};
+                })
+            },
+
+            snapScale: function (configuration, scale) {
                 if (scaleSnippingEnabled && !this.$.shiftKey) {
-                    var values = this.getScaleFactorSnapValues(configuration);
-                    values.push({value: 1, owners: [configuration]});
-                    var snappedPoint = this.snapOneDimension(scale, values, scaleSnippingThreshold);
+                    var ownedValues = this.getScaleFactorSnapValues(configuration);
+                    ownedValues.push({value: 1, owners: [configuration]});
+                    ownedValues = this.collapseScaleSnapValues(ownedValues);
+
+                    var snappedPoint = this.snapOneDimension(scale, ownedValues, scaleSnippingThreshold);
 
                     if (snappedPoint.snappedPoint) {
                         scale = snappedPoint.value;
                     }
-
+                    
                     if (snappedPoint.snappedPoint && snappedPoint.snappedPoint.snappedLine) {
                         var productViewerDiagonalLength = this.$.productViewerDiagonalLength,
                             concreteSnappedLine = snappedPoint.snappedPoint.snappedLine.line.getSvgLine(productViewerDiagonalLength);
@@ -924,7 +940,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 if (snapDifference) {
                     value += snapDifference;
                     _.each(snappedPoint.owners, function (owner) {
-                            owner.set('docked', true);
+                        owner.set('docked', true);
                     });
                 }
 
@@ -1011,7 +1027,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 newX = newX || offset.$.x;
                 newY = newY || offset.$.y;
                 rot = rot || configRot || 0;
-
+                
                 var rect = this.rotateRect(configuration, newX, newY, rot);
 
                 if (!rect) {
@@ -1117,7 +1133,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                             var productViewerDiagonalLength = this.$.productViewerDiagonalLength;
                             snappedLines.push(snappedLine.getSvgLine(productViewerDiagonalLength));
                             lines = _.filter(lines, function (snapLine) {
-                                return !snappedLine.equals(snapLine.line);
+                                return snappedLine.isPerpendicular(snapLine.line);
                             });
                             _.each(snappedOwners, function (owner) {
                                 owner.set('docked', true);
