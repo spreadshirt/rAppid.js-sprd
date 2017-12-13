@@ -384,7 +384,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
 
                 var widthDelta = (newHeight - oldHeight) * self.$.scale.y,
-                    newY = Number(self.$.offset.get('y')) - widthDelta / 2;
+                    newY = Number(self.$.offset.get('y'));
                 self.$.offset.set('y', newY);
             },
 
