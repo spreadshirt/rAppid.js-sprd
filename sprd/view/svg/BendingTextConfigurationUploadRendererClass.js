@@ -26,7 +26,7 @@ define(['js/svg/Svg'], function(Svg) {
             }
         },
 
-        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text', 'viewBox'],
+        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text'],
 
         width: function() {
             var config = this.$.configuration;
