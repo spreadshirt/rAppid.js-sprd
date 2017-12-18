@@ -2,6 +2,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
     function(Configuration, flow, Size, _, PrintType, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager, List, TextMeasureRenderer) {
 
         var copyrightWordList;
+        var SYLLABLE_HYPHEN = 173;
 
         if (!String.prototype.codePointAt) {
             (function() {
@@ -180,6 +181,24 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
 
                 return /^[\s\n\r]*$/.test(text);
+            },
+
+            isContainingSoftHyphen: function() {
+                var text = this.$.rawText;
+                if (!text) {
+                    return true;
+                }
+
+                return new RegExp("[" + String.fromCharCode(SYLLABLE_HYPHEN) + "].*").test(text);
+            },
+
+            removeSoftHyphen: function() {
+                this.$.textFlow.$.children.each(function(paragraph) {
+                    paragraph.$.children.each(function(span) {
+                        span.set('text', span.$.text.split(String.fromCharCode(SYLLABLE_HYPHEN)).join(''));
+                    });
+                });
+                this._onTextFlowChange();
             },
 
             _postConstruct: function() {
@@ -384,7 +403,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
 
                 var widthDelta = (newHeight - oldHeight) * self.$.scale.y,
-                    newY = Number(self.$.offset.get('y')) - widthDelta / 2;
+                    newY = Number(self.$.offset.get('y'));
                 self.$.offset.set('y', newY);
             },
 
