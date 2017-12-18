@@ -107,9 +107,11 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     })
                     .seq(function() {
                         var newTextArea = self.get("textArea");
-
-                        if (oldTextArea.width && oldTextArea.height && newTextArea) {
-                            self.reposition(newTextArea.$.width, newTextArea.$.height, oldTextArea.width, oldTextArea.height);
+                        
+                        if (oldTextArea.width && newTextArea) {
+                            //We only do X because oldTextArea.height is a value supplied by image-server, not the height calculated by the designer at creation-time
+                            //For width it is reliable because we use lineWidth to read the width from, which is not overwritten by the image-server
+                            self.centerX(newTextArea.$.width, oldTextArea.width);
                         }
                     })
                     .seq(function() {
@@ -402,8 +404,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     return;
                 }
 
-                var widthDelta = (newHeight - oldHeight) * self.$.scale.y,
-                    newY = Number(self.$.offset.get('y'));
+                var heightDelta = (newHeight - oldHeight) * self.$.scale.y,
+                    newY = Number(self.$.offset.get('y')) - heightDelta / 2;
                 self.$.offset.set('y', newY);
             },
 
