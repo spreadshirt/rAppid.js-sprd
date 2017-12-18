@@ -851,12 +851,12 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
             },
 
             getScaleFactorSnapValueForSnapLine: function (configuration, snapLine) {
-                var offset = configuration.$.offset,
-                    sides = this.getSides(configuration),
+                var sides = this.getSides(configuration),
                     width = configuration.width(),
                     height = configuration.height(),
+                    center = configuration.center(),
                     line = snapLine.line,
-                    midPointVector = new Vector([offset.$.x + width / 2, offset.$.y + height / 2]);
+                    centerVector = new Vector([center.x, center.y]);
 
                 var parallelSides = _.filter(sides, function (side) {
                     return line.isParallelTo(side);
@@ -871,12 +871,13 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                 });
 
                 var angle = closestSide.angle,
-                    horizontal = angle === configuration.$.rotation,
-                    midPointToSideVector = closestSide.distanceToVector(midPointVector),
+                    horizontal = angle === configuration.$.rotation, // horizontal side. This is relative to the configuration coords system, not the outer svg coords system
+                    centerVectorToSide = closestSide.distanceToVector(centerVector),
                     difference = line.difference(closestSide),
                     distance = difference.distance(),
-                    differenceDirection = midPointToSideVector.multiply(difference) < 0 ? -1 : 1,
-                    scaleFactor = 1 + 2 * (distance / ((horizontal ? height : width) * differenceDirection));
+                    differenceDirection = centerVectorToSide.multiply(difference) < 0 ? -1 : 1,
+                    relevantSize = horizontal ? height : width,
+                    scaleFactor = 1 + 2 * (distance / relevantSize ) * differenceDirection;
                 
                 return {
                     value: scaleFactor,
