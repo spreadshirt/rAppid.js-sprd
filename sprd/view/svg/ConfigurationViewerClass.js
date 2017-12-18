@@ -906,15 +906,15 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     ownedValues.push({value: 1, owners: [configuration]});
                     ownedValues = this.collapseScaleSnapValues(ownedValues);
 
-                    var snappedPoint = this.snapOneDimension(scale, ownedValues, scaleSnippingThreshold);
+                    var snap = this.snapOneDimension(scale, ownedValues, scaleSnippingThreshold);
 
-                    if (snappedPoint.snappedPoint) {
-                        scale = snappedPoint.value;
+                    if (snap.point) {
+                        scale = snap.value;
                     }
                     
-                    if (snappedPoint.snappedPoint && snappedPoint.snappedPoint.snappedLine) {
+                    if (snap.point && snap.point.snappedLine) {
                         var productViewerDiagonalLength = this.$.productViewerDiagonalLength,
-                            concreteSnappedLine = snappedPoint.snappedPoint.snappedLine.line.getSvgLine(productViewerDiagonalLength);
+                            concreteSnappedLine = snap.point.snappedLine.line.getSvgLine(productViewerDiagonalLength);
                         this.broadcastSnappedLines([concreteSnappedLine]);
                     }
                 }
@@ -944,7 +944,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     });
                 }
 
-                return {value: value, snappedPoint: snappedPoint};
+                return {value: value, point: snappedPoint};
             },
 
             _rotate: function (x, y, configuration, userInteractionOptions) {
