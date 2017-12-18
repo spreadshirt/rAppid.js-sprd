@@ -4,7 +4,7 @@ define(['js/svg/Svg'], function(Svg) {
 
         defaults: {
             configuration: null,
-            width: "{width()}mm"
+            width: "{widthInMM()}mm"
         },
 
         ctor: function() {
