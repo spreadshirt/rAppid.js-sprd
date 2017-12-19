@@ -39,7 +39,7 @@ define(['xaml!sprd/view/svg/PatternRenderer', 'js/core/Bus'], function(PatternRe
 
             var fonts = configuration.getUsedFonts(),
                 svgRoot = this.getSvgRoot(),
-                extension = this.$stage.$browser.isIOS ? "svg#font" : "woff";
+                extension = "woff";
 
             this.set('loading', true);
             var self = this;
