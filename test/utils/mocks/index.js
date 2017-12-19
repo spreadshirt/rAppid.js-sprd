@@ -6,15 +6,20 @@ const createDependency = (name, base = {}) => {
     throw Error('Module definition needs a name');
   }
   requirejs.define(name, [], () => base);
-}
+};
 
 const createParent = (name, base = {}) => {
   const inherit = (moduleName, module) => module;
   createDependency(name, Object.assign({}, base, { inherit }));
-}
+};
+
+const undefDependency = (name) => {
+  requirejs.undef(name);
+};
 
 module.exports = {
   createModel: ModelMocks.create,
   createDependency,
   createParent,
-}
+  undefDependency,
+};
