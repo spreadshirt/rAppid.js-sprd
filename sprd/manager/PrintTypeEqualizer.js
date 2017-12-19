@@ -116,9 +116,18 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 // if we have a target print type
                 // check if this fits for all
                 if (targetPrintType) {
-                    if (this.checkPrintTypeForConfigurations(configurations, targetPrintType, appearance)) {
-                        possiblePrintType = targetPrintType;
+                    for (i = 0; i < configurations.length; i++) {
+                      config = configurations[i];
+                      if (this.checkPrintTypeForConfigurations([config], targetPrintType, appearance) && targetPrintType !== config.$.printType) {
+                        config.set('originalEqPrintType', config.$.printType, {silent: true});
+                        config.set('printType', targetPrintType, {
+                          printTypeEqualized: true,
+                          printTypeTransformed: true
+                        });
+                      }
                     }
+                    this.$equalizingConfigurations = false;
+                    return;
                 }
 
                 if (!possiblePrintType) {
