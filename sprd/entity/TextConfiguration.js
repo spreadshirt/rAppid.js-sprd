@@ -68,6 +68,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 initOptions: null
             },
 
+            $excludeBindingInitialization: {
+                "rawText": true
+            },
+
             inject: {
                 composer: "composer",
                 bus: Bus,
