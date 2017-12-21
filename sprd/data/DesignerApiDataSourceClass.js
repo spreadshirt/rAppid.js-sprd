@@ -17,7 +17,7 @@ define(["js/data/RestDataSource", "sprd/model/processor/TransformerProcessor", "
             var language = this.$.language;
             if (language && resource.factory.prototype.constructor.name !== "sprd.model.Transformer") {
                 ret = _.defaults(ret, {
-                    language: language
+                    languageCode: language
                 });
             }
 

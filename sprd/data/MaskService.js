@@ -50,13 +50,15 @@ define(["js/core/Component", 'sprd/entity/Size', 'js/core/Base', 'flow', 'sprd/e
                 height = design.get('size.height') * factor;
 
             if (design && imageService && (height || width)) {
-                var options = {};
+                var options = {},
+                    wide = (width == AfterEffect.maxCanvasSize.width);
 
-                if (width) {
+                if (wide) {
                     options.width = width
                 } else {
                     options.height = height;
                 }
+
                 options.version = design.$.version;
                 options.sameOrigin = true;
                 return imageService.designImage(design.$.wtfMbsId || design.$.id, options);

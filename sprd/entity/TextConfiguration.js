@@ -2,6 +2,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
     function(Configuration, flow, Size, _, PrintType, ProductUtil, Bus, UnitUtil, ArrayUtil, ITextConfigurationManager, List, TextMeasureRenderer) {
 
         var copyrightWordList;
+        var SYLLABLE_HYPHEN = 173;
 
         if (!String.prototype.codePointAt) {
             (function() {
@@ -67,6 +68,10 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 initOptions: null
             },
 
+            $excludeBindingInitialization: {
+                "rawText": true
+            },
+
             inject: {
                 composer: "composer",
                 bus: Bus,
@@ -89,15 +94,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             init: function(options, callback) {
 
                 var self = this,
-                    textConfigurationManager = this.$.manager,
-                    initialized = this.$.initialized,
-                    stageReady = self.$stage && self.$stage.rendered;
-
-                if (initialized || !stageReady) {
-                    this.set("initOptions", options);
-                    callback && callback(null);
-                    return;
-                }
+                    textConfigurationManager = this.$.manager;
 
                 options = options || this.get("initOptions");
 
@@ -110,13 +107,15 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     .seq(function(cb) {
                         oldTextArea.width = self.get("textArea.width");
                         oldTextArea.height = self.get("textArea.height");
-                        self._composeText(false, cb);
+                        self._composeText(false, options, cb);
                     })
                     .seq(function() {
                         var newTextArea = self.get("textArea");
-
-                        if (oldTextArea.width && oldTextArea.height && newTextArea) {
-                            self.reposition(newTextArea.$.width, newTextArea.$.height, oldTextArea.width, oldTextArea.height);
+                        
+                        if (oldTextArea.width && newTextArea) {
+                            //We only do X because oldTextArea.height is a value supplied by image-server, not the height calculated by the designer at creation-time
+                            //For width it is reliable because we use lineWidth to read the width from, which is not overwritten by the image-server
+                            self.centerX(newTextArea.$.width, oldTextArea.width);
                         }
                     })
                     .seq(function() {
@@ -148,6 +147,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     });
                     this.set('measurer', measureRenderer);
                     this.$stage.addChild(measureRenderer);
+                    measureRenderer.setInnerRect();
                 }
             },
 
@@ -187,6 +187,24 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                 }
 
                 return /^[\s\n\r]*$/.test(text);
+            },
+
+            isContainingSoftHyphen: function() {
+                var text = this.$.rawText;
+                if (!text) {
+                    return true;
+                }
+
+                return new RegExp("[" + String.fromCharCode(SYLLABLE_HYPHEN) + "].*").test(text);
+            },
+
+            removeSoftHyphen: function() {
+                this.$.textFlow.$.children.each(function(paragraph) {
+                    paragraph.$.children.each(function(span) {
+                        span.set('text', span.$.text.split(String.fromCharCode(SYLLABLE_HYPHEN)).join(''));
+                    });
+                });
+                this._onTextFlowChange();
             },
 
             _postConstruct: function() {
@@ -254,6 +272,7 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
             _composeText: function(skipHeight, options, callback) {
 
                 if (!(this.$stage && this.$stage.rendered)) {
+                    callback && callback();
                     return;
                 }
 
@@ -389,8 +408,8 @@ define(['sprd/entity/Configuration', "flow", 'sprd/entity/Size', 'underscore', '
                     return;
                 }
 
-                var widthDelta = (newHeight - oldHeight) * self.$.scale.y,
-                    newY = Number(self.$.offset.get('y')) - widthDelta / 2;
+                var heightDelta = (newHeight - oldHeight) * self.$.scale.y,
+                    newY = Number(self.$.offset.get('y')) - heightDelta / 2;
                 self.$.offset.set('y', newY);
             },
 

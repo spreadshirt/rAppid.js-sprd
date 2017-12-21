@@ -1,4 +1,4 @@
-define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design", "sprd/entity/Offset", "js/core/Base", "sprd/entity/Scale", "flow", "rAppid"], function(AfterEffect, MaskApplier, Design, Offset, Base, Scale, flow, rappid) {
+define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design", "sprd/entity/Offset", "js/core/Base", "sprd/entity/Scale", "flow", "rAppid"], function (AfterEffect, MaskApplier, Design, Offset, Base, Scale, flow, rappid) {
 
     return AfterEffect.inherit("sprd.model.Mask", {
         defaults: {
@@ -35,14 +35,14 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             return applier;
         },
 
-        initDefaults: function() {
+        initDefaults: function () {
             this.$.offset.set('unit', 'px');
             this.$.maxOffset.set('unit', 'px');
             this.$.scale.set('fixedAspectRatio', this.$.fixedAspectRatio);
             this.$.maxScale.set('fixedAspectRatio', this.$.fixedAspectRatio);
         },
 
-        initBindings: function() {
+        initBindings: function () {
             this.bind('change:destinationWidth', this.initMask, this);
             this.bind('change:destinationHeight', this.initMask, this);
             this.bind('offset', 'change', this.offsetChanged, this);
@@ -50,21 +50,21 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             this.bind('scale', 'change', this.adjustOffsetHandler, this);
         },
 
-        scaleChanged: function() {
+        scaleChanged: function () {
             this.calculateMaxOffset();
             this.trigger("processingParametersChanged");
         },
 
-        offsetChanged: function() {
+        offsetChanged: function () {
             this.calculateMaxScale();
             this.trigger("processingParametersChanged");
         },
 
-        clamp: function(value, min, max) {
+        clamp: function (value, min, max) {
             return Math.max(min, Math.min(max, value));
         },
 
-        initImage: function(options, callback) {
+        initImage: function (options, callback) {
             options = options || {};
 
             if (!options.force && this.get('htmlImage') && this.get('htmlImage').complete) {
@@ -74,19 +74,19 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             var img = new Image(),
                 self = this;
 
-            img.onload = function() {
+            img.onload = function () {
                 self.set('htmlImage', img);
                 callback && callback(null, img);
             };
 
-            img.onerror = function(e) {
+            img.onerror = function (e) {
                 callback && callback(e);
             };
 
             img.src = this.relativePreviewUrl(options.width);
         },
 
-        centerAt: function(x, y, options) {
+        centerAt: function (x, y, options) {
             var newX, newY;
 
             options = options || {};
@@ -113,7 +113,7 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             });
         },
 
-        height: function(scale) {
+        height: function (scale) {
             var img = this.$.htmlImage;
             if (img && img.naturalHeight) {
                 return (scale || this.get('scale.y')) * img.naturalHeight;
@@ -122,7 +122,7 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             return null;
         },
 
-        width: function(scale) {
+        width: function (scale) {
             var img = this.$.htmlImage;
             if (img && img.complete) {
                 return (scale || this.get('scale.x')) * img.naturalWidth;
@@ -131,7 +131,7 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             return null;
         },
 
-        initMask: function(options) {
+        initMask: function (options) {
             var width = this.$.destinationWidth;
             var height = this.$.destinationHeight;
 
@@ -149,11 +149,46 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
                 } else {
                     this.calculateMaxOffset();
                     this.calculateMaxScale();
+                    this.clampOffset();
+                    this.clampScale();
                 }
             }
         },
 
-        calculateMaxOffset: function(x, y) {
+        clampOffset: function () {
+            var offset = this.$.offset,
+                width = this.$.destinationWidth,
+                height = this.$.destinationHeight;
+
+            if (!offset || !width || !height) {
+                return;
+            }
+
+            offset.set({
+                x: this.clamp(offset.$.x, 0, width),
+                y: this.clamp(offset.$.y, 0, height)
+            })
+        },
+
+        clampScale: function () {
+            var scale = this.$.scale,
+                width = this.$.destinationWidth,
+                height = this.$.destinationHeight,
+                x = this.$.offset.$.x || 0,
+                y = this.$.offset.$.y || 0;
+
+
+            if (!scale || !width || !height) {
+                return;
+            }
+
+            scale.set({
+                x: this.clamp(scale.$.x, 0, (width - x)/ this.width(1)),
+                y: this.clamp(scale.$.y, 0, (height - y)/ this.height(1))
+            })
+        },
+
+        calculateMaxOffset: function (x, y) {
             var maxOffset = this.$.maxOffset;
             var width = this.$.destinationWidth;
             var height = this.$.destinationHeight;
@@ -173,7 +208,7 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             }
         },
 
-        calculateMaxScale: function() {
+        calculateMaxScale: function () {
             var maxScale = this.$.maxScale;
             var width = this.$.destinationWidth;
             var height = this.$.destinationHeight;
@@ -193,7 +228,7 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             }
         },
 
-        adjustOffsetHandler: function(e) {
+        adjustOffsetHandler: function (e) {
             var newScaleX = e.$.x;
             var oldScaleX = e.target.$previousAttributes['x'];
 
@@ -202,7 +237,7 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             this.adjustOffsetAfterScaling(oldScaleX, newScaleX, oldScaleY, newScaleY);
         },
 
-        adjustOffsetAfterScaling: function(oldScaleX, newScaleX, oldScaleY, newScaleY) {
+        adjustOffsetAfterScaling: function (oldScaleX, newScaleX, oldScaleY, newScaleY) {
             if (this.$.initialized) {
                 var offset = this.get('offset');
                 if (newScaleX && oldScaleX) {
@@ -218,16 +253,16 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
         },
 
         //one scaleStep increases image one pixel increase for any dimension
-        scaleStepX: function() {
+        scaleStepX: function () {
             return 1 / this.width(1);
         }.onChange('htmlImage'),
 
-        scaleStepY: function() {
+        scaleStepY: function () {
             return 1 / this.height(1);
         }.onChange('htmlImage'),
 
 
-        apply: function(ctx, source, options, callback) {
+        apply: function (ctx, source, options, callback) {
             if (!callback) {
                 return;
             }
@@ -246,28 +281,28 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
 
 
             flow()
-                .seq('maskimg', function(cb) {
+                .seq('maskimg', function (cb) {
                     self.initImage(null, cb);
                 })
-                .seq(function() {
+                .seq(function () {
                     self.combine(ctx, this.vars.maskimg, img, ctx.canvas.width, ctx.canvas.height);
                 })
                 .exec(callback);
 
         },
 
-        combine: function(ctx, mask, img, width, height) {
+        combine: function (ctx, mask, img, width, height) {
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             var oldCompositionOperation = ctx.globalCompositeOperation;
 
-            ctx.drawImage(mask, this.$.offset.$.x, this.$.offset.$.y , this.width() , this.height());
+            ctx.drawImage(mask, this.$.offset.$.x, this.$.offset.$.y, this.width(), this.height());
             ctx.globalCompositeOperation = 'source-in';
             ctx.drawImage(img, 0, 0, width, height);
 
             ctx.globalCompositeOperation = oldCompositionOperation;
         },
 
-        compose: function() {
+        compose: function () {
             var offset = this.$.offset;
             var scale = this.$.scale;
             return {
@@ -284,7 +319,7 @@ define(["sprd/model/AfterEffect", 'sprd/model/MaskApplier', "sprd/model/Design",
             };
         },
 
-        id: function() {
+        id: function () {
             var baseId = this.callBase();
             return [baseId, this.$.offset.$.x, this.$.offset.$.y, this.$.scale.$.x, this.$.scale.$.y].join('#');
         }

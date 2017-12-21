@@ -4,7 +4,7 @@ define(['js/svg/Svg'], function(Svg) {
 
         defaults: {
             configuration: null,
-            width: "{width()}mm"
+            width: "{widthInMM()}mm"
         },
 
         ctor: function() {
@@ -26,9 +26,9 @@ define(['js/svg/Svg'], function(Svg) {
             }
         },
 
-        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text', 'viewBox'],
+        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text'],
 
-        width: function() {
+        widthInMM: function() {
             var config = this.$.configuration;
             return config ? Math.round(config.widthInMM()) : 0;
         }.on('configuration.widthInMM()'),
@@ -46,7 +46,10 @@ define(['js/svg/Svg'], function(Svg) {
             elem.setAttribute("xmlns", svgNamespace);
             elem.setAttribute("xmlns:xlink", xlinkNS);
 
-            this.setViewBox(textBbox.x, textBbox.y, textBbox.width, textBbox.height);
+            var vbWidth = Math.max(textBbox.width + (textBbox.x || 0), textBbox.width),
+                vbHeight = Math.max(textBbox.height + (textBbox.y || 0), textBbox.height);
+
+            this.setViewBox(0, 0, vbWidth, vbHeight);
             return elem;
         },
 

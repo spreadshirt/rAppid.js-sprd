@@ -119,7 +119,6 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
                             "tooDark": tooDark
                         };
 
-                        callback && callback(null, tooDark);
                         this.end();
                     }
                 })
@@ -144,7 +143,6 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
                                     };
 
 
-                                    callback && callback(null, tooDark);
                                     this.end();
                                     break;
                                 }

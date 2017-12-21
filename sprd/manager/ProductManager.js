@@ -1,6 +1,6 @@
 define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/ProductUtil", "sprd/util/ArrayUtil", 'text/entity/TextFlow', 'sprd/type/Style', 'sprd/entity/DesignConfiguration', 'sprd/entity/TextConfiguration', 'sprd/entity/SpecialTextConfiguration', 'text/operation/ApplyStyleToElementOperation'
-        , 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sprd/util/PrintValidator", "sprd/type/Vector", "js/type/Color", "sprd/config/Settings"],
-    function(IProductManager, _, flow, ProductUtil, ArrayUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List, PrintValidator, Vector, Color, Settings) {
+        , 'text/entity/TextRange', 'sprd/util/UnitUtil', 'js/core/Bus', 'sprd/manager/PrintTypeEqualizer', "sprd/entity/BendingTextConfiguration", "sprd/entity/Scale", "js/core/List", "sprd/util/PrintValidator", "sprd/type/Vector", "js/type/Color", "sprd/config/Settings", 'sprd/util/MathUtil'],
+    function (IProductManager, _, flow, ProductUtil, ArrayUtil, TextFlow, Style, DesignConfiguration, TextConfiguration, SpecialTextConfiguration, ApplyStyleToElementOperation, TextRange, UnitUtil, Bus, PrintTypeEqualizer, BendingTextConfiguration, Scale, List, PrintValidator, Vector, Color, Settings, MathUtil) {
 
 
         var PREVENT_VALIDATION_OPTIONS = {
@@ -1064,15 +1064,6 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 this.$.bus.trigger('Application.productChanged', null);
             },
 
-            clamp: function(value, min, max) {
-
-                if (min > max) {
-                    throw new Error('Min is bigger than max.');
-                }
-
-                return Math.min(Math.max(value, min), max);
-            },
-
             centerAtPoint: function(point, rect) {
                 return this.centerAt(point.x, point.y, rect);
             },
@@ -1217,7 +1208,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                 }
 
                 //TODO: (fix) bending -> scale gets NaN
-                var scale = this.clamp(desiredScale, minimumDesignScale || 0, maxPrintTypeScale);
+                var scale = MathUtil.clamp(desiredScale, minimumDesignScale || 0, maxPrintTypeScale);
                 boundingBox = configuration._getBoundingBox(offset, null, null, null, scale);
                 var innerBoundingBox = configuration._getInnerBoundingBox(offset, null, null, null, scale);
                 var rotatedBoundingBox = configuration._getRotatedBoundingBox(offset, null, null, null, scale);

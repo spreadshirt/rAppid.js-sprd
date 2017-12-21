@@ -68,6 +68,16 @@ define(['js/core/Base', 'sprd/type/Vector', "sprd/extensions/Number"], function(
             return this.project(line.x, line.y).subtract(line.vector);
         },
 
+        distanceTo: function (otherLine) {
+            var differenceVector = this.difference(otherLine);
+            return differenceVector.distance();
+        },
+
+        distanceToVector: function (vector) {
+            var projectedVector = this.project(vector.getX(), vector.getY());
+            return projectedVector.subtract(vector);
+        },
+
         isParallelTo: function(line) {
             return this.angle.equals(line.angle);
         },

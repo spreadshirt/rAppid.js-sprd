@@ -39,11 +39,20 @@ define(['xaml!sprd/view/svg/PatternRenderer', 'js/core/Bus'], function(PatternRe
 
             var fonts = configuration.getUsedFonts(),
                 svgRoot = this.getSvgRoot(),
-                extension = this.$stage.$browser.isIOS ? "svg#font" : "woff";
+                extension = "woff";
 
+            this.set('loading', true);
+            var self = this;
+            var loadedFonts = 0;
             for (var i = 0; i < fonts.length; i++) {
                 var font = fonts[i];
-                svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font, extension));
+
+                svgRoot.fontManager.loadExternalFont(font.getUniqueFontName(), this.$.imageService.fontUrl(font, extension), function () {
+                    loadedFonts++;
+                    if (loadedFonts === fonts.length) {
+                        self.set('loading', false);
+                    }
+                });
             }
         },
 

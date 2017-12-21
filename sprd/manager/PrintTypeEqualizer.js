@@ -1,6 +1,6 @@
 define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElement", "sprd/model/PrintType"], function(Bindable, ProductUtil, ConcreteElement, PrintType) {
 
-    var excludedPrintTypes = [PrintType.SpecialFlex, PrintType.Flock];
+    var excludedPrintTypes = [PrintType.Mapping.SpecialFlex, PrintType.Mapping.Flock];
     var filters = [function(configuration) {
         return !ProductUtil.isSpecial(configuration)
     }, function(configuration) {
@@ -98,7 +98,7 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
             },
 
             equalizeConfigurations: function(product, configurations, targetPrintType) {
-                if (!configurations || !configurations.length || configurations.length < 2 || !product || this.$equalizingConfigurations) {
+                if (!configurations || !configurations.length || (configurations.length < 2 && !targetPrintType) || !product || this.$equalizingConfigurations) {
                     return;
                 }
 
@@ -116,9 +116,18 @@ define(["js/core/Bindable", "sprd/util/ProductUtil", "sprd/entity/ConcreteElemen
                 // if we have a target print type
                 // check if this fits for all
                 if (targetPrintType) {
-                    if (this.checkPrintTypeForConfigurations(configurations, targetPrintType, appearance)) {
-                        possiblePrintType = targetPrintType;
+                    for (i = 0; i < configurations.length; i++) {
+                      config = configurations[i];
+                      if (this.checkPrintTypeForConfigurations([config], targetPrintType, appearance) && targetPrintType !== config.$.printType) {
+                        config.set('originalEqPrintType', config.$.printType, {silent: true});
+                        config.set('printType', targetPrintType, {
+                          printTypeEqualized: true,
+                          printTypeTransformed: true
+                        });
+                      }
                     }
+                    this.$equalizingConfigurations = false;
+                    return;
                 }
 
                 if (!possiblePrintType) {

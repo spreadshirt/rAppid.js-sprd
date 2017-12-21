@@ -358,6 +358,7 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
                 var self = this;
                 self.removeExampleConfiguration();
                 self.removeDuplicateConfigurations();
+                self.eachConfig(self.cleanHyphen);
                 self.eachConfig(self.cleanText);
                 self.eachConfig(self.removeTooSmallConfigurations);
             },
@@ -371,6 +372,18 @@ define(['sprd/model/ProductBase', 'js/core/List', 'sprd/data/ConfigurationTypeRe
 
                 if (configuration.isOnlyWhiteSpace() || !configuration.textChangedSinceCreation()) {
                     self.$.configurations.remove(configuration);
+                }
+            },
+
+            cleanHyphen: function (configuration) {
+                var self = this;
+                var isTextConfig = configuration.isContainingSoftHyphen && configuration.textChangedSinceCreation;
+                if (!isTextConfig) {
+                    return;
+                }
+
+                if (configuration.isContainingSoftHyphen() || !configuration.textChangedSinceCreation()) {
+                    configuration.removeSoftHyphen();
                 }
             },
 
