@@ -2,13 +2,13 @@
                                                xmlns:sprdSvg="sprd.view.svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                                       class="measurer">
 
-    <path cid="path" class="path" id="textPath" fill="none"
+    <path cid="path" class="path" id="{maskId}measureTextPath" fill="none"
           _transform="translate({configuration.textPathOffsetX}, {configuration.textPathOffsetY})"
           d="{configuration.textPath}"/>
     <text cid="text" class="bending-text" font-family="{configuration.font.getUniqueFontName()}"
           font-size="{configuration.fontSize}" id="text" text-anchor="middle"
           dy="{configuration.dy}">
-        <textPath xlink:href="#textPath" cid="textPath" startOffset="50%">
+        <textPath xlink:href="#{maskId}measureTextPath" cid="textPath" startOffset="50%">
             {configuration.text}
         </textPath>
     </text>

@@ -338,7 +338,8 @@ define(["sprd/entity/DesignConfigurationBase", "sprd/entity/Size", "sprd/entity/
 
                 if (this.$stageRendered || (this.$stage && this.$stage.rendered)) {
                     var measureRenderer = this.$stage.createComponent(BendingTextConfigurationMeasureRenderer, {
-                        configuration: this
+                        configuration: this,
+                        maskId: this.$cid,
                     });
                     this.set('measurer', measureRenderer);
                     this.$stage.addChild(measureRenderer);
