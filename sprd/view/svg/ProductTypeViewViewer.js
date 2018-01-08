@@ -64,7 +64,8 @@ define(['js/svg/SvgElement', "xaml!sprd/view/svg/PrintAreaViewer", "xaml!sprd/vi
                 var height = this.$._height * (this.$.scaleY || 1);
                 return this.$.imageService.productTypeImage(this.$._productType.$.id, this.$._view.$.id, this.$._appearance.$.id, {
                     width: Math.max(width, height),
-                    height: Math.max(width, height)
+                    height: Math.max(width, height),
+                    version: this.$._productType.$.version,
                 });
             }
 
