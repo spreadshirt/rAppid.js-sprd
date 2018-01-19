@@ -28,7 +28,7 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
         _isTooDark: function(product, configuration, callback) {
             // currently we can not check dod for special text, because the image comes
             // from a cross origin and getImageData() is not possible.
-            if (!product  || !configuration || configuration.type == "specialText") {
+            if (!product  || !configuration || configuration.type === "specialText") {
                 callback && callback(null, false);
                 return;
             }
@@ -57,8 +57,7 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
 
             if (printColors && printColors.length) {
                 // check for 1 layer designs and text
-                if (printColors.length == 1) {
-                    console.log("1 layer, text check");
+                if (printColors.length === 1) {
                     tooDark = this._isPrintColorTooDark(printColors.at(0), appearanceColor);
                     callback && callback(null, tooDark);
                     return;
@@ -77,7 +76,6 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
 
                 // if design has only one printColor
                 if (layersWithSameColor.length >= printColors.length) {
-                    console.log("same color check");
                     tooDark = this._isPrintColorTooDark(printColors.at(0), appearanceColor);
 
                     appearanceConfigurationCache[key] = {
@@ -106,7 +104,6 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
                     // else (the design is a pixel design or has overlapping layers) do the pixel check
                     var layerInformation = this.vars.layerInformation;
                     if (printColors.length && layerInformation && !layerInformation.overlappingLayers.length) {
-                        console.log("separated layer check");
                         for (var i = 0; i < printColors.length; i++) {
                             tooDark = self._isPrintColorTooDark(printColors.at(i), appearanceColor);
 
@@ -129,7 +126,6 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
                         var separatedLayers = layerInformation && layerInformation.separatedLayers;
 
                         if (overlappingLayers.length && separatedLayers.length) {
-                            console.log("remove separated layer");
                             //if the design has a separated layer, then ignore the layer for the pixel check
                             for (var i = 0; i < separatedLayers.length; i++) {
                                 var layerIndex = separatedLayers[i];
@@ -165,7 +161,6 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
                     });
                 })
                 .seq(function() {
-                    console.log("pixelcheck");
                     var black = new Color.RGB(0, 0, 0);
                     //if appearance close to black than use a stricter threshold
                     var useStrictThreshold = appearanceColor.distanceTo(black) < Settings.APPEARANCE_THRESHOLD;
@@ -359,7 +354,7 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
 
                 for (var j = 0; j < layerPercentages.length; j++) {
                     hasBigOverlap = hasBigOverlap || layerPercentages[j] > Settings.OVERLAPPING_LAYER_PERCENTAGE;
-                    isSeparatedLayer = isSeparatedLayer && layerPercentages[j] == 0;
+                    isSeparatedLayer = isSeparatedLayer && layerPercentages[j] === 0;
                 }
 
                 if (hasBigOverlap) {
@@ -376,6 +371,8 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
         _analyzePixels: function(img, appearanceColor, threshValue) {
             var size = 100,
                 space = 10,
+                samplingStepX = 4,
+                samplingStepY = 6,
                 halfSpace = space / 2;
 
             var alphaCanvas = document.createElement("canvas"),
@@ -424,15 +421,15 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
             var colorAdjusting = 10,
                 totalPixel = 0,
                 //IE 11 does not support Array.fill()
-                borderDistance = new Array(101),
+                borderDistance = new Array(size + 1),
                 borderDistanceTotal = 0,
                 borderPixelAmount = 0,
-                innerDistance = new Array(101),
+                innerDistance = new Array(size + 1),
                 innerDistanceTotal = 0,
                 innerPixelAmount = 0;
 
-            for (var y = 0; y < size; y++) {
-                for (var x = 0; x < size; x++) {
+            for (var y = 0; y < Math.round(size / samplingStepY); y+= samplingStepY) {
+                for (var x = 0; x < Math.round(size / samplingStepX); x+= samplingStepX) {
                     var imgPixel = imgContext.getImageData(x, y, 1, 1).data,
                         borderPixel = borderContext.getImageData(x + halfSpace, y + halfSpace, 1, 1).data;
 
@@ -495,7 +492,5 @@ define(["sprd/config/Settings", 'js/type/Color'], function(Settings, Color) {
 
             return colorDistanceCache[cacheKey];
         }
-
-
     }
 });
