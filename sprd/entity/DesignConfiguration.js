@@ -110,12 +110,6 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 return newPrintColors;
             },
 
-            getInvertedDesignColors: function () {
-                return this.getDesignColors(function (color) {
-                    return color.invert();
-                })
-            },
-
             _commitAfterEffect: function (afterEffect) {
                 var self = this;
 
