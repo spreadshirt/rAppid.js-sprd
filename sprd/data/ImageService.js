@@ -11,29 +11,11 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             endPoint: '//image.spreadshirt.net/image-server/v1',
             gateway: '/image-server/v1',
 
-            detectWebP: true,
-
-            supportsWebP: false,
-
             designCache: {}
         },
 
         ctor: function() {
             this.callBase();
-
-            if (this.$.detectWebP) {
-                var self = this;
-
-                var image = new Image();
-                image.onerror = function() {
-                    self.set("supportsWebP", false);
-                };
-                image.onload = function() {
-                    self.set("supportsWebP", image.width == 1);
-                };
-
-                image.src = 'data:image/webp;base64,UklGRiwAAABXRUJQVlA4ICAAAAAUAgCdASoBAAEAL/3+/3+CAB/AAAFzrNsAAP5QAAAAAA==';
-            }
         },
 
         virtualProductImage: function(product, vpString, viewId, options) {
@@ -161,7 +143,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
         fontUrl: function (font, extension) {
             extension = extension || "woff" || "svg#font";
-            return ImageService.buildUrl([this.$.gateway,'fontFamilies', font.getFontFamily().$.id, 'fonts', font.$.id + "." + extension]);
+            return ImageService.buildUrl([this.$.gateway,'fontFamilies', font.getFontFamily().$.id, 'fonts', font.$.id], null, extension);
         },
 
         buildUrl: function (url, parameter, cacheId) {
@@ -184,12 +166,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             url = url || [];
             url.unshift(imgServer);
 
-            if (this.$.supportsWebP) {
-                parameter = parameter || {};
-                parameter.mediaType = parameter.mediaType || "webp";
-            }
-
-            return ImageService.buildUrl(url, parameter);
+            return ImageService.buildUrl(url, parameter, 'png');
         }
     });
 
@@ -223,9 +200,9 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         return ret;
     };
 
-    ImageService.buildUrl = function (url, parameter) {
+    ImageService.buildUrl = function (url, parameter, extension) {
         var queryString = ImageService.buildQueryString(parameter);
-        return url.join('/') + (queryString ? '?' + queryString : '');
+        return url.join('/') + (queryString ? ',' + queryString : '') + (extension ? '.' + extension : '');
     };
 
     ImageService.buildQueryString = function (parameter) {
@@ -238,7 +215,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         }
 
         if (ret.length) {
-            return ret.join('&');
+            return ret.join(',');
         }
     };
 

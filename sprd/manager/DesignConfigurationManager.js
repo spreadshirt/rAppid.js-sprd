@@ -130,25 +130,8 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 }
             }
 
-            var configurationColorChanged = false;
             if (!colorsSet && designColors && configuration.getDesignColors) {
                 printColors = configuration.getDesignColors();
-
-
-                if (designColors.$items.length === 1 && options && options.ensureDesignColorContrast && configuration.$context && configuration.$context.$contextModel) {
-                    var product = configuration.$context.$contextModel,
-                        printArea = configuration.$.printArea || product.$.view.getDefaultPrintArea(),
-                        appearanceColorIndex = printArea && printArea.$.appearanceColorIndex || 0,
-                        appearanceColors = product.get("appearance.colors"),
-                        appearanceColor = appearanceColors.at(appearanceColorIndex).color();
-
-                    var firstLayer = designColors.at(0);
-                    var designColor = (firstLayer.$["default"] || firstLayer.$["origin"]);
-                    if (appearanceColor && designColor && designColor.distanceTo(appearanceColor) < Settings.COLOR_CONVERSION_THRESHOLD) {
-                        printColors = configuration.getInvertedDesignColors();
-                        configurationColorChanged = true;
-                    }
-                }
             }
 
             if (printColors && design && design.isVectorDesign() && options.switchImageServerGreyToWhite) {
@@ -162,10 +145,6 @@ define(["sprd/manager/IDesignConfigurationManager", 'sprd/util/UnitUtil', "sprd/
                 force: true,
                 preventValidation: true
             });
-
-            if(configurationColorChanged) {
-                this.trigger("on:changedConfigurationColor", [configuration]);
-            }
         },
 
         extractSize: function (configuration, options) {

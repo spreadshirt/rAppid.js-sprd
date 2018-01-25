@@ -4,12 +4,16 @@ define(['js/svg/Svg'], function(Svg) {
 
         defaults: {
             configuration: null,
+            maskId: null,
             width: "{widthInMM()}mm"
         },
 
         ctor: function() {
             this.callBase();
             var config = this.$.configuration;
+            if (config) {
+              this.set("maskId", config.$cid);
+            }
             config.uploadRenderer = this;
         },
 
@@ -26,7 +30,7 @@ define(['js/svg/Svg'], function(Svg) {
             }
         },
 
-        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text'],
+        $classAttributes: ['textPath', 'path', 'configuration', 'x', 'y', 'text', 'maskId'],
 
         widthInMM: function() {
             var config = this.$.configuration;

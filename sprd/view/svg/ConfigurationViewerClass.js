@@ -1285,7 +1285,6 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
                     minScale = configuration.getMinScale();
 
                 var scale = MathUtil.clamp(newScale.x, minScale, maxScale);
-                console.log(scale);
                 return {
                     x: scale,
                     y: scale
@@ -1351,7 +1350,7 @@ define(['js/svg/SvgElement', 'sprd/entity/TextConfiguration', 'sprd/entity/Desig
 
                 var validScale = !scaleTooBig && !scaleTooSmall;
 
-                if (validScale) {
+                if (!validScale) {
                     this.$.bus.trigger("ConfigurationViewer.InvalidScale", this);
                 }
 

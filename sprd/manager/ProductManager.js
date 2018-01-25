@@ -400,7 +400,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     configuration.set("maxHeight", 1);
 
-                    params.addToProduct && self.validateAndAdd(product, configuration, printTypes);
+                    params.addToProduct && self.validateAndAdd(product, configuration, printTypes, null, { keepPrintType: params.keepPrintType });
 
                     configuration.set("maxHeight", null);
 
@@ -481,7 +481,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
 
                     printTypes = configuration.getPossiblePrintTypes(product.$.appearance);
                     // determinate position
-                    params.addToProduct && self.validateAndAdd(product, configuration, printTypes, null, {respectTransform: true});
+                    params.addToProduct && self.validateAndAdd(product, configuration, printTypes, null, {respectTransform: true, keepPrintType: true});
 
                     configuration.set("maxHeight", null);
                 };
@@ -647,7 +647,9 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     .seq("printTypes", function() {
                         var fontFamily = this.vars.fontFamily;
                         var possiblePrintTypes = ProductUtil.getPossiblePrintTypesForTextOnPrintArea(fontFamily, printArea, appearance);
-                        printType = possiblePrintTypes[0];
+                        if (!printType || possiblePrintTypes.indexOf(printType) === -1) {
+                          printType = possiblePrintTypes[0];
+                        }
                         return possiblePrintTypes;
                     })
                     .seq("printTypeColor", function() {
@@ -961,18 +963,30 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     return null;
                 }
 
+                var validatedMove;
+                var allValidationsPassed;
+                if (options && options.keepPrintType && printTypes.indexOf(configuration.$.printType) > -1) {
+                  validatedMove = this.validateConfigurationMove(configuration.$.printType, printArea, configuration, options);
+                  allValidationsPassed = _.every(validatedMove.validations, function(validation) {
+                    return !validation;
+                  });
+
+                  if (allValidationsPassed) {
+                    return validatedMove;
+                  }
+                }
 
                 var self = this;
 
                 for (var i = 0; i < printTypes.length; i++) {
                     var printType = printTypes[i];
-                    var validatedMove = self.validateConfigurationMove(printType, printArea, configuration, options);
+                    validatedMove = self.validateConfigurationMove(printType, printArea, configuration, options);
 
                     if (!validatedMove) {
                         continue;
                     }
 
-                    var allValidationsPassed = _.every(validatedMove.validations, function(validation) {
+                    allValidationsPassed = _.every(validatedMove.validations, function(validation) {
                         return !validation;
                     });
 
@@ -1350,7 +1364,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     isTemplate: false,
                     addToProduct: true,
                     removeConfiguration: true,
-                    text: (specialTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, "")
+                    text: (specialTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, ""),
+                    keepPrintType: false,
                 });
                 var self = this;
                 this.addText(product, params, function(err, config) {
@@ -1408,7 +1423,8 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     isTemplate: true,
                     addToProduct: true,
                     removeConfiguration: true,
-                    text: (bendingTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, "")
+                    text: (bendingTextConfiguration.$.text || "").replace(/^\n+|\n+$/gi, ""),
+                    keepPrintType: true,
                 });
                 var self = this;
                 this.addText(product, params, function(err, config) {
@@ -1446,6 +1462,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     if (configuration instanceof TextConfiguration) {
                         this.convertTextToBendingText(product, configuration, {
                             printColor: configuration.$.printColors.at(0),
+                            printType: configuration.$.printType,
                             font: font,
                             fontFamily: fontFamily,
                             angle: angle,
@@ -1456,6 +1473,7 @@ define(["sprd/manager/IProductManager", "underscore", "flow", "sprd/util/Product
                     } else if (configuration instanceof BendingTextConfiguration) {
                         this.convertBendingTextToText(product, configuration, {
                             printColor: configuration.$.printColors.at(0),
+                            printType: configuration.$.printType,
                             font: font,
                             fontFamily: fontFamily
                         });
