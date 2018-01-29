@@ -69,7 +69,7 @@ define(['xaml!sprd/view/svg/PatternRenderer'], function(PatternRenderer) {
                 options.version = design.$.version;
                 options.layerIndex = layerIndex;
                 options.watermark = false;
-                options.sameOrigin = true;
+                options.sameOrigin = false;
 
                 if (!design.isVectorDesign()) {
                     return this.$.configuration.$.processedImage || design.$.localImage || this.$.imageService.designImageFromCache(design.$.wtfMbsId, options);
