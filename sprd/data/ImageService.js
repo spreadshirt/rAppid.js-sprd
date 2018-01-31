@@ -8,7 +8,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
 
         defaults: {
             subDomainCount: 10,
-            endPoint: '//image.spreadshirt.net/image-server/v1',
+            endPoint: '//image.spreadshirtmedia.net/image-server/v1',
             gateway: '/image-server/v1',
 
             designCache: {}
@@ -24,7 +24,7 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
                 vpString,
                 'views',
                 viewId
-            ], ImageService.getImageSizeParameter(options), parseInt(product ? product.$.id : 0));
+            ], ImageService.getImageSizeParameter(options));
         },
 
         productImage: function (productId, viewId, appearanceId, type, options) {
@@ -50,19 +50,16 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
                 urlParts.push("views", viewId);
             }
 
-            return this.buildUrl(urlParts,
-                params,
-            parseInt(productId || 0) + parseInt(viewId || 0) + parseInt(appearanceId || 0));
+            return this.buildUrl(urlParts, params);
         },
 
         productTypeImage: function (productTypeId, viewId, appearanceId, options) {
             var parameter = _.defaults(ImageService.getImageSizeParameter(options), options);
-            return this.buildUrl(['productTypes', productTypeId, 'views', viewId, 'appearances', appearanceId],
-                parameter, parseInt(productTypeId || 0) + parseInt(viewId || 0) + parseInt(appearanceId || 0));
+            return this.buildUrl(['productTypes', productTypeId, 'views', viewId, 'appearances', appearanceId], parameter);
         },
 
         productTypeSizeImage: function (productTypeId, options) {
-            return this.buildUrl(["productTypes", productTypeId, "variants", "size"], ImageService.getImageSizeParameter(options), productTypeId);
+            return this.buildUrl(["productTypes", productTypeId, "variants", "size"], ImageService.getImageSizeParameter(options));
         },
 
         designImage: function (designId, options) {
@@ -89,14 +86,13 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
                 parameter.sameOrigin = options.sameOrigin;
             }
 
-            var cacheId = options.cacheId || (designId || "").replace(/^.*?(\d+).*/, "$1");
             var url = ['designs', designId];
 
             if (startParameter.subMode == 'edit' && (options.watermark === undefined || options.watermark)) {
                 url.unshift('mp');
             }
 
-            return this.buildUrl(url, parameter, cacheId);
+            return this.buildUrl(url, parameter);
         },
 
         designImageFromCache: function(designId, options) {
@@ -130,11 +126,11 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
         },
 
         appearanceImage: function (appearanceId, options) {
-            return this.buildUrl(['appearances', appearanceId], ImageService.getImageSizeParameter(options), appearanceId);
+            return this.buildUrl(['appearances', appearanceId], ImageService.getImageSizeParameter(options));
         },
 
         printColorImage: function (printColorId, options) {
-            return this.buildUrl(['printColors', printColorId], ImageService.getImageSizeParameter(options), printColorId);
+            return this.buildUrl(['printColors', printColorId], ImageService.getImageSizeParameter(options));
         },
 
         emptyImage: function () {
@@ -146,21 +142,8 @@ define(['js/core/Component', 'underscore'], function (Component, _) {
             return ImageService.buildUrl([this.$.gateway,'fontFamilies', font.getFontFamily().$.id, 'fonts', font.$.id], null, extension);
         },
 
-        buildUrl: function (url, parameter, cacheId) {
-            var imgServer,
-                subDomainCount = this.$.subDomainCount;
-
-            if (!isNaN(parseInt(cacheId)) && !parameter.sameOrigin) {
-                // use the full qualified endpoint
-                imgServer = this.$.endPoint;
-
-                if (subDomainCount) {
-                    imgServer = imgServer.replace(/(\/\/image)\./, '$1' + (cacheId % subDomainCount) + ".");
-                }
-            } else {
-                imgServer = this.$.gateway;
-            }
-
+        buildUrl: function (url, parameter) {
+            var imgServer = this.$.endPoint;
             delete parameter.sameOrigin;
 
             url = url || [];
