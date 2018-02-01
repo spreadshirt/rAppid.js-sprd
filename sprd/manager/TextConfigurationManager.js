@@ -47,15 +47,9 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 tspan = tspans[i];
                 successorTspan = tspans[i + 1];
 
-                var lineHeight = 1.2 * tspan.fontSize;
-
-                if(tspan.fontSize === "0") {
-                    tspan.fontSize = "0";
-                    lineHeight = 0.1;
-                }
-
                 var y = Number(tspan.y),
-                    nextY = Number(successorTspan.y);
+                    nextY = Number(successorTspan.y),
+                    lineHeight = 1.2 * tspan.fontSize;
 
                 if (y !== y  || nextY !== nextY) {
                     retArray.push(successorTspan);
@@ -63,14 +57,10 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                 }
 
                 var yDiff = nextY - y;
-                var whiteSpaceParagraphsAmount = Math.round(yDiff / lineHeight) - 1;
-
-                if(tspan.fontSize === "0") {
-                    whiteSpaceParagraphsAmount = 0;
-                }
-
-                var startY = y + lineHeight,
+                var whiteSpaceParagraphsAmount = lineHeight > 0 ? Math.round(yDiff / lineHeight) - 1 : 0,
+                    startY = y + lineHeight,
                     whiteSpaceTspans = this.generateWhiteSpaceTspans(whiteSpaceParagraphsAmount, startY, lineHeight);
+
 
                 retArray = retArray.concat(whiteSpaceTspans);
                 retArray.push(successorTspan);
