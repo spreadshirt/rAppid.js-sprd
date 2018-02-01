@@ -14,6 +14,7 @@
     <element name="ImageUploadService" type="ns:ImageUploadService"/>
     <element name="ImageUploadServiceV2" type="ns:ImageUploadServiceV2"/>
     <element name="LabelService" type="ns:LabelService"/>
+    <element name="MaskService" type="ns:MaskService"/>
     <element name="SprdApiDataSource" type="ns:SprdApiDataSource"/>
     <element name="SprdApiDataSourceClass" type="ns:SprdApiDataSourceClass"/>
     <element name="SprdDataSource" type="ns:SprdDataSource"/>
@@ -92,10 +93,8 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="subDomainCount" default="10"/>
-                <attribute name="endPoint" default="//image.spreadshirt.net/image-server/v1"/>
+                <attribute name="endPoint" default="//image.spreadshirtmedia.net/image-server/v1"/>
                 <attribute name="gateway" default="/image-server/v1"/>
-                <attribute name="detectWebP" default="true"/>
-                <attribute name="supportsWebP"/>
                 <attribute name="designCache"/>
             </extension>
         </complexContent>
@@ -142,6 +141,18 @@
                     </documentation>
                     </annotation>
                 </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="MaskService">
+        <complexContent>
+            <extension base="ns2:Component">
+                <annotation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.data.MaskService"></documentation>
+                </annotation>
+                <sequence>
+                    <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
             </extension>
         </complexContent>
     </complexType>
