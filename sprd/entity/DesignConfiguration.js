@@ -116,7 +116,7 @@ define(['sprd/entity/DesignConfigurationBase', 'sprd/entity/Size', 'sprd/util/Un
                 if (!afterEffect) {
                     this.set('processedImage', null);
                 } else {
-                    this.$.maskService.applyAfterEffect(self.$.design, afterEffect, null, function (err, ctx) {
+                    this.$.maskService.applyAfterEffect(self.$.design, afterEffect, {crossOrigin: true}, function (err, ctx) {
                         if (!err) {
                             self.setProcessedImage(ctx);
                         } else {
