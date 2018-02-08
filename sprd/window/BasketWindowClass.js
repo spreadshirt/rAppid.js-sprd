@@ -1,12 +1,13 @@
 define(["js/core/Window", "sprd/manager/TrackingManager", "sprd/manager/ApiBasketManager",
-        "js/core/History", "underscore", 'sprd/manager/FeatureManager', "js/core/I18n", "js/core/Bus"],
-    function(Window, TrackingManager, ApiBasketManager, History, _, FeatureManager, I18n, Bus) {
+        "js/core/History", "underscore", 'sprd/manager/FeatureManager', "js/core/I18n", "js/core/Bus", "designer/service/FaqUrlService"],
+    function(Window, TrackingManager, ApiBasketManager, History, _, FeatureManager, I18n, Bus, FaqUrlService) {
 
     return Window.inherit("sprd.window.BasketWindowClass", {
         inject: {
             basketManager: ApiBasketManager,
             tracking: TrackingManager,
             history: History,
+            faqUrlService: FaqUrlService,
             featureManager: FeatureManager,
             i18n: I18n,
             context: "context",
