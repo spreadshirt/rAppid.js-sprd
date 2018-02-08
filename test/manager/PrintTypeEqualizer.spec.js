@@ -1,28 +1,19 @@
 const Mocks = require('../utils/mocks');
 
+Mocks.createParent('js/core/Bindable');
+const MockProductUtil = {};
+Mocks.createDependency('sprd/util/ProductUtil', MockProductUtil);
+Mocks.createDependency('sprd/entity/ConcreteElement');
+Mocks.createDependency('sprd/model/PrintType', { 
+  Mapping: {
+    SpecialFlex: 'mock.printType.specialFlex',
+    Flock: 'mock.printType.Flock',
+  }
+});
+
 describe('sprd.manager.PrintTypeEqualizer', () => {
 
   let Module;
-  const MockProductUtil = {};
-
-  before(() => {
-    Mocks.createParent('js/core/Bindable');
-    Mocks.createDependency('sprd/util/ProductUtil', MockProductUtil);
-    Mocks.createDependency('sprd/entity/ConcreteElement');
-    Mocks.createDependency('sprd/model/PrintType', {
-      Mapping: {
-        SpecialFlex: 'mock.printType.specialFlex',
-        Flock: 'mock.printType.Flock',
-      }
-    });
-  });
-
-  after(() => {
-    Mocks.undefDependency('sprd/model/PrintType');
-    Mocks.undefDependency('sprd/entity/ConcreteElement');
-    Mocks.undefDependency('sprd/util/ProductUtil');
-    Mocks.undefDependency('js/core/Bindable');
-  });
 
   beforeEach((done) => {
     requirejs(['sprd/manager/PrintTypeEqualizer'], (_Module) => {
@@ -58,25 +49,28 @@ describe('sprd.manager.PrintTypeEqualizer', () => {
 
   describe('equalize configs on product', () => {
     let sandbox;
-    let config;
+    let config1;
+    let config2;
     let product;
     let excludedConfiguration;
 
-    const PRT1 = Mocks.createModel({ id: '1' }); // DT
-    const PRT14 = Mocks.createModel({ id: '14' }); // DD
-    const PRT17 = Mocks.createModel({ id: '17' }); // FLEX
+    const PT14 = Mocks.createModel({ id: '14' });
+    const PT17 = Mocks.createModel({ id: '17' });
     const APP2 = Mocks.createModel({ id: '2' });
     const PT812 = Mocks.createModel({ printAreas: { $items: [] } });
 
     beforeEach(() => {
       sandbox = sinon.createSandbox();
 
-      config = Mocks.createModel({ printType: PRT17 });
-      config.getPossiblePrintTypesForPrintArea = sandbox.stub();
-      config.isPrintTypeAvailable = sandbox.stub();
+      config1 = Mocks.createModel({ printType: PT17 });
+      config2 = Mocks.createModel({ printType: PT17 });
+      config1.getPossiblePrintTypesForPrintArea = sandbox.stub();
+      config2.getPossiblePrintTypesForPrintArea = sandbox.stub();
+      config1.isPrintTypeAvailable = sandbox.stub();
+      config2.isPrintTypeAvailable = sandbox.stub();
 
       product = Mocks.createModel({ productType: PT812, appearance: APP2 });
-      product.getConfigurationsOnPrintAreas = sandbox.stub().returns([config]);
+      product.getConfigurationsOnPrintAreas = sandbox.stub().returns([config1, config2]);
 
       MockProductUtil.isSpecial = sandbox.stub();
       MockProductUtil.isRealisticFlex = sandbox.stub();
@@ -87,53 +81,36 @@ describe('sprd.manager.PrintTypeEqualizer', () => {
       sandbox.restore();
     });
 
-    describe('with target print type', () => {
+    describe('add configuration handler', () => {
 
-      it('target print type is possible', () => {
-        config.getPossiblePrintTypesForPrintArea.returns([PRT14, PRT17]);
-        config.isPrintTypeAvailable.returns(true);
+      it('happy path', () => {
+        config1.getPossiblePrintTypesForPrintArea.returns([PT14, PT17]);
+        config2.getPossiblePrintTypesForPrintArea.returns([PT14, PT17]);
+        config1.isPrintTypeAvailable.returns(true);
+        config2.isPrintTypeAvailable.returns(true);
         
         MockProductUtil.isSpecial.returns(false);
         MockProductUtil.isRealisticFlex.returns(false);
-        MockProductUtil.getPossiblePrintTypesForPrintAreas.returns([PRT14, PRT17]);
+        MockProductUtil.getPossiblePrintTypesForPrintAreas.returns([PT14, PT17]);
 
-        Module.equalizeConfigurationsOnProduct(product, PRT14, excludedConfiguration);
-        expect(config.$.printType).to.deep.equal(PRT14);
-        expect(config.$.originalEqPrintType).to.deep.equal(PRT17);
+        Module.equalizeConfigurationsOnProduct(product, PT14, excludedConfiguration);
+        expect(config1.$.printType).to.deep.equal(PT14);
+        expect(config2.$.printType).to.deep.equal(PT14);
       });
 
-      it('DEV-127060 target print type is _not_ possible', () => {
-        config.getPossiblePrintTypesForPrintArea.returns([PRT17, PRT1]);
-        config.set('printType', PRT1); // config 1 is now DT
-        config.isPrintTypeAvailable.returns(true);
+      it('print type not possible for one configuration', () => {
+        config1.getPossiblePrintTypesForPrintArea.returns([PT17]);
+        config2.getPossiblePrintTypesForPrintArea.returns([PT14, PT17]);
+        config1.isPrintTypeAvailable.returns(true);
+        config2.isPrintTypeAvailable.returns(true);
         
         MockProductUtil.isSpecial.returns(false);
         MockProductUtil.isRealisticFlex.returns(false);
-        MockProductUtil.getPossiblePrintTypesForPrintAreas.returns([PRT17, PRT1]);
+        MockProductUtil.getPossiblePrintTypesForPrintAreas.returns([PT14, PT17]);
 
-        Module.equalizeConfigurationsOnProduct(product, PRT14, excludedConfiguration);
-        expect(config.$.printType).to.deep.equal(PRT1);
-        expect(config.$.originalEqPrintType).to.be.undefined;
-      });
-
-      it('target print type is possible for one of 2 configs', () => {
-        const config2 = Mocks.createModel({ printType: PRT17 });
-        config2.getPossiblePrintTypesForPrintArea = sandbox.stub().returns([PRT17]);
-        product.getConfigurationsOnPrintAreas = sandbox.stub().returns([config, config2]);
-        config2.isPrintTypeAvailable = sandbox.stub().returns(true);
-
-        config.getPossiblePrintTypesForPrintArea.returns([PRT17, PRT1]);
-        config.isPrintTypeAvailable.returns(true);
-
-        MockProductUtil.isSpecial.returns(false);
-        MockProductUtil.isRealisticFlex.returns(false);
-        MockProductUtil.getPossiblePrintTypesForPrintAreas.returns([PRT17, PRT1]);
-
-        Module.equalizeConfigurationsOnProduct(product, PRT1, excludedConfiguration);
-        expect(config.$.printType).to.deep.equal(PRT1);
-        expect(config.$.originalEqPrintType).to.deep.equal(PRT17);
-        expect(config2.$.printType).to.deep.equal(PRT17);
-        expect(config2.$.originalEqPrintType).to.be.undefined;
+        Module.equalizeConfigurationsOnProduct(product, PT14, excludedConfiguration);
+        expect(config1.$.printType).to.deep.equal(PT17);
+        expect(config2.$.printType).to.deep.equal(PT17);
       });
     })
   })

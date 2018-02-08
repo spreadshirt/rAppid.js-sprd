@@ -51,14 +51,13 @@ define(["sprd/manager/ITextConfigurationManager", "flow", 'sprd/entity/Size', "t
                     nextY = Number(successorTspan.y),
                     lineHeight = 1.2 * tspan.fontSize;
 
-
                 if (y !== y  || nextY !== nextY) {
                     retArray.push(successorTspan);
                     continue;
                 }
 
                 var yDiff = nextY - y;
-                var whiteSpaceParagraphsAmount = Math.round(yDiff / lineHeight) - 1,
+                var whiteSpaceParagraphsAmount = lineHeight > 0 ? Math.round(yDiff / lineHeight) - 1 : 0,
                     startY = y + lineHeight,
                     whiteSpaceTspans = this.generateWhiteSpaceTspans(whiteSpaceParagraphsAmount, startY, lineHeight);
 
