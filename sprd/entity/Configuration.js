@@ -1,4 +1,4 @@
-define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List', "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore", "js/core/Bus", "designer/manager/FeatureManager"], function(Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _, Bus, FeatureManager) {
+define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity/PrintArea', 'sprd/model/PrintType', 'js/core/List', "sprd/entity/Price", "sprd/type/Matrix2d", "sprd/util/ProductUtil", "sprd/entity/PrintTypeColor", "underscore", "js/core/Bus", "sprd/manager/FeatureManager"], function(Entity, Offset, Size, PrintArea, PrintType, List, Price, Matrix2d, ProductUtil, PrintTypeColor, _, Bus) {
 
     return Entity.inherit('sprd.entity.Configuration', {
 
@@ -45,8 +45,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
         },
 
         inject: {
-            bus: Bus,
-            featureManager: FeatureManager
+            bus: Bus
         },
 
         save: function(callback) {
@@ -492,9 +491,7 @@ define(['js/data/Entity', 'sprd/entity/Offset', 'sprd/entity/Size', 'sprd/entity
                 return possiblePrintTypes;
             }
 
-            var tempPrintTypes = possiblePrintTypes,
-                featureManager = this.$.featureManager,
-                self = this,
+            var self = this,
                 currentPrintType = self.$.printType;
 
             return !currentPrintType ? possiblePrintTypes : [currentPrintType]
