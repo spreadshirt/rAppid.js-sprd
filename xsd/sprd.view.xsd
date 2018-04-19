@@ -787,6 +787,7 @@ set the default appearance of the product is used.
                 <attribute name="product"/>
                 <attribute name="viewHeight" default="50"/>
                 <attribute name="viewWidth" default="50"/>
+                <attribute name="viewsWithWarnings"/>
             </extension>
         </complexContent>
     </complexType>
@@ -803,6 +804,7 @@ set the default appearance of the product is used.
                 <attribute name="product"/>
                 <attribute name="viewHeight" default="50"/>
                 <attribute name="viewWidth" default="50"/>
+                <attribute name="viewsWithWarnings"/>
             </extension>
         </complexContent>
     </complexType>
@@ -832,6 +834,7 @@ set the default appearance of the product is used.
                 <attribute name="error" default="{product.configurationsOnViewError(view)}"/>
                 <attribute name="copiedConfiguration"/>
                 <attribute name="zoomToPrintArea"/>
+                <attribute name="zoomToConfiguration"/>
                 <attribute name="maxZoom" default="1"/>
             </extension>
         </complexContent>
@@ -862,6 +865,7 @@ set the default appearance of the product is used.
                 <attribute name="error" default="{product.configurationsOnViewError(view)}"/>
                 <attribute name="copiedConfiguration"/>
                 <attribute name="zoomToPrintArea"/>
+                <attribute name="zoomToConfiguration"/>
                 <attribute name="maxZoom" default="1"/>
                 <attribute name="onconfigurationSelect" default="_onConfigurationSelectHandler" type="string"/>
                 <attribute name="ondeselectConfiguration" default="_onDeselectConfigurationHandler" type="string"/>
@@ -878,6 +882,7 @@ set the default appearance of the product is used.
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="scrollDelay"/>
+                <attribute name="duration"/>
             </extension>
         </complexContent>
     </complexType>

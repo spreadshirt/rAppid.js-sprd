@@ -55,9 +55,13 @@ define(["sprd/data/SprdModel", "js/data/validator/Validator", "JSON", "sprd/lib/
                         }
                     }
 
-                    var error = self._createError(code, "COUPON_ERROR", "code");
-                    error.set('values', values);
-                    errors.push(error)
+                    if (code != 1020) {
+                        var error = self._createError(code, "COUPON_ERROR", "code");
+                        error.set('values', values);
+                        errors.push(error)
+                    }
+
+
                 }
 
                 callback(null, errors);

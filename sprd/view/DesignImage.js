@@ -39,6 +39,6 @@ define(["xaml!sprd/view/Image", "sprd/data/ImageService"], function (Image, Imag
             }
             return url;
 
-        }.onChange('design', 'height', 'width')
+        }.onChange('design')
     });
 });

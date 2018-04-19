@@ -42,7 +42,6 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
 
         _postConstruct: function () {
             this.callBase();
-            this.fetchCommissions();
         },
 
         ctor: function () {
@@ -317,37 +316,10 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
 
             if (_designCommission) {
                 price.add(_designCommission);
-            } else {
-                this.fetchCommissions();
             }
 
             return price;
         }.onChange("_printTypePrice", "commission"),
-
-        fetchCommissions: function () {
-
-            var self = this,
-                contextCurrency = this.get("context.currency.id");
-            this.synchronizeFunctionCall(function (callback) {
-
-                this.$.pimpDataSource.createCollection(Collection.of(Commission)).fetch(null, function (err, collection) {
-                    var commission;
-                    if (!err) {
-                        commission = collection.find(function (commission) {
-                            return commission.get("price.currency.id") === contextCurrency;
-                        });
-                    }
-
-                    self.set("commission", commission);
-                    self.trigger("priceChanged");
-
-                    callback(err, commission);
-                });
-
-            }, "commissions", null, this);
-
-
-        },
 
         height: function (scale) {
             return this.callBase(scale);
@@ -369,7 +341,7 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
             if (this.$context) {
                 appearance = appearance || this.$context.$contextModel.get('appearance');
             }
-            
+
             if (printArea && appearance) {
                 ret = ProductUtil.getPossiblePrintTypesForSpecialText(printArea, appearance);
             }
@@ -405,7 +377,7 @@ define(['sprd/entity/DesignConfigurationBase', "sprd/util/ProductUtil", "js/core
 
             return minScale;
         }.onChange("printType"),
-        
+
         _validatePrintTypeSize: function (printType, width, height, scale) {
             var ret = {},
                 design = this.$.design;

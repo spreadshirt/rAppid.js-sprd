@@ -69,6 +69,7 @@
                 <attribute name="height" default="{configuration.size().height}"/>
                 <attribute name="focused" default="{configurationViewer.focused}"/>
                 <attribute name="imageService"/>
+                <attribute name="loading" default="{configuration.loading}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -95,6 +96,14 @@
                 <attribute name="moveVector"/>
                 <attribute name="centerVector"/>
                 <attribute name="rotationSnap"/>
+                <attribute name="productViewerDiagonalLength"/>
+                <attribute name="inverseZoom" default="{printAreaViewer.productTypeViewViewer.inverseZoom}"/>
+                <attribute name="minScaleRect" default="{getMinScaleRect()}"/>
+                <attribute name="maxScaleRect" default="{getMaxScaleRect()}"/>
+                <attribute name="nearToThresholdMax" default="{nearToThresholdMax()}"/>
+                <attribute name="nearToThresholdMin" default="{nearToThresholdMin()}"/>
+                <attribute name="containedInMax" default="{isSmallerThanMax()}"/>
+                <attribute name="containedInMin" default="{isSmallerThanMin()}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -102,7 +111,14 @@
         <complexContent>
             <extension base="ns1:SvgElement">
                 <annotation>
-                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.ConfigurationViewerClass"></documentation>
+                    <documentation source="http://www.rappidjs.com/#/api/sprd.view.svg.ConfigurationViewerClass">
+                                Polyfill
+ If x is NaN, the result is NaN.
+ If x is -0, the result is -0.
+ If x is +0, the result is +0.
+ If x is negative and not -0, the result is -1.
+ If x is positive and not +0, the result is +1.
+                            </documentation>
                 </annotation>
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -121,6 +137,14 @@
                 <attribute name="moveVector"/>
                 <attribute name="centerVector"/>
                 <attribute name="rotationSnap"/>
+                <attribute name="productViewerDiagonalLength"/>
+                <attribute name="inverseZoom" default="{printAreaViewer.productTypeViewViewer.inverseZoom}"/>
+                <attribute name="minScaleRect" default="{getMinScaleRect()}"/>
+                <attribute name="maxScaleRect" default="{getMaxScaleRect()}"/>
+                <attribute name="nearToThresholdMax" default="{nearToThresholdMax()}"/>
+                <attribute name="nearToThresholdMin" default="{nearToThresholdMin()}"/>
+                <attribute name="containedInMax" default="{isSmallerThanMax()}"/>
+                <attribute name="containedInMin" default="{isSmallerThanMin()}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -136,7 +160,6 @@
                 <attribute name="data-mask-id" default="{configuration.afterEffect.id}"/>
                 <attribute name="loadedLayers"/>
                 <attribute name="viewer"/>
-                <attribute name="loading" default="{configuration.loading}"/>
                 <attribute name="allLayersLoaded" default="{allLayersLoaded()}"/>
             </extension>
         </complexContent>
@@ -153,7 +176,6 @@
                 <attribute name="data-mask-id" default="{configuration.afterEffect.id}"/>
                 <attribute name="loadedLayers"/>
                 <attribute name="viewer"/>
-                <attribute name="loading" default="{configuration.loading}"/>
                 <attribute name="allLayersLoaded" default="{allLayersLoaded()}"/>
             </extension>
         </complexContent>
@@ -258,6 +280,7 @@
                 <attribute name="product"/>
                 <attribute name="productViewer"/>
                 <attribute name="imageService"/>
+                <attribute name="inverseZoom" default="{getInverseZoom()}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -271,7 +294,6 @@
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="tagName" default="g"/>
-                <attribute name="loading" default="{configuration.loading}"/>
             </extension>
         </complexContent>
     </complexType>
@@ -284,7 +306,6 @@
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
-                <attribute name="loading" default="{configuration.loading}"/>
             </extension>
         </complexContent>
     </complexType>
