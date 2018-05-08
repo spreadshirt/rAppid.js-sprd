@@ -1,6 +1,9 @@
 define(['js/core/Component', 'underscore'], function(Component, _){
 
     return Component.inherit('sprd.manager.FeatureManager', {
+        defaults: {
+            calcInnerRects: false
+        },
 
         featureSets: {
             // overwrite in sub class

@@ -22,7 +22,7 @@ define(["js/core/Component", "rAppid", "JSON", "underscore", "js/lib/extension",
 
             flow().
                 seq("designId", function (cb) {
-                    rAppid.ajax([self.$.gateway, "tasks", (options.taskId || 0), "createDesign"].join("/"), {
+                    rAppid.ajax([self.$.gateway, 'fonts', 'tasks', (options.taskId || 0), 'designs'].join("/"), {
                         type: 'POST',
                         contentType: "application/json; charset=UTF-8",
                         data: JSON.stringify({
@@ -109,7 +109,7 @@ define(["js/core/Component", "rAppid", "JSON", "underscore", "js/lib/extension",
 
                 flow()
                     .seq("task", function (cb) {
-                        rAppid.ajax(self.$.gateway + '/tasks' + (options.taskId ? '/' + options.taskId : ''), {
+                        rAppid.ajax(self.$.gateway + '/fonts/tasks' + (options.taskId ? '/' + options.taskId : ''), {
                             type: options.taskId ? 'PUT' : 'POST',
                             contentType: 'application/json',
                             data: JSON.stringify(options)
