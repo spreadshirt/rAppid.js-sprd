@@ -62,7 +62,8 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 "on:basketSaving",
                 "on:basketInitialized",
                 "on:couponApplied",
-                "on:couponRemoved"
+                "on:couponRemoved",
+                "on:couponsLoaded"
             ],
 
             inject: {
@@ -345,11 +346,15 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             },
 
             fetchBasketCoupons: function (cb) {
-                var basket = this.$.basket;
+                var basket = this.$.basket,
+                    self   = this;
                 if (basket && basket.schema.coupons) {
                     var coupons = basket.getCollection("coupons");
                     coupons.invalidatePageCache();
-                    coupons.fetch(cb);
+                    coupons.fetch(function(err) {
+                        self.trigger("on:couponsLoaded");
+                        cb && cb(err)
+                    });
                 } else {
                     cb && cb();
                 }
