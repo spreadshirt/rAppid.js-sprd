@@ -63,6 +63,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                 "on:basketInitialized",
                 "on:couponApplied",
                 "on:couponRemoved",
+                "on:couponManualRemoved",
                 "on:couponsLoaded"
             ],
 
@@ -185,7 +186,9 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
             removeCoupon: function (coupon, cb) {
                 var self = this;
                 coupon.remove(null, function () {
-                    self.reloadBasket();
+                    self.reloadBasket({
+                        couponRemovedEvent: "on:couponManualRemoved"
+                    });
                     cb && cb();
                 });
             },
@@ -505,7 +508,24 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     this.$basketChanged = true;
                 }
             },
-            reloadBasket: function (callback) {
+
+            /***
+             *
+             * @param options
+             * @param callback
+             */
+            reloadBasket: function(options, callback) {
+
+                if (options instanceof Function) {
+                    callback = options;
+                    options = undefined;
+                }
+
+                options = options || {};
+                _.defaults(options, {
+                    couponRemovedEvent: "on:couponRemoved"
+                });
+
                 this._triggerBasketUpdating();
                 var self = this,
                     basket = this.$.basket;
@@ -521,7 +541,7 @@ define(["sprd/manager/IBasketManager", "flow", "sprd/model/Basket", "xaml!sprd/d
                     })
                     .seq(function(){
                         if (basket.get("coupons.size()") < couponCount) {
-                            self.trigger("on:couponRemoved");
+                            self.trigger(options.couponRemovedEvent);
                         }
                     })
                     .exec(function (err, basket) {
