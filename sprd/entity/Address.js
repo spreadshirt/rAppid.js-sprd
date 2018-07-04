@@ -214,6 +214,11 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 if (!this.isStateRequired()) {
                     this.set('state', null);
                 }
+
+                if ($.country && $.country.$.code === "AU" && this.get("person.salutation") == 4) {
+                    // company to australia is forbidden, see DEV-134352
+                    this.$.person.set("salutation", null);
+                }
             }
         },
 
