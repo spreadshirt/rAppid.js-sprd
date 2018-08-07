@@ -99,6 +99,8 @@ BasketItem
                 <attribute name="onbasketInitialized" default="_onBasketInitializedHandler" type="string"/>
                 <attribute name="oncouponApplied" default="_onCouponAppliedHandler" type="string"/>
                 <attribute name="oncouponRemoved" default="_onCouponRemovedHandler" type="string"/>
+                <attribute name="oncouponManualRemoved" default="_onCouponManualRemovedHandler" type="string"/>
+                <attribute name="oncouponsLoaded" default="_onCouponsLoadedHandler" type="string"/>
             </extension>
         </complexContent>
     </complexType>
@@ -162,6 +164,7 @@ BasketItem
                 <sequence>
                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+                <attribute name="calcInnerRects"/>
             </extension>
         </complexContent>
     </complexType>
