@@ -10,6 +10,7 @@ define(["sprd/data/SprdModel", "js/data/Entity"], function (SprdModel, Entity) {
             categoryCode: String,
             grossLowerLimit: Number,
             grossUpperLimit: Number,
+            merchantAccount: String,
             banks: [Entity]
         }
 
