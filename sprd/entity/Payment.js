@@ -4,7 +4,8 @@ define(["js/data/Entity"], function (Entity) {
 
         defaults: {
             root: null,
-            paymentTypeGroup: null
+            paymentTypeGroup: null,
+            possible: true
         },
 
         getType: function () {
