@@ -57,6 +57,8 @@
                                         sessionPreferred="true"/>
             <conf:ResourceConfiguration path="checkout" modelClassName="sprd.model.Checkout" apiKeyRequired="true"
                                         checkoutTokenRequired="true" sessionPreferred="true"/>
+            <conf:ResourceConfiguration path="checkoutCreditCard" modelClassName="sprd.model.Checkout.CreditCard" sessionPreferred="true" checkoutTokenRequired="true"/>
+            <conf:ResourceConfiguration path="authorize3ds" modelClassName="sprd.model.Checkout.Authorize3ds"/>
         </conf:ResourceConfiguration>
         <conf:ResourceConfiguration modelClassName="sprd.model.CombinedBasket" path="combinedBaskets"
                                     apiKeyRequired="true" checkoutTokenRequired="true"/>
