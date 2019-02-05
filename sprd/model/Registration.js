@@ -72,7 +72,8 @@ define(["sprd/data/SprdModel",
             email: "",
             password: null,
             guest: false,
-            partnerType: PARTNER_TYPE.NONE
+            partnerType: PARTNER_TYPE.NONE,
+            source: "CHECKOUT"
         },
         schema: {
             email: String,
@@ -95,7 +96,8 @@ define(["sprd/data/SprdModel",
             newsletter: {
                 type: Newsletter,
                 required: false
-            }
+            },
+            source: String
         },
         resultType: RegistrationResult
     });
