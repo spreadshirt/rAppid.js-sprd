@@ -198,7 +198,6 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
             }
 
             var data = formatProcessor.serialize(checkoutData);
-            this.doFormPost(url, data);
 
             var form = document.createElement("form");
             form.setAttribute("method", "post");
