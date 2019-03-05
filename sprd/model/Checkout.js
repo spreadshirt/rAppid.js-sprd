@@ -147,6 +147,10 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
 
                     if (self.get('paymentType.categoryCode') == 'CREDITCARD') {
 
+                        if (payment && self.$.fingerPrint) {
+                            payment.set('fingerPrint', self.$.fingerPrint);
+                        }
+
                         var model = self.$context.$contextModel.createEntity(CreditCardCheckout);
                         model.set(self.$);
                         model.set("id", null);
