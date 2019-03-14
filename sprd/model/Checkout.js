@@ -36,7 +36,7 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
                 type: String,
                 required: false
             },
-            threeDSServerTransId: {
+            serverTransactionId: {
                 type: String,
                 required: false
             }
@@ -52,6 +52,10 @@ define(["sprd/data/SprdModel", "sprd/model/PaymentType", "sprd/entity/Payment", 
             },
             data: {
                 type: AdyenData,
+                required: false
+            },
+            type: {
+                type: String,
                 required: false
             }
         }
