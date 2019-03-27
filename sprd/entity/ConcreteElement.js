@@ -9,6 +9,10 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
             productTypeName: {
                 required: false,
                 type: String
+            },
+            productTypeId: {
+                required: false,
+                type: String
             }
         },
 

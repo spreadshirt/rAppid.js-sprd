@@ -45,6 +45,10 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                 if (prop.key === "productTypeName") {
                     elementPayload["productTypeName"] = prop.value;
                 }
+
+                if (prop.key === "productType") {
+                    elementPayload["productTypeId"] = prop.value;
+                }
             }
 
             var links = payload.links || [];
@@ -91,7 +95,8 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
             var elementPayload = {};
             var properties = elementPayload['properties'] = [
                 {key: "appearance", value: element.appearance.id},
-                {key: "size", value: element.size.id}
+                {key: "size", value: element.size.id},
+                {key: "productType", value: element.productTypeId}
             ];
 
             var baseArticleId = model.$.element.getBaseArticleId() || model.get('article.id');
@@ -129,7 +134,8 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                 quantity: payload.quantity,
                 price: payload.price,
                 discountRelativeReduction: payload.discountRelativeReduction,
-                couponRelativeReduction: payload.couponRelativeReduction
+                couponRelativeReduction: payload.couponRelativeReduction,
+                shop: payload.shop
             };
 
 
