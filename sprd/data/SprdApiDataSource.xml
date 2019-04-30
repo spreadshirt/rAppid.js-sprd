@@ -117,7 +117,7 @@
             <conf:ResourceConfiguration path="repay" modelClassName="sprd.model.Checkout" apiKeyRequired="true"
                                         checkoutTokenRequired="true" authTokenRequired="true"/>
             <conf:ResourceConfiguration path="repayWithCreditCard" modelClassName="sprd.model.Checkout.CreditCard"
-                                        sessionPreferred="true" checkoutTokenRequired="true"/>
+                                        sessionPreferred="true" checkoutTokenRequired="true" authTokenRequired="true"/>
             <conf:ResourceConfiguration path="authorize3ds" modelClassName="sprd.model.Checkout.Authorize3ds"/>
         </conf:ResourceConfiguration>
 
