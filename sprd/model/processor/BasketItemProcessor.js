@@ -1,7 +1,8 @@
 define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/Article', 'sprd/model/Product'], function (DefaultProcessor, Shop, Article, Product) {
 
-    var TYPE_PRODUCT = "sprd:product",
-        TYPE_ARTICLE = "sprd:article";
+    var TYPE_PRODUCT  = "sprd:product",
+        TYPE_ARTICLE  = "sprd:article",
+        TYPE_SELLABLE = "sprd:sellable";
 
     return DefaultProcessor.inherit("sprd.model.processor.BasketItemProcessor", {
 
@@ -77,9 +78,12 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
 
             } else if (element.type === TYPE_PRODUCT) {
                 elementPayload.item = this.$dataSource.getContextForChild(Product, shop).createEntity(Product, element.id);
+            } else if (element.type == TYPE_SELLABLE) {
+                elementPayload.item = elementPayload["product"];
             } else {
                 throw "Element type '" + element.type + "' not supported";
             }
+
             elementPayload.item.set('price', payload.price);
 
 
