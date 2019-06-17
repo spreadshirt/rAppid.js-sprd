@@ -56,7 +56,9 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
              *
              */
             originalProduct: null,
-            originalArticleId: null
+            originalArticleId: null,
+
+            type: null
         },
 
         isEqual: function (concreteElement) {
@@ -100,6 +102,11 @@ define(["js/data/Entity", "sprd/model/Product", "sprd/model/Article", "sprd/enti
         },
 
         getType: function () {
+
+            if (this.$.type) {
+                return this.$.type;
+            }
+
             if (this.$.item instanceof Product) {
                 return TYPE_PRODUCT;
             } else if (this.$.item instanceof Article) {
