@@ -80,7 +80,6 @@ define(['sprd/model/processor/DefaultProcessor', 'sprd/model/Shop', 'sprd/model/
                 elementPayload.item = this.$dataSource.getContextForChild(Product, shop).createEntity(Product, element.id);
             } else if (element.type == TYPE_SELLABLE) {
                 elementPayload.item = elementPayload["product"];
-                elementPayload.type = element.type;
             } else {
                 throw "Element type '" + element.type + "' not supported";
             }
