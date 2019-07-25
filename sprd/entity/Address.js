@@ -2,7 +2,8 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
-        PRIVATE: "PRIVATE"
+        PRIVATE: "PRIVATE",
+        UPS_PICKUP: "UPS_PICKUP"
     };
 
     var MAX_LENGTH = {
@@ -288,12 +289,24 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             return platform == "EU" && this.isCompany() && (this.$.isBillingAddress || this.$.isSameAsBillingAddress);
         }.onChange('personSalutation', 'isBillingAddress', 'isSameAsBillingAddress'),
 
+        isPrivate: function() {
+            return this.$.type == ADDRESS_TYPES.PRIVATE;
+        }.onChange('type'),
+
         isPackStation: function () {
             return this.$.type == ADDRESS_TYPES.PACKSTATION;
         }.onChange('type'),
 
+        isUpsPickup: function() {
+            return this.$.type == ADDRESS_TYPES.UPS_PICKUP;
+        }.onChange('type'),
+
         supportsPackStation: function () {
             return this.$.personSalutation !== Person.Salutation.COMPANY && this.get('country.code') === "DE" && !this.$.isBillingAddress;
+        }.onChange('country.code', 'personSalutation', 'isBillingAddress'),
+
+        supportsUpsPickup: function() {
+            return this.$.personSalutation !== Person.Salutation.COMPANY && this.get('country.code') === "FR" && !this.$.isBillingAddress;
         }.onChange('country.code', 'personSalutation', 'isBillingAddress'),
 
         needsCounty: function () {
