@@ -109,15 +109,19 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             street: {
                 type: String,
                 required: function () {
-                    return !this.isPackStation();
+                    return this.isPrivate();
                 }
             },
-
             streetAnnex: {
                 type: String,
                 required: false
             },
-            city: String,
+            city: {
+                type: String,
+                required: function() {
+                    return this.isPrivate();
+                }
+            },
             houseNumber: {
                 type: String,
                 required: false
@@ -126,7 +130,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 isReference: true,
                 type: ShippingState,
                 required: function () {
-                    return this.isStateRequired();
+                    return this.isPrivate() && this.isStateRequired();
                 }
             },
             country: {
@@ -137,9 +141,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 type: String,
                 required: function () {
                     // not required for Ireland
-                    return this.needsZipCode();
+                    return this.isPrivate() && this.needsZipCode();
                 }
             },
+
             postNr: {
                 type: String,
                 required: function () {
@@ -151,6 +156,13 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 type: String,
                 required: function () {
                     return this.isPackStation()
+                }
+            },
+
+            ups: {
+                type: Object,
+                required: function() {
+                    return this.isUpsPickup()
                 }
             },
 
@@ -211,6 +223,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                     this.set('type', ADDRESS_TYPES.PRIVATE);
                 }
             }
+
             if ($.hasOwnProperty("country")) {
                 if (!this.isStateRequired()) {
                     this.set('state', null);
@@ -247,6 +260,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 data.postNr = data.streetAnnex ? data.streetAnnex.replace(POSTNUMMER, "") : "";
                 delete data.streetAnnex;
                 delete data.street;
+            } else if (data.type === ADDRESS_TYPES.UPS_PICKUP) {
+                delete data.street;
+                delete data.company;
+                delete data.zipCode;
             }
 
             return this.callBase(data);
@@ -263,21 +280,32 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 data.zipCode = "-";
             }
 
-            if (this.get('type') === ADDRESS_TYPES.PACKSTATION) {
-                data.street = PACKSTATION + (data.packStationNr || "").replace(/packstation/i, " ").replace(/^\s*|\s*$/, "");
-                data.streetAnnex = POSTNUMMER + data.postNr;
-            } else {
-                delete data.packStationNr;
-                delete data.postNr;
-            }
+            var type = this.get('type');
 
             if (!this.isCompany()) {
                 delete data.company;
                 delete data.vatId;
             } else if (data.vatId && !/^[A-Z]{2}/.test(data.vatId)) {
                 data.vatId = (this.get("country.code") || "").toUpperCase() + data.vatId.replace(/^[A-Z]*/, "");
-                console.dir(data);
             }
+
+            if (type === ADDRESS_TYPES.PACKSTATION) {
+                data.street = PACKSTATION + (data.packStationNr || "").replace(/packstation/i, " ").replace(/^\s*|\s*$/, "");
+                data.streetAnnex = POSTNUMMER + data.postNr;
+            } else if (type === ADDRESS_TYPES.UPS_PICKUP) {
+                var ups = data.ups;
+                data.street = ups.street;
+                data.company = ups.company;
+                data.city = ups.city;
+                data.zipCode = ups.zipCode;
+            }
+
+
+            delete data.packStationNr;
+            delete data.postNr;
+            delete data.ups;
+
+
 
             // send empty house number
             data.houseNumber = "";
