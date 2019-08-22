@@ -2,6 +2,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
+        POSTFILIALE: "POSTFILIALE",
         PRIVATE: "PRIVATE",
         UPS_PICKUP: "UPS_PICKUP"
     };
@@ -17,8 +18,9 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         STREET: 3
     };
 
-    var POSTNUMMER = "Postnummer ",
-        PACKSTATION = "Packstation ";
+    var POSTNUMMER  = "Postnummer ",
+        PACKSTATION = "Packstation ",
+        POSTFILIALE = "Postfiliale ";
 
     var VatValidator = Validator.inherit({
         _validate: function (entity) {
@@ -263,8 +265,19 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
         parse: function (data) {
             if (data.type === ADDRESS_TYPES.PACKSTATION) {
-                data.packStationNr = data.street ? data.street.replace(PACKSTATION, "") : "";
+
+                if (/postfiliale/i.exec(data.street)) {
+                    data.type = ADDRESS_TYPES.POSTFILIALE;
+                }
+
+                data.packStationNr = data.street ? data.street.replace(PACKSTATION, "").replace(POSTFILIALE, "") : "";
                 data.postNr = data.streetAnnex ? data.streetAnnex.replace(POSTNUMMER, "") : "";
+
+                data.packStation = {
+                    city: data.city,
+                    zipCode: data.zipCode
+                };
+
                 delete data.streetAnnex;
                 delete data.street;
             } else if (data.type === ADDRESS_TYPES.UPS_PICKUP) {
@@ -297,9 +310,15 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 data.vatId = (this.get("country.code") || "").toUpperCase() + data.vatId.replace(/^[A-Z]*/, "");
             }
 
-            if (type === ADDRESS_TYPES.PACKSTATION) {
-                data.street = PACKSTATION + (data.packStationNr || "").replace(/packstation/i, " ").replace(/^\s*|\s*$/, "");
+            if (type === ADDRESS_TYPES.PACKSTATION || type === ADDRESS_TYPES.POSTFILIALE) {
+
+                var packstation = data.packStation || {};
+
+                data.type = "PACKSTATION";
+                data.street = (type === ADDRESS_TYPES.PACKSTATION ? PACKSTATION : POSTFILIALE) + (data.packStationNr || "").replace(/packstation/i, " ").replace(/^\s*|\s*$/, "");
                 data.streetAnnex = POSTNUMMER + data.postNr;
+                data.city = packstation.city;
+                data.zipCode = packstation.zipCode;
             } else if (type === ADDRESS_TYPES.UPS_PICKUP) {
                 var ups = data.ups;
                 data.street = ups.street;
@@ -334,6 +353,25 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             return this.$.type == ADDRESS_TYPES.PACKSTATION;
         }.onChange('type'),
 
+        isDhl: function() {
+            return this.isPackStation() || this.isPostfiliale();
+        }.onChange('type'),
+
+        isType: function() {
+
+            for (var i = 0; i < arguments.length; i++) {
+                if (arguments[i] === this.$.type) {
+                    return true;
+                }
+            }
+
+            return false;
+        }.onChange('type'),
+
+        isPostfiliale: function() {
+            return this.$.type == ADDRESS_TYPES.POSTFILIALE;
+        }.onChange('type'),
+
         isUpsPickup: function() {
             return this.$.type == ADDRESS_TYPES.UPS_PICKUP;
         }.onChange('type'),
@@ -343,7 +381,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         }.onChange('country.code', 'personSalutation', 'isBillingAddress'),
 
         supportsUpsPickup: function() {
-            return this.$.personSalutation !== Person.Salutation.COMPANY && this.get('country.code') === "FR" && !this.$.isBillingAddress;
+            return this.$.personSalutation !== Person.Salutation.COMPANY && !this.$.isBillingAddress;
         }.onChange('country.code', 'personSalutation', 'isBillingAddress'),
 
         needsCounty: function () {
