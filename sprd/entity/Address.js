@@ -106,9 +106,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 required: false
             },
 
-            person: {
-                type: Person
-            },
+            person: Person,
 
             street: {
                 type: String,
@@ -178,11 +176,6 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 type: String,
                 required: false
             }
-        },
-
-        ctor: function() {
-            this.callBase();
-            this.$.person.$address = this;
         },
 
         transformers: [
@@ -282,7 +275,6 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 delete data.street;
             } else if (data.type === ADDRESS_TYPES.UPS_PICKUP) {
                 delete data.street;
-                delete data.streetAnnex;
                 delete data.company;
                 delete data.zipCode;
             }
@@ -322,7 +314,6 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             } else if (type === ADDRESS_TYPES.UPS_PICKUP) {
                 var ups = data.ups;
                 data.street = ups.street;
-                data.streetAnnex = ups.streetAnnex;
                 data.company = ups.company;
                 data.city = ups.city;
                 data.zipCode = ups.zipCode;

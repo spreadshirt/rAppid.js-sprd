@@ -7,10 +7,6 @@ define(["js/data/Entity", "js/data/transformer/TrimTransformer"], function (Enti
         "4": "company"
     };
 
-    var nameRequired = function() {
-        return this.get("$address.type") === "PRIVATE";
-    };
-
     var Person = Entity.inherit("sprd.entity.Person", {
 
         defaults: {
@@ -21,14 +17,8 @@ define(["js/data/Entity", "js/data/transformer/TrimTransformer"], function (Enti
 
         schema: {
             salutation: {type: String, required: false},
-            firstName: {
-                type: String,
-                required: nameRequired
-            },
-            lastName: {
-                type: String,
-                required: nameRequired
-            }
+            firstName: String,
+            lastName: String
         },
 
         transformers: [
