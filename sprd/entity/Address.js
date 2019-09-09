@@ -195,18 +195,19 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 field: "streetAnnex",
                 maxLength: MAX_LENGTH.STREET_ANNEX
             }),
-            new RegExValidator({
-                field: "street",
-                regEx: /postfiliale/i,
-                inverse: true,
-                errorCode: "postfilialeNotSupported"
-            }),
             new PackStationValidation({
                 field: "street",
                 regEx: /packstation|postnummer/i,
                 inverse: true,
                 errorCode: "packstationError"
             }),
+            new PackStationValidation({
+                field: "street",
+                regEx: /post\s?filiale/i,
+                inverse: true,
+                errorCode: "postfilialeError"
+            }),
+
             new StreetValidator({
                 field: "street",
                 errorCode: "wrongFormat"
