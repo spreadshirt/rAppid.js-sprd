@@ -98,7 +98,7 @@
 
         </conf:ResourceConfiguration>
 
-        <conf:ResourceConfiguration path="sessions" modelClassName="sprd.model.Session"/>
+        <conf:ResourceConfiguration path="sessions" modelClassName="sprd.model.Session" apiKeyRequired="true" signatureRequired="true"/>
         <conf:ResourceConfiguration path="messages" modelClassName="sprd.model.Message" signatureRequired="true"/>
 
         <conf:ResourceConfiguration path="labels" modelClassName="sprd.model.Label"/>
