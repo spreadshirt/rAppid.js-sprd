@@ -315,6 +315,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             } else if (type === ADDRESS_TYPES.UPS_PICKUP) {
                 var ups = data.ups;
                 data.street = ups.street;
+                data.streetAnnex = ups.streetAnnex;
                 data.company = ups.company;
                 data.city = ups.city;
                 data.zipCode = ups.zipCode;
