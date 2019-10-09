@@ -1,4 +1,4 @@
-define(["js/core/I18n"], function(I18n) {
+define(["js/core/I18n", "rAppid", "flow", "JSON"], function(I18n, rAppid, flow, JSON) {
 
     return I18n.inherit({
         t: function(num, key) {
@@ -20,6 +20,33 @@ define(["js/core/I18n"], function(I18n) {
 
             return this.callBase();
 
-        }.onChange("translations")
+        }.onChange("translations"),
+
+        loadLocale: function(locale, callback) {
+
+            var self = this;
+
+            if (!locale) {
+                callback && callback("locale not defined");
+                return;
+            }
+
+            flow()
+                .seq("ajax", function(cb) {
+                    rAppid.ajax(self.baseUrl(self.$.path + "/" + locale + ".json"), null, cb);
+                })
+                .seq(function() {
+                    var translations = JSON.parse(this.vars.ajax.responses.text);
+
+                    self.set({
+                        translations: translations
+                    });
+
+                    return translations;
+                })
+                .exec(callback);
+
+        },
+
     })
 });

@@ -2,7 +2,9 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
     var ADDRESS_TYPES = {
         PACKSTATION: "PACKSTATION",
-        PRIVATE: "PRIVATE"
+        POSTFILIALE: "POSTFILIALE",
+        PRIVATE: "PRIVATE",
+        UPS_PICKUP: "UPS_PICKUP"
     };
 
     var MAX_LENGTH = {
@@ -16,8 +18,9 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
         STREET: 3
     };
 
-    var POSTNUMMER = "Postnummer ",
-        PACKSTATION = "Packstation ";
+    var POSTNUMMER  = "Postnummer ",
+        PACKSTATION = "Packstation ",
+        POSTFILIALE = "Postfiliale ";
 
     var VatValidator = Validator.inherit({
         _validate: function (entity) {
@@ -108,15 +111,19 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             street: {
                 type: String,
                 required: function () {
-                    return !this.isPackStation();
+                    return this.isPrivate();
                 }
             },
-
             streetAnnex: {
                 type: String,
                 required: false
             },
-            city: String,
+            city: {
+                type: String,
+                required: function() {
+                    return this.isPrivate();
+                }
+            },
             houseNumber: {
                 type: String,
                 required: false
@@ -125,7 +132,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 isReference: true,
                 type: ShippingState,
                 required: function () {
-                    return this.isStateRequired();
+                    return this.isPrivate() && this.isStateRequired();
                 }
             },
             country: {
@@ -136,9 +143,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 type: String,
                 required: function () {
                     // not required for Ireland
-                    return this.needsZipCode();
+                    return this.isPrivate() && this.needsZipCode();
                 }
             },
+
             postNr: {
                 type: String,
                 required: function () {
@@ -150,6 +158,13 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 type: String,
                 required: function () {
                     return this.isPackStation()
+                }
+            },
+
+            ups: {
+                type: Object,
+                required: function() {
+                    return this.isUpsPickup()
                 }
             },
 
@@ -180,18 +195,19 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 field: "streetAnnex",
                 maxLength: MAX_LENGTH.STREET_ANNEX
             }),
-            new RegExValidator({
-                field: "street",
-                regEx: /postfiliale/i,
-                inverse: true,
-                errorCode: "postfilialeNotSupported"
-            }),
             new PackStationValidation({
                 field: "street",
                 regEx: /packstation|postnummer/i,
                 inverse: true,
                 errorCode: "packstationError"
             }),
+            new PackStationValidation({
+                field: "street",
+                regEx: /post\s?filiale/i,
+                inverse: true,
+                errorCode: "postfilialeError"
+            }),
+
             new StreetValidator({
                 field: "street",
                 errorCode: "wrongFormat"
@@ -210,6 +226,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                     this.set('type', ADDRESS_TYPES.PRIVATE);
                 }
             }
+
             if ($.hasOwnProperty("country")) {
                 if (!this.isStateRequired()) {
                     this.set('state', null);
@@ -242,10 +259,25 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
         parse: function (data) {
             if (data.type === ADDRESS_TYPES.PACKSTATION) {
-                data.packStationNr = data.street ? data.street.replace(PACKSTATION, "") : "";
+
+                if (/postfiliale/i.exec(data.street)) {
+                    data.type = ADDRESS_TYPES.POSTFILIALE;
+                }
+
+                data.packStationNr = data.street ? data.street.replace(PACKSTATION, "").replace(POSTFILIALE, "") : "";
                 data.postNr = data.streetAnnex ? data.streetAnnex.replace(POSTNUMMER, "") : "";
+
+                data.packStation = {
+                    city: data.city,
+                    zipCode: data.zipCode
+                };
+
                 delete data.streetAnnex;
                 delete data.street;
+            } else if (data.type === ADDRESS_TYPES.UPS_PICKUP) {
+                delete data.street;
+                delete data.company;
+                delete data.zipCode;
             }
 
             return this.callBase(data);
@@ -262,21 +294,39 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 data.zipCode = "-";
             }
 
-            if (this.get('type') === ADDRESS_TYPES.PACKSTATION) {
-                data.street = PACKSTATION + (data.packStationNr || "").replace(/packstation/i, " ").replace(/^\s*|\s*$/, "");
-                data.streetAnnex = POSTNUMMER + data.postNr;
-            } else {
-                delete data.packStationNr;
-                delete data.postNr;
-            }
+            var type = this.get('type');
 
             if (!this.isCompany()) {
                 delete data.company;
                 delete data.vatId;
             } else if (data.vatId && !/^[A-Z]{2}/.test(data.vatId)) {
                 data.vatId = (this.get("country.code") || "").toUpperCase() + data.vatId.replace(/^[A-Z]*/, "");
-                console.dir(data);
             }
+
+            if (type === ADDRESS_TYPES.PACKSTATION || type === ADDRESS_TYPES.POSTFILIALE) {
+
+                var packstation = data.packStation || {};
+
+                data.type = "PACKSTATION";
+                data.street = (type === ADDRESS_TYPES.PACKSTATION ? PACKSTATION : POSTFILIALE) + (data.packStationNr || "").replace(/packstation/i, " ").replace(/^\s*|\s*$/, "");
+                data.streetAnnex = POSTNUMMER + data.postNr;
+                data.city = packstation.city;
+                data.zipCode = packstation.zipCode;
+            } else if (type === ADDRESS_TYPES.UPS_PICKUP) {
+                var ups = data.ups;
+                data.street = ups.street;
+                data.streetAnnex = ups.streetAnnex;
+                data.company = ups.company;
+                data.city = ups.city;
+                data.zipCode = ups.zipCode;
+            }
+
+
+            delete data.packStationNr;
+            delete data.postNr;
+            delete data.ups;
+
+
 
             // send empty house number
             data.houseNumber = "";
@@ -288,12 +338,43 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             return platform == "EU" && this.isCompany() && (this.$.isBillingAddress || this.$.isSameAsBillingAddress);
         }.onChange('personSalutation', 'isBillingAddress', 'isSameAsBillingAddress'),
 
+        isPrivate: function() {
+            return this.$.type == ADDRESS_TYPES.PRIVATE;
+        }.onChange('type'),
+
         isPackStation: function () {
             return this.$.type == ADDRESS_TYPES.PACKSTATION;
         }.onChange('type'),
 
+        isDhl: function() {
+            return this.isPackStation() || this.isPostfiliale();
+        }.onChange('type'),
+
+        isType: function() {
+
+            for (var i = 0; i < arguments.length; i++) {
+                if (arguments[i] === this.$.type) {
+                    return true;
+                }
+            }
+
+            return false;
+        }.onChange('type'),
+
+        isPostfiliale: function() {
+            return this.$.type == ADDRESS_TYPES.POSTFILIALE;
+        }.onChange('type'),
+
+        isUpsPickup: function() {
+            return this.$.type == ADDRESS_TYPES.UPS_PICKUP;
+        }.onChange('type'),
+
         supportsPackStation: function () {
             return this.$.personSalutation !== Person.Salutation.COMPANY && this.get('country.code') === "DE" && !this.$.isBillingAddress;
+        }.onChange('country.code', 'personSalutation', 'isBillingAddress'),
+
+        supportsUpsPickup: function() {
+            return this.$.personSalutation !== Person.Salutation.COMPANY && !this.$.isBillingAddress;
         }.onChange('country.code', 'personSalutation', 'isBillingAddress'),
 
         needsCounty: function () {

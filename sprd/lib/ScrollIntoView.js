@@ -83,10 +83,10 @@ define([], function () {
         function scrollTo(to) {
 
             // figure out if this is moz || IE because they use documentElement
-            var start = body.scrollTop,
-                change = to - start,
+            var start       = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop,
+                change      = to - start,
                 currentTime = 0,
-                increment = 20;
+                increment   = 20;
 
             var animateScroll = function () {
                 // increment the time

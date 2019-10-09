@@ -10,7 +10,8 @@ define(['sprd/data/SprdModel', 'sprd/entity/ShippingCountry', 'sprd/entity/Shipp
             isExpress: false,
             phoneNumberRequired: false,
 
-            supportsPackstation: true
+            supportsPackstation: true,
+            supportsUpsPickup: false
         },
 
         schema: {
@@ -25,7 +26,22 @@ define(['sprd/data/SprdModel', 'sprd/entity/ShippingCountry', 'sprd/entity/Shipp
             isExpress: Boolean,
             phoneNumberRequired: Boolean,
 
-            supportsPackstation: Boolean
+            supportsPackstation: Boolean,
+            supportsUpsPickup: {
+                type: Boolean,
+                required: false
+            }
+        },
+
+        parse: function() {
+
+            var payload = this.callBase();
+
+            if (!payload.hasOwnProperty("supportsUpsPickup")) {
+                payload.supportsUpsPickup = ["18", "19", "20", "23"].indexOf("" + payload.id) !== -1
+            }
+
+            return payload;
         },
 
         /***
