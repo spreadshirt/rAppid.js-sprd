@@ -391,7 +391,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
         needsZipCode: function () {
             // not required for ireland
-            return this.get("country.code") !== "IE";
+            return ["IE", "HK"].indexOf(this.get("country.code")) === -1;
         }.onChange('country'),
 
         isCompany: function () {
