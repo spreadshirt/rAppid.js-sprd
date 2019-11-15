@@ -190,7 +190,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
             }),
             new RegExValidator({
                 field: "city",
-                regEx: /^\s*HQ|\w{3,}\s*$/i,
+                regEx: /^\s*(HQ|\S.+\S)\s*$/i,
                 errorCode: 'maxLengthError'
             }),
             new LengthValidator({
