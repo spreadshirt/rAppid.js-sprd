@@ -188,10 +188,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 field: "zipCode",
                 maxLength: MAX_LENGTH.ZIP_CODE
             }),
-            new RegExValidator({
+            new LengthValidator({
                 field: "city",
-                regEx: /^\s*(HQ|\S.+\S)\s*$/i,
-                errorCode: 'maxLengthError'
+                minLength: MIN_LENGTH.CITY,
+                maxLength: MAX_LENGTH.CITY
             }),
             new LengthValidator({
                 field: "streetAnnex",
