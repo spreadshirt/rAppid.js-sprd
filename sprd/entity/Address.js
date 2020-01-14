@@ -15,7 +15,8 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
     };
 
     var MIN_LENGTH = {
-        STREET: 3
+        STREET: 3,
+        CITY: 3
     };
 
     var POSTNUMMER  = "Postnummer ",
@@ -187,9 +188,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 field: "zipCode",
                 maxLength: MAX_LENGTH.ZIP_CODE
             }),
-            new LengthValidator({
+            new RegExValidator({
                 field: "city",
-                maxLength: MAX_LENGTH.CITY
+                regEx: /^\s*(HQ|\S.+\S)\s*$/i,
+                errorCode: 'maxLengthError'
             }),
             new LengthValidator({
                 field: "streetAnnex",
