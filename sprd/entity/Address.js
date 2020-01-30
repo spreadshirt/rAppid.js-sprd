@@ -188,10 +188,10 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 field: "zipCode",
                 maxLength: MAX_LENGTH.ZIP_CODE
             }),
-            new LengthValidator({
+            new RegExValidator({
                 field: "city",
-                minLength: MIN_LENGTH.CITY,
-                maxLength: MAX_LENGTH.CITY
+                regEx: /^\s*(HQ|\S.+\S)\s*$/i,
+                errorCode: 'maxLengthError'
             }),
             new LengthValidator({
                 field: "streetAnnex",
@@ -393,7 +393,7 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
 
         needsZipCode: function () {
             // not required for ireland
-            return this.get("country.code") !== "IE";
+            return ["IE", "HK"].indexOf(this.get("country.code")) === -1;
         }.onChange('country'),
 
         isCompany: function () {
