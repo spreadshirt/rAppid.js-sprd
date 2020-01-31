@@ -93,7 +93,9 @@ define(["js/core/Component", "xaml!sprd/data/SprdApiDataSource", "flow", "sprd/m
                 self = this;
 
             if (!session) {
-                session = this.$.api.createEntity(Session, "current");
+                var id = "current";
+                session = this.$.api.createEntity(Session, id);
+                session.$.id = id;
             }
 
             session.remove(null, function(err) {
