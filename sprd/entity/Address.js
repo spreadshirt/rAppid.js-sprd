@@ -209,7 +209,12 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 inverse: true,
                 errorCode: "postfilialeError"
             }),
-
+            new RegExValidator({
+                field: "street",
+                regEx: /\*/,
+                inverse: true,
+                errorCode: "invalidCharacters"
+            }),
             new StreetValidator({
                 field: "street",
                 errorCode: "wrongFormat"
