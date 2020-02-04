@@ -189,9 +189,21 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 maxLength: MAX_LENGTH.ZIP_CODE
             }),
             new RegExValidator({
+                field: "zipCode",
+                regEx: /\*/,
+                inverse: true,
+                errorCode: "invalidCharacters"
+            }),
+            new RegExValidator({
                 field: "city",
                 regEx: /^\s*(HQ|\S.+\S)\s*$/i,
                 errorCode: 'maxLengthError'
+            }),
+            new RegExValidator({
+                field: "city",
+                regEx: /\*/,
+                inverse: true,
+                errorCode: "invalidCharacters"
             }),
             new LengthValidator({
                 field: "streetAnnex",
@@ -209,15 +221,15 @@ define(["js/data/Entity", "sprd/entity/ShippingState", "sprd/entity/Country", "s
                 inverse: true,
                 errorCode: "postfilialeError"
             }),
+            new StreetValidator({
+                field: "street",
+                errorCode: "wrongFormat"
+            }),
             new RegExValidator({
                 field: "street",
                 regEx: /\*/,
                 inverse: true,
                 errorCode: "invalidCharacters"
-            }),
-            new StreetValidator({
-                field: "street",
-                errorCode: "wrongFormat"
             }),
             new VatValidator({
                 field: "vatId",
